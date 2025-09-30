@@ -14,10 +14,62 @@ type IconSymbolName = keyof typeof MAPPING;
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
+  // Navigation icons
   'house.fill': 'home',
   'paperplane.fill': 'send',
+  'list.bullet': 'list',
+  'chart.bar.fill': 'bar-chart',
+  'chart.bar': 'bar-chart',
+  'person.fill': 'person',
+
+  // Chevrons and arrows
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'chevron.left': 'chevron-left',
+  'chevron.up': 'expand-less',
+  'chevron.down': 'expand-more',
+
+  // Action icons
+  'plus': 'add',
+  'plus.circle': 'add-circle-outline',
+  'plus.circle.fill': 'add-circle',
+  'pencil': 'edit',
+  'pencil.circle': 'edit',
+  'trash': 'delete',
+  'gear': 'settings',
+  'wrench': 'build',
+
+  // Status icons
+  'checkmark': 'check',
+  'checkmark.circle': 'check-circle-outline',
+  'checkmark.circle.fill': 'check-circle',
+  'xmark': 'close',
+  'xmark.circle.fill': 'cancel',
+  'exclamationmark.circle': 'error-outline',
+
+  // Content icons
+  'clock': 'schedule',
+  'book': 'menu-book',
+  'text.bubble': 'chat-bubble-outline',
+  'doc.text': 'description',
+  'ear': 'hearing',
+  'folder': 'folder',
+  'magnifyingglass': 'search',
+  'questionmark.circle': 'help-outline',
+  'info.circle': 'info-outline',
+  'bell': 'notifications',
+  'person.circle': 'account-circle',
+  'person.2': 'group',
+  'person.2.circle': 'supervisor-account',
+  'calendar': 'event',
+  'circle.fill': 'circle',
+  'flame.fill': 'local-fire-department',
+  'square.and.arrow.down': 'file-download',
+  'square.and.arrow.up': 'share',
+  'arrow.right.square': 'exit-to-app',
+  'arrow.clockwise': 'refresh',
+  'chart.pie': 'pie-chart',
+  'folder.circle': 'folder',
 } as IconMapping;
 
 /**

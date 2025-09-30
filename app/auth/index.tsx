@@ -1,0 +1,216 @@
+import { useAuth } from '@/contexts/AuthContext';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+export default function AuthScreen() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const { signIn, signUp, user } = useAuth();
+
+  // Auto-navigate when user becomes authenticated
+  useEffect(() => {
+    if (user) {
+      console.log('🚀 User authenticated, navigating to app...');
+      setLoading(false);
+      router.replace('/(tabs)');
+    }
+  }, [user]);
+
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log(`${isLogin ? 'Signing in' : 'Signing up'} user:`, email);
+
+      if (isLogin) {
+        await signIn(email, password);
+        console.log('✅ Sign in successful');
+      } else {
+        await signUp(email, password, displayName);
+        console.log('✅ Sign up successful');
+      }
+
+      // Don't manually navigate - let the auth state change handle it
+      console.log('Waiting for auth state change...');
+
+      // Set a timeout to reset loading state if navigation doesn't happen
+      setTimeout(() => {
+        console.log('⚠️ Auth completed, resetting loading state');
+        setLoading(false);
+      }, 3000);
+    } catch (error: any) {
+      console.error('❌ Auth error:', error);
+
+      // Provide user-friendly error messages
+      let errorMessage = error.message;
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email address.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'An account with this email already exists.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters long.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      }
+
+      Alert.alert('Error', errorMessage);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps='handled'
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>ESL Exercises</Text>
+          <Text style={styles.subtitle}>
+            {isLogin ? 'Sign in to your account' : 'Create a new account'}
+          </Text>
+        </View>
+
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder='Email'
+            value={email}
+            onChangeText={setEmail}
+            keyboardType='email-address'
+            autoCapitalize='none'
+            autoComplete='email'
+            textContentType='emailAddress'
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder='Password'
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            textContentType={isLogin ? 'password' : 'newPassword'}
+          />
+
+          {!isLogin && (
+            <TextInput
+              style={styles.input}
+              placeholder='Display Name (optional)'
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoComplete='name'
+              textContentType='name'
+            />
+          )}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => setIsLogin(!isLogin)}
+          >
+            <Text style={styles.linkText}>
+              {isLogin
+                ? "Don't have an account? Sign up"
+                : 'Already have an account? Sign in'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+    paddingBottom: 40, // Extra padding for keyboard
+  },
+  titleContainer: {
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#2196F3',
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#666',
+  },
+  form: {
+    gap: 16,
+    marginTop: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 16,
+    borderRadius: 8,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  linkButton: {
+    alignItems: 'center',
+    padding: 16,
+  },
+  linkText: {
+    color: '#2196F3',
+    fontSize: 16,
+  },
+});
