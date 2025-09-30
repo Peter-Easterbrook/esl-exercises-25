@@ -146,7 +146,11 @@ export default function AddExerciseScreen() {
           return false;
         }
 
-        if (!q.correctAnswer?.trim()) {
+        const correctAnswer = q.correctAnswer;
+        if (
+          !correctAnswer ||
+          (typeof correctAnswer === 'string' && !correctAnswer.trim())
+        ) {
           Alert.alert(
             'Validation Error',
             `Please select the correct answer for question ${i + 1}.`

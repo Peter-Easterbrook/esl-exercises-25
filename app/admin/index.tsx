@@ -27,7 +27,21 @@ export default function AdminPanel() {
     return null;
   }
 
-  const adminActions = [
+  type AdminActionIcon =
+    | 'plus.circle'
+    | 'pencil.circle'
+    | 'folder.circle'
+    | 'person.2.circle'
+    | 'chart.pie'
+    | 'gear';
+
+  const adminActions: Array<{
+    icon: AdminActionIcon;
+    title: string;
+    subtitle: string;
+    color: string;
+    onPress: () => void;
+  }> = [
     {
       icon: 'plus.circle',
       title: 'Add New Exercise',
@@ -47,7 +61,11 @@ export default function AdminPanel() {
       title: 'Manage Categories',
       subtitle: 'Add, edit or organize categories',
       color: '#FF9800',
-      onPress: () => router.push('/admin/manage-categories'),
+      onPress: () =>
+        Alert.alert(
+          'Coming Soon',
+          'Category management will be available in a future update.'
+        ),
     },
     {
       icon: 'person.2.circle',

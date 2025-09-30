@@ -73,7 +73,21 @@ Your UID: ${user?.uid}`,
     );
   };
 
-  const menuItems = [
+  type MenuItemIcon =
+    | 'person.circle'
+    | 'wrench'
+    | 'bell'
+    | 'chart.bar'
+    | 'questionmark.circle'
+    | 'info.circle'
+    | 'gear';
+
+  const menuItems: Array<{
+    icon: MenuItemIcon;
+    title: string;
+    subtitle: string;
+    onPress: () => void;
+  }> = [
     {
       icon: 'person.circle',
       title: 'Account Settings',
@@ -135,7 +149,7 @@ Your UID: ${user?.uid}`,
   // Add admin panel item if user is admin
   if (appUser?.isAdmin) {
     menuItems.unshift({
-      icon: 'gear',
+      icon: 'gear' as MenuItemIcon,
       title: 'Admin Panel',
       subtitle: 'Manage exercises and content',
       onPress: handleAdminPanel,
