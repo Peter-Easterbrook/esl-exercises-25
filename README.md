@@ -1,50 +1,79 @@
-# Welcome to your Expo app 👋
+# ESL Exercises 25 �
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An interactive English as a Second Language (ESL) learning app built with Expo and React Native.
 
-## Get started
+## Features
 
-1. Install dependencies
+- 📝 **Multiple Exercise Types**: Multiple choice, fill-in-the-blanks, true/false, matching, and essay questions
+- 📚 **Categorized Learning**: Exercises organized by grammar topics, vocabulary, reading comprehension, and more
+- 👥 **User Authentication**: Secure Firebase authentication system
+- 📊 **Progress Tracking**: Track your learning progress across different categories
+- 🔧 **Admin Panel**: Admin users can create, manage, and organize exercises
+- 🎯 **Difficulty Levels**: Beginner, intermediate, and advanced exercises
+- 📱 **Cross-Platform**: Works on iOS, Android, and web
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI (`npm install -g @expo/cli`)
+- Firebase project setup
+
+### Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/Peter-Easterbrook/esl-exercises-25.git
+   cd esl-exercises-25
+   ```
+
+2. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Configure Firebase
 
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
+   - Enable Authentication and Firestore
+   - Update `config/firebase.ts` with your Firebase configuration
+
+4. Start the development server
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Project Structure
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+```
+app/
+├── (tabs)/          # Main tab navigation screens
+├── admin/           # Admin panel screens
+├── auth/            # Authentication screens
+└── exercise/        # Exercise detail screens
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+components/          # Reusable UI components
+contexts/           # React contexts (Auth, etc.)
+services/           # Firebase and other services
+types/              # TypeScript type definitions
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Contributing
 
-## Learn more
+This is an educational project. Feel free to submit issues and enhancement requests!
 
-To learn more about developing your project with Expo, look at the following resources:
+## Technology Stack
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **Framework**: Expo SDK 54
+- **Language**: TypeScript
+- **Navigation**: Expo Router
+- **Backend**: Firebase (Auth + Firestore)
+- **UI**: React Native with custom components
 
-## Join the community
+## License
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is for educational purposes.

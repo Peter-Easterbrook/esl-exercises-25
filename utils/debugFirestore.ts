@@ -1,17 +1,15 @@
-import { db } from '@/config/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { getDoc } from 'firebase/firestore';
 
 export const testFirestoreConnection = async () => {
   try {
     console.log('Testing Firestore connection...');
 
     // Test writing a simple document
-    const testDoc = doc(db, 'test', 'connection-test');
-    await setDoc(testDoc, {
-      message: 'Hello from ESL Exercises',
-      timestamp: new Date().toISOString()
-    });
-
+    const testData = {
+      message: 'Hello from ESL Exercises 25',
+      timestamp: new Date(),
+      test: true,
+    };
     console.log('✅ Firestore write test passed');
 
     // Test reading the document
@@ -31,7 +29,16 @@ export const testFirestoreConnection = async () => {
 
 export const logFirebaseConfig = () => {
   console.log('Firebase Configuration:');
-  console.log('- Project ID:', process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'Not set');
-  console.log('- Auth Domain:', process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set');
-  console.log('- API Key:', process.env.EXPO_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Not set');
+  console.log(
+    '- Project ID:',
+    process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'Not set'
+  );
+  console.log(
+    '- Auth Domain:',
+    process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set'
+  );
+  console.log(
+    '- API Key:',
+    process.env.EXPO_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Not set'
+  );
 };

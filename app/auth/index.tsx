@@ -90,7 +90,7 @@ export default function AuthScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ESL Exercises</Text>
+          <Text style={styles.title}>ESL Exercises 25</Text>
           <Text style={styles.subtitle}>
             {isLogin ? 'Sign in to your account' : 'Create a new account'}
           </Text>

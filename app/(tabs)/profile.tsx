@@ -131,7 +131,7 @@ Your UID: ${user?.uid}`,
       onPress: () =>
         Alert.alert(
           'Help & Support',
-          'For help, please contact support@eslexercises.com'
+          'For help, please contact support@eslexercises25.com'
         ),
     },
     {
@@ -140,7 +140,7 @@ Your UID: ${user?.uid}`,
       subtitle: 'App version and information',
       onPress: () =>
         Alert.alert(
-          'ESL Exercises',
+          'ESL Exercises 25',
           'Version 1.0.0\n\nBuilt to help non-native English speakers improve their language skills.'
         ),
     },

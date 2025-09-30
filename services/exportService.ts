@@ -1,6 +1,6 @@
+import { Exercise, UserProgress } from '@/types';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Exercise, UserProgress } from '@/types';
 
 export const exportExerciseResults = async (
   exercise: Exercise,
@@ -12,7 +12,10 @@ export const exportExerciseResults = async (
     const report = generateResultsReport(exercise, answers, score);
 
     // Create a file
-    const fileName = `${exercise.title.replace(/[^a-zA-Z0-9]/g, '_')}_results.txt`;
+    const fileName = `${exercise.title.replace(
+      /[^a-zA-Z0-9]/g,
+      '_'
+    )}_results.txt`;
     const fileUri = FileSystem.documentDirectory + fileName;
 
     await FileSystem.writeAsStringAsync(fileUri, report);
@@ -60,7 +63,7 @@ const generateResultsReport = (
   const date = new Date().toLocaleDateString();
   const time = new Date().toLocaleTimeString();
 
-  let report = `ESL EXERCISES - EXERCISE RESULTS\n`;
+  let report = `ESL EXERCISES 25 - EXERCISE RESULTS\n`;
   report += `=====================================\n\n`;
   report += `Exercise: ${exercise.title}\n`;
   report += `Description: ${exercise.description}\n`;
@@ -101,8 +104,8 @@ const generateResultsReport = (
 
   report += `SUMMARY:\n`;
   report += `========\n`;
-  const correctCount = exercise.content.questions.filter(q =>
-    answers[q.id] === q.correctAnswer
+  const correctCount = exercise.content.questions.filter(
+    (q) => answers[q.id] === q.correctAnswer
   ).length;
   const totalQuestions = exercise.content.questions.length;
 
@@ -126,16 +129,20 @@ const generateProgressReport = (
 ): string => {
   const date = new Date().toLocaleDateString();
 
-  let report = `ESL EXERCISES - PROGRESS REPORT\n`;
+  let report = `ESL EXERCISES 25 - PROGRESS REPORT\n`;
   report += `===============================\n\n`;
   report += `Student: ${userName}\n`;
   report += `Report Generated: ${date}\n\n`;
 
-  const completedExercises = userProgress.filter(p => p.completed);
+  const completedExercises = userProgress.filter((p) => p.completed);
   const totalAttempted = userProgress.length;
-  const averageScore = completedExercises.length > 0
-    ? Math.round(completedExercises.reduce((sum, p) => sum + (p.score || 0), 0) / completedExercises.length)
-    : 0;
+  const averageScore =
+    completedExercises.length > 0
+      ? Math.round(
+          completedExercises.reduce((sum, p) => sum + (p.score || 0), 0) /
+            completedExercises.length
+        )
+      : 0;
 
   report += `OVERVIEW:\n`;
   report += `=========\n`;

@@ -92,7 +92,7 @@ export default function CategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type='title'>ESL Exercises</ThemedText>
+        <ThemedText type='title'>ESL Exercises 25</ThemedText>
         <ThemedText type='subtitle'>
           Choose a category to start learning
         </ThemedText>
