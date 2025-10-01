@@ -213,7 +213,7 @@ export default function AddExerciseScreen() {
         },
         {
           text: 'Done',
-          onPress: () => router.back(),
+          onPress: () => router.push('/admin'),
         },
       ]);
     } catch (error) {
@@ -571,7 +571,6 @@ const styles = StyleSheet.create({
   },
   pickerText: {
     fontSize: 14,
-    textTransform: 'capitalize',
   },
   selectedText: {
     color: '#2196F3',

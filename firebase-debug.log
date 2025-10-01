@@ -1,0 +1,25 @@
+[debug] [2025-10-01T12:06:34.757Z] ----------------------------------------------------------------------
+[debug] [2025-10-01T12:06:34.767Z] Command:       C:\Users\peter\AppData\Roaming\npm\node_modules\node\bin\node.exe C:\Users\peter\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init firestore
+[debug] [2025-10-01T12:06:34.767Z] CLI Version:   14.17.0
+[debug] [2025-10-01T12:06:34.767Z] Platform:      win32
+[debug] [2025-10-01T12:06:34.767Z] Node Version:  v21.6.1
+[debug] [2025-10-01T12:06:34.767Z] Time:          Wed Oct 01 2025 14:06:34 GMT+0200 (Central European Summer Time)
+[debug] [2025-10-01T12:06:34.767Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-01T12:06:34.776Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-01T12:06:34.778Z] > authorizing via signed-in user (peter.easterbrook@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  c:\Users\GitHub\esl-exercises-25
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
