@@ -1,3 +1,4 @@
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -19,6 +20,7 @@ export default function AuthScreen() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
 
@@ -108,15 +110,27 @@ export default function AuthScreen() {
             textContentType='emailAddress'
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder='Password'
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoComplete={isLogin ? 'current-password' : 'new-password'}
-            textContentType={isLogin ? 'password' : 'newPassword'}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder='Password'
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoComplete={isLogin ? 'current-password' : 'new-password'}
+              textContentType={isLogin ? 'password' : 'newPassword'}
+            />
+            <TouchableOpacity
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <IconSymbol
+                name={showPassword ? 'eye' : 'eye.slash'}
+                size={20}
+                color='#666'
+              />
+            </TouchableOpacity>
+          </View>
 
           {!isLogin && (
             <TextInput
@@ -192,6 +206,26 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     backgroundColor: '#fff',
+  },
+  passwordContainer: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  passwordInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 16,
+    paddingRight: 50,
+    borderRadius: 8,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 12,
+    padding: 8,
   },
   button: {
     backgroundColor: '#2196F3',

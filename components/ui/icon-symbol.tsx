@@ -70,6 +70,8 @@ const MAPPING = {
   'arrow.clockwise': 'refresh',
   'chart.pie': 'pie-chart',
   'folder.circle': 'folder',
+  'eye': 'visibility',
+  'eye.slash': 'visibility-off',
 } as IconMapping;
 
 /**

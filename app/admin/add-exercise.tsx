@@ -1,11 +1,13 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Exercise, Question } from '@/types';
+import { Exercise, Question, Category } from '@/types';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -37,14 +39,22 @@ export default function AddExerciseScreen() {
     },
   ]);
 
-  const categories = [
-    'Tenses',
-    'Grammar',
-    'Vocabulary',
-    'Reading Comprehension',
-    'Find the Mistake',
-    'Listening Skills',
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      const { getCategories } = await import('@/services/firebaseService');
+      const categoriesData = await getCategories();
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      Alert.alert('Error', 'Failed to load categories');
+    }
+  };
 
   const difficulties = ['beginner', 'intermediate', 'advanced'];
   const exerciseTypes = [
@@ -223,22 +233,32 @@ export default function AddExerciseScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
+      <ThemedView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/admin')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          </TouchableOpacity>
+
+          <ThemedText type='title' style={styles.title}>
+            Add New Exercise
+          </ThemedText>
+        </View>
+
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps='handled'
         >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
-          <ThemedText style={styles.backText}>Back</ThemedText>
-        </TouchableOpacity>
-
-        <ThemedText type='title' style={styles.title}>
-          Add New Exercise
-        </ThemedText>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Basic Information */}
         <View style={styles.section}>
           <ThemedText type='subtitle' style={styles.sectionTitle}>
@@ -289,24 +309,24 @@ export default function AddExerciseScreen() {
               <View style={styles.pickerContainer}>
                 {categories.map((category) => (
                   <TouchableOpacity
-                    key={category}
+                    key={category.id}
                     style={[
                       styles.pickerOption,
-                      exerciseData.category === category &&
+                      exerciseData.category === category.id &&
                         styles.selectedOption,
                     ]}
                     onPress={() =>
-                      setExerciseData((prev) => ({ ...prev, category }))
+                      setExerciseData((prev) => ({ ...prev, category: category.id }))
                     }
                   >
                     <ThemedText
                       style={[
                         styles.pickerText,
-                        exerciseData.category === category &&
+                        exerciseData.category === category.id &&
                           styles.selectedText,
                       ]}
                     >
-                      {category}
+                      {category.name}
                     </ThemedText>
                   </TouchableOpacity>
                 ))}
@@ -469,15 +489,16 @@ export default function AddExerciseScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSaveExercise}
-        >
-          <ThemedText style={styles.saveButtonText}>Save Exercise</ThemedText>
-        </TouchableOpacity>
-      </View>
-    </ThemedView>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSaveExercise}
+          >
+            <ThemedText style={styles.saveButtonText}>Save Exercise</ThemedText>
+          </TouchableOpacity>
+        </View>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -493,6 +514,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  scrollContent: {
+    paddingBottom: 100,
   },
   backButton: {
     flexDirection: 'row',

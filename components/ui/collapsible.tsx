@@ -7,27 +7,42 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
+type CollapsibleProps = PropsWithChildren & (
+  | { title: string; collapsed?: never }
+  | { collapsed: boolean; title?: never }
+);
+
+export function Collapsible({ children, title, collapsed }: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useColorScheme() ?? 'light';
 
+  // If collapsed prop is provided, use it (controlled mode)
+  // Otherwise use internal state (uncontrolled mode)
+  const isCollapsed = collapsed !== undefined ? collapsed : !isOpen;
+
   return (
     <ThemedView>
-      <TouchableOpacity
-        style={styles.heading}
-        onPress={() => setIsOpen((value) => !value)}
-        activeOpacity={0.8}>
-        <IconSymbol
-          name="chevron.right"
-          size={18}
-          weight="medium"
-          color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
-          style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
-        />
+      {title && (
+        <TouchableOpacity
+          style={styles.heading}
+          onPress={() => setIsOpen((value) => !value)}
+          activeOpacity={0.8}>
+          <IconSymbol
+            name="chevron.right"
+            size={18}
+            weight="medium"
+            color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+            style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
+          />
 
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
-      </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
+          <ThemedText type="defaultSemiBold">{title}</ThemedText>
+        </TouchableOpacity>
+      )}
+      {!isCollapsed && (
+        <ThemedView style={[styles.content, !title && styles.noTitleContent]}>
+          {children}
+        </ThemedView>
+      )}
     </ThemedView>
   );
 }
@@ -41,5 +56,8 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 6,
     marginLeft: 24,
+  },
+  noTitleContent: {
+    marginLeft: 0,
   },
 });

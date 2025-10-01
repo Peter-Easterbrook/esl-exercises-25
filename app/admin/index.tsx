@@ -107,10 +107,10 @@ export default function AdminPanel() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.push('/(tabs)/profile')}
         >
           <IconSymbol name='chevron.left' size={24} color='#2196F3' />
-          <ThemedText style={styles.backText}>Back</ThemedText>
+          <ThemedText style={styles.backText}>Back to Profile</ThemedText>
         </TouchableOpacity>
 
         <ThemedText type='title' style={styles.title}>

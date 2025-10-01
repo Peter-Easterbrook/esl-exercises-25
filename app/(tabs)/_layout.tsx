@@ -1,14 +1,13 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuth } from '@/contexts/AuthContext';
-import { Redirect } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAuth } from '@/contexts/AuthContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Redirect } from 'expo-router';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,16 +17,25 @@ export default function TabLayout() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <ThemedText style={{ marginTop: 16, color: '#666' }}>Loading...</ThemedText>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fff',
+        }}
+      >
+        <ActivityIndicator size='large' color='#2196F3' />
+        <ThemedText style={{ marginTop: 16, color: '#666' }}>
+          Loading...
+        </ThemedText>
       </View>
     );
   }
 
   if (!user) {
     console.log('No user found, redirecting to auth...');
-    return <Redirect href="/auth" />;
+    return <Redirect href='/auth' />;
   }
 
   console.log('User authenticated, showing tabs');
@@ -35,29 +43,43 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#008eff',
+        tabBarInactiveTintColor: '#adc6db',
+
+        tabBarStyle: {
+          backgroundColor: '#ffffff',
+          borderTopColor: '#e0e0e0',
+          borderTopWidth: 1,
+        },
         headerShown: false,
         tabBarButton: HapticTab,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name='index'
         options={{
           title: 'Categories',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='list.bullet' color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="progress"
+        name='progress'
         options={{
           title: 'Progress',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='chart.bar.fill' color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name='profile'
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name='person.fill' color={color} />
+          ),
         }}
       />
     </Tabs>

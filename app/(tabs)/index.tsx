@@ -1,17 +1,21 @@
 import { CategoryCard } from '@/components/CategoryCard';
+import ThemedLoader from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Category } from '@/types';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CategoriesScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadCategories();
+    }, [])
+  );
 
   const loadCategories = async () => {
     try {
@@ -84,7 +88,7 @@ export default function CategoriesScreen() {
   if (loading) {
     return (
       <ThemedView style={styles.container}>
-        <ThemedText>Loading categories...</ThemedText>
+        <ThemedLoader />
       </ThemedView>
     );
   }

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Collapsible } from '@/components/ui/collapsible';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Collapsible } from '@/components/ui/collapsible';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Category, Exercise } from '@/types';
 import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface CategoryCardProps {
   category: Category;
@@ -24,7 +24,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
             setExercises(category.exercises);
           } else {
             // Fetch exercises from Firebase
-            const { getExercisesByCategory } = await import('@/services/firebaseService');
+            const { getExercisesByCategory } = await import(
+              '@/services/firebaseService'
+            );
             const categoryExercises = await getExercisesByCategory(category.id);
             setExercises(categoryExercises);
           }
@@ -45,15 +47,15 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                     question: 'This is a sample question.',
                     options: ['Option A', 'Option B', 'Option C', 'Option D'],
                     correctAnswer: 'Option A',
-                    explanation: 'This is the correct answer.'
-                  }
-                ]
+                    explanation: 'This is the correct answer.',
+                  },
+                ],
               },
               category: category.id,
               difficulty: 'beginner',
               createdAt: new Date(),
-              updatedAt: new Date()
-            }
+              updatedAt: new Date(),
+            },
           ];
           setExercises(mockExercises);
         }
@@ -75,9 +77,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
-          <IconSymbol name={category.icon} size={24} color="#2196F3" />
+          <IconSymbol name={category.icon as any} size={24} color='#2196F3' />
           <View style={styles.titleContainer}>
-            <ThemedText type="defaultSemiBold" style={styles.title}>
+            <ThemedText type='defaultSemiBold' style={styles.title}>
               {category.name}
             </ThemedText>
             <ThemedText style={styles.description}>
@@ -88,7 +90,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         <IconSymbol
           name={isExpanded ? 'chevron.up' : 'chevron.down'}
           size={20}
-          color="#666"
+          color='#666'
         />
       </TouchableOpacity>
 
@@ -102,14 +104,16 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
               activeOpacity={0.7}
             >
               <View style={styles.exerciseContent}>
-                <ThemedText type="defaultSemiBold" style={styles.exerciseTitle}>
+                <ThemedText type='defaultSemiBold' style={styles.exerciseTitle}>
                   {exercise.title}
                 </ThemedText>
                 <ThemedText style={styles.exerciseDescription}>
                   {exercise.description}
                 </ThemedText>
                 <View style={styles.exerciseFooter}>
-                  <Text style={[styles.difficulty, styles[exercise.difficulty]]}>
+                  <Text
+                    style={[styles.difficulty, styles[exercise.difficulty]]}
+                  >
                     {exercise.difficulty}
                   </Text>
                   <Text style={styles.exerciseType}>
@@ -117,7 +121,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                   </Text>
                 </View>
               </View>
-              <IconSymbol name="chevron.right" size={16} color="#666" />
+              <IconSymbol name='chevron.right' size={16} color='#666' />
             </TouchableOpacity>
           ))}
 

@@ -18,9 +18,11 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="auth" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/index" options={{ headerShown: false }} />
           <Stack.Screen name="exercise/[id]" options={{ presentation: 'modal', title: 'Exercise' }} />
-          <Stack.Screen name="admin" options={{ headerShown: false }} />
+          <Stack.Screen name="admin/index" options={{ headerShown: false }} />
+          <Stack.Screen name="admin/add-exercise" options={{ headerShown: false }} />
+          <Stack.Screen name="admin/manage-exercises" options={{ headerShown: false }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
