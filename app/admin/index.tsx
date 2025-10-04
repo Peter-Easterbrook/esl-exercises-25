@@ -50,6 +50,13 @@ export default function AdminPanel() {
       onPress: () => router.push('/admin/add-exercise'),
     },
     {
+      icon: 'doc.badge.plus',
+      title: 'Upload Files',
+      subtitle: 'Upload PDFs and documents for students',
+      color: '#FF9800',
+      onPress: () => router.push('/admin/upload-files'),
+    },
+    {
       icon: 'pencil.circle',
       title: 'Manage Exercises',
       subtitle: 'Edit or delete existing exercises',

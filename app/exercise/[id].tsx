@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Exercise } from '@/types';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,

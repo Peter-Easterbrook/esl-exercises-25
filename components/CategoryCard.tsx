@@ -2,10 +2,11 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Category, Exercise } from '@/types';
+import { downloadFile, getFilesByCategory } from '@/services/fileService';
+import { Category, DownloadableFile, Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface CategoryCardProps {
   category: Category;
@@ -14,6 +15,9 @@ interface CategoryCardProps {
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [downloadableFiles, setDownloadableFiles] = useState<
+    DownloadableFile[]
+  >([]);
 
   useEffect(() => {
     const loadExercises = async () => {
@@ -65,8 +69,30 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     loadExercises();
   }, [isExpanded, category.id, category.exercises, exercises.length]);
 
+  useEffect(() => {
+    const loadFiles = async () => {
+      if (isExpanded) {
+        try {
+          const files = await getFilesByCategory(category.id);
+          setDownloadableFiles(files);
+        } catch (error) {
+          console.error('Error loading files:', error);
+        }
+      }
+    };
+    loadFiles();
+  }, [isExpanded, category.id]);
+
   const handleExercisePress = (exercise: Exercise) => {
     router.push(`/exercise/${exercise.id}`);
+  };
+
+  const handleDownloadFile = async (file: DownloadableFile) => {
+    try {
+      await downloadFile(file);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to download file');
+    }
   };
 
   return (
@@ -131,6 +157,25 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
             </ThemedText>
           )}
         </View>
+
+        {downloadableFiles.length > 0 && (
+          <View style={styles.filesSection}>
+            <ThemedText style={styles.filesSectionTitle}>
+              Downloadable Files
+            </ThemedText>
+            {downloadableFiles.map((file) => (
+              <TouchableOpacity
+                key={file.id}
+                style={styles.fileItem}
+                onPress={() => handleDownloadFile(file)}
+              >
+                <IconSymbol name='doc.text' size={16} color='#2196F3' />
+                <ThemedText style={styles.fileItemText}>{file.name}</ThemedText>
+                <IconSymbol name='arrow.down.circle' size={16} color='#666' />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </Collapsible>
     </ThemedView>
   );
@@ -234,5 +279,30 @@ const styles = StyleSheet.create({
     color: '#666',
     fontStyle: 'italic',
     padding: 20,
+  },
+  filesSection: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  filesSectionTitle: {
+    fontSize: 16,
+    marginBottom: 12,
+    fontWeight: '600',
+  },
+  fileItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#f1f3f5',
+    marginBottom: 8,
+  },
+  fileItemText: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 14,
   },
 });

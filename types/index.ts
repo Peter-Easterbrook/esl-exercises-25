@@ -1,3 +1,15 @@
+export interface DownloadableFile {
+  id: string;
+  name: string;
+  fileUrl: string;
+  fileType: 'pdf' | 'doc' | 'docx';
+  size: number; // in bytes
+  categoryId: string;
+  exerciseId?: string; // optional - can be linked to specific exercise
+  uploadedAt: Date;
+  uploadedBy: string; // admin user ID
+}
+
 export interface Exercise {
   id: string;
   title: string;
@@ -8,6 +20,7 @@ export interface Exercise {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   createdAt: Date;
   updatedAt: Date;
+  downloadableFiles?: string[]; // array of file IDs
 }
 
 export interface ExerciseContent {
