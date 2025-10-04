@@ -1,17 +1,36 @@
-import { ActivityIndicator, View } from 'react-native';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { ActivityIndicator, StyleSheet, View, type ViewProps } from 'react-native';
 
-const ThemedLoader = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <ActivityIndicator size='large' color='#2196F3' />
-    </View>
-  );
+export type ThemedLoaderProps = ViewProps & {
+  lightColor?: string;
+  darkColor?: string;
+  size?: 'small' | 'large';
 };
 
+export function ThemedLoader({
+  style,
+  lightColor,
+  darkColor,
+  size = 'large',
+  ...otherProps
+}: ThemedLoaderProps) {
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const indicatorColor = useThemeColor({ light: '#2196F3', dark: '#64B5F6' }, 'tint');
+
+  return (
+    <View style={[styles.container, { backgroundColor }, style]} {...otherProps}>
+      <ActivityIndicator size={size} color={indicatorColor} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+// Keep default export for backward compatibility
 export default ThemedLoader;

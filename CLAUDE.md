@@ -50,8 +50,11 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - `components/` - Reusable UI components
   - `CategoryCard.tsx` - Expandable category cards with exercise lists
   - `ExerciseInterface.tsx` - Interactive quiz interface with scoring
+  - `themed-loader.tsx` - Theme-aware loading indicator component
+  - `themed-view.tsx` - Theme-aware View component with light/dark mode support
+  - `themed-text.tsx` - Theme-aware Text component with predefined text styles
   - `ui/` - Core UI components (icons, collapsibles)
-  - Themed components for consistent styling
+  - Themed components for consistent styling across light/dark modes
 
 - `contexts/` - React Context providers
   - `AuthContext.tsx` - Firebase authentication state management
@@ -111,6 +114,8 @@ Before running the app, you must:
 - VSCode configured for auto-fix on save, import organization, and member sorting
 - TypeScript strict mode enabled
 - Firebase operations include error handling and fallback to mock data
+- Themed components use `useThemeColor` hook for consistent light/dark mode support
+- All components follow pattern: named export with TypeScript types, StyleSheet.create for styles
 
 ### Security Considerations
 - User authentication required for all main features

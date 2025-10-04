@@ -1,3 +1,4 @@
+import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -76,11 +77,7 @@ export default function ManageExercisesScreen() {
   );
 
   if (loading) {
-    return (
-      <ThemedView style={styles.container}>
-        <ThemedText>Loading exercises...</ThemedText>
-      </ThemedView>
-    );
+    return <ThemedLoader />;
   }
 
   return (

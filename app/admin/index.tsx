@@ -29,6 +29,7 @@ export default function AdminPanel() {
 
   type AdminActionIcon =
     | 'plus.circle'
+    | 'doc.badge.plus'
     | 'pencil.circle'
     | 'folder.circle'
     | 'person.2.circle'

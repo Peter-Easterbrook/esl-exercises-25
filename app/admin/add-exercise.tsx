@@ -1,9 +1,9 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Exercise, Question, Category } from '@/types';
+import { Category, Exercise, Question } from '@/types';
 import { router } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -233,272 +233,282 @@ export default function AddExerciseScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={0}
-    >
-      <ThemedView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.push('/admin')}
-          >
-            <IconSymbol name='chevron.left' size={24} color='#2196F3' />
-            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
-          </TouchableOpacity>
+    <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push('/admin')}
+        >
+          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+        </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
-            Add New Exercise
-          </ThemedText>
-        </View>
+        <ThemedText type='title' style={styles.title}>
+          Add New Exercise
+        </ThemedText>
+      </View>
 
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
         <ScrollView
           style={styles.content}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps='handled'
         >
-        {/* Basic Information */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Basic Information
-          </ThemedText>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Title</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={exerciseData.title}
-              onChangeText={(text) =>
-                setExerciseData((prev) => ({ ...prev, title: text }))
-              }
-              placeholder='Enter exercise title'
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Description</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={exerciseData.description}
-              onChangeText={(text) =>
-                setExerciseData((prev) => ({ ...prev, description: text }))
-              }
-              placeholder='Brief description of the exercise'
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Instructions</ThemedText>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              value={exerciseData.instructions}
-              onChangeText={(text) =>
-                setExerciseData((prev) => ({ ...prev, instructions: text }))
-              }
-              placeholder='Detailed instructions for students'
-              multiline
-              numberOfLines={4}
-            />
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.halfInput}>
-              <ThemedText style={styles.label}>Category</ThemedText>
-              <View style={styles.pickerContainer}>
-                {categories.map((category) => (
-                  <TouchableOpacity
-                    key={category.id}
-                    style={[
-                      styles.pickerOption,
-                      exerciseData.category === category.id &&
-                        styles.selectedOption,
-                    ]}
-                    onPress={() =>
-                      setExerciseData((prev) => ({ ...prev, category: category.id }))
-                    }
-                  >
-                    <ThemedText
-                      style={[
-                        styles.pickerText,
-                        exerciseData.category === category.id &&
-                          styles.selectedText,
-                      ]}
-                    >
-                      {category.name}
-                    </ThemedText>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.halfInput}>
-              <ThemedText style={styles.label}>Difficulty</ThemedText>
-              <View style={styles.pickerContainer}>
-                {difficulties.map((difficulty) => (
-                  <TouchableOpacity
-                    key={difficulty}
-                    style={[
-                      styles.pickerOption,
-                      exerciseData.difficulty === difficulty &&
-                        styles.selectedOption,
-                    ]}
-                    onPress={() =>
-                      setExerciseData((prev) => ({
-                        ...prev,
-                        difficulty: difficulty as any,
-                      }))
-                    }
-                  >
-                    <ThemedText
-                      style={[
-                        styles.pickerText,
-                        exerciseData.difficulty === difficulty &&
-                          styles.selectedText,
-                      ]}
-                    >
-                      {difficulty}
-                    </ThemedText>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Questions */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
+          {/* Basic Information */}
+          <View style={styles.section}>
             <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Questions
+              Basic Information
             </ThemedText>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.label}>Title</ThemedText>
+              <TextInput
+                style={styles.input}
+                value={exerciseData.title}
+                onChangeText={(text) =>
+                  setExerciseData((prev) => ({ ...prev, title: text }))
+                }
+                placeholder='Enter exercise title'
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.label}>Description</ThemedText>
+              <TextInput
+                style={styles.input}
+                value={exerciseData.description}
+                onChangeText={(text) =>
+                  setExerciseData((prev) => ({ ...prev, description: text }))
+                }
+                placeholder='Brief description of the exercise'
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.label}>Instructions</ThemedText>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                value={exerciseData.instructions}
+                onChangeText={(text) =>
+                  setExerciseData((prev) => ({ ...prev, instructions: text }))
+                }
+                placeholder='Detailed instructions for students'
+                multiline
+                numberOfLines={4}
+              />
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.halfInput}>
+                <ThemedText style={styles.label}>Category</ThemedText>
+                <View style={styles.pickerContainer}>
+                  {categories.map((category) => (
+                    <TouchableOpacity
+                      key={category.id}
+                      style={[
+                        styles.pickerOption,
+                        exerciseData.category === category.id &&
+                          styles.selectedOption,
+                      ]}
+                      onPress={() =>
+                        setExerciseData((prev) => ({
+                          ...prev,
+                          category: category.id,
+                        }))
+                      }
+                    >
+                      <ThemedText
+                        style={[
+                          styles.pickerText,
+                          exerciseData.category === category.id &&
+                            styles.selectedText,
+                        ]}
+                      >
+                        {category.name}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.halfInput}>
+                <ThemedText style={styles.label}>Difficulty</ThemedText>
+                <View style={styles.pickerContainer}>
+                  {difficulties.map((difficulty) => (
+                    <TouchableOpacity
+                      key={difficulty}
+                      style={[
+                        styles.pickerOption,
+                        exerciseData.difficulty === difficulty &&
+                          styles.selectedOption,
+                      ]}
+                      onPress={() =>
+                        setExerciseData((prev) => ({
+                          ...prev,
+                          difficulty: difficulty as any,
+                        }))
+                      }
+                    >
+                      <ThemedText
+                        style={[
+                          styles.pickerText,
+                          exerciseData.difficulty === difficulty &&
+                            styles.selectedText,
+                        ]}
+                      >
+                        {difficulty}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Questions */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Questions
+              </ThemedText>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={handleAddQuestion}
+              >
+                <IconSymbol name='plus' size={16} color='#fff' />
+                <ThemedText style={styles.addButtonText}>
+                  Add Question
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
+
+            {questions.map((question, qIndex) => (
+              <View key={qIndex} style={styles.questionCard}>
+                <View style={styles.questionHeader}>
+                  <ThemedText style={styles.questionNumber}>
+                    Question {qIndex + 1}
+                  </ThemedText>
+                  {questions.length > 1 && (
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() => handleRemoveQuestion(qIndex)}
+                    >
+                      <IconSymbol name='trash' size={16} color='#F44336' />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <ThemedText style={styles.label}>Question</ThemedText>
+                  <TextInput
+                    style={styles.input}
+                    value={question.question}
+                    onChangeText={(text) =>
+                      handleQuestionChange(qIndex, 'question', text)
+                    }
+                    placeholder='Enter the question'
+                  />
+                </View>
+
+                {exerciseData.type === 'multiple-choice' &&
+                  question.options && (
+                    <>
+                      <ThemedText style={styles.label}>Options</ThemedText>
+                      {question.options.map((option, oIndex) => (
+                        <View key={oIndex} style={styles.optionRow}>
+                          <ThemedText style={styles.optionLabel}>
+                            {String.fromCharCode(65 + oIndex)}.
+                          </ThemedText>
+                          <TextInput
+                            style={[styles.input, styles.optionInput]}
+                            value={option}
+                            onChangeText={(text) =>
+                              handleOptionChange(qIndex, oIndex, text)
+                            }
+                            placeholder={`Option ${String.fromCharCode(
+                              65 + oIndex
+                            )}`}
+                          />
+                        </View>
+                      ))}
+
+                      <View style={styles.inputGroup}>
+                        <ThemedText style={styles.label}>
+                          Correct Answer
+                        </ThemedText>
+                        <View style={styles.pickerContainer}>
+                          {question.options.map((option, oIndex) => (
+                            <TouchableOpacity
+                              key={oIndex}
+                              style={[
+                                styles.pickerOption,
+                                question.correctAnswer === option &&
+                                  styles.selectedOption,
+                              ]}
+                              onPress={() =>
+                                handleQuestionChange(
+                                  qIndex,
+                                  'correctAnswer',
+                                  option
+                                )
+                              }
+                              disabled={!option.trim()}
+                            >
+                              <ThemedText
+                                style={[
+                                  styles.pickerText,
+                                  question.correctAnswer === option &&
+                                    styles.selectedText,
+                                  !option.trim() && styles.disabledText,
+                                ]}
+                              >
+                                {String.fromCharCode(65 + oIndex)}:{' '}
+                                {option || 'Empty'}
+                              </ThemedText>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+                    </>
+                  )}
+
+                <View style={styles.inputGroup}>
+                  <ThemedText style={styles.label}>
+                    Explanation (Optional)
+                  </ThemedText>
+                  <TextInput
+                    style={[styles.input, styles.textArea]}
+                    value={question.explanation}
+                    onChangeText={(text) =>
+                      handleQuestionChange(qIndex, 'explanation', text)
+                    }
+                    placeholder='Explain why this is the correct answer'
+                    multiline
+                    numberOfLines={2}
+                  />
+                </View>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.footer}>
             <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddQuestion}
+              style={styles.saveButton}
+              onPress={handleSaveExercise}
             >
-              <IconSymbol name='plus' size={16} color='#fff' />
-              <ThemedText style={styles.addButtonText}>Add Question</ThemedText>
+              <ThemedText style={styles.saveButtonText}>
+                Save Exercise
+              </ThemedText>
             </TouchableOpacity>
           </View>
-
-          {questions.map((question, qIndex) => (
-            <View key={qIndex} style={styles.questionCard}>
-              <View style={styles.questionHeader}>
-                <ThemedText style={styles.questionNumber}>
-                  Question {qIndex + 1}
-                </ThemedText>
-                {questions.length > 1 && (
-                  <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={() => handleRemoveQuestion(qIndex)}
-                  >
-                    <IconSymbol name='trash' size={16} color='#F44336' />
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>Question</ThemedText>
-                <TextInput
-                  style={styles.input}
-                  value={question.question}
-                  onChangeText={(text) =>
-                    handleQuestionChange(qIndex, 'question', text)
-                  }
-                  placeholder='Enter the question'
-                />
-              </View>
-
-              {exerciseData.type === 'multiple-choice' && question.options && (
-                <>
-                  <ThemedText style={styles.label}>Options</ThemedText>
-                  {question.options.map((option, oIndex) => (
-                    <View key={oIndex} style={styles.optionRow}>
-                      <ThemedText style={styles.optionLabel}>
-                        {String.fromCharCode(65 + oIndex)}.
-                      </ThemedText>
-                      <TextInput
-                        style={[styles.input, styles.optionInput]}
-                        value={option}
-                        onChangeText={(text) =>
-                          handleOptionChange(qIndex, oIndex, text)
-                        }
-                        placeholder={`Option ${String.fromCharCode(
-                          65 + oIndex
-                        )}`}
-                      />
-                    </View>
-                  ))}
-
-                  <View style={styles.inputGroup}>
-                    <ThemedText style={styles.label}>Correct Answer</ThemedText>
-                    <View style={styles.pickerContainer}>
-                      {question.options.map((option, oIndex) => (
-                        <TouchableOpacity
-                          key={oIndex}
-                          style={[
-                            styles.pickerOption,
-                            question.correctAnswer === option &&
-                              styles.selectedOption,
-                          ]}
-                          onPress={() =>
-                            handleQuestionChange(
-                              qIndex,
-                              'correctAnswer',
-                              option
-                            )
-                          }
-                          disabled={!option.trim()}
-                        >
-                          <ThemedText
-                            style={[
-                              styles.pickerText,
-                              question.correctAnswer === option &&
-                                styles.selectedText,
-                              !option.trim() && styles.disabledText,
-                            ]}
-                          >
-                            {String.fromCharCode(65 + oIndex)}:{' '}
-                            {option || 'Empty'}
-                          </ThemedText>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-                </>
-              )}
-
-              <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>
-                  Explanation (Optional)
-                </ThemedText>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  value={question.explanation}
-                  onChangeText={(text) =>
-                    handleQuestionChange(qIndex, 'explanation', text)
-                  }
-                  placeholder='Explain why this is the correct answer'
-                  multiline
-                  numberOfLines={2}
-                />
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={handleSaveExercise}
-          >
-            <ThemedText style={styles.saveButtonText}>Save Exercise</ThemedText>
-          </TouchableOpacity>
-        </View>
-      </ThemedView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
 
@@ -506,6 +516,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
+  keyboardAvoid: {
+    flex: 1,
   },
   header: {
     paddingTop: 60,
@@ -516,7 +529,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   scrollContent: {
-    paddingBottom: 100,
+    flexGrow: 1,
   },
   backButton: {
     flexDirection: 'row',
@@ -535,13 +548,13 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   section: {
     backgroundColor: '#fff',
     marginVertical: 12,
     borderRadius: 12,
-    padding: 20,
+    padding: 10,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -655,9 +668,9 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    paddingBottom: 40,
+    marginTop: 16,
     backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
   },
   saveButton: {
     backgroundColor: '#2196F3',

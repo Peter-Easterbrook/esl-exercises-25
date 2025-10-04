@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,21 +16,7 @@ export default function TabLayout() {
   console.log('TabLayout - user:', !!user, 'loading:', loading);
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#fff',
-        }}
-      >
-        <ActivityIndicator size='large' color='#2196F3' />
-        <ThemedText style={{ marginTop: 16, color: '#666' }}>
-          Loading...
-        </ThemedText>
-      </View>
-    );
+    return <ThemedLoader />;
   }
 
   if (!user) {
