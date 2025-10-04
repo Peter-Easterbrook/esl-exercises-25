@@ -63,7 +63,7 @@ const generateResultsReport = (
   const date = new Date().toLocaleDateString();
   const time = new Date().toLocaleTimeString();
 
-  let report = `ESL EXERCISES 25 - EXERCISE RESULTS\n`;
+  let report = `ESL EXERCISES - EXERCISE RESULTS\n`;
   report += `=====================================\n\n`;
   report += `Exercise: ${exercise.title}\n`;
   report += `Description: ${exercise.description}\n`;
@@ -129,7 +129,7 @@ const generateProgressReport = (
 ): string => {
   const date = new Date().toLocaleDateString();
 
-  let report = `ESL EXERCISES 25 - PROGRESS REPORT\n`;
+  let report = `ESL EXERCISES - PROGRESS REPORT\n`;
   report += `===============================\n\n`;
   report += `Student: ${userName}\n`;
   report += `Report Generated: ${date}\n\n`;

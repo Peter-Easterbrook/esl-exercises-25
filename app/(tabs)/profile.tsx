@@ -3,6 +3,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { checkUserDocument, logCurrentUserInfo } from '@/utils/adminSetup';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
@@ -140,7 +141,7 @@ Your UID: ${user?.uid}`,
       subtitle: 'App version and information',
       onPress: () =>
         Alert.alert(
-          'ESL Exercises 25',
+          'ESL Exercises',
           'Version 1.0.0\n\nBuilt to help non-native English speakers improve their language skills.'
         ),
     },
@@ -159,7 +160,14 @@ Your UID: ${user?.uid}`,
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type='title'>Profile</ThemedText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <MaterialCommunityIcons
+            name='school-outline'
+            size={40}
+            color='black'
+          />
+          <ThemedText type='title'>Profile</ThemedText>
+        </View>
       </View>
 
       <ScrollView

@@ -6,7 +6,7 @@ export const testFirestoreConnection = async () => {
 
     // Test writing a simple document
     const testData = {
-      message: 'Hello from ESL Exercises 25',
+      message: 'Hello from ESL Exercises',
       timestamp: new Date(),
       test: true,
     };

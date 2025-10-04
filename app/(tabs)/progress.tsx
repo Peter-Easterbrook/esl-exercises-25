@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -28,7 +29,15 @@ export default function ProgressScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type='title'>Your Progress</ThemedText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <MaterialCommunityIcons
+            name='school-outline'
+            size={40}
+            color='black'
+          />
+          <ThemedText type='title'>Your Progress</ThemedText>
+        </View>
+        <View style={{ height: 10 }} />
         <ThemedText style={styles.subtitle}>
           Keep up the great work, {appUser?.displayName || 'Student'}!
         </ThemedText>

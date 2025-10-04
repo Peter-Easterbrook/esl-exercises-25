@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -92,7 +93,15 @@ export default function AuthScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ESL Exercises</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <MaterialCommunityIcons
+              name='school-outline'
+              size={40}
+              color='black'
+            />
+
+            <Text style={styles.title}>ESL Exercises</Text>
+          </View>
           <Text style={styles.subtitle}>
             {isLogin ? 'Sign in to your account' : 'Create a new account'}
           </Text>

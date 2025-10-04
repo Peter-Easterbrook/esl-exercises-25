@@ -3,6 +3,7 @@ import ThemedLoader from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Category } from '@/types';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -96,7 +97,15 @@ export default function CategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type='title'>ESL Exercises 25</ThemedText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <MaterialCommunityIcons
+            name='school-outline'
+            size={40}
+            color='black'
+          />
+          <ThemedText type='title'>ESL Exercises</ThemedText>
+        </View>
+        <View style={{ height: 10 }} />
         <ThemedText type='subtitle'>
           Choose a category to start learning
         </ThemedText>
