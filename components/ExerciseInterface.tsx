@@ -111,7 +111,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       console.log('Files found:', files.length, files);
 
       if (files.length === 0) {
-        Alert.alert('No Files', 'No downloadable files are available for this exercise.');
+        Alert.alert(
+          'No Files',
+          'No downloadable files are available for this exercise.'
+        );
         return;
       }
 
@@ -133,17 +136,24 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           {
             text: 'Download',
             onPress: async () => {
-              console.log('Downloading first file from multiple:', files[0].name);
+              console.log(
+                'Downloading first file from multiple:',
+                files[0].name
+              );
               await downloadFile(files[0]);
               Alert.alert('Success', 'File downloaded successfully!');
-            }
-          }
+            },
+          },
         ]
       );
     } catch (error) {
       console.error('Error in handleDownloadFile:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      Alert.alert('Error', `Failed to download file: ${errorMessage}\n\nPlease check the console for details.`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert(
+        'Error',
+        `Failed to download file: ${errorMessage}\n\nPlease check the console for details.`
+      );
     }
   };
 
@@ -412,7 +422,8 @@ const styles = StyleSheet.create({
   questionSection: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingVertical: 24,
+    paddingVertical: 14,
+    paddingBottom: 40,
   },
   question: {
     fontSize: 20,
@@ -421,6 +432,7 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     gap: 12,
+    paddingBottom: 20,
   },
   optionButton: {
     borderWidth: 2,

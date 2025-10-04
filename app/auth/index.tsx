@@ -1,10 +1,10 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -93,11 +93,10 @@ export default function AuthScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.titleContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <MaterialCommunityIcons
-              name='school-outline'
-              size={40}
-              color='black'
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+            <Image
+              source={require('@/assets/images/favicon.png')}
+              style={{ width: 40, height: 40 }}
             />
 
             <Text style={styles.title}>ESL Exercises</Text>

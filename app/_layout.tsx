@@ -25,7 +25,12 @@ export default function RootLayout() {
           <Stack.Screen name='auth/index' options={{ headerShown: false }} />
           <Stack.Screen
             name='exercise/[id]'
-            options={{ presentation: 'modal', title: 'Exercise' }}
+            options={{
+              presentation: 'modal',
+              title: 'Exercise',
+              headerStyle: { backgroundColor: '#f8f9fa' },
+              headerTintColor: '#333',
+            }}
           />
           <Stack.Screen name='admin/index' options={{ headerShown: false }} />
           <Stack.Screen

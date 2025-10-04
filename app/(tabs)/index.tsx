@@ -3,10 +3,9 @@ import ThemedLoader from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Category } from '@/types';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CategoriesScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -38,10 +37,10 @@ export default function CategoriesScreen() {
       // Fallback to mock data if Firebase fails
       const mockCategories: Category[] = [
         {
-          id: '1',
-          name: 'Tenses',
-          description: 'Learn and practice different English tenses',
-          icon: 'clock',
+          id: '5',
+          name: 'Find the Mistake',
+          description: 'Identify and correct common English errors',
+          icon: 'exclamationmark.circle',
           exercises: [],
         },
         {
@@ -52,10 +51,10 @@ export default function CategoriesScreen() {
           exercises: [],
         },
         {
-          id: '3',
-          name: 'Vocabulary',
-          description: 'Expand your English vocabulary',
-          icon: 'text.bubble',
+          id: '6',
+          name: 'Listening Skills',
+          description: 'Enhance your English listening abilities',
+          icon: 'ear',
           exercises: [],
         },
         {
@@ -66,17 +65,17 @@ export default function CategoriesScreen() {
           exercises: [],
         },
         {
-          id: '5',
-          name: 'Find the Mistake',
-          description: 'Identify and correct common English errors',
-          icon: 'exclamationmark.circle',
+          id: '1',
+          name: 'Tenses',
+          description: 'Learn and practice different English tenses',
+          icon: 'clock',
           exercises: [],
         },
         {
-          id: '6',
-          name: 'Listening Skills',
-          description: 'Enhance your English listening abilities',
-          icon: 'ear',
+          id: '3',
+          name: 'Vocabulary',
+          description: 'Expand your English vocabulary',
+          icon: 'text.bubble',
           exercises: [],
         },
       ];
@@ -97,11 +96,10 @@ export default function CategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <MaterialCommunityIcons
-            name='school-outline'
-            size={40}
-            color='black'
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+          <Image
+            source={require('@/assets/images/favicon.png')}
+            style={{ width: 40, height: 40 }}
           />
           <ThemedText type='title'>ESL Exercises</ThemedText>
         </View>
