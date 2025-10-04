@@ -98,15 +98,52 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     setScore(0);
   };
 
-  const handleDownloadResults = async () => {
+  const handleDownloadFile = async () => {
     try {
-      const { exportExerciseResults } = await import(
-        '@/services/exportService'
+      console.log('handleDownloadFile called for exercise:', exercise.id);
+      const { getFilesByExercise, downloadFile } = await import(
+        '@/services/fileService'
       );
-      await exportExerciseResults(exercise, answers, score);
+
+      // Get files linked to this exercise
+      console.log('Fetching files for exercise:', exercise.id);
+      const files = await getFilesByExercise(exercise.id);
+      console.log('Files found:', files.length, files);
+
+      if (files.length === 0) {
+        Alert.alert('No Files', 'No downloadable files are available for this exercise.');
+        return;
+      }
+
+      // If only one file, download it directly
+      if (files.length === 1) {
+        console.log('Downloading single file:', files[0].name);
+        await downloadFile(files[0]);
+        Alert.alert('Success', 'File downloaded successfully!');
+        return;
+      }
+
+      // If multiple files, show selection dialog
+      const fileNames = files.map((f, i) => `${i + 1}. ${f.name}`).join('\n');
+      Alert.alert(
+        'Select File',
+        `Multiple files available:\n${fileNames}\n\nDownloading the first file...`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Download',
+            onPress: async () => {
+              console.log('Downloading first file from multiple:', files[0].name);
+              await downloadFile(files[0]);
+              Alert.alert('Success', 'File downloaded successfully!');
+            }
+          }
+        ]
+      );
     } catch (error) {
-      console.error('Error downloading results:', error);
-      Alert.alert('Error', 'Failed to download results. Please try again.');
+      console.error('Error in handleDownloadFile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert('Error', `Failed to download file: ${errorMessage}\n\nPlease check the console for details.`);
     }
   };
 
@@ -198,7 +235,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         <View style={styles.resultsFooter}>
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={handleDownloadResults}
+            onPress={handleDownloadFile}
           >
             <IconSymbol
               name='square.and.arrow.down'
@@ -206,7 +243,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               color='#2196F3'
             />
             <ThemedText style={styles.secondaryButtonText}>
-              Download Results
+              Download Exercise
             </ThemedText>
           </TouchableOpacity>
 

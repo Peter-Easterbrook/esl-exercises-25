@@ -29,6 +29,8 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **Category-based Learning** - Organized exercise categories (Tenses, Grammar, Vocabulary, etc.)
 - **Interactive Exercises** - Multiple choice questions with explanations
 - **Progress Tracking** - User progress saved to Firebase with scoring
+- **Downloadable Exercise Files** - Users can download PDF/DOC files linked to exercises
+- **File Upload Management** - Admins can upload and link files to specific exercises or categories
 - **Results Export** - Export exercise results and progress reports
 - **Admin Panel** - Full content management for administrators
 - **Responsive UI** - Support for light/dark themes and haptic feedback
@@ -46,10 +48,11 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
     - `index.tsx` - Admin dashboard with statistics
     - `add-exercise.tsx` - Exercise creation interface
     - `manage-exercises.tsx` - Exercise management and editing
+    - `upload-files.tsx` - File upload and management interface for linking documents to exercises
 
 - `components/` - Reusable UI components
   - `CategoryCard.tsx` - Expandable category cards with exercise lists
-  - `ExerciseInterface.tsx` - Interactive quiz interface with scoring
+  - `ExerciseInterface.tsx` - Interactive quiz interface with scoring and file download functionality
   - `themed-loader.tsx` - Theme-aware loading indicator component
   - `themed-view.tsx` - Theme-aware View component with light/dark mode support
   - `themed-text.tsx` - Theme-aware Text component with predefined text styles
@@ -61,10 +64,11 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
 - `services/` - Business logic and API calls
   - `firebaseService.ts` - Firebase Firestore operations (CRUD for exercises, categories, progress)
+  - `fileService.ts` - File upload/download operations for exercise documents via Firebase Storage
   - `exportService.ts` - File export functionality for results and progress
 
 - `types/` - TypeScript type definitions
-  - `index.ts` - Exercise, Category, User, and Progress type definitions
+  - `index.ts` - Exercise, Category, User, Progress, and DownloadableFile type definitions
 
 - `config/` - Configuration files
   - `firebase.ts` - Firebase project configuration
@@ -85,14 +89,16 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **Categories** - Exercise categories with metadata and icons
 - **Exercises** - Complete exercise data with questions, answers, and explanations
 - **User Progress** - Completion status and scores per user per exercise
+- **Downloadable Files** - Uploaded documents (PDF/DOC/DOCX) linked to categories or specific exercises
 
 ### Firebase Setup Required
 Before running the app, you must:
 1. Create a Firebase project at console.firebase.google.com
 2. Enable Authentication with email/password
 3. Create a Firestore database
-4. Update `config/firebase.ts` with your project credentials
-5. The app will automatically initialize default categories and sample exercises
+4. Enable Firebase Storage for file uploads
+5. Update `config/firebase.ts` with your project credentials
+6. The app will automatically initialize default categories and sample exercises
 
 ### Authentication Flow
 - Unauthenticated users are redirected to `/auth`
@@ -104,8 +110,19 @@ Before running the app, you must:
 - Dashboard with usage statistics
 - Create new exercises with multiple choice questions
 - Manage existing exercises (view, edit, delete)
+- Upload and manage downloadable files (PDF, DOC, DOCX up to 10MB)
+- Link files to specific exercises or make them available to entire categories
 - User management (future feature)
 - Analytics and reporting (future feature)
+
+### Downloadable Files Feature
+- Admins upload documents via the Upload Files screen (`/admin/upload-files`)
+- Files can be linked to specific exercises or left category-wide
+- Users see "Download Exercise" button after completing an exercise
+- Files are stored in Firebase Storage under `documents/{categoryId}/{filename}`
+- Metadata stored in `downloadableFiles` Firestore collection
+- File downloads use the legacy `expo-file-system/legacy` API for stability (new API has compatibility issues in SDK 54)
+- Downloaded files are cached and shared via the native share dialog
 
 ## Development Notes
 

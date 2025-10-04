@@ -6,9 +6,10 @@ import {
   deleteFile,
   getFilesByCategory,
   uploadFile,
+  linkFileToExercise,
 } from '@/services/fileService';
-import { getCategories } from '@/services/firebaseService';
-import { Category, DownloadableFile } from '@/types';
+import { getCategories, getExercisesByCategory } from '@/services/firebaseService';
+import { Category, DownloadableFile, Exercise } from '@/types';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +26,8 @@ export default function UploadFilesScreen() {
   const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [selectedExercise, setSelectedExercise] = useState<string>('');
   const [files, setFiles] = useState<DownloadableFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -36,8 +39,19 @@ export default function UploadFilesScreen() {
   useEffect(() => {
     if (selectedCategory) {
       loadFiles();
+      loadExercises();
     }
   }, [selectedCategory]);
+
+  const loadExercises = async () => {
+    try {
+      const exercisesData = await getExercisesByCategory(selectedCategory);
+      setExercises(exercisesData);
+      setSelectedExercise(''); // Reset exercise selection
+    } catch (error) {
+      console.error('Error loading exercises:', error);
+    }
+  };
 
   const loadCategories = async () => {
     try {
@@ -92,7 +106,7 @@ export default function UploadFilesScreen() {
 
       setUploading(true);
 
-      await uploadFile(file, selectedCategory, null, user!.uid);
+      await uploadFile(file, selectedCategory, selectedExercise || null, user!.uid);
 
       Alert.alert('Success', 'File uploaded successfully');
       await loadFiles();
@@ -180,6 +194,59 @@ export default function UploadFilesScreen() {
           </View>
         </View>
 
+        {/* Exercise Selection */}
+        {selectedCategory && exercises.length > 0 && (
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Link to Exercise (Optional)
+            </ThemedText>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.exerciseList}>
+                <TouchableOpacity
+                  style={[
+                    styles.exerciseChip,
+                    !selectedExercise && styles.selectedExerciseChip,
+                  ]}
+                  onPress={() => setSelectedExercise('')}
+                >
+                  <ThemedText
+                    style={[
+                      styles.exerciseChipText,
+                      !selectedExercise && styles.selectedExerciseChipText,
+                    ]}
+                  >
+                    None
+                  </ThemedText>
+                </TouchableOpacity>
+                {exercises.map((exercise) => (
+                  <TouchableOpacity
+                    key={exercise.id}
+                    style={[
+                      styles.exerciseChip,
+                      selectedExercise === exercise.id && styles.selectedExerciseChip,
+                    ]}
+                    onPress={() => setSelectedExercise(exercise.id)}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.exerciseChipText,
+                        selectedExercise === exercise.id && styles.selectedExerciseChipText,
+                      ]}
+                    >
+                      {exercise.title}
+                    </ThemedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+            <ThemedText style={styles.helpText}>
+              {selectedExercise
+                ? 'File will be linked to selected exercise'
+                : 'File will be available for all exercises in category'}
+            </ThemedText>
+          </View>
+        )}
+
         {/* Upload Button */}
         {selectedCategory && (
           <View style={styles.section}>
@@ -225,6 +292,11 @@ export default function UploadFilesScreen() {
                   <ThemedText style={styles.fileDetails}>
                     {formatFileSize(file.size)} • {file.fileType.toUpperCase()}
                   </ThemedText>
+                  {file.exerciseId && (
+                    <ThemedText style={styles.linkedExercise}>
+                      📎 Linked to exercise
+                    </ThemedText>
+                  )}
                   <ThemedText style={styles.fileDate}>
                     {file.uploadedAt.toLocaleDateString()}
                   </ThemedText>
@@ -371,5 +443,35 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: 8,
+  },
+  exerciseList: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  exerciseChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    backgroundColor: '#f8f9fa',
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  selectedExerciseChip: {
+    backgroundColor: '#4CAF50',
+    borderColor: '#4CAF50',
+  },
+  exerciseChipText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  selectedExerciseChipText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  linkedExercise: {
+    fontSize: 11,
+    color: '#4CAF50',
+    marginTop: 2,
   },
 });
