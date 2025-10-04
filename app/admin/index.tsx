@@ -2,9 +2,11 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
+import { getAdminStats } from '@/services/firebaseService';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   ScrollView,
   StyleSheet,
@@ -15,11 +17,30 @@ import {
 export default function AdminPanel() {
   const { appUser } = useAuth();
   const [stats, setStats] = useState({
-    totalExercises: 45,
-    totalUsers: 128,
-    exercisesAddedThisMonth: 8,
-    activeUsers: 64,
+    totalExercises: 0,
+    totalUsers: 0,
+    exercisesAddedThisMonth: 0,
+    activeUsers: 0,
   });
+  const [loading, setLoading] = useState(true);
+
+  // Load real statistics from Firebase
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      setLoading(true);
+      const adminStats = await getAdminStats();
+      setStats(adminStats);
+    } catch (error) {
+      console.error('Error loading admin stats:', error);
+      Alert.alert('Error', 'Failed to load statistics');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Redirect if not admin
   if (!appUser?.isAdmin) {
@@ -133,39 +154,52 @@ export default function AdminPanel() {
             Overview
           </ThemedText>
 
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <IconSymbol name='doc.text' size={24} color='#2196F3' />
-              <ThemedText style={styles.statNumber}>
-                {stats.totalExercises}
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size='large' color='#2196F3' />
+              <ThemedText style={styles.loadingText}>
+                Loading statistics...
               </ThemedText>
-              <ThemedText style={styles.statLabel}>Total Exercises</ThemedText>
             </View>
+          ) : (
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <IconSymbol name='doc.text' size={24} color='#2196F3' />
+                <ThemedText style={styles.statNumber}>
+                  {stats.totalExercises}
+                </ThemedText>
+                <ThemedText style={styles.statLabel}>
+                  Total Exercises
+                </ThemedText>
+              </View>
 
-            <View style={styles.statCard}>
-              <IconSymbol name='person.2' size={24} color='#4CAF50' />
-              <ThemedText style={styles.statNumber}>
-                {stats.totalUsers}
-              </ThemedText>
-              <ThemedText style={styles.statLabel}>Total Users</ThemedText>
-            </View>
+              <View style={styles.statCard}>
+                <IconSymbol name='person.2' size={24} color='#4CAF50' />
+                <ThemedText style={styles.statNumber}>
+                  {stats.totalUsers}
+                </ThemedText>
+                <ThemedText style={styles.statLabel}>Total Users</ThemedText>
+              </View>
 
-            <View style={styles.statCard}>
-              <IconSymbol name='calendar' size={24} color='#FF9800' />
-              <ThemedText style={styles.statNumber}>
-                {stats.exercisesAddedThisMonth}
-              </ThemedText>
-              <ThemedText style={styles.statLabel}>Added This Month</ThemedText>
-            </View>
+              <View style={styles.statCard}>
+                <IconSymbol name='calendar' size={24} color='#FF9800' />
+                <ThemedText style={styles.statNumber}>
+                  {stats.exercisesAddedThisMonth}
+                </ThemedText>
+                <ThemedText style={styles.statLabel}>
+                  Added This Month
+                </ThemedText>
+              </View>
 
-            <View style={styles.statCard}>
-              <IconSymbol name='circle.fill' size={24} color='#4CAF50' />
-              <ThemedText style={styles.statNumber}>
-                {stats.activeUsers}
-              </ThemedText>
-              <ThemedText style={styles.statLabel}>Active Users</ThemedText>
+              <View style={styles.statCard}>
+                <IconSymbol name='circle.fill' size={24} color='#4CAF50' />
+                <ThemedText style={styles.statNumber}>
+                  {stats.activeUsers}
+                </ThemedText>
+                <ThemedText style={styles.statLabel}>Active Users</ThemedText>
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
         {/* Admin Actions */}
@@ -248,6 +282,16 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     paddingVertical: 24,
+  },
+  loadingContainer: {
+    paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#666',
   },
   sectionTitle: {
     marginBottom: 16,

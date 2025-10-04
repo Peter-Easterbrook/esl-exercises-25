@@ -41,24 +41,30 @@ const styles = StyleSheet.create({
   default: {
     fontSize: 16,
     lineHeight: 24,
+    fontFamily: 'berlin-sans-fb',
+    letterSpacing: 1,
   },
   defaultSemiBold: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: '500',
+    fontFamily: 'berlin-sans-fb-bold',
+    letterSpacing: 1,
   },
   title: {
     fontSize: 32,
-    fontWeight: '500',
+    fontFamily: 'berlin-sans-fb-bold',
+    letterSpacing: 1,
     lineHeight: 40,
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: '500',
+    fontFamily: 'berlin-sans-fb-bold',
+    letterSpacing: 1,
   },
   link: {
     lineHeight: 30,
     fontSize: 16,
+    fontFamily: 'berlin-sans-fb',
     color: '#0a7ea4',
   },
 });

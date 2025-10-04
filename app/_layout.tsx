@@ -3,12 +3,18 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -16,6 +22,21 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  const [fontsLoaded] = useFonts({
+    'berlin-sans-fb': require('../assets/fonts/Berlinsans.otf'),
+    'berlin-sans-fb-bold': require('../assets/fonts/Berlinsans_bold.ttf'),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <AuthProvider>
@@ -26,10 +47,12 @@ export default function RootLayout() {
           <Stack.Screen
             name='exercise/[id]'
             options={{
-              presentation: 'modal',
-              title: 'Exercise',
-              headerStyle: { backgroundColor: '#f8f9fa' },
-              headerTintColor: '#333',
+              // presentation: 'modal',
+              // title: 'Exercise',
+              // headerStyle: { backgroundColor: '#f8f9fa' },
+              // headerTintColor: '#333',
+              // headerTitleStyle: { fontFamily: 'berlin-sans-fb-bold' },
+              headerShown: false,
             }}
           />
           <Stack.Screen name='admin/index' options={{ headerShown: false }} />
@@ -46,7 +69,7 @@ export default function RootLayout() {
             options={{ headerShown: false }}
           />
         </Stack>
-        <StatusBar style='auto' />
+        <StatusBar style='dark' />
       </ThemeProvider>
     </AuthProvider>
   );

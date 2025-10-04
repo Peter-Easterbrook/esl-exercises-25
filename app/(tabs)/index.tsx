@@ -96,7 +96,7 @@ export default function CategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
           <Image
             source={require('@/assets/images/favicon.png')}
             style={{ width: 40, height: 40 }}
