@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   header: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 20,
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
 });

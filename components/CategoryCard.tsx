@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   exercisesList: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingBottom: 20,
   },
   exerciseItem: {

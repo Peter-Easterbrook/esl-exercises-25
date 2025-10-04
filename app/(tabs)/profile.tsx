@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   header: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     // paddingBottom: 20,
     marginBottom: 10,
   },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   contentContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingBottom: 20,
   },
   userCard: {
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',

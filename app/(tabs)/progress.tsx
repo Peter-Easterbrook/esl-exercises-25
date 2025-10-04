@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   header: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 20,
   },
   subtitle: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   card: {
     backgroundColor: '#fff',

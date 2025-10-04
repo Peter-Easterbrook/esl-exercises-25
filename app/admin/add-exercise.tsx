@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
@@ -666,7 +666,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   footer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 20,
     paddingBottom: 40,
     marginTop: 16,

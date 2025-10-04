@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   statsContainer: {
     paddingVertical: 24,

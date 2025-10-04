@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   titleSection: {
     paddingVertical: 24,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   footer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: '#eee',

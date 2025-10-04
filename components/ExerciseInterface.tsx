@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   },
   questionSection: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 24,
   },
   question: {
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   navigationFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: '#eee',
@@ -442,6 +442,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
@@ -451,6 +452,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginRight: 4,
+    textAlign: 'center',
   },
   disabledButton: {
     opacity: 0.5,
@@ -494,8 +496,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   reviewSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingHorizontal: 16,
+    paddingTop: 24,
   },
   reviewTitle: {
     marginBottom: 20,
@@ -503,8 +505,8 @@ const styles = StyleSheet.create({
   reviewItem: {
     marginBottom: 24,
     paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#eee',
   },
   questionHeader: {
     flexDirection: 'row',
@@ -548,7 +550,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   resultsFooter: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 20,
     gap: 12,
   },
