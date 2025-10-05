@@ -6,9 +6,11 @@ import {
   deleteFile,
   getFilesByCategory,
   uploadFile,
-  linkFileToExercise,
 } from '@/services/fileService';
-import { getCategories, getExercisesByCategory } from '@/services/firebaseService';
+import {
+  getCategories,
+  getExercisesByCategory,
+} from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
@@ -106,7 +108,12 @@ export default function UploadFilesScreen() {
 
       setUploading(true);
 
-      await uploadFile(file, selectedCategory, selectedExercise || null, user!.uid);
+      await uploadFile(
+        file,
+        selectedCategory,
+        selectedExercise || null,
+        user!.uid
+      );
 
       Alert.alert('Success', 'File uploaded successfully');
       await loadFiles();
@@ -223,14 +230,16 @@ export default function UploadFilesScreen() {
                     key={exercise.id}
                     style={[
                       styles.exerciseChip,
-                      selectedExercise === exercise.id && styles.selectedExerciseChip,
+                      selectedExercise === exercise.id &&
+                        styles.selectedExerciseChip,
                     ]}
                     onPress={() => setSelectedExercise(exercise.id)}
                   >
                     <ThemedText
                       style={[
                         styles.exerciseChipText,
-                        selectedExercise === exercise.id && styles.selectedExerciseChipText,
+                        selectedExercise === exercise.id &&
+                          styles.selectedExerciseChipText,
                       ]}
                     >
                       {exercise.title}
@@ -353,7 +362,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 20,
     borderRadius: 12,
-    padding: 20,
+    padding: 16,
   },
   sectionTitle: {
     fontSize: 20,
