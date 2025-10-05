@@ -2,28 +2,110 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
-import React from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { getUserProgressStats } from '@/services/firebaseService';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 export default function ProgressScreen() {
-  const { appUser } = useAuth();
+  const { appUser, user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [stats, setStats] = useState({
+    completedExercises: 0,
+    totalExercises: 0,
+    averageScore: 0,
+    streak: 0,
+    categories: [] as Array<{
+      name: string;
+      completed: number;
+      total: number;
+      avgScore: number;
+    }>,
+    recentActivity: [] as Array<{
+      exerciseTitle: string;
+      score: number;
+      completedAt: Date;
+      success: boolean;
+    }>,
+  });
 
-  // Mock progress data - later this will come from Firebase
-  const stats = {
-    completedExercises: 12,
-    totalExercises: 45,
-    averageScore: 78,
-    streak: 5,
-    categories: [
-      { name: 'Tenses', completed: 5, total: 8, avgScore: 85 },
-      { name: 'Grammar', completed: 3, total: 10, avgScore: 72 },
-      { name: 'Vocabulary', completed: 2, total: 12, avgScore: 90 },
-      { name: 'Reading Comprehension', completed: 2, total: 8, avgScore: 65 },
-    ],
+  useEffect(() => {
+    loadProgressData();
+  }, [user]);
+
+  const loadProgressData = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const progressStats = await getUserProgressStats(user.uid);
+      setStats(progressStats);
+    } catch (error) {
+      console.error('Error loading progress data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadProgressData();
+    setRefreshing(false);
+  };
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) {
+      return diffMins <= 1 ? 'Just now' : `${diffMins} minutes ago`;
+    } else if (diffHours < 24) {
+      return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`;
+    } else if (diffDays === 1) {
+      return 'Yesterday';
+    } else if (diffDays < 7) {
+      return `${diffDays} days ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
   };
 
   const progressPercentage =
-    (stats.completedExercises / stats.totalExercises) * 100;
+    stats.totalExercises > 0
+      ? (stats.completedExercises / stats.totalExercises) * 100
+      : 0;
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.container}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+            <Image
+              source={require('@/assets/images/favicon.png')}
+              style={{ width: 40, height: 40 }}
+            />
+            <ThemedText type='title'>Your Progress</ThemedText>
+          </View>
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color='#2196F3' />
+          <ThemedText style={styles.loadingText}>
+            Loading your progress...
+          </ThemedText>
+        </View>
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -41,7 +123,13 @@ export default function ProgressScreen() {
         </ThemedText>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {/* Overall Progress */}
         <View style={styles.card}>
           <ThemedText type='subtitle' style={styles.cardTitle}>
@@ -134,47 +222,38 @@ export default function ProgressScreen() {
             Recent Activity
           </ThemedText>
 
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <IconSymbol name='checkmark' size={16} color='#4CAF50' />
-            </View>
-            <View style={styles.activityContent}>
-              <ThemedText style={styles.activityTitle}>
-                Present Simple Tense
+          {stats.recentActivity.length === 0 ? (
+            <View style={styles.emptyState}>
+              <IconSymbol name='clock' size={48} color='#ccc' />
+              <ThemedText style={styles.emptyStateText}>
+                No exercises completed yet
               </ThemedText>
-              <ThemedText style={styles.activityDetails}>
-                Completed • Score: 85% • 2 hours ago
+              <ThemedText style={styles.emptyStateSubtext}>
+                Start an exercise to see your activity here!
               </ThemedText>
             </View>
-          </View>
-
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <IconSymbol name='checkmark' size={16} color='#4CAF50' />
-            </View>
-            <View style={styles.activityContent}>
-              <ThemedText style={styles.activityTitle}>
-                Past Simple Tense
-              </ThemedText>
-              <ThemedText style={styles.activityDetails}>
-                Completed • Score: 92% • Yesterday
-              </ThemedText>
-            </View>
-          </View>
-
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <IconSymbol name='xmark' size={16} color='#F44336' />
-            </View>
-            <View style={styles.activityContent}>
-              <ThemedText style={styles.activityTitle}>
-                Future Perfect Tense
-              </ThemedText>
-              <ThemedText style={styles.activityDetails}>
-                Attempted • Score: 45% • 2 days ago
-              </ThemedText>
-            </View>
-          </View>
+          ) : (
+            stats.recentActivity.map((activity, index) => (
+              <View key={index} style={styles.activityItem}>
+                <View style={styles.activityIcon}>
+                  <IconSymbol
+                    name={activity.success ? 'checkmark' : 'xmark'}
+                    size={16}
+                    color={activity.success ? '#4CAF50' : '#F44336'}
+                  />
+                </View>
+                <View style={styles.activityContent}>
+                  <ThemedText style={styles.activityTitle}>
+                    {activity.exerciseTitle}
+                  </ThemedText>
+                  <ThemedText style={styles.activityDetails}>
+                    {activity.success ? 'Completed' : 'Attempted'} • Score:{' '}
+                    {activity.score}% • {formatTimeAgo(activity.completedAt)}
+                  </ThemedText>
+                </View>
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
     </ThemedView>
@@ -185,6 +264,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
   },
   header: {
     paddingHorizontal: 16,
@@ -314,5 +404,21 @@ const styles = StyleSheet.create({
   activityDetails: {
     fontSize: 12,
     color: '#666',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 16,
+    fontWeight: '500',
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });

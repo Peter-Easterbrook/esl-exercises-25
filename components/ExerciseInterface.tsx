@@ -3,7 +3,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { Exercise } from '@/types';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Confetti } from 'react-native-fast-confetti';
 
 interface ExerciseInterfaceProps {
   exercise: Exercise;
@@ -25,6 +26,17 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [answers, setAnswers] = useState<{ [questionId: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Stop confetti after 4 seconds
+  useEffect(() => {
+    if (showConfetti) {
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfetti]);
 
   const currentQuestion = exercise.content.questions[currentQuestionIndex];
   const isLastQuestion =
@@ -73,6 +85,11 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     );
     setScore(percentage);
 
+    // Trigger confetti for perfect score
+    if (percentage === 100) {
+      setShowConfetti(true);
+    }
+
     // Save progress to Firebase
     if (user) {
       try {
@@ -96,6 +113,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     setAnswers({});
     setShowResults(false);
     setScore(0);
+    setShowConfetti(false);
   };
 
   const handleDownloadFile = async () => {
@@ -160,6 +178,19 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   if (showResults) {
     return (
       <ScrollView style={styles.container}>
+        {showConfetti && (
+          <Confetti
+            count={200}
+            colors={[
+              '#FFD700',
+              '#FFA500',
+              '#FF6347',
+              '#4CAF50',
+              '#2196F3',
+              '#9C27B0',
+            ]}
+          />
+        )}
         <View style={styles.resultsHeader}>
           <ThemedText type='title' style={styles.resultsTitle}>
             Exercise Complete!
@@ -183,7 +214,9 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           </View>
 
           <ThemedText style={styles.scoreDescription}>
-            {score >= 80
+            {score === 100
+              ? '🎉 Perfect score! Outstanding work!'
+              : score >= 80
               ? 'Excellent work!'
               : score >= 60
               ? 'Good job! Keep practicing.'

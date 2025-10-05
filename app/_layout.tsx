@@ -47,11 +47,6 @@ export default function RootLayout() {
           <Stack.Screen
             name='exercise/[id]'
             options={{
-              // presentation: 'modal',
-              // title: 'Exercise',
-              // headerStyle: { backgroundColor: '#f8f9fa' },
-              // headerTintColor: '#333',
-              // headerTitleStyle: { fontFamily: 'berlin-sans-fb-bold' },
               headerShown: false,
             }}
           />
