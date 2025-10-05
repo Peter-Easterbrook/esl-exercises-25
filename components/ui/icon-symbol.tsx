@@ -1,11 +1,14 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
+import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
+type IconMapping = Record<
+  SymbolViewProps['name'],
+  ComponentProps<typeof MaterialIcons>['name']
+>;
 type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -30,38 +33,39 @@ const MAPPING = {
   'chevron.down': 'expand-more',
 
   // Action icons
-  'plus': 'add',
+  plus: 'add',
   'plus.circle': 'add-circle-outline',
   'plus.circle.fill': 'add-circle',
-  'pencil': 'edit',
+  pencil: 'edit',
   'pencil.circle': 'edit',
-  'trash': 'delete',
-  'gear': 'settings',
-  'wrench': 'build',
+  trash: 'delete',
+  gear: 'settings',
+  wrench: 'build',
 
   // Status icons
-  'checkmark': 'check',
+  checkmark: 'check',
   'checkmark.circle': 'check-circle-outline',
   'checkmark.circle.fill': 'check-circle',
-  'xmark': 'close',
+  xmark: 'close',
   'xmark.circle.fill': 'cancel',
   'exclamationmark.circle': 'error-outline',
 
   // Content icons
-  'clock': 'schedule',
-  'book': 'menu-book',
+  clock: 'schedule',
+  book: 'menu-book',
   'text.bubble': 'chat-bubble-outline',
   'doc.text': 'description',
-  'ear': 'hearing',
-  'folder': 'folder',
-  'magnifyingglass': 'search',
+  'doc.badge.plus': 'note-add',
+  ear: 'hearing',
+  folder: 'folder',
+  magnifyingglass: 'search',
   'questionmark.circle': 'help-outline',
   'info.circle': 'info-outline',
-  'bell': 'notifications',
+  bell: 'notifications',
   'person.circle': 'account-circle',
   'person.2': 'group',
   'person.2.circle': 'supervisor-account',
-  'calendar': 'event',
+  calendar: 'event',
   'circle.fill': 'circle',
   'flame.fill': 'local-fire-department',
   'square.and.arrow.down': 'file-download',
@@ -70,7 +74,7 @@ const MAPPING = {
   'arrow.clockwise': 'refresh',
   'chart.pie': 'pie-chart',
   'folder.circle': 'folder',
-  'eye': 'visibility',
+  eye: 'visibility',
   'eye.slash': 'visibility-off',
 } as IconMapping;
 
@@ -91,5 +95,12 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  return (
+    <MaterialIcons
+      color={color}
+      size={size}
+      name={MAPPING[name]}
+      style={style}
+    />
+  );
 }

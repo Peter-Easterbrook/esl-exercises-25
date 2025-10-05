@@ -285,11 +285,13 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#eee',
+    paddingHorizontal: 10,
   },
   filesSectionTitle: {
     fontSize: 16,
     marginBottom: 12,
-    fontWeight: '600',
+    fontWeight: 'normal',
+    paddingLeft: 10,
   },
   fileItem: {
     flexDirection: 'row',
