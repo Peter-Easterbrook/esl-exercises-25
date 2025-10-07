@@ -93,10 +93,10 @@ export default function AuthScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.titleContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+          <View style={styles.titleText}>
             <Image
               source={require('@/assets/images/favicon.png')}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 60, height: 60 }}
             />
 
             <Text style={styles.title}>ESL Exercises</Text>
@@ -191,10 +191,19 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 40,
   },
+  titleText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
   title: {
-    fontSize: 32,
+    fontFamily: ' inherit',
+    fontSize: 36,
     fontWeight: '500',
     textAlign: 'center',
+    marginRight: 20,
     marginBottom: 10,
     color: '#2196F3',
   },

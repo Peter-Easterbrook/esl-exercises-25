@@ -177,137 +177,148 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
   if (showResults) {
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         {showConfetti && (
-          <Confetti
-            count={200}
-            colors={[
-              '#FFD700',
-              '#FFA500',
-              '#FF6347',
-              '#4CAF50',
-              '#2196F3',
-              '#9C27B0',
-            ]}
-          />
-        )}
-        <View style={styles.resultsHeader}>
-          <ThemedText type='title' style={styles.resultsTitle}>
-            Exercise Complete!
-          </ThemedText>
-          <ThemedText style={styles.scoreText}>Your Score: {score}%</ThemedText>
-
-          <View style={styles.scoreIndicator}>
-            <View
-              style={[
-                styles.scoreBar,
-                {
-                  backgroundColor:
-                    score >= 70
-                      ? '#4CAF50'
-                      : score >= 50
-                      ? '#FF9800'
-                      : '#F44336',
-                },
+          <View style={styles.confettiContainer}>
+            <Confetti
+              count={200}
+              colors={[
+                '#FFD700',
+                '#FFA500',
+                '#FF6347',
+                '#4CAF50',
+                '#2196F3',
+                '#9C27B0',
               ]}
             />
           </View>
+        )}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.resultsHeader}>
+            <ThemedText type='title' style={styles.resultsTitle}>
+              Exercise Complete!
+            </ThemedText>
+            <ThemedText style={styles.scoreText}>
+              Your Score: {score}%
+            </ThemedText>
 
-          <ThemedText style={styles.scoreDescription}>
-            {score === 100
-              ? '🎉 Perfect score! Outstanding work!'
-              : score >= 80
-              ? 'Excellent work!'
-              : score >= 60
-              ? 'Good job! Keep practicing.'
-              : 'Keep studying and try again!'}
-          </ThemedText>
-        </View>
+            <View style={styles.scoreIndicator}>
+              <View
+                style={[
+                  styles.scoreBar,
+                  {
+                    backgroundColor:
+                      score >= 70
+                        ? '#4CAF50'
+                        : score >= 50
+                        ? '#FF9800'
+                        : '#F44336',
+                  },
+                ]}
+              />
+            </View>
 
-        <View style={styles.reviewSection}>
-          <ThemedText type='subtitle' style={styles.reviewTitle}>
-            Review Your Answers
-          </ThemedText>
+            <ThemedText style={styles.scoreDescription}>
+              {score === 100
+                ? '🎉 Perfect score! Outstanding work!'
+                : score >= 80
+                ? 'Excellent work!'
+                : score >= 60
+                ? 'Good job! Keep practicing.'
+                : 'Keep studying and try again!'}
+            </ThemedText>
+          </View>
 
-          {exercise.content.questions.map((question, index) => {
-            const userAnswer = answers[question.id];
-            const isCorrect = userAnswer === question.correctAnswer;
+          <View style={styles.reviewSection}>
+            <ThemedText type='subtitle' style={styles.reviewTitle}>
+              Review Your Answers
+            </ThemedText>
 
-            return (
-              <View key={question.id} style={styles.reviewItem}>
-                <View style={styles.questionHeader}>
-                  <ThemedText style={styles.questionNumber}>
-                    Question {index + 1}
+            {exercise.content.questions.map((question, index) => {
+              const userAnswer = answers[question.id];
+              const isCorrect = userAnswer === question.correctAnswer;
+
+              return (
+                <View key={question.id} style={styles.reviewItem}>
+                  <View style={styles.questionHeader}>
+                    <ThemedText style={styles.questionNumber}>
+                      Question {index + 1}
+                    </ThemedText>
+                    <IconSymbol
+                      name={
+                        isCorrect
+                          ? 'checkmark.circle.fill'
+                          : 'xmark.circle.fill'
+                      }
+                      size={20}
+                      color={isCorrect ? '#4CAF50' : '#F44336'}
+                    />
+                  </View>
+
+                  <ThemedText style={styles.reviewQuestion}>
+                    {question.question}
                   </ThemedText>
-                  <IconSymbol
-                    name={
-                      isCorrect ? 'checkmark.circle.fill' : 'xmark.circle.fill'
-                    }
-                    size={20}
-                    color={isCorrect ? '#4CAF50' : '#F44336'}
-                  />
-                </View>
 
-                <ThemedText style={styles.reviewQuestion}>
-                  {question.question}
-                </ThemedText>
-
-                <View style={styles.answerReview}>
-                  <Text style={[styles.answerText, styles.userAnswer]}>
-                    Your answer: {userAnswer}
-                  </Text>
-                  {!isCorrect && (
-                    <Text style={[styles.answerText, styles.correctAnswer]}>
-                      Correct answer: {question.correctAnswer}
+                  <View style={styles.answerReview}>
+                    <Text style={[styles.answerText, styles.userAnswer]}>
+                      Your answer: {userAnswer}
                     </Text>
+                    {!isCorrect && (
+                      <Text style={[styles.answerText, styles.correctAnswer]}>
+                        Correct answer: {question.correctAnswer}
+                      </Text>
+                    )}
+                  </View>
+
+                  {question.explanation && (
+                    <View style={styles.explanation}>
+                      <ThemedText style={styles.explanationText}>
+                        {question.explanation}
+                      </ThemedText>
+                    </View>
                   )}
                 </View>
+              );
+            })}
+          </View>
 
-                {question.explanation && (
-                  <View style={styles.explanation}>
-                    <ThemedText style={styles.explanationText}>
-                      {question.explanation}
-                    </ThemedText>
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
+          <View style={styles.resultsFooter}>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={handleDownloadFile}
+            >
+              <IconSymbol
+                name='square.and.arrow.down'
+                size={20}
+                color='#2196F3'
+              />
+              <ThemedText style={styles.secondaryButtonText}>
+                Download Exercise
+              </ThemedText>
+            </TouchableOpacity>
 
-        <View style={styles.resultsFooter}>
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleDownloadFile}
-          >
-            <IconSymbol
-              name='square.and.arrow.down'
-              size={20}
-              color='#2196F3'
-            />
-            <ThemedText style={styles.secondaryButtonText}>
-              Download Exercise
-            </ThemedText>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={handleRestart}
+            >
+              <IconSymbol name='arrow.clockwise' size={20} color='#2196F3' />
+              <ThemedText style={styles.secondaryButtonText}>
+                Try Again
+              </ThemedText>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleRestart}
-          >
-            <IconSymbol name='arrow.clockwise' size={20} color='#2196F3' />
-            <ThemedText style={styles.secondaryButtonText}>
-              Try Again
-            </ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => router.back()}
-          >
-            <ThemedText style={styles.primaryButtonText}>Done</ThemedText>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() => router.back()}
+            >
+              <ThemedText style={styles.primaryButtonText}>Done</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 
@@ -430,6 +441,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  confettiContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    pointerEvents: 'none',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   progressSection: {
     paddingHorizontal: 20,
@@ -633,7 +659,8 @@ const styles = StyleSheet.create({
   },
   resultsFooter: {
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingTop: 12,
+    paddingBottom: 12,
     gap: 12,
   },
   secondaryButton: {
