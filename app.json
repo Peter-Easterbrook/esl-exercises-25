@@ -8,8 +8,10 @@
     "scheme": "eslexercises25",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fffff0"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,22 +27,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "native",
-          "backgroundColor": "#fffff0",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
-        }
-      ],
-      "expo-web-browser"
-    ],
+    "plugins": ["expo-router", "expo-web-browser"],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
