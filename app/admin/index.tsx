@@ -63,6 +63,7 @@ export default function AdminPanel() {
     subtitle: string;
     color: string;
     onPress: () => void;
+    animation?: 'slide_from_right' | 'slide_from_bottom' | 'fade';
   }> = [
     {
       icon: 'plus.circle',
@@ -70,6 +71,7 @@ export default function AdminPanel() {
       subtitle: 'Create a new exercise for students',
       color: '#4CAF50',
       onPress: () => router.push('/admin/add-exercise'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'doc.badge.plus',
@@ -77,6 +79,7 @@ export default function AdminPanel() {
       subtitle: 'Upload PDFs and documents for students',
       color: '#FF9800',
       onPress: () => router.push('/admin/upload-files'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'pencil.circle',
@@ -84,6 +87,7 @@ export default function AdminPanel() {
       subtitle: 'Edit or delete existing exercises',
       color: '#2196F3',
       onPress: () => router.push('/admin/manage-exercises'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'folder.circle',

@@ -13,6 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  SlideInRight,
+  SlideOutLeft,
+} from 'react-native-reanimated';
 
 export default function ExerciseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -73,71 +79,86 @@ export default function ExerciseScreen() {
 
   if (showInstructions) {
     return (
-      <ThemedView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <IconSymbol name='chevron.left' size={24} color='#2196F3' />
-            <ThemedText style={styles.backText}>Back</ThemedText>
-          </TouchableOpacity>
-        </View>
+      <Animated.View
+        entering={FadeIn.duration(300)}
+        exiting={FadeOut.duration(200)}
+        style={{ flex: 1 }}
+      >
+        <ThemedView style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+              <ThemedText style={styles.backText}>Back</ThemedText>
+            </TouchableOpacity>
+          </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <View style={styles.titleSection}>
-            <ThemedText type='title' style={styles.title}>
-              {exercise.title}
-            </ThemedText>
-            <ThemedText style={styles.subtitle}>
-              {exercise.description}
-            </ThemedText>
-            <View style={styles.difficultyContainer}>
-              <Text style={[styles.difficulty, styles[exercise.difficulty]]}>
-                {exercise.difficulty}
-              </Text>
-              <Text style={styles.exerciseType}>
-                {exercise.content.type.replace('-', ' ')} •{' '}
-                {exercise.content.questions.length} questions
-              </Text>
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.titleSection}>
+              <ThemedText type='title' style={styles.title}>
+                {exercise.title}
+              </ThemedText>
+              <ThemedText style={styles.subtitle}>
+                {exercise.description}
+              </ThemedText>
+              <View style={styles.difficultyContainer}>
+                <Text style={[styles.difficulty, styles[exercise.difficulty]]}>
+                  {exercise.difficulty}
+                </Text>
+                <Text style={styles.exerciseType}>
+                  {exercise.content.type.replace('-', ' ')} •{' '}
+                  {exercise.content.questions.length} questions
+                </Text>
+              </View>
             </View>
-          </View>
 
-          <View style={styles.instructionsSection}>
-            <ThemedText style={styles.instructions}>
-              {exercise.instructions}
-            </ThemedText>
-          </View>
-        </ScrollView>
+            <View style={styles.instructionsSection}>
+              <ThemedText style={styles.instructions}>
+                {exercise.instructions}
+              </ThemedText>
+            </View>
+          </ScrollView>
 
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={handleStartExercise}
-          >
-            <ThemedText style={styles.primaryButtonText}>
-              Start Exercise
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      </ThemedView>
+          <View style={styles.footer}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={handleStartExercise}
+            >
+              <ThemedText style={styles.primaryButtonText}>
+                Start Exercise
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        </ThemedView>
+      </Animated.View>
     );
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackToInstructions}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
-          <ThemedText style={styles.backText}>Instructions</ThemedText>
-        </TouchableOpacity>
-      </View>
+    <Animated.View
+      entering={SlideInRight.duration(300)}
+      exiting={SlideOutLeft.duration(200)}
+      style={{ flex: 1 }}
+    >
+      <ThemedView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBackToInstructions}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+            <ThemedText style={styles.backText}>Instructions</ThemedText>
+          </TouchableOpacity>
+        </View>
 
-      <ExerciseInterface exercise={exercise} />
-    </ThemedView>
+        <ExerciseInterface exercise={exercise} />
+      </ThemedView>
+    </Animated.View>
   );
 }
 

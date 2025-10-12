@@ -13,7 +13,6 @@ import 'react-native-reanimated';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
@@ -41,27 +40,84 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-          <Stack.Screen name='auth/index' options={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            animation: 'default', // Global default
+          }}
+        >
+          {/* Main tabs - no animation (instant) */}
+          <Stack.Screen
+            name='(tabs)'
+            options={{
+              headerShown: false,
+              animation: 'none',
+            }}
+          />
+
+          {/* Auth screen - fade in for welcoming feel */}
+          <Stack.Screen
+            name='auth/index'
+            options={{
+              headerShown: false,
+              animation: 'fade',
+            }}
+          />
+
+          {/* Exercise screen - slide from right (natural forward flow) */}
           <Stack.Screen
             name='exercise/[id]'
             options={{
               headerShown: false,
+              animation: 'slide_from_right',
+              gestureEnabled: true,
+              gestureDirection: 'horizontal',
             }}
           />
-          <Stack.Screen name='admin/index' options={{ headerShown: false }} />
+
+          {/* Admin panel - slide from bottom (modal-like for special access) */}
+          <Stack.Screen
+            name='admin/index'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_bottom',
+              presentation: 'modal',
+            }}
+          />
+
+          {/* Add exercise - slide from right (sequential flow) */}
           <Stack.Screen
             name='admin/add-exercise'
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
           />
+
+          {/* Manage exercises - slide from right (sequential flow) */}
           <Stack.Screen
             name='admin/manage-exercises'
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
           />
+
+          {/* Upload files - slide from right (sequential flow) */}
           <Stack.Screen
             name='admin/upload-files'
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
+          />
+
+          {/* Modal - slide from bottom (traditional modal) */}
+          <Stack.Screen
+            name='modal'
+            options={{
+              presentation: 'modal',
+              animation: 'slide_from_bottom',
+            }}
           />
         </Stack>
         <StatusBar style='dark' />

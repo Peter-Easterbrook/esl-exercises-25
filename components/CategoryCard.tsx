@@ -7,6 +7,12 @@ import { Category, DownloadableFile, Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
 interface CategoryCardProps {
   category: Category;
@@ -95,6 +101,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     }
   };
 
+  const expandedStyle = useAnimatedStyle(() => ({
+    height: withTiming(isExpanded ? 'auto' : 0, { duration: 300 }),
+    opacity: withTiming(isExpanded ? 1 : 0, { duration: 300 }),
+  }));
+
   return (
     <ThemedView style={styles.card}>
       <TouchableOpacity
@@ -120,63 +131,80 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         />
       </TouchableOpacity>
 
-      <Collapsible collapsed={!isExpanded}>
-        <View style={styles.exercisesList}>
-          {exercises.map((exercise) => (
-            <TouchableOpacity
-              key={exercise.id}
-              style={styles.exerciseItem}
-              onPress={() => handleExercisePress(exercise)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.exerciseContent}>
-                <ThemedText type='defaultSemiBold' style={styles.exerciseTitle}>
-                  {exercise.title}
+      {isExpanded && (
+        <Animated.View
+          style={expandedStyle}
+          entering={FadeIn.duration(300)}
+          exiting={FadeOut.duration(200)}
+        >
+          <Collapsible collapsed={!isExpanded}>
+            <View style={styles.exercisesList}>
+              {exercises.map((exercise) => (
+                <TouchableOpacity
+                  key={exercise.id}
+                  style={styles.exerciseItem}
+                  onPress={() => handleExercisePress(exercise)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.exerciseContent}>
+                    <ThemedText
+                      type='defaultSemiBold'
+                      style={styles.exerciseTitle}
+                    >
+                      {exercise.title}
+                    </ThemedText>
+                    <ThemedText style={styles.exerciseDescription}>
+                      {exercise.description}
+                    </ThemedText>
+                    <View style={styles.exerciseFooter}>
+                      <Text
+                        style={[styles.difficulty, styles[exercise.difficulty]]}
+                      >
+                        {exercise.difficulty}
+                      </Text>
+                      <Text style={styles.exerciseType}>
+                        {exercise.content.type.replace('-', ' ')}
+                      </Text>
+                    </View>
+                  </View>
+                  <IconSymbol name='chevron.right' size={16} color='#666' />
+                </TouchableOpacity>
+              ))}
+
+              {exercises.length === 0 && (
+                <ThemedText style={styles.noExercises}>
+                  No exercises available yet
                 </ThemedText>
-                <ThemedText style={styles.exerciseDescription}>
-                  {exercise.description}
+              )}
+            </View>
+
+            {downloadableFiles.length > 0 && (
+              <View style={styles.filesSection}>
+                <ThemedText style={styles.filesSectionTitle}>
+                  Downloadable Files
                 </ThemedText>
-                <View style={styles.exerciseFooter}>
-                  <Text
-                    style={[styles.difficulty, styles[exercise.difficulty]]}
+                {downloadableFiles.map((file) => (
+                  <TouchableOpacity
+                    key={file.id}
+                    style={styles.fileItem}
+                    onPress={() => handleDownloadFile(file)}
                   >
-                    {exercise.difficulty}
-                  </Text>
-                  <Text style={styles.exerciseType}>
-                    {exercise.content.type.replace('-', ' ')}
-                  </Text>
-                </View>
+                    <IconSymbol name='doc.text' size={16} color='#2196F3' />
+                    <ThemedText style={styles.fileItemText}>
+                      {file.name}
+                    </ThemedText>
+                    <IconSymbol
+                      name='arrow.down.circle'
+                      size={16}
+                      color='#666'
+                    />
+                  </TouchableOpacity>
+                ))}
               </View>
-              <IconSymbol name='chevron.right' size={16} color='#666' />
-            </TouchableOpacity>
-          ))}
-
-          {exercises.length === 0 && (
-            <ThemedText style={styles.noExercises}>
-              No exercises available yet
-            </ThemedText>
-          )}
-        </View>
-
-        {downloadableFiles.length > 0 && (
-          <View style={styles.filesSection}>
-            <ThemedText style={styles.filesSectionTitle}>
-              Downloadable Files
-            </ThemedText>
-            {downloadableFiles.map((file) => (
-              <TouchableOpacity
-                key={file.id}
-                style={styles.fileItem}
-                onPress={() => handleDownloadFile(file)}
-              >
-                <IconSymbol name='doc.text' size={16} color='#2196F3' />
-                <ThemedText style={styles.fileItemText}>{file.name}</ThemedText>
-                <IconSymbol name='arrow.down.circle' size={16} color='#666' />
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </Collapsible>
+            )}
+          </Collapsible>
+        </Animated.View>
+      )}
     </ThemedView>
   );
 };
