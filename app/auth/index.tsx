@@ -5,8 +5,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -83,110 +81,102 @@ export default function AuthScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps='handled'
+      showsVerticalScrollIndicator={false}
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps='handled'
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.titleContainer}>
-          <View style={styles.titleText}>
-            <Image
-              source={require('@/assets/images/favicon.png')}
-              style={{ width: 60, height: 60 }}
-            />
-
-            <Text style={styles.title}>ESL Exercises</Text>
-          </View>
-          <Text style={styles.subtitle}>
-            {isLogin ? 'Sign in to your account' : 'Create a new account'}
-          </Text>
-        </View>
-
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder='Email'
-            value={email}
-            onChangeText={setEmail}
-            keyboardType='email-address'
-            autoCapitalize='none'
-            autoComplete='email'
-            textContentType='emailAddress'
+      <View style={styles.titleContainer}>
+        <View style={styles.titleText}>
+          <Image
+            source={require('@/assets/images/favicon.png')}
+            style={{ width: 60, height: 60 }}
           />
 
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder='Password'
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              autoComplete={isLogin ? 'current-password' : 'new-password'}
-              textContentType={isLogin ? 'password' : 'newPassword'}
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <IconSymbol
-                name={showPassword ? 'eye' : 'eye.slash'}
-                size={20}
-                color='#666'
-              />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.title}>ESL Exercises</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          {isLogin ? 'Sign in to your account' : 'Create a new account'}
+        </Text>
+      </View>
 
-          {!isLogin && (
-            <TextInput
-              style={styles.input}
-              placeholder='Display Name (optional)'
-              value={displayName}
-              onChangeText={setDisplayName}
-              autoComplete='name'
-              textContentType='name'
-            />
-          )}
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder='Email'
+          value={email}
+          onChangeText={setEmail}
+          keyboardType='email-address'
+          autoCapitalize='none'
+          autoComplete='email'
+          textContentType='emailAddress'
+        />
 
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder='Password'
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            textContentType={isLogin ? 'password' : 'newPassword'}
+          />
           <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-            disabled={loading}
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
           >
-            <Text style={styles.buttonText}>
-              {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => setIsLogin(!isLogin)}
-          >
-            <Text style={styles.linkText}>
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : 'Already have an account? Sign in'}
-            </Text>
+            <IconSymbol
+              name={showPassword ? 'eye' : 'eye.slash'}
+              size={20}
+              color='#666'
+            />
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+        {!isLogin && (
+          <TextInput
+            style={styles.input}
+            placeholder='Display Name (optional)'
+            value={displayName}
+            onChangeText={setDisplayName}
+            autoComplete='name'
+            textContentType='name'
+          />
+        )}
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={() => setIsLogin(!isLogin)}
+        >
+          <Text style={styles.linkText}>
+            {isLogin
+              ? "Don't have an account? Sign up"
+              : 'Already have an account? Sign in'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    paddingBottom: 40, // Extra padding for keyboard
+    paddingBottom: 40,
+    backgroundColor: '#fff',
   },
   titleContainer: {
     marginBottom: 40,
