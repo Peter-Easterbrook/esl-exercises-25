@@ -1,5 +1,10 @@
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { ActivityIndicator, StyleSheet, View, type ViewProps } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  type ViewProps,
+} from 'react-native';
 
 export type ThemedLoaderProps = ViewProps & {
   lightColor?: string;
@@ -14,11 +19,20 @@ export function ThemedLoader({
   size = 'large',
   ...otherProps
 }: ThemedLoaderProps) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-  const indicatorColor = useThemeColor({ light: '#2196F3', dark: '#64B5F6' }, 'tint');
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'background'
+  );
+  const indicatorColor = useThemeColor(
+    { light: '#0078ff', dark: '#64B5F6' },
+    'tint'
+  );
 
   return (
-    <View style={[styles.container, { backgroundColor }, style]} {...otherProps}>
+    <View
+      style={[styles.container, { backgroundColor }, style]}
+      {...otherProps}
+    >
       <ActivityIndicator size={size} color={indicatorColor} />
     </View>
   );

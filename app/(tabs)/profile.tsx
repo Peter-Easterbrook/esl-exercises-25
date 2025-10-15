@@ -177,7 +177,7 @@ Your UID: ${user?.uid}`,
         {/* User Info Card */}
         <View style={styles.userCard}>
           <View style={styles.userIcon}>
-            <IconSymbol name='person.fill' size={32} color='#2196F3' />
+            <IconSymbol name='person.fill' size={32} color='#0078ff' />
           </View>
 
           <View style={styles.userInfo}>
@@ -204,10 +204,12 @@ Your UID: ${user?.uid}`,
             >
               <View style={styles.menuItemLeft}>
                 <View style={styles.menuIcon}>
-                  <IconSymbol name={item.icon} size={20} color='#2196F3' />
+                  <IconSymbol name={item.icon} size={20} color='#0078ff' />
                 </View>
                 <View style={styles.menuTextContainer}>
-                  <ThemedText style={styles.menuTitle}>{item.title}</ThemedText>
+                  <ThemedText type='defaultSemiBold' style={styles.menuTitle}>
+                    {item.title}
+                  </ThemedText>
                   <ThemedText style={styles.menuSubtitle}>
                     {item.subtitle}
                   </ThemedText>
@@ -224,7 +226,7 @@ Your UID: ${user?.uid}`,
           onPress={handleLogout}
           activeOpacity={0.7}
         >
-          <IconSymbol name='arrow.right.square' size={20} color='#F44336' />
+          <IconSymbol name='arrow.right.square' size={20} color='#f54707' />
           <ThemedText style={styles.signOutText}>Sign Out</ThemedText>
         </TouchableOpacity>
       </ScrollView>
@@ -258,14 +260,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   userIcon: {
     width: 64,
@@ -285,7 +280,7 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     marginBottom: 8,
   },
   adminBadge: {
@@ -298,21 +293,13 @@ const styles = StyleSheet.create({
   adminText: {
     fontSize: 12,
     color: '#2e7d2e',
-    fontWeight: '600',
   },
   menuSection: {
     backgroundColor: '#fff',
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   menuItem: {
     flexDirection: 'row',
@@ -342,27 +329,29 @@ const styles = StyleSheet.create({
   },
   menuTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    color: '#000',
     marginBottom: 2,
   },
   menuSubtitle: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
   },
   signOutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#feded2ff',
     padding: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#F44336',
+    borderColor: '#fea382',
   },
   signOutText: {
-    color: '#F44336',
+    color: '#f54707',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'berlin-sans-fb-bold',
+    fontWeight: '500',
+    letterSpacing: 1,
     marginLeft: 8,
   },
 });

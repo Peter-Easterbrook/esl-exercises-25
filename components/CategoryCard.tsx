@@ -114,7 +114,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
-          <IconSymbol name={category.icon as any} size={24} color='#2196F3' />
+          <IconSymbol name={category.icon as any} size={24} color='#0078ff' />
           <View style={styles.titleContainer}>
             <ThemedText type='defaultSemiBold' style={styles.title}>
               {category.name}
@@ -189,7 +189,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                     style={styles.fileItem}
                     onPress={() => handleDownloadFile(file)}
                   >
-                    <IconSymbol name='doc.text' size={16} color='#2196F3' />
+                    <IconSymbol name='doc.text' size={16} color='#0078ff' />
                     <ThemedText style={styles.fileItemText}>
                       {file.name}
                     </ThemedText>
@@ -214,14 +214,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   header: {
     flexDirection: 'row',
@@ -244,7 +237,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
   },
   exercisesList: {
     paddingHorizontal: 10,
@@ -269,7 +262,7 @@ const styles = StyleSheet.create({
   },
   exerciseDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     marginBottom: 8,
   },
   exerciseFooter: {
@@ -283,7 +276,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
     overflow: 'hidden',
-    fontWeight: '600',
   },
   beginner: {
     backgroundColor: '#e8f5e8',
@@ -299,12 +291,12 @@ const styles = StyleSheet.create({
   },
   exerciseType: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
     textTransform: 'capitalize',
   },
   noExercises: {
     textAlign: 'center',
-    color: '#666',
+    color: '#444',
     fontStyle: 'italic',
     padding: 20,
   },
@@ -318,7 +310,7 @@ const styles = StyleSheet.create({
   filesSectionTitle: {
     fontSize: 16,
     marginBottom: 12,
-    fontWeight: 'normal',
+    letterSpacing: 1,
     paddingLeft: 10,
   },
   fileItem: {

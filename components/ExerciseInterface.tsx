@@ -187,7 +187,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                 '#FFA500',
                 '#FF6347',
                 '#4CAF50',
-                '#2196F3',
+                '#0078ff',
                 '#9C27B0',
               ]}
             />
@@ -293,7 +293,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               <IconSymbol
                 name='square.and.arrow.down'
                 size={20}
-                color='#2196F3'
+                color='#0078ff'
               />
               <ThemedText style={styles.secondaryButtonText}>
                 Download Exercise
@@ -304,7 +304,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={styles.secondaryButton}
               onPress={handleRestart}
             >
-              <IconSymbol name='arrow.clockwise' size={20} color='#2196F3' />
+              <IconSymbol name='arrow.clockwise' size={20} color='#0078ff' />
               <ThemedText style={styles.secondaryButtonText}>
                 Try Again
               </ThemedText>
@@ -399,7 +399,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           <IconSymbol
             name='chevron.left'
             size={20}
-            color={currentQuestionIndex === 0 ? '#ccc' : '#2196F3'}
+            color={currentQuestionIndex === 0 ? '#ccc' : '#0078ff'}
           />
           <ThemedText
             style={[
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     marginBottom: 8,
   },
   progressBar: {
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0078ff',
     borderRadius: 2,
   },
   questionSection: {
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   selectedOption: {
-    borderColor: '#2196F3',
+    borderColor: '#0078ff',
     backgroundColor: '#f0f8ff',
   },
   optionContent: {
@@ -516,16 +516,15 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   selectedIndicator: {
-    borderColor: '#2196F3',
-    backgroundColor: '#2196F3',
+    borderColor: '#0078ff',
+    backgroundColor: '#0078ff',
   },
   optionText: {
     fontSize: 16,
     flex: 1,
   },
   selectedOptionText: {
-    color: '#2196F3',
-    fontWeight: '600',
+    color: '#0078ff',
   },
   navigationFooter: {
     flexDirection: 'row',
@@ -543,11 +542,11 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     fontSize: 16,
-    color: '#2196F3',
+    color: '#0078ff',
     marginLeft: 4,
   },
   primaryButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0078ff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -558,7 +557,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
+
     marginRight: 4,
     textAlign: 'center',
   },
@@ -583,8 +582,8 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 32,
-    fontWeight: '500',
-    color: '#2196F3',
+
+    color: '#0078ff',
     marginBottom: 16,
   },
   scoreIndicator: {
@@ -600,7 +599,7 @@ const styles = StyleSheet.create({
   },
   scoreDescription: {
     fontSize: 16,
-    color: '#666',
+    color: '#444',
     textAlign: 'center',
   },
   reviewSection: {
@@ -624,8 +623,8 @@ const styles = StyleSheet.create({
   },
   questionNumber: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
+
+    color: '#444',
   },
   reviewQuestion: {
     fontSize: 16,
@@ -643,18 +642,17 @@ const styles = StyleSheet.create({
   },
   correctAnswer: {
     color: '#4CAF50',
-    fontWeight: '500',
   },
   explanation: {
     backgroundColor: '#f8f9fa',
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#2196F3',
+    borderLeftColor: '#0078ff',
   },
   explanationText: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     fontStyle: 'italic',
   },
   resultsFooter: {
@@ -669,13 +667,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: '#0078ff',
     borderRadius: 8,
     gap: 8,
   },
   secondaryButtonText: {
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
-    fontWeight: '600',
   },
 });

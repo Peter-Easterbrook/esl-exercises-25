@@ -1,3 +1,4 @@
+import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
@@ -5,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
@@ -81,101 +83,113 @@ export default function AuthScreen() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      keyboardShouldPersistTaps='handled'
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior='padding'
+      keyboardVerticalOffset={0}
     >
-      <View style={styles.titleContainer}>
-        <View style={styles.titleText}>
-          <Image
-            source={require('@/assets/images/favicon.png')}
-            style={{ width: 60, height: 60 }}
-          />
-
-          <Text style={styles.title}>ESL Exercises</Text>
-        </View>
-        <Text style={styles.subtitle}>
-          {isLogin ? 'Sign in to your account' : 'Create a new account'}
-        </Text>
-      </View>
-
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder='Email'
-          value={email}
-          onChangeText={setEmail}
-          keyboardType='email-address'
-          autoCapitalize='none'
-          autoComplete='email'
-          textContentType='emailAddress'
-        />
-
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder='Password'
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            autoComplete={isLogin ? 'current-password' : 'new-password'}
-            textContentType={isLogin ? 'password' : 'newPassword'}
-          />
-          <TouchableOpacity
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <IconSymbol
-              name={showPassword ? 'eye' : 'eye.slash'}
-              size={20}
-              color='#666'
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps='handled'
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.titleContainer}>
+          <View style={styles.titleText}>
+            <Image
+              source={require('@/assets/images/favicon.png')}
+              style={{ width: 60, height: 60 }}
             />
-          </TouchableOpacity>
+
+            <ThemedText type='title' style={styles.title}>
+              ESL Exercises
+            </ThemedText>
+          </View>
+          <ThemedText type='default' style={styles.subtitle}>
+            {isLogin ? 'Sign in to your account' : 'Create a new account'}
+          </ThemedText>
         </View>
 
-        {!isLogin && (
+        <View style={styles.form}>
           <TextInput
             style={styles.input}
-            placeholder='Display Name (optional)'
-            value={displayName}
-            onChangeText={setDisplayName}
-            autoComplete='name'
-            textContentType='name'
+            placeholder='Email'
+            value={email}
+            onChangeText={setEmail}
+            keyboardType='email-address'
+            autoCapitalize='none'
+            autoComplete='email'
+            textContentType='emailAddress'
           />
-        )}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder='Password'
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoComplete={isLogin ? 'current-password' : 'new-password'}
+              textContentType={isLogin ? 'password' : 'newPassword'}
+            />
+            <TouchableOpacity
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <IconSymbol
+                name={showPassword ? 'eye' : 'eye.slash'}
+                size={20}
+                color='#666'
+              />
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity
-          style={styles.linkButton}
-          onPress={() => setIsLogin(!isLogin)}
-        >
-          <Text style={styles.linkText}>
-            {isLogin
-              ? "Don't have an account? Sign up"
-              : 'Already have an account? Sign in'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          {!isLogin && (
+            <TextInput
+              style={styles.input}
+              placeholder='Display Name (optional)'
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoComplete='name'
+              textContentType='name'
+            />
+          )}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => setIsLogin(!isLogin)}
+          >
+            <Text style={styles.linkText}>
+              {isLogin
+                ? "Don't have an account? Sign up"
+                : 'Already have an account? Sign in'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 100, // Increased padding to ensure button is visible above keyboard
     backgroundColor: '#fff',
   },
   titleContainer: {
@@ -189,18 +203,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontFamily: ' inherit',
-    fontSize: 36,
-    fontWeight: '500',
+    fontSize: 34,
     textAlign: 'center',
+    paddingBottom: 10,
     marginRight: 20,
     marginBottom: 10,
-    color: '#2196F3',
   },
   subtitle: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#666',
   },
   form: {
     gap: 16,
@@ -235,7 +246,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0078ff',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -244,14 +255,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
   },
   linkButton: {
     alignItems: 'center',
     padding: 16,
   },
   linkText: {
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
 });

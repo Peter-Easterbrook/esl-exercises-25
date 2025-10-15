@@ -162,7 +162,7 @@ export default function UploadFilesScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -293,7 +293,7 @@ export default function UploadFilesScreen() {
                   <IconSymbol
                     name={file.fileType === 'pdf' ? 'doc.text' : 'doc'}
                     size={24}
-                    color='#2196F3'
+                    color='#0078ff'
                   />
                 </View>
                 <View style={styles.fileInfo}>
@@ -345,12 +345,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
   title: {
     fontSize: 28,
-    fontWeight: '500',
+
     lineHeight: 34,
   },
   content: {
@@ -383,15 +383,14 @@ const styles = StyleSheet.create({
   },
   selectedCategory: {
     backgroundColor: '#e3f2fd',
-    borderColor: '#2196F3',
+    borderColor: '#0078ff',
   },
   categoryText: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
   },
   selectedCategoryText: {
-    color: '#2196F3',
-    fontWeight: '600',
+    color: '#0078ff',
   },
   uploadButton: {
     flexDirection: 'row',
@@ -408,11 +407,10 @@ const styles = StyleSheet.create({
   uploadButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
   },
   helpText: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
     textAlign: 'center',
     marginTop: 8,
   },
@@ -438,12 +436,12 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 14,
-    fontWeight: '500',
+
     marginBottom: 4,
   },
   fileDetails: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
     marginBottom: 2,
   },
   fileDate: {
@@ -472,11 +470,10 @@ const styles = StyleSheet.create({
   },
   exerciseChipText: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
   },
   selectedExerciseChipText: {
     color: '#fff',
-    fontWeight: '600',
   },
   linkedExercise: {
     fontSize: 11,

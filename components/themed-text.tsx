@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     fontFamily: 'berlin-sans-fb',
+    fontWeight: 'normal',
     letterSpacing: 1,
   },
   defaultSemiBold: {
@@ -65,6 +66,9 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
     fontFamily: 'berlin-sans-fb',
+    fontWeight: '400',
+    letterSpacing: 1,
+    textDecorationLine: 'underline',
     color: '#0a7ea4',
   },
 });

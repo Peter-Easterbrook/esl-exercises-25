@@ -239,7 +239,7 @@ export default function AddExerciseScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -538,12 +538,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
   title: {
     fontSize: 28,
-    fontWeight: '500',
+
     lineHeight: 34,
   },
   content: {
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+
     marginBottom: 8,
     color: '#333',
   },
@@ -610,8 +610,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   selectedText: {
-    color: '#2196F3',
-    fontWeight: '600',
+    color: '#0078ff',
   },
   disabledText: {
     color: '#ccc',
@@ -628,7 +627,6 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontSize: 12,
-    fontWeight: '600',
   },
   questionCard: {
     backgroundColor: '#f8f9fa',
@@ -644,8 +642,8 @@ const styles = StyleSheet.create({
   },
   questionNumber: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#2196F3',
+
+    color: '#0078ff',
   },
   removeButton: {
     padding: 4,
@@ -657,9 +655,9 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 14,
-    fontWeight: '600',
+
     width: 24,
-    color: '#666',
+    color: '#444',
   },
   optionInput: {
     flex: 1,
@@ -673,7 +671,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   saveButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0078ff',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -681,6 +679,5 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
   },
 });

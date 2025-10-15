@@ -87,7 +87,7 @@ export default function ManageExercisesScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -183,7 +183,7 @@ export default function ManageExercisesScreen() {
                     style={[styles.actionButton, styles.editButton]}
                     onPress={() => handleEditExercise(exercise)}
                   >
-                    <IconSymbol name='pencil' size={16} color='#2196F3' />
+                    <IconSymbol name='pencil' size={16} color='#0078ff' />
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -222,12 +222,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
   title: {
     fontSize: 28,
-    fontWeight: '500',
+
     lineHeight: 34,
   },
   content: {
@@ -267,7 +267,6 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
   },
   exerciseList: {
     flex: 1,
@@ -278,8 +277,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#666',
+
+    color: '#444',
     marginTop: 16,
     marginBottom: 8,
   },
@@ -305,12 +304,12 @@ const styles = StyleSheet.create({
   },
   exerciseTitle: {
     fontSize: 16,
-    fontWeight: '600',
+
     marginBottom: 4,
   },
   exerciseDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     marginBottom: 12,
   },
   exerciseMetadata: {
@@ -325,7 +324,7 @@ const styles = StyleSheet.create({
   },
   metadataText: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
   },
   beginner: {
     color: '#4CAF50',

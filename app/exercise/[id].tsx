@@ -90,7 +90,7 @@ export default function ExerciseScreen() {
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+              <IconSymbol name='chevron.left' size={24} color='#0078ff' />
               <ThemedText style={styles.backText}>Back</ThemedText>
             </TouchableOpacity>
           </View>
@@ -151,7 +151,7 @@ export default function ExerciseScreen() {
             style={styles.backButton}
             onPress={handleBackToInstructions}
           >
-            <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+            <IconSymbol name='chevron.left' size={24} color='#0078ff' />
             <ThemedText style={styles.backText}>Instructions</ThemedText>
           </TouchableOpacity>
         </View>
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
   content: {
@@ -195,13 +195,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '500',
+
     marginBottom: 8,
     lineHeight: 34,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#444',
     marginBottom: 16,
   },
   difficultyContainer: {
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
     overflow: 'hidden',
-    fontWeight: '600',
   },
   beginner: {
     backgroundColor: '#e8f5e8',
@@ -231,7 +230,7 @@ const styles = StyleSheet.create({
   },
   exerciseType: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     textTransform: 'capitalize',
   },
   instructionsSection: {
@@ -260,7 +259,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   primaryButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0078ff',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -268,6 +267,5 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
   },
 });

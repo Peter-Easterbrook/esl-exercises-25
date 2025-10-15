@@ -98,7 +98,7 @@ export default function ProgressScreen() {
           </View>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#2196F3' />
+          <ActivityIndicator size='large' color='#0078ff' />
           <ThemedText style={styles.loadingText}>
             Loading your progress...
           </ThemedText>
@@ -157,7 +157,7 @@ export default function ProgressScreen() {
               </View>
 
               <View style={styles.statRow}>
-                <IconSymbol name='chart.bar.fill' size={20} color='#2196F3' />
+                <IconSymbol name='chart.bar.fill' size={20} color='#0078ff' />
                 <ThemedText style={styles.statText}>
                   Average score: {stats.averageScore}%
                 </ThemedText>
@@ -202,7 +202,7 @@ export default function ProgressScreen() {
                         {
                           width: `${categoryProgress}%`,
                           backgroundColor:
-                            categoryProgress >= 70 ? '#4CAF50' : '#2196F3',
+                            categoryProgress >= 70 ? '#4CAF50' : '#0078ff',
                         },
                       ]}
                     />
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: '#444',
   },
   header: {
     paddingHorizontal: 16,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#444',
     marginTop: 4,
   },
   content: {
@@ -294,14 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   cardTitle: {
     marginBottom: 16,
@@ -321,8 +314,7 @@ const styles = StyleSheet.create({
   },
   progressPercentage: {
     fontSize: 20,
-    fontWeight: '500',
-    color: '#2196F3',
+    color: '#0078ff',
   },
   progressDetails: {
     flex: 1,
@@ -334,7 +326,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
     marginLeft: 8,
   },
   categoryItem: {
@@ -351,11 +343,10 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 16,
-    fontWeight: '600',
   },
   categoryScore: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
   },
   categoryProgress: {
     flexDirection: 'row',
@@ -374,7 +365,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
     minWidth: 40,
   },
   activityItem: {
@@ -398,12 +389,12 @@ const styles = StyleSheet.create({
   },
   activityTitle: {
     fontSize: 16,
-    fontWeight: '600',
+
     marginBottom: 2,
   },
   activityDetails: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
   },
   emptyState: {
     alignItems: 'center',
@@ -411,9 +402,8 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 16,
-    color: '#666',
+    color: '#444',
     marginTop: 16,
-    fontWeight: '500',
   },
   emptyStateSubtext: {
     fontSize: 14,

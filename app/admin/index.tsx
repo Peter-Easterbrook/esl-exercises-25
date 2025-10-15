@@ -85,7 +85,7 @@ export default function AdminPanel() {
       icon: 'pencil.circle',
       title: 'Manage Exercises',
       subtitle: 'Edit or delete existing exercises',
-      color: '#2196F3',
+      color: '#0078ff',
       onPress: () => router.push('/admin/manage-exercises'),
       animation: 'slide_from_right',
     },
@@ -142,7 +142,7 @@ export default function AdminPanel() {
           style={styles.backButton}
           onPress={() => router.push('/(tabs)/profile')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#2196F3' />
+          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
           <ThemedText style={styles.backText}>Back to Profile</ThemedText>
         </TouchableOpacity>
 
@@ -160,7 +160,7 @@ export default function AdminPanel() {
 
           {loading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size='large' color='#2196F3' />
+              <ActivityIndicator size='large' color='#0078ff' />
               <ThemedText style={styles.loadingText}>
                 Loading statistics...
               </ThemedText>
@@ -168,7 +168,7 @@ export default function AdminPanel() {
           ) : (
             <View style={styles.statsGrid}>
               <View style={styles.statCard}>
-                <IconSymbol name='doc.text' size={24} color='#2196F3' />
+                <IconSymbol name='doc.text' size={24} color='#0078ff' />
                 <ThemedText style={styles.statNumber}>
                   {stats.totalExercises}
                 </ThemedText>
@@ -272,12 +272,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#2196F3',
+    color: '#0078ff',
     fontSize: 16,
   },
   title: {
     fontSize: 28,
-    fontWeight: '500',
+
     lineHeight: 34,
   },
   content: {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#666',
+    color: '#444',
   },
   sectionTitle: {
     marginBottom: 16,
@@ -313,24 +313,17 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   statNumber: {
     fontSize: 24,
-    fontWeight: '500',
+
     marginVertical: 8,
     color: '#333',
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
     textAlign: 'center',
   },
   actionsContainer: {
@@ -345,14 +338,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
   },
   actionIcon: {
     width: 56,
@@ -367,11 +353,11 @@ const styles = StyleSheet.create({
   },
   actionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+
     marginBottom: 4,
   },
   actionSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#444',
   },
 });
