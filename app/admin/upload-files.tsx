@@ -291,13 +291,19 @@ export default function UploadFilesScreen() {
               <View key={file.id} style={styles.fileCard}>
                 <View style={styles.fileIcon}>
                   <IconSymbol
-                    name={file.fileType === 'pdf' ? 'doc.text' : 'doc'}
+                    name={
+                      file.fileType.toLowerCase() === 'pdf'
+                        ? 'doc.text.fill'
+                        : 'doc.fill'
+                    }
                     size={24}
                     color='#0078ff'
                   />
                 </View>
                 <View style={styles.fileInfo}>
-                  <ThemedText style={styles.fileName}>{file.name}</ThemedText>
+                  <ThemedText type='defaultSemiBold' style={styles.fileName}>
+                    {file.name}
+                  </ThemedText>
                   <ThemedText style={styles.fileDetails}>
                     {formatFileSize(file.size)} • {file.fileType.toUpperCase()}
                   </ThemedText>
@@ -313,6 +319,7 @@ export default function UploadFilesScreen() {
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => handleDeleteFile(file)}
+                  activeOpacity={0.7}
                 >
                   <IconSymbol name='trash' size={20} color='#F44336' />
                 </TouchableOpacity>
@@ -436,7 +443,6 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 14,
-
     marginBottom: 4,
   },
   fileDetails: {
