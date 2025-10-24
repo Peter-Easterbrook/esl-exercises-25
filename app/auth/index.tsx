@@ -96,8 +96,9 @@ export default function AuthScreen() {
         <View style={styles.titleContainer}>
           <View style={styles.titleText}>
             <Image
-              source={require('@/assets/images/favicon.png')}
-              style={{ width: 60, height: 60 }}
+              source={require('@/assets/images/LL2020.png')}
+              style={{ width: 80, height: 80 }}
+              resizeMode='contain'
             />
 
             <ThemedText type='title' style={styles.title}>

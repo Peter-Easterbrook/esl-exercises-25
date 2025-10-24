@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -146,9 +147,16 @@ export default function AdminPanel() {
           <ThemedText style={styles.backText}>Back to Profile</ThemedText>
         </TouchableOpacity>
 
-        <ThemedText type='title' style={styles.title}>
-          Admin Panel
-        </ThemedText>
+        <View style={styles.headerTitleContainer}>
+          <Image
+            source={require('@/assets/images/LL2020.png')}
+            style={styles.headerLogo}
+            resizeMode='contain'
+          />
+          <ThemedText type='title' style={styles.title}>
+            Admin Panel
+          </ThemedText>
+        </View>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -275,9 +283,17 @@ const styles = StyleSheet.create({
     color: '#0078ff',
     fontSize: 16,
   },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  headerLogo: {
+    width: 40,
+    height: 40,
+  },
   title: {
     fontSize: 28,
-
     lineHeight: 34,
   },
   content: {

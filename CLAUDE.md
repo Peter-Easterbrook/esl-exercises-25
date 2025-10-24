@@ -37,8 +37,10 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **File Upload Management** - Admins can upload and link files to specific exercises or categories
 - **Results Export** - Export exercise results and progress reports
 - **Admin Panel** - Full content management for administrators
+- **About Page** - Company information from Easterbrook Language Services with contact details
 - **Responsive UI** - Support for light/dark themes, haptic feedback, and smooth animations
 - **Confetti Celebrations** - Visual feedback for perfect scores using react-native-fast-confetti
+- **Branding** - Easterbrook logo (LL2020.png) integrated throughout the app
 
 ### File Structure
 
@@ -51,6 +53,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
     - `progress.tsx` - User progress tracking and statistics
     - `profile.tsx` - User profile and settings
   - `exercise/[id].tsx` - Exercise detail and completion interface with animated transitions
+  - `about.tsx` - About page with company information, services, and contact details
   - `admin/` - Administrative panel for content management
     - `index.tsx` - Admin dashboard with statistics
     - `add-exercise.tsx` - Exercise creation interface
@@ -131,6 +134,11 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - Exercise completion - `FadeIn` for emphasis on results
 - Back navigation uses gesture-enabled `slide_from_left`
 
+**Informational Screens**
+
+- About page (`/about`) - `slide_from_right` for natural forward flow
+- Accessible from Profile menu, displays company information and contact details
+
 **Admin Features**
 
 - Admin panel (`/admin`) - `slide_from_bottom` modal-style for special access
@@ -201,6 +209,19 @@ Before running the app, you must:
 - Users can register or login with email/password
 - Authenticated users access the main tab navigation
 - Admin users have access to the admin panel via profile screen
+
+### About Page
+
+The About page provides comprehensive information about Easterbrook Language Services:
+
+- **Company Information** - Overview of Easterbrook Language Services and its mission
+- **History** - Background and growth from local tutoring to comprehensive platform
+- **Services Offered** - English instruction, professional translation, corporate training, and educational technology
+- **App Features** - Portfolio highlighting structured learning, interactive practice, progress tracking, and flexible learning
+- **Contact Information** - Clickable links to website (easterbrook.at) and email (sdl@easterbrook.at)
+- **Branding** - Prominent display of the Easterbrook logo (black lion rampant on gold background)
+- **Navigation** - Accessible from Profile menu with `slide_from_right` animation
+- **Design** - Professional scrollable layout with themed sections and cards
 
 ### Admin Features
 
@@ -276,6 +297,8 @@ Before running the app, you must:
 - **Loading states** with themed spinners
 - **Error handling** with user-friendly alerts
 - **Empty states** with helpful messages
+- **Branding** - Easterbrook logo (LL2020.png) appears in authentication, profile, admin panel, and about screens
+- **Contact accessibility** - Direct links to email and website from About page
 
 ### Path Aliases
 

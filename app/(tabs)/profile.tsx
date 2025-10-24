@@ -139,11 +139,7 @@ Your UID: ${user?.uid}`,
       icon: 'info.circle',
       title: 'About',
       subtitle: 'App version and information',
-      onPress: () =>
-        Alert.alert(
-          'ESL Exercises',
-          'Version 1.0.0\n\nBuilt to help non-native English speakers improve their language skills.'
-        ),
+      onPress: () => router.push('/about'),
     },
   ];
 
@@ -162,8 +158,9 @@ Your UID: ${user?.uid}`,
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
           <Image
-            source={require('@/assets/images/favicon.png')}
-            style={{ width: 40, height: 40 }}
+            source={require('@/assets/images/LL2020.png')}
+            style={{ width: 45, height: 45 }}
+            resizeMode='contain'
           />
           <ThemedText type='title'>Profile</ThemedText>
         </View>
