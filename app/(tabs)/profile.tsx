@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   userIcon: {
     width: 64,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 24,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   menuItem: {
     flexDirection: 'row',
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#feded2ff',
     padding: 16,
     borderRadius: 8,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#fea382',
   },
   signOutText: {

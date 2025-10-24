@@ -137,6 +137,23 @@ export const getExercisesByCategory = async (
   }
 };
 
+export const getAllExercises = async (): Promise<Exercise[]> => {
+  try {
+    const exercisesRef = collection(db, 'exercises');
+    const snapshot = await getDocs(query(exercisesRef, orderBy('title')));
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate() || new Date(),
+      updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+    })) as Exercise[];
+  } catch (error) {
+    console.error('Error fetching all exercises:', error);
+    throw error;
+  }
+};
+
 export const createExercise = async (
   exercise: Omit<Exercise, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> => {

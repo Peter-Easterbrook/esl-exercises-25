@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   cardTitle: {
     marginBottom: 16,

@@ -14,10 +14,12 @@ import {
 import { Category, DownloadableFile, Exercise } from '@/types';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
+  Pressable,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -179,24 +181,12 @@ export default function UploadFilesScreen() {
           </ThemedText>
           <View style={styles.categoryGrid}>
             {categories.map((category) => (
-              <TouchableOpacity
+              <CategoryButton
                 key={category.id}
-                style={[
-                  styles.categoryButton,
-                  selectedCategory === category.id && styles.selectedCategory,
-                ]}
+                category={category}
+                isSelected={selectedCategory === category.id}
                 onPress={() => setSelectedCategory(category.id)}
-              >
-                <ThemedText
-                  style={[
-                    styles.categoryText,
-                    selectedCategory === category.id &&
-                      styles.selectedCategoryText,
-                  ]}
-                >
-                  {category.name}
-                </ThemedText>
-              </TouchableOpacity>
+              />
             ))}
           </View>
         </View>
@@ -209,42 +199,18 @@ export default function UploadFilesScreen() {
             </ThemedText>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={styles.exerciseList}>
-                <TouchableOpacity
-                  style={[
-                    styles.exerciseChip,
-                    !selectedExercise && styles.selectedExerciseChip,
-                  ]}
+                <ExerciseChip
+                  label='None'
+                  isSelected={!selectedExercise}
                   onPress={() => setSelectedExercise('')}
-                >
-                  <ThemedText
-                    style={[
-                      styles.exerciseChipText,
-                      !selectedExercise && styles.selectedExerciseChipText,
-                    ]}
-                  >
-                    None
-                  </ThemedText>
-                </TouchableOpacity>
+                />
                 {exercises.map((exercise) => (
-                  <TouchableOpacity
+                  <ExerciseChip
                     key={exercise.id}
-                    style={[
-                      styles.exerciseChip,
-                      selectedExercise === exercise.id &&
-                        styles.selectedExerciseChip,
-                    ]}
+                    label={exercise.title}
+                    isSelected={selectedExercise === exercise.id}
                     onPress={() => setSelectedExercise(exercise.id)}
-                  >
-                    <ThemedText
-                      style={[
-                        styles.exerciseChipText,
-                        selectedExercise === exercise.id &&
-                          styles.selectedExerciseChipText,
-                      ]}
-                    >
-                      {exercise.title}
-                    </ThemedText>
-                  </TouchableOpacity>
+                  />
                 ))}
               </View>
             </ScrollView>
@@ -296,7 +262,7 @@ export default function UploadFilesScreen() {
                         ? 'doc.text.fill'
                         : 'doc.fill'
                     }
-                    size={24}
+                    size={28}
                     color='#0078ff'
                   />
                 </View>
@@ -329,6 +295,126 @@ export default function UploadFilesScreen() {
         )}
       </ScrollView>
     </ThemedView>
+  );
+}
+
+// Category Button Component with Animation
+function CategoryButton({
+  category,
+  isSelected,
+  onPress,
+}: {
+  category: Category;
+  isSelected: boolean;
+  onPress: () => void;
+}) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.95,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      android_ripple={{
+        color: 'rgba(0, 120, 255, 0.2)',
+        foreground: true,
+      }}
+    >
+      <Animated.View
+        style={[
+          styles.categoryButton,
+          isSelected && styles.selectedCategory,
+          { transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        <ThemedText
+          style={[
+            styles.categoryText,
+            isSelected && styles.selectedCategoryText,
+          ]}
+        >
+          {category.name}
+        </ThemedText>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
+// Exercise Chip Component with Animation
+function ExerciseChip({
+  label,
+  isSelected,
+  onPress,
+}: {
+  label: string;
+  isSelected: boolean;
+  onPress: () => void;
+}) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.92,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      android_ripple={{
+        color: 'rgba(76, 175, 80, 0.3)',
+        foreground: true,
+      }}
+    >
+      <Animated.View
+        style={[
+          styles.exerciseChip,
+          isSelected && styles.selectedExerciseChip,
+          { transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        <ThemedText
+          style={[
+            styles.exerciseChipText,
+            isSelected && styles.selectedExerciseChipText,
+          ]}
+        >
+          {label}
+        </ThemedText>
+      </Animated.View>
+    </Pressable>
   );
 }
 
@@ -384,20 +470,23 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: '#f8f9fa',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    backgroundColor: '#e8f4fd',
+    borderWidth: 0.5,
+    borderColor: '#d0e8f7',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   selectedCategory: {
     backgroundColor: '#e3f2fd',
     borderColor: '#0078ff',
+    boxShadow: '0px 2px 6px rgba(0, 120, 255, 0.3)',
   },
   categoryText: {
     fontSize: 14,
-    color: '#444',
+    color: '#0078ff',
   },
   selectedCategoryText: {
     color: '#0078ff',
+    fontWeight: '600',
   },
   uploadButton: {
     flexDirection: 'row',
@@ -407,6 +496,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 8,
     gap: 8,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
   },
   uploadingButton: {
     opacity: 0.6,
@@ -467,12 +557,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 16,
     backgroundColor: '#f8f9fa',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
   },
   selectedExerciseChip: {
     backgroundColor: '#4CAF50',
     borderColor: '#4CAF50',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
+  },
+  pressedChip: {
+    opacity: 0.7,
   },
   exerciseChipText: {
     fontSize: 12,

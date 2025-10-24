@@ -274,6 +274,7 @@ export default function AddExerciseScreen() {
                   setExerciseData((prev) => ({ ...prev, title: text }))
                 }
                 placeholder='Enter exercise title'
+                placeholderTextColor='rgba(102, 102, 102, 0.5)'
               />
             </View>
 
@@ -286,6 +287,7 @@ export default function AddExerciseScreen() {
                   setExerciseData((prev) => ({ ...prev, description: text }))
                 }
                 placeholder='Brief description of the exercise'
+                placeholderTextColor='rgba(102, 102, 102, 0.5)'
               />
             </View>
 
@@ -300,6 +302,7 @@ export default function AddExerciseScreen() {
                 placeholder='Detailed instructions for students'
                 multiline
                 numberOfLines={4}
+                placeholderTextColor='rgba(102, 102, 102, 0.5)'
               />
             </View>
 
@@ -412,6 +415,7 @@ export default function AddExerciseScreen() {
                       handleQuestionChange(qIndex, 'question', text)
                     }
                     placeholder='Enter the question'
+                    placeholderTextColor='rgba(102, 102, 102, 0.5)'
                   />
                 </View>
 
@@ -433,6 +437,7 @@ export default function AddExerciseScreen() {
                             placeholder={`Option ${String.fromCharCode(
                               65 + oIndex
                             )}`}
+                            placeholderTextColor='rgba(102, 102, 102, 0.5)'
                           />
                         </View>
                       ))}
@@ -490,6 +495,7 @@ export default function AddExerciseScreen() {
                     placeholder='Explain why this is the correct answer'
                     multiline
                     numberOfLines={2}
+                    placeholderTextColor='rgba(102, 102, 102, 0.5)'
                   />
                 </View>
               </View>
@@ -576,7 +582,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,

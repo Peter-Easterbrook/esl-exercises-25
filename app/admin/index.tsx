@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   statNumber: {
     fontSize: 24,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   actionIcon: {
     width: 56,

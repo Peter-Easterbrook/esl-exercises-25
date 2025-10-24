@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -25,9 +26,9 @@ export default function ManageExercisesScreen() {
 
   const loadExercises = async () => {
     try {
-      // This would normally fetch all exercises from Firebase
-      // For now, we'll show a placeholder
-      setExercises([]);
+      const { getAllExercises } = await import('@/services/firebaseService');
+      const allExercises = await getAllExercises();
+      setExercises(allExercises);
     } catch (error) {
       console.error('Error loading exercises:', error);
       Alert.alert('Error', 'Failed to load exercises');
@@ -103,19 +104,24 @@ export default function ManageExercisesScreen() {
           <TextInput
             style={styles.searchInput}
             placeholder='Search exercises...'
+            placeholderTextColor='rgba(102, 102, 102, 0.5)'
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
         </View>
 
         {/* Add New Exercise Button */}
-        <TouchableOpacity
-          style={styles.addButton}
+        <Pressable
           onPress={() => router.push('/admin/add-exercise')}
+          android_ripple={{
+            color: 'rgba(149, 194, 151, 0.3)',
+            foreground: true,
+          }}
+          style={styles.addButton}
         >
           <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
           <ThemedText style={styles.addButtonText}>Add New Exercise</ThemedText>
-        </TouchableOpacity>
+        </Pressable>
 
         {/* Exercise List */}
         <ScrollView
@@ -243,16 +249,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   searchInput: {
     flex: 1,
     marginLeft: 12,
     fontSize: 16,
+    backgroundColor: '#fff',
+    padding: 6,
+    borderRadius: 8,
+    outlineWidth: 0,
   },
   addButton: {
     flexDirection: 'row',
@@ -263,6 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 20,
     gap: 8,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   addButtonText: {
     color: '#fff',
@@ -292,11 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   exerciseInfo: {
     flex: 1,

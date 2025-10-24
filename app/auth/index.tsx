@@ -113,6 +113,7 @@ export default function AuthScreen() {
           <TextInput
             style={styles.input}
             placeholder='Email'
+            placeholderTextColor='rgba(102, 102, 102, 0.5)'
             value={email}
             onChangeText={setEmail}
             keyboardType='email-address'
@@ -125,6 +126,7 @@ export default function AuthScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder='Password'
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -147,6 +149,7 @@ export default function AuthScreen() {
             <TextInput
               style={styles.input}
               placeholder='Display Name (optional)'
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
               value={displayName}
               onChangeText={setDisplayName}
               autoComplete='name'
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     padding: 16,
     borderRadius: 8,
@@ -232,7 +235,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     padding: 16,
     paddingRight: 50,
