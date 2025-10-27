@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\assets\\images\" /b)"
+      "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\assets\\images\" /b)",
+      "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\components\" /b)"
     ],
     "deny": [],
     "ask": []

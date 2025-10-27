@@ -81,6 +81,7 @@ Your UID: ${user?.uid}`,
     | 'chart.bar'
     | 'questionmark.circle'
     | 'info.circle'
+    | 'doc.text'
     | 'gear';
 
   const menuItems: Array<{
@@ -140,6 +141,12 @@ Your UID: ${user?.uid}`,
       title: 'About',
       subtitle: 'App version and information',
       onPress: () => router.push('/about'),
+    },
+    {
+      icon: 'doc.text',
+      title: 'Privacy Policy',
+      subtitle: 'View our privacy policy',
+      onPress: () => router.push('/privacy-policy'),
     },
   ];
 

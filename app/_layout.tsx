@@ -122,6 +122,17 @@ export default function RootLayout() {
             }}
           />
 
+          {/* Privacy Policy - slide from right (informational flow) */}
+          <Stack.Screen
+            name='privacy-policy'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+              gestureEnabled: true,
+              gestureDirection: 'horizontal',
+            }}
+          />
+
           {/* Modal - slide from bottom (traditional modal) */}
           <Stack.Screen
             name='modal'
