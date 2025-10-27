@@ -146,7 +146,7 @@ Your UID: ${user?.uid}`,
       icon: 'doc.text',
       title: 'Privacy Policy',
       subtitle: 'View our privacy policy',
-      onPress: () => router.push('/privacy-policy'),
+      onPress: () => router.push('/privacy-policy' as any),
     },
   ];
 

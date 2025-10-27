@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\assets\\images\" /b)",
-      "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\components\" /b)"
+      "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\components\" /b)",
+      "Bash(move privacy-policy.jsx privacy-policy.tsx)"
     ],
     "deny": [],
     "ask": []
