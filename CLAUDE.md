@@ -38,6 +38,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **Results Export** - Export exercise results and progress reports
 - **Admin Panel** - Full content management for administrators
 - **About Page** - Company information from Easterbrook Language Services with contact details
+- **Privacy Policy** - Comprehensive privacy policy accessible from Profile screen, compliant with GDPR, CCPA, and other data protection regulations
 - **Responsive UI** - Support for light/dark themes, haptic feedback, and smooth animations
 - **Confetti Celebrations** - Visual feedback for perfect scores using react-native-fast-confetti
 - **Branding** - Easterbrook logo (LL2020.png) integrated throughout the app
@@ -54,6 +55,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
     - `profile.tsx` - User profile and settings
   - `exercise/[id].tsx` - Exercise detail and completion interface with animated transitions
   - `about.tsx` - About page with company information, services, and contact details
+  - `privacy-policy.tsx` - Privacy policy screen with comprehensive legal information and data practices
   - `admin/` - Administrative panel for content management
     - `index.tsx` - Admin dashboard with statistics
     - `add-exercise.tsx` - Exercise creation interface
@@ -64,6 +66,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
   - `CategoryCard.tsx` - Expandable category cards with exercise lists and smooth expansion animations
   - `ExerciseInterface.tsx` - Interactive quiz interface with scoring, confetti celebrations, and file download functionality
+  - `Spacer.tsx` - Simple spacing component for consistent vertical/horizontal spacing
   - `themed-loader.tsx` - Theme-aware loading indicator component
   - `themed-view.tsx` - Theme-aware View component with light/dark mode support
   - `themed-text.tsx` - Theme-aware Text component with predefined text styles
@@ -138,6 +141,8 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 
 - About page (`/about`) - `slide_from_right` for natural forward flow
 - Accessible from Profile menu, displays company information and contact details
+- Privacy Policy (`/privacy-policy`) - `slide_from_right` for natural forward flow
+- Accessible from Profile menu, displays comprehensive privacy and data protection information
 
 **Admin Features**
 
@@ -223,6 +228,21 @@ The About page provides comprehensive information about Easterbrook Language Ser
 - **Navigation** - Accessible from Profile menu with `slide_from_right` animation
 - **Design** - Professional scrollable layout with themed sections and cards
 
+### Privacy Policy Page
+
+The Privacy Policy page provides comprehensive legal information about data practices:
+
+- **Legal Compliance** - GDPR, CCPA, and other data protection regulations covered
+- **Data Collection** - Details on what personal information is collected (email, username, password, exercise progress)
+- **Data Usage** - Explanation of how user data is processed and stored
+- **User Rights** - Information on accessing, modifying, and deleting personal data
+- **Contact Information** - Support contact at admin@onestepweb.dev
+- **Company Details** - OneStepWeb postal address (Hornbostelgasse 5, Wien 1060, Austria)
+- **Navigation** - Accessible from Profile menu with `slide_from_right` animation
+- **Design** - Scrollable legal document with themed text components and proper formatting
+- **Last Updated** - October 27, 2025
+- **No External APIs** - Privacy policy reflects that the app does not use external APIs (no Google Books API, etc.)
+
 ### Admin Features
 
 - Dashboard with real-time usage statistics from Firebase
@@ -271,6 +291,7 @@ The About page provides comprehensive information about Easterbrook Language Ser
 - Admin privileges checked server-side via Firestore rules
 - Exercise data validated before saving
 - File exports use secure temporary files
+- Privacy policy documents all data collection and usage practices
 - Firebase Security Rules enforce:
   - Users can only read/write their own data
   - Admins can read all users for statistics
@@ -299,6 +320,7 @@ The About page provides comprehensive information about Easterbrook Language Ser
 - **Empty states** with helpful messages
 - **Branding** - Easterbrook logo (LL2020.png) appears in authentication, profile, admin panel, and about screens
 - **Contact accessibility** - Direct links to email and website from About page
+- **Privacy transparency** - Full privacy policy accessible from Profile menu with GDPR/CCPA compliance
 
 ### Path Aliases
 
