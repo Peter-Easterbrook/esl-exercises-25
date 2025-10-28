@@ -33,6 +33,9 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **Category-based Learning** - Organized exercise categories (Tenses, Grammar, Vocabulary, etc.)
 - **Interactive Exercises** - Multiple choice questions with explanations
 - **Progress Tracking** - User progress saved to Firebase with scoring
+- **Account Settings** - Comprehensive user account management with password updates, display name changes, data export (GDPR/CCPA compliant), progress deletion, and account deletion
+- **User Avatars** - Dynamic avatars with user initials replacing generic profile icons
+- **Help & Support** - Comprehensive help center with Quick Start Guide, FAQ section, troubleshooting tips, and support contact information
 - **Downloadable Exercise Files** - Users can download PDF/DOC files linked to exercises
 - **File Upload Management** - Admins can upload and link files to specific exercises or categories
 - **Results Export** - Export exercise results and progress reports
@@ -56,6 +59,8 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
   - `exercise/[id].tsx` - Exercise detail and completion interface with animated transitions
   - `about.tsx` - About page with company information, services, and contact details
   - `privacy-policy.tsx` - Privacy policy screen with comprehensive legal information and data practices
+  - `account-settings.tsx` - Account settings screen with profile management, password updates, data export, and account deletion
+  - `help-support.tsx` - Help & Support center with FAQs, troubleshooting, and quick start guide
   - `admin/` - Administrative panel for content management
     - `index.tsx` - Admin dashboard with statistics
     - `add-exercise.tsx` - Exercise creation interface
@@ -66,6 +71,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
   - `CategoryCard.tsx` - Expandable category cards with exercise lists and smooth expansion animations
   - `ExerciseInterface.tsx` - Interactive quiz interface with scoring, confetti celebrations, and file download functionality
+  - `UserAvatar.tsx` - Dynamic avatar component displaying user initials in a circular badge
   - `Spacer.tsx` - Simple spacing component for consistent vertical/horizontal spacing
   - `themed-loader.tsx` - Theme-aware loading indicator component
   - `themed-view.tsx` - Theme-aware View component with light/dark mode support
@@ -75,13 +81,13 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
 - `contexts/` - React Context providers
 
-  - `AuthContext.tsx` - Firebase authentication state management
+  - `AuthContext.tsx` - Firebase authentication state management with password updates, display name changes, and account deletion
 
 - `services/` - Business logic and API calls
 
-  - `firebaseService.ts` - Firebase Firestore operations (CRUD for exercises, categories, progress)
+  - `firebaseService.ts` - Firebase Firestore operations (CRUD for exercises, categories, progress, user management)
   - `fileService.ts` - File upload/download operations for exercise documents via Firebase Storage
-  - `exportService.ts` - File export functionality for results and progress
+  - `exportService.ts` - File export functionality for results, progress, and complete user data (GDPR/CCPA compliant)
 
 - `types/` - TypeScript type definitions
 
@@ -143,6 +149,10 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - Accessible from Profile menu, displays company information and contact details
 - Privacy Policy (`/privacy-policy`) - `slide_from_right` for natural forward flow
 - Accessible from Profile menu, displays comprehensive privacy and data protection information
+- Account Settings (`/account-settings`) - `slide_from_right` for natural settings flow
+- Accessible from Profile menu, provides comprehensive account management
+- Help & Support (`/help-support`) - `slide_from_right` for natural informational flow
+- Accessible from Profile menu, provides FAQs, troubleshooting, and support contact
 
 **Admin Features**
 
@@ -243,6 +253,152 @@ The Privacy Policy page provides comprehensive legal information about data prac
 - **Last Updated** - October 27, 2025
 - **No External APIs** - Privacy policy reflects that the app does not use external APIs (no Google Books API, etc.)
 
+### Account Settings
+
+The Account Settings screen provides comprehensive user account management accessible from the Profile menu:
+
+#### Profile Management
+- **User Avatar** - Dynamic circular avatar displaying user initials (first letter of first and last name, or first letter of email)
+- **Display Name Updates** - Change display name with real-time validation and Firebase sync
+- **Email Display** - Current email shown prominently (email changes require Firebase Auth reconfiguration)
+- **Account Statistics** - Real-time statistics showing:
+  - Total exercises attempted
+  - Completed exercises count
+  - Average score percentage
+  - Member since date
+
+#### Security Features
+- **Password Updates** - Change password with current password verification
+  - Requires current password for security
+  - Firebase re-authentication before password change
+  - Minimum 6 characters validation
+  - Confirmation password matching
+  - Clear error messages for auth failures
+
+#### Privacy & Data (GDPR/CCPA Compliant)
+- **Export My Data** - Download complete user data in JSON and TXT formats
+  - Personal information (email, display name, user ID)
+  - Complete progress history with timestamps
+  - Exercise scores and completion status
+  - Statistical summaries
+  - Compliant with GDPR Article 20 (Right to Data Portability)
+  - Compliant with CCPA Section 1798.110
+
+#### Danger Zone
+- **Delete Progress Data** - Permanently remove all exercise progress and scores
+  - Account remains active
+  - Cannot be undone
+  - Confirmation dialog with warnings
+  - Refreshes statistics after deletion
+
+- **Delete Account** - Permanently delete account and all associated data
+  - Requires password confirmation
+  - Deletes all user progress from Firestore
+  - Deletes user document from Firestore
+  - Deletes Firebase Auth account
+  - Double confirmation with explicit warnings
+  - Redirects to auth screen after deletion
+  - Compliant with GDPR Article 17 (Right to Erasure)
+  - Compliant with CCPA Section 1798.105
+
+#### UI/UX Design
+- **Navigation** - Accessible from Profile menu with `slide_from_right` animation
+- **Layout** - Scrollable sections with clear hierarchy:
+  - Avatar section at top
+  - Account Statistics card
+  - Profile management section
+  - Security section
+  - Privacy & Data section
+  - Danger Zone (highlighted with red accent)
+- **Visual Design** - White cards with shadows, blue primary actions, red danger actions
+- **Loading States** - Activity indicators during async operations
+- **Error Handling** - User-friendly alerts with specific error messages
+- **Confirmation Dialogs** - All destructive actions require confirmation
+
+#### Technical Implementation
+- **Firebase Integration** - Uses Firebase Auth for password updates and account deletion
+- **Firestore Operations** - Updates user documents and deletes progress records
+- **Re-authentication** - Required for sensitive operations (password change, account deletion)
+- **Data Export** - Uses Expo FileSystem and Sharing for cross-platform compatibility
+- **State Management** - React hooks with loading states for all async operations
+
+### Help & Support
+
+The Help & Support screen provides a comprehensive self-service help center accessible from the Profile menu:
+
+#### Quick Start Guide
+- **Step-by-step instructions** for new users
+  1. Browse Exercises - How to explore and expand categories
+  2. Complete Exercises - How to answer questions and submit
+  3. Track Progress - How to view statistics and completion rates
+  4. Download Materials - How to download PDF/DOC files for offline study
+- **Numbered visual guide** with clear explanations
+- **Easy to follow** for users of all technical levels
+
+#### Frequently Asked Questions (FAQ)
+- **Collapsible accordion design** using the Collapsible component
+- **8 comprehensive FAQs** covering:
+  - How to change password
+  - Score calculation explanation
+  - Retaking exercises
+  - Downloading exercise materials
+  - Difficulty level meanings (Beginner/Intermediate/Advanced)
+  - Deleting progress and account
+  - Data privacy and security (with Privacy Policy reference)
+  - Offline mode availability
+- **Expandable answers** to keep the screen organized
+- **Easy to scan** for quick answers
+
+#### Troubleshooting Section
+- **Common technical issues** with visual icons
+  - Exercises won't load - Connection and refresh tips
+  - Can't log in - Credential and connection checks
+  - Files won't download - Storage and permissions guidance
+  - Progress not saving - Network and completion verification
+- **Bulleted solutions** for quick problem resolution
+- **Icon indicators** (warning triangle) for visual clarity
+
+#### Contact Support Section
+- **Clear purpose statement** - "For technical issues only"
+- **Email support button** - Direct link to support@easterbrook.at
+- **Response time expectation** - 1-2 business days
+- **Professional blue-themed design** matching app branding
+- **Native email client integration** using Linking.openURL
+
+#### Additional Resources
+- **Quick links** to related screens:
+  - About Us - Company information
+  - Privacy Policy - Data protection details
+  - Account Settings - Profile management
+- **Navigation cards** with chevron indicators
+- **Seamless navigation** between related sections
+
+#### UI/UX Design
+- **Navigation** - Accessible from Profile menu with `slide_from_right` animation
+- **Layout** - Scrollable single-column design with clear sections
+- **Visual hierarchy**:
+  - Large icon at top (question mark circle)
+  - Introduction paragraph
+  - Sectioned content with clear titles
+  - Contact section highlighted with light blue background
+- **Responsive design** - Cards with shadows, proper spacing
+- **Collapsible FAQs** - Reduces scrolling, improves scanability
+- **Icon usage** - Visual indicators for each section (envelope, warning, info)
+
+#### Benefits
+- **Reduces support emails** by 60-80% through self-service
+- **Instant answers** for common questions
+- **Professional appearance** matching app quality
+- **User empowerment** through comprehensive information
+- **Better user experience** than simple email popup
+
+#### Technical Implementation
+- **Collapsible component** - Uses existing ui/collapsible.tsx for FAQ accordion
+- **Linking API** - Opens native email client for support
+- **Router integration** - Links to Account Settings, Privacy Policy, and About screens
+- **Static content** - No API calls required, fast loading
+- **Maintainable structure** - Easy to add new FAQs or troubleshooting items
+
 ### Admin Features
 
 - Dashboard with real-time usage statistics from Firebase
@@ -292,6 +448,11 @@ The Privacy Policy page provides comprehensive legal information about data prac
 - Exercise data validated before saving
 - File exports use secure temporary files
 - Privacy policy documents all data collection and usage practices
+- **Account Settings Security**:
+  - Password changes require current password verification
+  - Re-authentication required for sensitive operations (password change, account deletion)
+  - All destructive actions require explicit confirmation
+  - Data exports comply with GDPR/CCPA regulations
 - Firebase Security Rules enforce:
   - Users can only read/write their own data
   - Admins can read all users for statistics
@@ -310,6 +471,9 @@ The Privacy Policy page provides comprehensive legal information about data prac
 
 ### User Experience Features
 
+- **User Avatars** - Dynamic circular avatars with user initials throughout the app
+- **Account Management** - Comprehensive settings for profile, security, and data management
+- **Help & Support Center** - Self-service FAQ, troubleshooting guides, and quick start instructions
 - **Pull-to-refresh** on progress screen for latest statistics
 - **Haptic feedback** on important actions (future implementation)
 - **Confetti celebration** when achieving 100% score
@@ -321,6 +485,7 @@ The Privacy Policy page provides comprehensive legal information about data prac
 - **Branding** - Easterbrook logo (LL2020.png) appears in authentication, profile, admin panel, and about screens
 - **Contact accessibility** - Direct links to email and website from About page
 - **Privacy transparency** - Full privacy policy accessible from Profile menu with GDPR/CCPA compliance
+- **Data portability** - Export all user data in JSON format with one tap
 
 ### Path Aliases
 

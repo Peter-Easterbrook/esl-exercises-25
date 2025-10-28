@@ -1,8 +1,20 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  User,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  updateProfile,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider
+} from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/config/firebase';
 import { User as AppUser } from '@/types';
+import { updateUserDisplayName, deleteUserAccount } from '@/services/firebaseService';
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +23,10 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserPassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  updateDisplayName: (newDisplayName: string) => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -118,13 +134,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signOut(auth);
   };
 
+  const updateUserPassword = async (currentPassword: string, newPassword: string) => {
+    if (!user || !user.email) {
+      throw new Error('No user logged in');
+    }
+
+    // Re-authenticate user before password change
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // Update password
+    await updatePassword(user, newPassword);
+  };
+
+  const updateDisplayName = async (newDisplayName: string) => {
+    if (!user) {
+      throw new Error('No user logged in');
+    }
+
+    // Update in Firebase Auth
+    await updateProfile(user, { displayName: newDisplayName });
+
+    // Update in Firestore
+    await updateUserDisplayName(user.uid, newDisplayName);
+
+    // Refresh local user data
+    await refreshUserData();
+  };
+
+  const deleteAccount = async (password: string) => {
+    if (!user || !user.email) {
+      throw new Error('No user logged in');
+    }
+
+    // Re-authenticate user before account deletion
+    const credential = EmailAuthProvider.credential(user.email, password);
+    await reauthenticateWithCredential(user, credential);
+
+    // Delete all user data from Firestore
+    await deleteUserAccount(user.uid);
+
+    // Delete Firebase Auth account
+    await deleteUser(user);
+  };
+
+  const refreshUserData = async () => {
+    if (!user) {
+      return;
+    }
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        setAppUser(userDoc.data() as AppUser);
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
+  };
+
   const value = {
     user,
     appUser,
     loading,
     signIn,
     signUp,
-    logout
+    logout,
+    updateUserPassword,
+    updateDisplayName,
+    deleteAccount,
+    refreshUserData,
   };
 
   return (

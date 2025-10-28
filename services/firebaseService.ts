@@ -585,3 +585,54 @@ Ready to begin? Tap "Start Exercise" below!`,
     throw error;
   }
 };
+
+// User Management Operations
+
+// Update user display name
+export const updateUserDisplayName = async (
+  userId: string,
+  displayName: string
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      displayName,
+    });
+  } catch (error) {
+    console.error('Error updating user display name:', error);
+    throw error;
+  }
+};
+
+// Delete all user progress data
+export const deleteAllUserProgress = async (userId: string): Promise<void> => {
+  try {
+    const progressRef = collection(db, 'userProgress');
+    const userProgressQuery = query(progressRef, where('userId', '==', userId));
+    const snapshot = await getDocs(userProgressQuery);
+
+    // Delete all progress documents for this user
+    const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    console.log(`Deleted ${snapshot.docs.length} progress records for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting user progress:', error);
+    throw error;
+  }
+};
+
+// Delete user account and all associated data
+export const deleteUserAccount = async (userId: string): Promise<void> => {
+  try {
+    // Delete all user progress first
+    await deleteAllUserProgress(userId);
+
+    // Delete user document
+    await deleteDoc(doc(db, 'users', userId));
+
+    console.log(`Deleted user account and all data for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting user account:', error);
+    throw error;
+  }
+};

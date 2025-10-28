@@ -133,6 +133,28 @@ export default function RootLayout() {
             }}
           />
 
+          {/* Account Settings - slide from right (settings flow) */}
+          <Stack.Screen
+            name='account-settings'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+              gestureEnabled: true,
+              gestureDirection: 'horizontal',
+            }}
+          />
+
+          {/* Help & Support - slide from right (informational flow) */}
+          <Stack.Screen
+            name='help-support'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+              gestureEnabled: true,
+              gestureDirection: 'horizontal',
+            }}
+          />
+
           {/* Modal - slide from bottom (traditional modal) */}
           <Stack.Screen
             name='modal'

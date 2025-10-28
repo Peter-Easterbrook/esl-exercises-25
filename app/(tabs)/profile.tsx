@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { checkUserDocument, logCurrentUserInfo } from '@/utils/adminSetup';
 import { router } from 'expo-router';
@@ -92,21 +93,13 @@ Your UID: ${user?.uid}`,
       icon: 'person.circle',
       title: 'Account Settings',
       subtitle: 'Update your profile information',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'Account settings will be available in a future update.'
-        ),
+      onPress: () => router.push('/account-settings'),
     },
     {
       icon: 'questionmark.circle',
       title: 'Help & Support',
       subtitle: 'Get help and contact support',
-      onPress: () =>
-        Alert.alert(
-          'Help & Support',
-          'For help, please contact support@easterbrook.at'
-        ),
+      onPress: () => router.push('/help-support'),
     },
     {
       icon: 'info.circle',
@@ -160,9 +153,11 @@ Your UID: ${user?.uid}`,
       >
         {/* User Info Card */}
         <View style={styles.userCard}>
-          <View style={styles.userIcon}>
-            <IconSymbol name='person.fill' size={32} color='#0078ff' />
-          </View>
+          <UserAvatar
+            displayName={appUser?.displayName}
+            email={user?.email || ''}
+            size={64}
+          />
 
           <View style={styles.userInfo}>
             <ThemedText type='defaultSemiBold' style={styles.userName}>
@@ -244,16 +239,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  userIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#f0f8ff',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginRight: 16,
+    gap: 16,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   userInfo: {
     flex: 1,
@@ -329,6 +317,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 0.5,
     borderColor: '#fea382',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   signOutText: {
     color: '#f54707',

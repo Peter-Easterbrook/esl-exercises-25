@@ -4,7 +4,10 @@
       "Bash(npm install:*)",
       "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\assets\\images\" /b)",
       "Bash(dir \"C:\\Users\\GitHub\\esl-exercises-25\\components\" /b)",
-      "Bash(move privacy-policy.jsx privacy-policy.tsx)"
+      "Bash(move privacy-policy.jsx privacy-policy.tsx)",
+      "Bash(npx expo start:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []
