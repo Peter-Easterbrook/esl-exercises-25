@@ -1,6 +1,8 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
@@ -18,8 +20,10 @@ export default function AboutScreen() {
   };
 
   const handleEmailPress = () => {
-    Linking.openURL('mailto:info@easterbrook.at');
+    Linking.openURL('mailto:sdl@easterbrook.at');
   };
+
+  const colorScheme = useColorScheme() ?? 'light';
 
   return (
     <ThemedView style={styles.container}>
@@ -27,10 +31,15 @@ export default function AboutScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => router.back()}
-          style={styles.backButton}
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           activeOpacity={0.7}
+          style={styles.backButton}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <Ionicons
+            name='arrow-back-circle-outline'
+            size={24}
+            color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
+          />
         </TouchableOpacity>
         <ThemedText type='title'>About</ThemedText>
         <View style={{ width: 40 }} />

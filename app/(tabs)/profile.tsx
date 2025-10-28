@@ -77,8 +77,6 @@ Your UID: ${user?.uid}`,
   type MenuItemIcon =
     | 'person.circle'
     | 'wrench'
-    | 'bell'
-    | 'chart.bar'
     | 'questionmark.circle'
     | 'info.circle'
     | 'doc.text'
@@ -101,39 +99,13 @@ Your UID: ${user?.uid}`,
         ),
     },
     {
-      icon: 'wrench',
-      title: 'Admin Setup Helper',
-      subtitle: 'Get info to set up admin access',
-      onPress: handleAdminSetup,
-    },
-    {
-      icon: 'bell',
-      title: 'Notifications',
-      subtitle: 'Manage your notification preferences',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'Notification settings will be available in a future update.'
-        ),
-    },
-    {
-      icon: 'chart.bar',
-      title: 'Export Progress',
-      subtitle: 'Download your learning progress',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'Progress export will be available in a future update.'
-        ),
-    },
-    {
       icon: 'questionmark.circle',
       title: 'Help & Support',
       subtitle: 'Get help and contact support',
       onPress: () =>
         Alert.alert(
           'Help & Support',
-          'For help, please contact support@eslexercises25.com'
+          'For help, please contact support@easterbrook.at'
         ),
     },
     {
@@ -150,14 +122,22 @@ Your UID: ${user?.uid}`,
     },
   ];
 
-  // Add admin panel item if user is admin
+  // Add admin-only items if user is admin
   if (appUser?.isAdmin) {
-    menuItems.unshift({
-      icon: 'gear' as MenuItemIcon,
-      title: 'Admin Panel',
-      subtitle: 'Manage exercises and content',
-      onPress: handleAdminPanel,
-    });
+    menuItems.unshift(
+      {
+        icon: 'gear' as MenuItemIcon,
+        title: 'Admin Panel',
+        subtitle: 'Manage exercises and content',
+        onPress: handleAdminPanel,
+      },
+      {
+        icon: 'wrench' as MenuItemIcon,
+        title: 'Admin Setup Helper',
+        subtitle: 'Get info to set up admin access',
+        onPress: handleAdminSetup,
+      }
+    );
   }
 
   return (
