@@ -63,7 +63,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
   - `help-support.tsx` - Help & Support center with FAQs, troubleshooting, and quick start guide
   - `admin/` - Administrative panel for content management
     - `index.tsx` - Admin dashboard with statistics
-    - `add-exercise.tsx` - Exercise creation interface
+    - `add-exercise.tsx` - Exercise creation and editing interface (supports both create and edit modes via route parameters)
     - `manage-exercises.tsx` - Exercise management and editing
     - `upload-files.tsx` - File upload and management interface for linking documents to exercises
 
@@ -401,13 +401,23 @@ The Help & Support screen provides a comprehensive self-service help center acce
 
 ### Admin Features
 
-- Dashboard with real-time usage statistics from Firebase
-- Create new exercises with multiple choice questions
-- Manage existing exercises (view, edit, delete)
-- Upload and manage downloadable files (PDF, DOC, DOCX up to 10MB)
-- Link files to specific exercises or make them available to entire categories
-- User management (future feature)
-- Analytics and reporting (future feature)
+- **Dashboard** - Real-time usage statistics from Firebase with exercise counts, user metrics, and activity tracking
+- **Create Exercises** - Add new exercises with multiple choice questions through intuitive form interface
+- **Edit Exercises** - Full editing capability for existing exercises
+  - Click pencil icon in manage-exercises screen
+  - Pre-populated form with all exercise data (title, description, instructions, questions, answers, explanations)
+  - Uses same interface as add-exercise.tsx with route parameter `?id={exerciseId}` to enable edit mode
+  - Updates exercise in Firebase and redirects back to manage-exercises screen
+- **Delete Exercises** - Remove exercises with confirmation dialog
+  - Click trash icon in manage-exercises screen
+  - Destructive confirmation alert prevents accidental deletion
+  - Permanently removes exercise from Firebase
+  - Automatic list refresh after deletion
+- **Search & Filter** - Search exercises by title or description in manage-exercises screen
+- **Upload Files** - Manage downloadable files (PDF, DOC, DOCX up to 10MB)
+- **Link Files** - Connect files to specific exercises or make them available to entire categories
+- **User Management** - Future feature for admin user control
+- **Analytics & Reporting** - Future feature for detailed insights
 
 ### Downloadable Files Feature
 

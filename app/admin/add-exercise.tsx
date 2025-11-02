@@ -2,9 +2,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Category, Exercise, Question } from '@/types';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +17,9 @@ import {
 } from 'react-native';
 
 export default function AddExerciseScreen() {
+  const { id: exerciseId } = useLocalSearchParams();
+  const isEditMode = !!exerciseId;
+
   const [exerciseData, setExerciseData] = useState({
     title: '',
     description: '',
@@ -40,10 +44,14 @@ export default function AddExerciseScreen() {
   ]);
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadCategories();
-  }, []);
+    if (isEditMode && typeof exerciseId === 'string') {
+      loadExercise(exerciseId);
+    }
+  }, [exerciseId]);
 
   const loadCategories = async () => {
     try {
@@ -53,6 +61,35 @@ export default function AddExerciseScreen() {
     } catch (error) {
       console.error('Error loading categories:', error);
       Alert.alert('Error', 'Failed to load categories');
+    }
+  };
+
+  const loadExercise = async (id: string) => {
+    try {
+      setLoading(true);
+      const { getExerciseById } = await import('@/services/firebaseService');
+      const exercise = await getExerciseById(id);
+
+      if (exercise) {
+        setExerciseData({
+          title: exercise.title,
+          description: exercise.description,
+          instructions: exercise.instructions,
+          category: exercise.category,
+          difficulty: exercise.difficulty,
+          type: exercise.content.type,
+        });
+        setQuestions(exercise.content.questions);
+      } else {
+        Alert.alert('Error', 'Exercise not found');
+        router.push('/admin/manage-exercises');
+      }
+    } catch (error) {
+      console.error('Error loading exercise:', error);
+      Alert.alert('Error', 'Failed to load exercise');
+      router.push('/admin/manage-exercises');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -177,9 +214,7 @@ export default function AddExerciseScreen() {
     if (!validateExercise()) return;
 
     try {
-      const { createExercise } = await import('@/services/firebaseService');
-
-      const exercise: Omit<Exercise, 'id' | 'createdAt' | 'updatedAt'> = {
+      const exerciseContent = {
         title: exerciseData.title,
         description: exerciseData.description,
         instructions: exerciseData.instructions,
@@ -197,54 +232,80 @@ export default function AddExerciseScreen() {
         },
       };
 
-      await createExercise(exercise);
+      if (isEditMode && typeof exerciseId === 'string') {
+        // Update existing exercise
+        const { updateExercise } = await import('@/services/firebaseService');
+        await updateExercise(exerciseId, exerciseContent);
 
-      Alert.alert('Success', 'Exercise created successfully!', [
-        {
-          text: 'Create Another',
-          onPress: () => {
-            setExerciseData({
-              title: '',
-              description: '',
-              instructions: '',
-              category: '',
-              difficulty: 'beginner',
-              type: 'multiple-choice',
-            });
-            setQuestions([
-              {
-                question: '',
-                options: ['', '', '', ''],
-                correctAnswer: '',
-                explanation: '',
-              },
-            ]);
+        Alert.alert('Success', 'Exercise updated successfully!', [
+          {
+            text: 'OK',
+            onPress: () => router.push('/admin/manage-exercises'),
           },
-        },
-        {
-          text: 'Done',
-          onPress: () => router.push('/admin'),
-        },
-      ]);
+        ]);
+      } else {
+        // Create new exercise
+        const { createExercise } = await import('@/services/firebaseService');
+        await createExercise(exerciseContent);
+
+        Alert.alert('Success', 'Exercise created successfully!', [
+          {
+            text: 'Create Another',
+            onPress: () => {
+              setExerciseData({
+                title: '',
+                description: '',
+                instructions: '',
+                category: '',
+                difficulty: 'beginner',
+                type: 'multiple-choice',
+              });
+              setQuestions([
+                {
+                  question: '',
+                  options: ['', '', '', ''],
+                  correctAnswer: '',
+                  explanation: '',
+                },
+              ]);
+            },
+          },
+          {
+            text: 'Done',
+            onPress: () => router.push('/admin'),
+          },
+        ]);
+      }
     } catch (error) {
-      console.error('Error creating exercise:', error);
-      Alert.alert('Error', 'Failed to create exercise. Please try again.');
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} exercise:`, error);
+      Alert.alert('Error', `Failed to ${isEditMode ? 'update' : 'create'} exercise. Please try again.`);
     }
   };
+
+  if (loading) {
+    return (
+      <ThemedView style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#0078ff" />
+        <ThemedText style={styles.loadingText}>Loading exercise...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push('/admin')}
+          onPress={() => router.push(isEditMode ? '/admin/manage-exercises' : '/admin')}
         >
           <IconSymbol name='chevron.left' size={24} color='#0078ff' />
-          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          <ThemedText style={styles.backText}>
+            {isEditMode ? 'Back to Manage' : 'Back to Admin'}
+          </ThemedText>
         </TouchableOpacity>
 
         <ThemedText type='title' style={styles.title}>
-          Add New Exercise
+          {isEditMode ? 'Edit Exercise' : 'Add New Exercise'}
         </ThemedText>
       </View>
 
@@ -506,9 +567,10 @@ export default function AddExerciseScreen() {
             <TouchableOpacity
               style={styles.saveButton}
               onPress={handleSaveExercise}
+              disabled={loading}
             >
               <ThemedText style={styles.saveButtonText}>
-                Save Exercise
+                {loading ? 'Loading...' : isEditMode ? 'Update Exercise' : 'Save Exercise'}
               </ThemedText>
             </TouchableOpacity>
           </View>
@@ -685,5 +747,14 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
   },
 });

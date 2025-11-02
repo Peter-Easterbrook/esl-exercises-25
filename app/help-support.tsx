@@ -385,7 +385,7 @@ export default function HelpSupportScreen() {
               style={styles.resourceItem}
               onPress={() => router.push('/account-settings')}
             >
-              <IconSymbol name='gearshape' size={24} color='#0078ff' />
+              <IconSymbol name='gear' size={24} color='#0078ff' />
               <View style={styles.resourceContent}>
                 <ThemedText type='defaultSemiBold'>Account Settings</ThemedText>
                 <ThemedText style={styles.resourceSubtext}>

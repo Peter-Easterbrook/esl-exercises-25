@@ -1,7 +1,7 @@
 import { db, storage } from '@/config/firebase';
 import { DownloadableFile } from '@/types';
 import * as DocumentPicker from 'expo-document-picker';
-import { downloadAsync, cacheDirectory } from 'expo-file-system/legacy';
+import { cacheDirectory, downloadAsync } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import {
   addDoc,
@@ -57,7 +57,7 @@ export const uploadFile = async (
       fileType,
       size: file.size || 0,
       categoryId,
-      exerciseId: exerciseId || undefined,
+      ...(exerciseId && { exerciseId }),
       uploadedAt: new Date(),
       uploadedBy: userId,
     };
@@ -104,7 +104,12 @@ export const getFilesByExercise = async (
     const q = query(filesRef, where('exerciseId', '==', exerciseId));
     const snapshot = await getDocs(q);
 
-    console.log('Found', snapshot.docs.length, 'files for exercise', exerciseId);
+    console.log(
+      'Found',
+      snapshot.docs.length,
+      'files for exercise',
+      exerciseId
+    );
 
     const files = snapshot.docs.map((doc) => {
       const data = doc.data();
@@ -150,18 +155,26 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
 
       if (sharingAvailable) {
         await Sharing.shareAsync(downloadResult.uri, {
-          mimeType: file.fileType === 'pdf' ? 'application/pdf' :
-                    file.fileType === 'docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
-                    'application/msword',
-          UTI: file.fileType === 'pdf' ? 'com.adobe.pdf' : 'com.microsoft.word.doc',
-          dialogTitle: `Download ${file.name}`
+          mimeType:
+            file.fileType === 'pdf'
+              ? 'application/pdf'
+              : file.fileType === 'docx'
+              ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+              : 'application/msword',
+          UTI:
+            file.fileType === 'pdf'
+              ? 'com.adobe.pdf'
+              : 'com.microsoft.word.doc',
+          dialogTitle: `Download ${file.name}`,
         });
         console.log('File shared successfully');
       } else {
         throw new Error('Sharing is not available on this platform');
       }
     } else {
-      throw new Error(`Failed to download file. Status: ${downloadResult.status}`);
+      throw new Error(
+        `Failed to download file. Status: ${downloadResult.status}`
+      );
     }
   } catch (error) {
     console.error('Error downloading file:', error);

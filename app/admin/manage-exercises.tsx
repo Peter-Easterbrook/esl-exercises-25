@@ -65,10 +65,7 @@ export default function ManageExercisesScreen() {
   };
 
   const handleEditExercise = (exercise: Exercise) => {
-    Alert.alert(
-      'Coming Soon',
-      'Exercise editing will be available in a future update.'
-    );
+    router.push(`/admin/add-exercise?id=${exercise.id}`);
   };
 
   const filteredExercises = exercises.filter(
