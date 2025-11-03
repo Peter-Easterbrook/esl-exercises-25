@@ -27,7 +27,8 @@ export default function ProfileScreen() {
         onPress: async () => {
           try {
             await logout();
-            router.replace('/auth');
+            // Navigation to /auth is handled automatically by TabLayout
+            // when auth state changes - no need to manually navigate
           } catch (error) {
             Alert.alert('Error', 'Failed to sign out');
           }

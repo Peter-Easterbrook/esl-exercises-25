@@ -40,6 +40,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **File Upload Management** - Admins can upload and link files to specific exercises or categories
 - **Results Export** - Export exercise results and progress reports
 - **Admin Panel** - Full content management for administrators
+- **User Management** - Admin interface for managing user accounts with search, view details, edit names, reset progress, and delete accounts
 - **About Page** - Company information from Easterbrook Language Services with contact details
 - **Privacy Policy** - Comprehensive privacy policy accessible from Profile screen, compliant with GDPR, CCPA, and other data protection regulations
 - **Responsive UI** - Support for light/dark themes, haptic feedback, and smooth animations
@@ -65,6 +66,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
     - `index.tsx` - Admin dashboard with statistics
     - `add-exercise.tsx` - Exercise creation and editing interface (supports both create and edit modes via route parameters)
     - `manage-exercises.tsx` - Exercise management and editing
+    - `manage-users.tsx` - User management interface with search, view details, edit, reset progress, and delete capabilities
     - `upload-files.tsx` - File upload and management interface for linking documents to exercises
 
 - `components/` - Reusable UI components
@@ -416,7 +418,15 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Search & Filter** - Search exercises by title or description in manage-exercises screen
 - **Upload Files** - Manage downloadable files (PDF, DOC, DOCX up to 10MB)
 - **Link Files** - Connect files to specific exercises or make them available to entire categories
-- **User Management** - Future feature for admin user control
+- **User Management** - Complete user account administration
+  - View all users with search functionality (by email or display name)
+  - View detailed user statistics (completed exercises, average score, streak, category breakdown, recent activity)
+  - Edit user display names
+  - Reset user progress with confirmation (deletes all exercise data while keeping account)
+  - Delete user accounts with double confirmation (requires email verification)
+  - User avatars with initials displayed in list view
+  - Modal-based details and editing for seamless workflow
+  - All destructive operations require explicit confirmation
 - **Analytics & Reporting** - Future feature for detailed insights
 
 ### Downloadable Files Feature

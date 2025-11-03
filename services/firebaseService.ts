@@ -636,3 +636,71 @@ export const deleteUserAccount = async (userId: string): Promise<void> => {
     throw error;
   }
 };
+
+// Get all users from Firestore
+// For small user bases, load all and filter client-side
+export const getAllUsers = async () => {
+  try {
+    const usersRef = collection(db, 'users');
+    const snapshot = await getDocs(query(usersRef, orderBy('email')));
+
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        email: data.email || '',
+        displayName: data.displayName,
+        isAdmin: data.isAdmin || false,
+        createdAt: data.createdAt?.toDate(),
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    throw error;
+  }
+};
+
+// Get user by ID with full details
+export const getUserById = async (userId: string) => {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+
+    if (!userDoc.exists()) {
+      return null;
+    }
+
+    const data = userDoc.data();
+    return {
+      id: userDoc.id,
+      email: data.email || '',
+      displayName: data.displayName,
+      isAdmin: data.isAdmin || false,
+      createdAt: data.createdAt?.toDate(),
+    };
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+};
+
+// Search users by email or display name (client-side filtering)
+// Simpler approach that works without compound indexes
+export const searchUsers = async (searchQuery: string) => {
+  try {
+    const allUsers = await getAllUsers();
+
+    if (!searchQuery.trim()) {
+      return allUsers;
+    }
+
+    const searchLower = searchQuery.toLowerCase();
+
+    return allUsers.filter(user =>
+      user.email.toLowerCase().includes(searchLower) ||
+      (user.displayName?.toLowerCase() || '').includes(searchLower)
+    );
+  } catch (error) {
+    console.error('Error searching users:', error);
+    throw error;
+  }
+};

@@ -101,6 +101,23 @@ export default function RootLayout() {
               animation: 'slide_from_right',
             }}
           />
+          {/* Manage categories - slide from right (sequential flow) */}
+          <Stack.Screen
+            name='admin/manage-categories'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
+          />
+
+          {/* Manage users - slide from right (sequential flow) */}
+          <Stack.Screen
+            name='admin/manage-users'
+            options={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
+          />
 
           {/* Upload files - slide from right (sequential flow) */}
           <Stack.Screen

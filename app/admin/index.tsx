@@ -95,22 +95,16 @@ export default function AdminPanel() {
       title: 'Manage Categories',
       subtitle: 'Add, edit or organize categories',
       color: '#FF9800',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'Category management will be available in a future update.'
-        ),
+      onPress: () => router.push('/admin/manage-categories'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'person.2.circle',
       title: 'User Management',
       subtitle: 'View and manage user accounts',
       color: '#9C27B0',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'User management will be available in a future update.'
-        ),
+      onPress: () => router.push('/admin/manage-users'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'chart.pie',
