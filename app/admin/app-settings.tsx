@@ -9,7 +9,7 @@ import {
   updateAppSettings,
 } from '@/services/firebaseService';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
