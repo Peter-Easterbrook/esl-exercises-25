@@ -111,22 +111,16 @@ export default function AdminPanel() {
       title: 'Analytics',
       subtitle: 'View detailed usage statistics',
       color: '#607D8B',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'Analytics dashboard will be available in a future update.'
-        ),
+      onPress: () => router.push('/admin/analytics'),
+      animation: 'slide_from_right',
     },
     {
       icon: 'gear',
       title: 'App Settings',
       subtitle: 'Configure app-wide settings',
       color: '#795548',
-      onPress: () =>
-        Alert.alert(
-          'Coming Soon',
-          'App settings will be available in a future update.'
-        ),
+      onPress: () => router.push('/admin/app-settings'),
+      animation: 'slide_from_right',
     },
   ];
 

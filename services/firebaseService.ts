@@ -9,6 +9,7 @@ import {
   getDocs,
   orderBy,
   query,
+  setDoc,
   Timestamp,
   updateDoc,
   where,
@@ -614,7 +615,9 @@ export const deleteAllUserProgress = async (userId: string): Promise<void> => {
     const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
     await Promise.all(deletePromises);
 
-    console.log(`Deleted ${snapshot.docs.length} progress records for user ${userId}`);
+    console.log(
+      `Deleted ${snapshot.docs.length} progress records for user ${userId}`
+    );
   } catch (error) {
     console.error('Error deleting user progress:', error);
     throw error;
@@ -644,7 +647,7 @@ export const getAllUsers = async () => {
     const usersRef = collection(db, 'users');
     const snapshot = await getDocs(query(usersRef, orderBy('email')));
 
-    return snapshot.docs.map(doc => {
+    return snapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -695,12 +698,332 @@ export const searchUsers = async (searchQuery: string) => {
 
     const searchLower = searchQuery.toLowerCase();
 
-    return allUsers.filter(user =>
-      user.email.toLowerCase().includes(searchLower) ||
-      (user.displayName?.toLowerCase() || '').includes(searchLower)
+    return allUsers.filter(
+      (user) =>
+        user.email.toLowerCase().includes(searchLower) ||
+        (user.displayName?.toLowerCase() || '').includes(searchLower)
     );
   } catch (error) {
     console.error('Error searching users:', error);
+    throw error;
+  }
+};
+
+// Analytics Operations
+export const getAnalyticsData = async () => {
+  try {
+    // Get all exercises
+    const exercisesSnapshot = await getDocs(collection(db, 'exercises'));
+    const exercises = exercisesSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        difficulty: data.difficulty,
+        ...data,
+      };
+    }) as Exercise[];
+
+    // Get all users
+    const usersSnapshot = await getDocs(collection(db, 'users'));
+    const users = usersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Get all progress records from the userProgress collection
+    const progressSnapshot = await getDocs(collection(db, 'userProgress'));
+    const progressData = progressSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        userId: data.userId,
+        exerciseId: data.exerciseId,
+        completed: data.completed,
+        score: data.score,
+        completedAt: data.completedAt?.toDate?.() || null,
+      };
+    });
+
+    // Calculate analytics
+    const totalCompletions = progressData.filter((p) => p.completed).length;
+    const averageScore =
+      progressData.length > 0
+        ? progressData.reduce((sum, p) => sum + (p.score || 0), 0) /
+          progressData.length
+        : 0;
+
+    // Get categories for proper names
+    const categoriesData = await getCategories();
+
+    // Category performance
+    const categoryStats: { [key: string]: { name: string; count: number } } =
+      {};
+    progressData.forEach((progress) => {
+      const exercise = exercises.find((e) => e.id === progress.exerciseId);
+      if (exercise?.category) {
+        const category = categoriesData.find((c) => c.id === exercise.category);
+        const categoryName = category?.name || exercise.category;
+        if (!categoryStats[exercise.category]) {
+          categoryStats[exercise.category] = { name: categoryName, count: 0 };
+        }
+        categoryStats[exercise.category].count++;
+      }
+    });
+
+    // Difficulty distribution
+    const difficultyStats: { [key: string]: number } = {
+      beginner: 0,
+      intermediate: 0,
+      advanced: 0,
+    };
+    progressData.forEach((progress) => {
+      const exercise = exercises.find((e) => e.id === progress.exerciseId);
+      if (exercise?.difficulty) {
+        difficultyStats[exercise.difficulty]++;
+      }
+    });
+
+    // Top exercises by completion count
+    const exerciseCompletions: { [key: string]: number } = {};
+    progressData.forEach((progress) => {
+      if (progress.completed) {
+        exerciseCompletions[progress.exerciseId] =
+          (exerciseCompletions[progress.exerciseId] || 0) + 1;
+      }
+    });
+    const topExercises = Object.entries(exerciseCompletions)
+      .map(([exerciseId, count]) => {
+        const exercise = exercises.find((e) => e.id === exerciseId);
+        return {
+          title: exercise?.title || 'Unknown Exercise',
+          completions: count,
+        };
+      })
+      .sort((a, b) => b.completions - a.completions)
+      .slice(0, 5);
+
+    // User activity trend (last 7 days)
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 6);
+
+    const dailyActivity: { [key: string]: Set<string> } = {};
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Initialize all 7 days
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sevenDaysAgo);
+      date.setDate(sevenDaysAgo.getDate() + i);
+      const dateKey = date.toDateString();
+      dailyActivity[dateKey] = new Set();
+    }
+
+    // Count unique active users per day
+    progressData.forEach((progress) => {
+      if (progress.completedAt instanceof Date && progress.completed) {
+        const completedDate = progress.completedAt;
+        if (completedDate >= sevenDaysAgo) {
+          const dateKey = completedDate.toDateString();
+          if (dailyActivity[dateKey]) {
+            dailyActivity[dateKey].add(progress.userId);
+          }
+        }
+      }
+    });
+
+    const userActivityTrend = Object.keys(dailyActivity)
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+      .map((dateKey) => {
+        const date = new Date(dateKey);
+        return {
+          day: dayNames[date.getDay()],
+          users: dailyActivity[dateKey].size,
+        };
+      });
+
+    // Recent activity (last 10 completions)
+    const recentActivity = progressData
+      .filter((p) => p.completed && p.completedAt instanceof Date)
+      .sort((a, b) => {
+        const timeA =
+          a.completedAt instanceof Date ? a.completedAt.getTime() : 0;
+        const timeB =
+          b.completedAt instanceof Date ? b.completedAt.getTime() : 0;
+        return timeB - timeA;
+      })
+      .slice(0, 10)
+      .map((progress) => {
+        const exercise = exercises.find((e) => e.id === progress.exerciseId);
+        const user = users.find((u: any) => u.id === progress.userId);
+        const completedAt = progress.completedAt as Date;
+        const now = new Date();
+        const diffMs = now.getTime() - completedAt.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHours / 24);
+
+        let timeAgo = '';
+        if (diffDays > 0) {
+          timeAgo = `${diffDays}d ago`;
+        } else if (diffHours > 0) {
+          timeAgo = `${diffHours}h ago`;
+        } else {
+          const diffMins = Math.floor(diffMs / (1000 * 60));
+          timeAgo = diffMins > 0 ? `${diffMins}m ago` : 'Just now';
+        }
+
+        return {
+          user:
+            (user as any)?.displayName ||
+            (user as any)?.email?.split('@')[0] ||
+            'Anonymous',
+          exercise: exercise?.title || 'Unknown Exercise',
+          score: progress.score || 0,
+          date: timeAgo,
+        };
+      });
+
+    return {
+      totalCompletions,
+      averageScore: Math.round(averageScore * 10) / 10,
+      completionRate:
+        exercises.length > 0 && users.length > 0
+          ? Math.round(
+              (totalCompletions / (exercises.length * users.length)) * 100
+            )
+          : 0,
+      categoryPerformance: Object.values(categoryStats)
+        .map((cat) => ({
+          name: cat.name,
+          count: cat.count,
+          percentage:
+            totalCompletions > 0
+              ? Math.round((cat.count / totalCompletions) * 1000) / 10
+              : 0,
+        }))
+        .sort((a, b) => b.count - a.count),
+      difficultyDistribution: Object.entries(difficultyStats).map(
+        ([name, count]) => ({
+          name: name.charAt(0).toUpperCase() + name.slice(1),
+          count,
+          color:
+            name === 'beginner'
+              ? '#4CAF50'
+              : name === 'intermediate'
+              ? '#FF9800'
+              : '#F44336',
+        })
+      ),
+      userActivityTrend,
+      topExercises,
+      recentActivity,
+    };
+  } catch (error) {
+    console.error('Error getting analytics data:', error);
+    throw error;
+  }
+};
+
+// App Settings Management
+export interface AppSettings {
+  exerciseSettings: {
+    defaultTimeLimit: number; // in minutes
+    showSolutionsImmediately: boolean;
+    enablePointsSystem: boolean;
+  };
+  userManagement: {
+    allowNewRegistrations: boolean;
+    requireEmailVerification: boolean;
+  };
+  notifications: {
+    enablePushNotifications: boolean;
+    dailyReminderTime: string; // HH:MM format
+  };
+  admin: {
+    maintenanceMode: boolean;
+    announcementBanner: string;
+  };
+}
+
+// Get app settings
+export const getAppSettings = async (): Promise<AppSettings> => {
+  try {
+    const settingsDoc = await getDoc(doc(db, 'appSettings', 'config'));
+
+    if (settingsDoc.exists()) {
+      return settingsDoc.data() as AppSettings;
+    } else {
+      // Return default settings if none exist
+      const defaultSettings: AppSettings = {
+        exerciseSettings: {
+          defaultTimeLimit: 30,
+          showSolutionsImmediately: false,
+          enablePointsSystem: true,
+        },
+        userManagement: {
+          allowNewRegistrations: true,
+          requireEmailVerification: false,
+        },
+        notifications: {
+          enablePushNotifications: true,
+          dailyReminderTime: '09:00',
+        },
+        admin: {
+          maintenanceMode: false,
+          announcementBanner: '',
+        },
+      };
+
+      // Create default settings
+      await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
+      return defaultSettings;
+    }
+  } catch (error) {
+    console.error('Error getting app settings:', error);
+    throw error;
+  }
+};
+
+// Update app settings
+export const updateAppSettings = async (
+  settings: Partial<AppSettings>
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'appSettings', 'config'), settings);
+  } catch (error) {
+    console.error('Error updating app settings:', error);
+    throw error;
+  }
+};
+
+// Reset app settings to defaults
+export const resetAppSettings = async (): Promise<void> => {
+  try {
+    const defaultSettings: AppSettings = {
+      exerciseSettings: {
+        defaultTimeLimit: 30,
+        showSolutionsImmediately: false,
+        enablePointsSystem: true,
+      },
+      userManagement: {
+        allowNewRegistrations: true,
+        requireEmailVerification: false,
+      },
+      notifications: {
+        enablePushNotifications: true,
+        dailyReminderTime: '09:00',
+      },
+      admin: {
+        maintenanceMode: false,
+        announcementBanner: '',
+      },
+    };
+
+    await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
+  } catch (error) {
+    console.error('Error resetting app settings:', error);
     throw error;
   }
 };

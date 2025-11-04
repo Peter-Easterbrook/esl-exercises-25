@@ -7,7 +7,8 @@
       "Bash(move privacy-policy.jsx privacy-policy.tsx)",
       "Bash(npx expo start:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

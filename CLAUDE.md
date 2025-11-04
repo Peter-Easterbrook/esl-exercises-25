@@ -41,6 +41,8 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **Results Export** - Export exercise results and progress reports
 - **Admin Panel** - Full content management for administrators
 - **User Management** - Admin interface for managing user accounts with search, view details, edit names, reset progress, and delete accounts
+- **Analytics Dashboard** - Comprehensive analytics with real-time data visualization, category performance, difficulty distribution, user activity trends, top exercises, and recent activity tracking
+- **App Settings Management** - Admin interface for configuring exercise settings, user management, notifications, and maintenance mode
 - **About Page** - Company information from Easterbrook Language Services with contact details
 - **Privacy Policy** - Comprehensive privacy policy accessible from Profile screen, compliant with GDPR, CCPA, and other data protection regulations
 - **Responsive UI** - Support for light/dark themes, haptic feedback, and smooth animations
@@ -68,6 +70,8 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
     - `manage-exercises.tsx` - Exercise management and editing
     - `manage-users.tsx` - User management interface with search, view details, edit, reset progress, and delete capabilities
     - `upload-files.tsx` - File upload and management interface for linking documents to exercises
+    - `analytics.tsx` - Comprehensive analytics dashboard with charts and data visualization
+    - `app-settings.tsx` - App configuration interface for exercise, user, notification, and admin settings
 
 - `components/` - Reusable UI components
 
@@ -87,7 +91,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
 - `services/` - Business logic and API calls
 
-  - `firebaseService.ts` - Firebase Firestore operations (CRUD for exercises, categories, progress, user management)
+  - `firebaseService.ts` - Firebase Firestore operations (CRUD for exercises, categories, progress, user management, analytics data aggregation, and app settings management)
   - `fileService.ts` - File upload/download operations for exercise documents via Firebase Storage
   - `exportService.ts` - File export functionality for results, progress, and complete user data (GDPR/CCPA compliant)
 
@@ -110,6 +114,7 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 - **React Native Gesture Handler** for touch interactions
 - **Expo File System & Sharing** for export functionality
 - **react-native-fast-confetti** for celebration animations on perfect scores
+- **react-native-chart-kit** for data visualization (line charts, bar charts, pie charts)
 
 ### Navigation Animations (Expo SDK 54)
 
@@ -160,6 +165,9 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 
 - Admin panel (`/admin`) - `slide_from_bottom` modal-style for special access
 - Add/Manage exercises - `slide_from_right` for sequential workflow
+- Analytics dashboard (`/admin/analytics`) - `slide_from_right` for data viewing
+- App Settings (`/admin/app-settings`) - `slide_from_right` for configuration
+- User Management (`/admin/manage-users`) - `slide_from_right` for user administration
 - Emphasizes admin panel as separate, privileged area
 
 **Component-Level Animations**
@@ -206,6 +214,7 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - **Exercises** - Complete exercise data with questions, answers, and explanations
 - **User Progress** - Completion status and scores per user per exercise
 - **Downloadable Files** - Uploaded documents (PDF/DOC/DOCX) linked to categories or specific exercises
+- **App Settings** - Global app configuration stored in `appSettings/config` document (exercise settings, user management, notifications, admin settings)
 
 ### Firebase Setup Required
 
@@ -427,7 +436,124 @@ The Help & Support screen provides a comprehensive self-service help center acce
   - User avatars with initials displayed in list view
   - Modal-based details and editing for seamless workflow
   - All destructive operations require explicit confirmation
-- **Analytics & Reporting** - Future feature for detailed insights
+- **Analytics & Reporting** - Comprehensive analytics dashboard with real-time data visualization (see Analytics Dashboard section below)
+- **App Settings** - Centralized configuration interface for managing app-wide settings (see App Settings Management section below)
+
+### Analytics Dashboard
+
+The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time insights into app usage and performance with interactive data visualizations.
+
+#### Features
+- **Key Metrics Cards** - At-a-glance statistics:
+  - Total Completions - All exercise completions across all users
+  - Average Score - Mean score percentage across all attempts
+  - Completion Rate - Percentage of exercises completed vs. available
+- **Three-Tab Interface**:
+  - **Overview** - General app performance and trends
+  - **Users** - User-focused analytics and activity
+  - **Exercises** - Exercise-specific performance data
+
+#### Visualizations (using react-native-chart-kit)
+- **Line Charts** - User activity trends over last 7 days (daily active users)
+- **Bar Charts** - Category performance and top exercises by completion count
+- **Pie Charts** - Difficulty distribution (Beginner/Intermediate/Advanced)
+- **Recent Activity Feed** - Last 10 exercise completions with user info, scores, and relative time
+
+#### Data Sources
+- Real-time data from Firebase Firestore collections:
+  - `exercises` - All exercise metadata
+  - `users` - User accounts and profiles
+  - `userProgress` - Exercise completion records with scores and timestamps
+  - `categories` - Category names for proper labeling
+
+#### Analytics Calculations
+- **Total Completions** - Count of all completed exercises
+- **Average Score** - Mean of all exercise scores (handles division by zero)
+- **Completion Rate** - (Total completions / (exercises × users)) × 100
+- **Category Performance** - Exercises grouped by category with completion counts and percentages
+- **Difficulty Distribution** - Completions grouped by difficulty level
+- **Top Exercises** - Top 5 most completed exercises ranked by completion count
+- **User Activity Trend** - Unique active users per day for last 7 days
+- **Recent Activity** - Last 10 completions with user names (display name or email prefix), exercise titles, scores, and human-readable timestamps ("2h ago", "3d ago")
+
+#### Technical Implementation
+- **Date Handling** - Defensive checks for Date objects using `instanceof Date` to prevent runtime errors
+- **Firestore Timestamp Conversion** - Proper conversion using `toDate()` with fallbacks
+- **Category Name Resolution** - Fetches category data to display names instead of IDs
+- **Performance** - Single database query per collection, client-side aggregation
+- **Error Handling** - Try-catch with user-friendly error alerts
+- **Loading States** - Themed activity indicators during data fetch
+
+#### UI/UX Design
+- **Navigation** - Accessible from Admin dashboard with `slide_from_right` animation
+- **Tab Layout** - Segmented control for switching between Overview/Users/Exercises
+- **Chart Styling** - Consistent color scheme (green for categories, purple for users, blue for overview)
+- **Responsive Charts** - Charts sized to screen width minus padding
+- **Empty States** - Graceful handling when no data available
+- **Professional Design** - White cards with shadows, proper spacing, themed text
+
+### App Settings Management
+
+The App Settings screen (`/admin/app-settings`) provides a centralized interface for administrators to configure app-wide settings stored in Firebase Firestore.
+
+#### Settings Categories
+
+**Exercise Settings**
+- **Default Time Limit** - Default duration for timed exercises (in minutes)
+- **Show Solutions Immediately** - Toggle to allow users to see answers right away
+- **Enable Points System** - Toggle to award points for completed exercises
+
+**User Management**
+- **Allow New Registrations** - Enable/disable new user account creation
+- **Require Email Verification** - Force email verification before app access
+
+**Notifications**
+- **Enable Push Notifications** - Global toggle for push notification system
+- **Daily Reminder Time** - Time for daily practice reminders (HH:MM format)
+
+**Admin Settings**
+- **Maintenance Mode** - Disable app for non-admin users during updates
+- **Announcement Banner** - Global message displayed to all users (multiline text)
+
+#### Features
+- **Real-time Configuration** - Changes take effect immediately across the app
+- **Default Settings** - Automatic initialization with sensible defaults if no settings exist
+- **Reset to Defaults** - One-click reset with confirmation dialog
+- **Input Validation** - Proper keyboard types (numeric for numbers, text for strings)
+- **Loading States** - Activity indicators during save operations
+- **Success/Error Feedback** - User-friendly alerts for all operations
+
+#### Data Storage
+- Settings stored in Firestore collection `appSettings/config`
+- Structured as single document with nested objects for each category
+- Default settings created automatically on first access
+
+#### Security
+- **Admin-only Access** - Settings screen redirects non-admins to main tabs
+- **Firestore Rules** - Only admin users can read/write `appSettings` collection
+- **Server-side Validation** - Firestore security rules enforce admin privileges
+
+#### UI/UX Design
+- **Section-based Layout** - Clear visual grouping with colored icons
+  - Green (doc.text) for Exercise Settings
+  - Purple (person.2) for User Management
+  - Orange (bell) for Notifications
+  - Brown (gear) for Admin Settings
+- **Card Design** - White cards with shadows for each setting group
+- **Switch Components** - Native iOS/Android switches with colored tracks
+- **Text Inputs** - Bordered inputs for numeric and text values
+- **Action Buttons** - Large save button (green) and reset button (outlined red)
+- **Responsive Layout** - Scrollable content with proper spacing
+
+#### Technical Implementation
+- **TypeScript Interface** - `AppSettings` type exported from firebaseService.ts
+- **State Management** - Local state with immediate updates to inputs
+- **Firestore Operations**:
+  - `getAppSettings()` - Fetch current settings or create defaults
+  - `updateAppSettings()` - Partial update of settings
+  - `resetAppSettings()` - Overwrite with default values
+- **Error Handling** - Try-catch blocks with user-friendly error alerts
+- **Confirmation Dialogs** - Alert.alert for destructive operations (reset)
 
 ### Downloadable Files Feature
 
@@ -473,12 +599,68 @@ The Help & Support screen provides a comprehensive self-service help center acce
   - Re-authentication required for sensitive operations (password change, account deletion)
   - All destructive actions require explicit confirmation
   - Data exports comply with GDPR/CCPA regulations
-- Firebase Security Rules enforce:
-  - Users can only read/write their own data
-  - Admins can read all users for statistics
-  - Only admins can create/edit/delete exercises and categories
-  - File uploads restricted to admins with size/type validation
-  - Users can download files but not delete them
+
+#### Firebase Firestore Security Rules
+
+The app uses comprehensive Firestore security rules to protect user data and restrict admin operations. These rules must be configured in the Firebase Console (Firestore Database > Rules):
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Users collection - users can read/write their own data, admins can read all
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User progress - users can read/write their own progress
+    match /userProgress/{progressId} {
+      allow read: if request.auth != null &&
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Categories - everyone can read, only admins can write
+    match /categories/{categoryId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Exercises - everyone can read, only admins can write
+    match /exercises/{exerciseId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Downloadable files - everyone can read, only admins can write
+    match /downloadableFiles/{fileId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // App Settings - only admins can read/write
+    match /appSettings/{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
+```
+
+**Key Security Policies:**
+- **Authentication Required** - All database access requires Firebase authentication
+- **User Data Isolation** - Users can only access their own progress and profile data
+- **Admin Verification** - Admin operations verified through Firestore lookup, not client claims
+- **Content Protection** - Exercises, categories, and files are read-only for regular users
+- **Settings Protection** - App settings are completely restricted to admin users only
 
 ### Platform Support
 
