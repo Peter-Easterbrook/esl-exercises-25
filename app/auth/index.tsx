@@ -83,11 +83,7 @@ export default function AuthScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior='padding'
-      keyboardVerticalOffset={0}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior='height'>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps='handled'
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    paddingBottom: 100, // Increased padding to ensure button is visible above keyboard
+    paddingBottom: 40,
     backgroundColor: '#fff',
   },
   titleContainer: {
