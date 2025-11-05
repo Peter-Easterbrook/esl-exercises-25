@@ -221,4 +221,5 @@ npx expo install --fix
 git add .
 git commit -m "Fix npm ci issue"
 git push
+npx eas build --profile development --platform android
 ```
