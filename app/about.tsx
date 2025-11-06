@@ -219,7 +219,7 @@ export default function AboutScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <ThemedText style={styles.footerText}>
-            © 2025 Easterbrook Language Services
+            © 2025 Easterbrook Sprachdienstleistungen
           </ThemedText>
           <ThemedText style={styles.footerText}>All rights reserved</ThemedText>
         </View>
