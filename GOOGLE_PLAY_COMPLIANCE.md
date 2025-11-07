@@ -31,10 +31,10 @@ This document outlines all requirements for submitting the ESL Exercises app to 
 - [x] **Store Listing Link**: Must provide URL to hosted privacy policy
   - **Action Required**: Host privacy policy at a publicly accessible URL
   - Options:
-    - Company website (e.g., https://easterbrook.at/privacy)
-    - GitHub Pages
+    - Company website
+    - GitHub Pages: https://peter-easterbrook.github.io/esl-exercises-25/
     - Privacy policy hosting service
-  - **Current Status**: Only accessible in-app (NOT sufficient for Play Store)
+  - **Current Status**: Accessible online
 
 ### Data Safety Form (Play Console)
 

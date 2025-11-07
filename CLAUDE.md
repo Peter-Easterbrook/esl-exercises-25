@@ -8,23 +8,6 @@ This is a complete **ESL (English as Second Language) Exercises** mobile applica
 
 ## Key Commands
 
-### Development
-
-- `npx expo start` - Start the development server
-- `npm run start` - Alternative way to start development server
-- `npm run android` - Start with Android emulator
-- `npm run ios` - Start with iOS simulator
-- `npm run web` - Start web development server
-
-### Code Quality
-
-- `npm run lint` - Run ESLint using Expo's configuration
-- `expo lint` - Alternative lint command
-
-### Project Management
-
-- `npm run reset-project` - Move starter code to app-example/ and create blank app/ directory
-
 ## Architecture
 
 ### Application Features
@@ -176,28 +159,6 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - Confetti - 4-second auto-stop celebration for 100% scores
 - Progress indicators - Animated transitions using React Native Reanimated
 
-#### Implementation Pattern
-
-```tsx
-// In app/_layout.tsx
-<Stack.Screen
-  name='exercise/[id]'
-  options={{
-    headerShown: false,
-    animation: 'slide_from_right',
-    gestureEnabled: true,
-    gestureDirection: 'horizontal',
-  }}
-/>
-
-// In components with React Native Reanimated
-<Animated.View
-  entering={FadeIn.duration(300)}
-  exiting={FadeOut.duration(200)}
->
-  {content}
-</Animated.View>
-```
 
 #### Animation Principles Applied
 
@@ -215,19 +176,6 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - **User Progress** - Completion status and scores per user per exercise
 - **Downloadable Files** - Uploaded documents (PDF/DOC/DOCX) linked to categories or specific exercises
 - **App Settings** - Global app configuration stored in `appSettings/config` document (exercise settings, user management, notifications, admin settings)
-
-### Firebase Setup Required
-
-Before running the app, you must:
-
-1. Create a Firebase project at console.firebase.google.com
-2. Enable Authentication with email/password
-3. Create a Firestore database
-4. Enable Firebase Storage for file uploads
-5. Update `config/firebase.ts` with your project credentials
-6. Configure Firestore Security Rules (see Security Considerations)
-7. Configure Storage Security Rules (see Security Considerations)
-8. The app will automatically initialize default categories and sample exercises
 
 ### Authentication Flow
 
@@ -396,19 +344,6 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Collapsible FAQs** - Reduces scrolling, improves scanability
 - **Icon usage** - Visual indicators for each section (envelope, warning, info)
 
-#### Benefits
-- **Reduces support emails** by 60-80% through self-service
-- **Instant answers** for common questions
-- **Professional appearance** matching app quality
-- **User empowerment** through comprehensive information
-- **Better user experience** than simple email popup
-
-#### Technical Implementation
-- **Collapsible component** - Uses existing ui/collapsible.tsx for FAQ accordion
-- **Linking API** - Opens native email client for support
-- **Router integration** - Links to Account Settings, Privacy Policy, and About screens
-- **Static content** - No API calls required, fast loading
-- **Maintainable structure** - Easy to add new FAQs or troubleshooting items
 
 ### Admin Features
 
@@ -602,13 +537,6 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
 
 #### 🔒 Credential Management & Production Security
 
-**CRITICAL: NEVER commit sensitive files to version control**
-
-- **admin.txt** - Contains test/admin credentials
-  - This file is in .gitignore and should NEVER be committed to git
-  - Used ONLY for local development and testing
-  - Delete or secure this file before production deployment
-  - For production, manage admin users directly in Firebase Console
 
 - **Firebase Configuration** (config/firebase.ts)
   - API keys in client-side code are NORMAL for Firebase
