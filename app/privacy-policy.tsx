@@ -99,6 +99,121 @@ export default function PrivacyPolicy() {
         </ThemedText>
 
         <ThemedText style={styles.heading} type='subtitle'>
+          HOW TO DELETE YOUR DATA
+        </ThemedText>
+
+        <ThemedText style={styles.paragraph}>
+          <ThemedText style={styles.bold}>
+            You have full control over your personal data. You can delete your data at any time through the app or by contacting us directly.
+          </ThemedText>
+        </ThemedText>
+
+        <ThemedText style={styles.subheading} type='subtitle'>
+          Option 1: Delete Data Through the App (Recommended)
+        </ThemedText>
+
+        <View style={styles.listContainer}>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 1:</ThemedText> Open the ESL Exercises app and log in to your account
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 2:</ThemedText> Tap on the "Profile" tab in the bottom navigation
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 3:</ThemedText> Tap on "Account Settings" in the menu
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 4:</ThemedText> Scroll to the "Danger Zone" section at the bottom
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 5:</ThemedText> Choose one of the following options:
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • <ThemedText style={styles.bold}>Delete Progress Data Only:</ThemedText> Removes all your exercise completion history and scores while keeping your account active. You can continue using the app with a fresh start.
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • <ThemedText style={styles.bold}>Delete Account Completely:</ThemedText> Permanently deletes your account, profile information, and all exercise data. This action cannot be undone.
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 6:</ThemedText> Follow the on-screen confirmation prompts and enter your password when requested
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Step 7:</ThemedText> Your data will be immediately deleted from our systems
+          </ThemedText>
+        </View>
+
+        <ThemedText style={styles.subheading} type='subtitle'>
+          Option 2: Request Deletion via Email
+        </ThemedText>
+
+        <ThemedText style={styles.paragraph}>
+          If you prefer, you can request data deletion by emailing us at support@onestepweb.dev. Please include:
+        </ThemedText>
+
+        <View style={styles.listContainer}>
+          <ThemedText style={styles.listItem}>
+            • Your registered email address
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Subject line: "Data Deletion Request"
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Specify whether you want to delete only progress data or your entire account
+          </ThemedText>
+        </View>
+
+        <ThemedText style={styles.paragraph}>
+          We will process your request within 30 days and send you a confirmation email once completed.
+        </ThemedText>
+
+        <ThemedText style={styles.subheading} type='subtitle'>
+          What Gets Deleted
+        </ThemedText>
+
+        <View style={styles.listContainer}>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Progress Data Deletion:</ThemedText>
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • All exercise completion records
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Exercise scores and statistics
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Learning progress history
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Your account remains active for future use
+          </ThemedText>
+        </View>
+
+        <View style={styles.listContainer}>
+          <ThemedText style={styles.listItem}>
+            <ThemedText style={styles.bold}>Complete Account Deletion:</ThemedText>
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • User profile (email, display name, user ID)
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • All exercise completion records and scores
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Authentication credentials
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Any exported data you previously downloaded
+          </ThemedText>
+          <ThemedText style={styles.listItem}>
+            • Firebase Authentication account
+          </ThemedText>
+        </View>
+
+        <ThemedText style={styles.paragraph}>
+          <ThemedText style={styles.bold}>Important:</ThemedText> Account deletion is permanent and cannot be undone. We recommend using the "Export My Data" feature in Account Settings before deletion if you want to keep a copy of your learning history.
+        </ThemedText>
+
+        <ThemedText style={styles.heading} type='subtitle'>
           1. WHAT INFORMATION DO WE COLLECT?
         </ThemedText>
 

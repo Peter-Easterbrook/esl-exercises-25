@@ -600,6 +600,38 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
   - All destructive actions require explicit confirmation
   - Data exports comply with GDPR/CCPA regulations
 
+#### 🔒 Credential Management & Production Security
+
+**CRITICAL: NEVER commit sensitive files to version control**
+
+- **admin.txt** - Contains test/admin credentials
+  - This file is in .gitignore and should NEVER be committed to git
+  - Used ONLY for local development and testing
+  - Delete or secure this file before production deployment
+  - For production, manage admin users directly in Firebase Console
+
+- **Firebase Configuration** (config/firebase.ts)
+  - API keys in client-side code are NORMAL for Firebase
+  - Firebase security is enforced through Firestore Security Rules, NOT API key secrecy
+  - API keys are not secret and are embedded in mobile apps
+  - Security comes from properly configured Firestore Rules (see below)
+  - For production, consider using environment-specific configs
+
+- **Environment Variables**
+  - Any .env files are automatically ignored by .gitignore
+  - Never commit .env, .env.local, or .env.production files
+  - Use Expo Secrets or EAS environment variables for production
+
+**Production Deployment Checklist:**
+- [ ] Remove or secure admin.txt file
+- [ ] Verify Firebase Security Rules are properly configured
+- [ ] Test that non-admin users cannot access admin features
+- [ ] Verify all Firestore collections have proper read/write rules
+- [ ] Test data deletion flows (progress deletion, account deletion)
+- [ ] Review Privacy Policy matches actual data practices
+- [ ] Ensure no test credentials or API keys are hardcoded in code
+- [ ] Configure Firebase App Check for additional security (optional)
+
 #### Firebase Firestore Security Rules
 
 The app uses comprehensive Firestore security rules to protect user data and restrict admin operations. These rules must be configured in the Firebase Console (Firestore Database > Rules):
@@ -661,6 +693,76 @@ service cloud.firestore {
 - **Admin Verification** - Admin operations verified through Firestore lookup, not client claims
 - **Content Protection** - Exercises, categories, and files are read-only for regular users
 - **Settings Protection** - App settings are completely restricted to admin users only
+
+#### Firebase Storage Security Rules
+
+For downloadable files (PDFs, DOCs), configure Firebase Storage security rules:
+
+```javascript
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null &&
+             firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Documents folder - all authenticated users can read, only admins can write
+    match /documents/{categoryId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+      // Max file size: 10MB
+      allow write: if request.resource.size < 10 * 1024 * 1024;
+      // Only allow PDF, DOC, DOCX files
+      allow write: if request.resource.contentType.matches('application/pdf') ||
+                     request.resource.contentType.matches('application/msword') ||
+                     request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    }
+  }
+}
+```
+
+**Storage Security Features:**
+- Authenticated users can download files
+- Only admins can upload files
+- File size limited to 10MB
+- File type restricted to PDF, DOC, DOCX
+- Files organized by category ID
+
+#### Testing Security Rules
+
+**Before deploying to production, test your security rules:**
+
+1. **Use Firebase Emulator Suite** (recommended for local testing):
+```bash
+npm install -g firebase-tools
+firebase init emulators
+firebase emulators:start --only firestore,storage
+```
+
+2. **Test with Firebase Console Rules Playground**:
+   - Go to Firestore Database > Rules tab
+   - Click "Rules Playground"
+   - Test read/write operations with different user contexts
+
+3. **Manual Testing Checklist**:
+   - [ ] Regular user CANNOT access another user's progress
+   - [ ] Regular user CANNOT modify exercises or categories
+   - [ ] Regular user CANNOT access appSettings
+   - [ ] Admin CAN access all collections
+   - [ ] Unauthenticated users CANNOT access any data
+   - [ ] Users CAN delete their own progress
+   - [ ] Users CAN update their own profile (display name)
+   - [ ] Users CANNOT update other users' profiles
+   - [ ] Files can be downloaded by authenticated users
+   - [ ] Files can only be uploaded by admins
+
+4. **Production Verification**:
+   - Deploy rules: Firebase Console > Firestore/Storage > Rules > Publish
+   - Test with production data using test accounts
+   - Monitor Firebase Console > Usage for suspicious activity
 
 ### Platform Support
 

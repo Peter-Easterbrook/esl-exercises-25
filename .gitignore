@@ -41,3 +41,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Security - NEVER commit credentials or sensitive data
+admin.txt
+credentials.txt
+*.env
+.env
+.env.local
+.env.production
