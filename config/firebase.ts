@@ -1,29 +1,27 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
-import {
-  browserLocalPersistence,
-  getReactNativePersistence,
-  initializeAuth,
-} from 'firebase/auth';
+import { browserLocalPersistence, initializeAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { Platform } from 'react-native';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAqw-dfoTWHd3ZU26dCWCOIzX61gNWRVSY',
-  authDomain: 'esl-exercises.firebaseapp.com',
-  projectId: 'esl-exercises',
-  storageBucket: 'esl-exercises.firebasestorage.app',
-  messagingSenderId: '950312531501',
-  appId: '1:950312531501:web:20ee82c57dd26235012aa4',
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
 export const app = initializeApp(firebaseConfig);
-export const auth = initializeAuth(app, {
-  persistence:
-    Platform.OS === 'web'
-      ? browserLocalPersistence
-      : getReactNativePersistence(AsyncStorage),
-});
+
+// For React Native, use getAuth() without custom persistence
+export const auth =
+  Platform.OS === 'web'
+    ? initializeAuth(app, {
+        persistence: browserLocalPersistence,
+      })
+    : initializeAuth(app);
+
 export const db = getFirestore(app);
 export const storage = getStorage(app);
