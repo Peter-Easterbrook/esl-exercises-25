@@ -1,12 +1,16 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence, browserLocalPersistence } from 'firebase/auth';
+import {
+  browserLocalPersistence,
+  getReactNativePersistence,
+  initializeAuth,
+} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCuPO7eHlPL30g6iuSPXPstbCAdoKj6Gjk',
+  apiKey: 'AIzaSyAqw-dfoTWHd3ZU26dCWCOIzX61gNWRVSY',
   authDomain: 'esl-exercises.firebaseapp.com',
   projectId: 'esl-exercises',
   storageBucket: 'esl-exercises.firebasestorage.app',
@@ -16,9 +20,10 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
-  persistence: Platform.OS === 'web'
-    ? browserLocalPersistence
-    : getReactNativePersistence(AsyncStorage)
+  persistence:
+    Platform.OS === 'web'
+      ? browserLocalPersistence
+      : getReactNativePersistence(AsyncStorage),
 });
 export const db = getFirestore(app);
 export const storage = getStorage(app);
