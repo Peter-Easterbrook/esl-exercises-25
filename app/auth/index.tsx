@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     backgroundColor: '#fff',
+    color: '#000',
   },
   passwordContainer: {
     position: 'relative',
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     backgroundColor: '#fff',
+    color: '#000',
   },
   eyeIcon: {
     position: 'absolute',
