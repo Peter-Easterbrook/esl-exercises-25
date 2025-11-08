@@ -101,8 +101,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     }
   };
 
-  const expandedStyle = useAnimatedStyle(() => ({
+  const heightStyle = useAnimatedStyle(() => ({
     height: withTiming(isExpanded ? 'auto' : 0, { duration: 300 }),
+  }));
+
+  const opacityStyle = useAnimatedStyle(() => ({
     opacity: withTiming(isExpanded ? 1 : 0, { duration: 300 }),
   }));
 
@@ -133,10 +136,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 
       {isExpanded && (
         <Animated.View
-          style={expandedStyle}
+          style={opacityStyle}
           entering={FadeIn.duration(300)}
           exiting={FadeOut.duration(200)}
         >
+          <Animated.View style={heightStyle}>
           <Collapsible collapsed={!isExpanded}>
             <View style={styles.exercisesList}>
               {exercises.map((exercise) => (
@@ -203,6 +207,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
               </View>
             )}
           </Collapsible>
+          </Animated.View>
         </Animated.View>
       )}
     </ThemedView>
