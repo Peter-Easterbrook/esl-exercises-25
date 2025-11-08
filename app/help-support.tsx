@@ -16,7 +16,7 @@ import {
 
 export default function HelpSupportScreen() {
   const handleEmailSupport = () => {
-    Linking.openURL('mailto:support@easterbrook.at');
+    Linking.openURL('mailto:esl@easterbrook.at');
   };
 
   const colorScheme = useColorScheme();
@@ -334,9 +334,7 @@ export default function HelpSupportScreen() {
                 Email Support
               </ThemedText>
             </TouchableOpacity>
-            <ThemedText style={styles.emailText}>
-              support@easterbrook.at
-            </ThemedText>
+            <ThemedText style={styles.emailText}>esl@easterbrook.at</ThemedText>
             <ThemedText style={styles.responseText}>
               We typically respond within 1-2 business days.
             </ThemedText>

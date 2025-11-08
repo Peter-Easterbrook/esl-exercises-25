@@ -159,7 +159,6 @@ The app leverages Expo SDK 54's enhanced navigation animations from `@react-navi
 - Confetti - 4-second auto-stop celebration for 100% scores
 - Progress indicators - Animated transitions using React Native Reanimated
 
-
 #### Animation Principles Applied
 
 1. **Hierarchy** - Modal-like screens use `slide_from_bottom`
@@ -192,7 +191,7 @@ The About page provides comprehensive information about Easterbrook Language Ser
 - **History** - Background and growth from local tutoring to comprehensive platform
 - **Services Offered** - English instruction, professional translation, corporate training, and educational technology
 - **App Features** - Portfolio highlighting structured learning, interactive practice, progress tracking, and flexible learning
-- **Contact Information** - Clickable links to website (easterbrook.at) and email (sdl@easterbrook.at)
+- **Contact Information** - Clickable links to website (easterbrook.at) and email (esl@easterbrook.at)
 - **Branding** - Prominent display of the Easterbrook logo (black lion rampant on gold background)
 - **Navigation** - Accessible from Profile menu with `slide_from_right` animation
 - **Design** - Professional scrollable layout with themed sections and cards
@@ -217,6 +216,7 @@ The Privacy Policy page provides comprehensive legal information about data prac
 The Account Settings screen provides comprehensive user account management accessible from the Profile menu:
 
 #### Profile Management
+
 - **User Avatar** - Dynamic circular avatar displaying user initials (first letter of first and last name, or first letter of email)
 - **Display Name Updates** - Change display name with real-time validation and Firebase sync
 - **Email Display** - Current email shown prominently (email changes require Firebase Auth reconfiguration)
@@ -227,6 +227,7 @@ The Account Settings screen provides comprehensive user account management acces
   - Member since date
 
 #### Security Features
+
 - **Password Updates** - Change password with current password verification
   - Requires current password for security
   - Firebase re-authentication before password change
@@ -235,6 +236,7 @@ The Account Settings screen provides comprehensive user account management acces
   - Clear error messages for auth failures
 
 #### Privacy & Data (GDPR/CCPA Compliant)
+
 - **Export My Data** - Download complete user data in JSON and TXT formats
   - Personal information (email, display name, user ID)
   - Complete progress history with timestamps
@@ -244,7 +246,9 @@ The Account Settings screen provides comprehensive user account management acces
   - Compliant with CCPA Section 1798.110
 
 #### Danger Zone
+
 - **Delete Progress Data** - Permanently remove all exercise progress and scores
+
   - Account remains active
   - Cannot be undone
   - Confirmation dialog with warnings
@@ -261,6 +265,7 @@ The Account Settings screen provides comprehensive user account management acces
   - Compliant with CCPA Section 1798.105
 
 #### UI/UX Design
+
 - **Navigation** - Accessible from Profile menu with `slide_from_right` animation
 - **Layout** - Scrollable sections with clear hierarchy:
   - Avatar section at top
@@ -275,6 +280,7 @@ The Account Settings screen provides comprehensive user account management acces
 - **Confirmation Dialogs** - All destructive actions require confirmation
 
 #### Technical Implementation
+
 - **Firebase Integration** - Uses Firebase Auth for password updates and account deletion
 - **Firestore Operations** - Updates user documents and deletes progress records
 - **Re-authentication** - Required for sensitive operations (password change, account deletion)
@@ -286,6 +292,7 @@ The Account Settings screen provides comprehensive user account management acces
 The Help & Support screen provides a comprehensive self-service help center accessible from the Profile menu:
 
 #### Quick Start Guide
+
 - **Step-by-step instructions** for new users
   1. Browse Exercises - How to explore and expand categories
   2. Complete Exercises - How to answer questions and submit
@@ -295,6 +302,7 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Easy to follow** for users of all technical levels
 
 #### Frequently Asked Questions (FAQ)
+
 - **Collapsible accordion design** using the Collapsible component
 - **8 comprehensive FAQs** covering:
   - How to change password
@@ -309,6 +317,7 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Easy to scan** for quick answers
 
 #### Troubleshooting Section
+
 - **Common technical issues** with visual icons
   - Exercises won't load - Connection and refresh tips
   - Can't log in - Credential and connection checks
@@ -318,13 +327,15 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Icon indicators** (warning triangle) for visual clarity
 
 #### Contact Support Section
+
 - **Clear purpose statement** - "For technical issues only"
-- **Email support button** - Direct link to support@easterbrook.at
+- **Email support button** - Direct link to esl@easterbrook.at
 - **Response time expectation** - 1-2 business days
 - **Professional blue-themed design** matching app branding
 - **Native email client integration** using Linking.openURL
 
 #### Additional Resources
+
 - **Quick links** to related screens:
   - About Us - Company information
   - Privacy Policy - Data protection details
@@ -333,6 +344,7 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Seamless navigation** between related sections
 
 #### UI/UX Design
+
 - **Navigation** - Accessible from Profile menu with `slide_from_right` animation
 - **Layout** - Scrollable single-column design with clear sections
 - **Visual hierarchy**:
@@ -343,7 +355,6 @@ The Help & Support screen provides a comprehensive self-service help center acce
 - **Responsive design** - Cards with shadows, proper spacing
 - **Collapsible FAQs** - Reduces scrolling, improves scanability
 - **Icon usage** - Visual indicators for each section (envelope, warning, info)
-
 
 ### Admin Features
 
@@ -379,6 +390,7 @@ The Help & Support screen provides a comprehensive self-service help center acce
 The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time insights into app usage and performance with interactive data visualizations.
 
 #### Features
+
 - **Key Metrics Cards** - At-a-glance statistics:
   - Total Completions - All exercise completions across all users
   - Average Score - Mean score percentage across all attempts
@@ -389,12 +401,14 @@ The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time in
   - **Exercises** - Exercise-specific performance data
 
 #### Visualizations (using react-native-chart-kit)
+
 - **Line Charts** - User activity trends over last 7 days (daily active users)
 - **Bar Charts** - Category performance and top exercises by completion count
 - **Pie Charts** - Difficulty distribution (Beginner/Intermediate/Advanced)
 - **Recent Activity Feed** - Last 10 exercise completions with user info, scores, and relative time
 
 #### Data Sources
+
 - Real-time data from Firebase Firestore collections:
   - `exercises` - All exercise metadata
   - `users` - User accounts and profiles
@@ -402,6 +416,7 @@ The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time in
   - `categories` - Category names for proper labeling
 
 #### Analytics Calculations
+
 - **Total Completions** - Count of all completed exercises
 - **Average Score** - Mean of all exercise scores (handles division by zero)
 - **Completion Rate** - (Total completions / (exercises × users)) × 100
@@ -412,6 +427,7 @@ The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time in
 - **Recent Activity** - Last 10 completions with user names (display name or email prefix), exercise titles, scores, and human-readable timestamps ("2h ago", "3d ago")
 
 #### Technical Implementation
+
 - **Date Handling** - Defensive checks for Date objects using `instanceof Date` to prevent runtime errors
 - **Firestore Timestamp Conversion** - Proper conversion using `toDate()` with fallbacks
 - **Category Name Resolution** - Fetches category data to display names instead of IDs
@@ -420,6 +436,7 @@ The Analytics Dashboard (`/admin/analytics`) provides comprehensive real-time in
 - **Loading States** - Themed activity indicators during data fetch
 
 #### UI/UX Design
+
 - **Navigation** - Accessible from Admin dashboard with `slide_from_right` animation
 - **Tab Layout** - Segmented control for switching between Overview/Users/Exercises
 - **Chart Styling** - Consistent color scheme (green for categories, purple for users, blue for overview)
@@ -434,23 +451,28 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
 #### Settings Categories
 
 **Exercise Settings**
+
 - **Default Time Limit** - Default duration for timed exercises (in minutes)
 - **Show Solutions Immediately** - Toggle to allow users to see answers right away
 - **Enable Points System** - Toggle to award points for completed exercises
 
 **User Management**
+
 - **Allow New Registrations** - Enable/disable new user account creation
 - **Require Email Verification** - Force email verification before app access
 
 **Notifications**
+
 - **Enable Push Notifications** - Global toggle for push notification system
 - **Daily Reminder Time** - Time for daily practice reminders (HH:MM format)
 
 **Admin Settings**
+
 - **Maintenance Mode** - Disable app for non-admin users during updates
 - **Announcement Banner** - Global message displayed to all users (multiline text)
 
 #### Features
+
 - **Real-time Configuration** - Changes take effect immediately across the app
 - **Default Settings** - Automatic initialization with sensible defaults if no settings exist
 - **Reset to Defaults** - One-click reset with confirmation dialog
@@ -459,16 +481,19 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
 - **Success/Error Feedback** - User-friendly alerts for all operations
 
 #### Data Storage
+
 - Settings stored in Firestore collection `appSettings/config`
 - Structured as single document with nested objects for each category
 - Default settings created automatically on first access
 
 #### Security
+
 - **Admin-only Access** - Settings screen redirects non-admins to main tabs
 - **Firestore Rules** - Only admin users can read/write `appSettings` collection
 - **Server-side Validation** - Firestore security rules enforce admin privileges
 
 #### UI/UX Design
+
 - **Section-based Layout** - Clear visual grouping with colored icons
   - Green (doc.text) for Exercise Settings
   - Purple (person.2) for User Management
@@ -481,6 +506,7 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
 - **Responsive Layout** - Scrollable content with proper spacing
 
 #### Technical Implementation
+
 - **TypeScript Interface** - `AppSettings` type exported from firebaseService.ts
 - **State Management** - Local state with immediate updates to inputs
 - **Firestore Operations**:
@@ -537,8 +563,8 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
 
 #### 🔒 Credential Management & Production Security
 
-
 - **Firebase Configuration** (config/firebase.ts)
+
   - API keys in client-side code are NORMAL for Firebase
   - Firebase security is enforced through Firestore Security Rules, NOT API key secrecy
   - API keys are not secret and are embedded in mobile apps
@@ -551,6 +577,7 @@ The App Settings screen (`/admin/app-settings`) provides a centralized interface
   - Use Expo Secrets or EAS environment variables for production
 
 **Production Deployment Checklist:**
+
 - [ ] Remove or secure admin.txt file
 - [ ] Verify Firebase Security Rules are properly configured
 - [ ] Test that non-admin users cannot access admin features
@@ -616,6 +643,7 @@ service cloud.firestore {
 ```
 
 **Key Security Policies:**
+
 - **Authentication Required** - All database access requires Firebase authentication
 - **User Data Isolation** - Users can only access their own progress and profile data
 - **Admin Verification** - Admin operations verified through Firestore lookup, not client claims
@@ -653,6 +681,7 @@ service firebase.storage {
 ```
 
 **Storage Security Features:**
+
 - Authenticated users can download files
 - Only admins can upload files
 - File size limited to 10MB
@@ -664,6 +693,7 @@ service firebase.storage {
 **Before deploying to production, test your security rules:**
 
 1. **Use Firebase Emulator Suite** (recommended for local testing):
+
 ```bash
 npm install -g firebase-tools
 firebase init emulators
@@ -671,11 +701,13 @@ firebase emulators:start --only firestore,storage
 ```
 
 2. **Test with Firebase Console Rules Playground**:
+
    - Go to Firestore Database > Rules tab
    - Click "Rules Playground"
    - Test read/write operations with different user contexts
 
 3. **Manual Testing Checklist**:
+
    - [ ] Regular user CANNOT access another user's progress
    - [ ] Regular user CANNOT modify exercises or categories
    - [ ] Regular user CANNOT access appSettings

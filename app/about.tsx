@@ -20,7 +20,7 @@ export default function AboutScreen() {
   };
 
   const handleEmailPress = () => {
-    Linking.openURL('mailto:sdl@easterbrook.at');
+    Linking.openURL('mailto:esl@easterbrook.at');
   };
 
   const colorScheme = useColorScheme() ?? 'light';
@@ -211,7 +211,7 @@ export default function AboutScreen() {
               style={styles.contactIcon}
             />
             <ThemedText style={styles.contactText}>
-              sdl@easterbrook.at
+              esl@easterbrook.at
             </ThemedText>
           </TouchableOpacity>
         </View>

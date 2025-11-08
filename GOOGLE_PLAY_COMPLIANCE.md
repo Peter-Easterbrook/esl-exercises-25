@@ -225,7 +225,7 @@ Password: [See admin.txt for current password]
 Note: This account has exercise progress and normal user permissions
 
 ADMIN ACCOUNT:
-Email: admin@easterbrook.at
+Email: esl@easterbrook.at
 Password: [See admin.txt for current password]
 Note: This account has admin privileges for content management
 ```
