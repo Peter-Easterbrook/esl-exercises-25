@@ -16,7 +16,8 @@
       "Bash(git push:*)",
       "Bash(git rm:*)",
       "Bash(nul)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(if exist nul del nul)"
     ],
     "deny": [],
     "ask": []
