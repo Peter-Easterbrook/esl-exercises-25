@@ -11,7 +11,6 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { AuthProvider } from '@/contexts/AuthContext';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,8 +19,6 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   const [fontsLoaded] = useFonts({
     'berlin-sans-fb': require('../assets/fonts/Berlinsans.otf'),
     'berlin-sans-fb-bold': require('../assets/fonts/Berlinsans_bold.ttf'),
@@ -39,7 +36,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={DarkTheme}>
         <Stack
           screenOptions={{
             animation: 'default', // Global default
