@@ -473,7 +473,7 @@ export default function ManageUsersScreen() {
                             No recent activity
                           </ThemedText>
                         ) : (
-                          userStats.recentActivity.map((activity, idx) => (
+                          userStats.recentActivity.map((activity: { exerciseTitle: string; score: number; completedAt: Date; success: boolean }, idx: number) => (
                             <View key={idx} style={styles.activityRow}>
                               <View style={styles.activityInfo}>
                                 <ThemedText style={styles.activityTitle}>
