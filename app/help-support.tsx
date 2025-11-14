@@ -51,7 +51,7 @@ export default function HelpSupportScreen() {
           <IconSymbol
             name='questionmark.circle.fill'
             size={48}
-            color='#0078ff'
+            color='#6996b3'
           />
           <ThemedText style={styles.introText}>
             Welcome to the ESL Exercises Help Center. Find answers to common
@@ -319,7 +319,7 @@ export default function HelpSupportScreen() {
             Still Need Help?
           </ThemedText>
           <View style={styles.contactCard}>
-            <IconSymbol name='envelope.fill' size={32} color='#0078ff' />
+            <IconSymbol name='envelope.fill' size={32} color='#6996b3' />
             <ThemedText style={styles.contactText}>
               If you are experiencing technical issues with the app that are not
               resolved by the information above, please contact our support
@@ -351,7 +351,7 @@ export default function HelpSupportScreen() {
               style={styles.resourceItem}
               onPress={() => router.push('/about')}
             >
-              <IconSymbol name='info.circle' size={24} color='#0078ff' />
+              <IconSymbol name='info.circle' size={24} color='#6996b3' />
               <View style={styles.resourceContent}>
                 <ThemedText type='defaultSemiBold'>About Us</ThemedText>
                 <ThemedText style={styles.resourceSubtext}>
@@ -367,7 +367,7 @@ export default function HelpSupportScreen() {
               style={styles.resourceItem}
               onPress={() => router.push('/privacy-policy' as any)}
             >
-              <IconSymbol name='doc.text' size={24} color='#0078ff' />
+              <IconSymbol name='doc.text' size={24} color='#6996b3' />
               <View style={styles.resourceContent}>
                 <ThemedText type='defaultSemiBold'>Privacy Policy</ThemedText>
                 <ThemedText style={styles.resourceSubtext}>
@@ -383,7 +383,7 @@ export default function HelpSupportScreen() {
               style={styles.resourceItem}
               onPress={() => router.push('/account-settings')}
             >
-              <IconSymbol name='gear' size={24} color='#0078ff' />
+              <IconSymbol name='gear' size={24} color='#6996b3' />
               <View style={styles.resourceContent}>
                 <ThemedText type='defaultSemiBold'>Account Settings</ThemedText>
                 <ThemedText style={styles.resourceSubtext}>
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     lineHeight: 24,
-    color: '#666',
+    color: '#464655',
   },
   section: {
     marginBottom: 24,
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   contactCard: {
@@ -452,8 +452,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#d0e8ff',
+    borderWidth: 0.5,
+    borderColor: '#abd2ec',
   },
   guideItem: {
     flexDirection: 'row',
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   guideText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#666',
+    color: '#464655',
   },
   guideDivider: {
     height: 1,
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   faqAnswer: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#666',
+    color: '#464655',
     marginTop: 8,
   },
   faqDivider: {
@@ -518,21 +518,21 @@ const styles = StyleSheet.create({
   troubleshootText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#666',
+    color: '#464655',
   },
   contactText: {
     textAlign: 'center',
     marginTop: 16,
     fontSize: 14,
     lineHeight: 20,
-    color: '#666',
+    color: '#464655',
     marginBottom: 16,
   },
   emailButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     borderRadius: 8,
     padding: 14,
     gap: 8,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   },
   emailText: {
     fontSize: 14,
-    color: '#0078ff',
+    color: '#6996b3',
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
   },
   resourceSubtext: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
     marginTop: 2,
   },
 });

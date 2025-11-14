@@ -70,7 +70,7 @@ export default function AdminPanel() {
       icon: 'plus.circle',
       title: 'Add New Exercise',
       subtitle: 'Create a new exercise for students',
-      color: '#4CAF50',
+      color: '#07b524',
       onPress: () => router.push('/admin/add-exercise'),
       animation: 'slide_from_right',
     },
@@ -86,7 +86,7 @@ export default function AdminPanel() {
       icon: 'pencil.circle',
       title: 'Manage Exercises',
       subtitle: 'Edit or delete existing exercises',
-      color: '#0078ff',
+      color: '#6996b3',
       onPress: () => router.push('/admin/manage-exercises'),
       animation: 'slide_from_right',
     },
@@ -131,7 +131,7 @@ export default function AdminPanel() {
           style={styles.backButton}
           onPress={() => router.push('/(tabs)/profile')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back to Profile</ThemedText>
         </TouchableOpacity>
 
@@ -156,7 +156,7 @@ export default function AdminPanel() {
 
           {loading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size='large' color='#0078ff' />
+              <ActivityIndicator size='large' color='#6996b3' />
               <ThemedText style={styles.loadingText}>
                 Loading statistics...
               </ThemedText>
@@ -164,7 +164,7 @@ export default function AdminPanel() {
           ) : (
             <View style={styles.statsGrid}>
               <View style={styles.statCard}>
-                <IconSymbol name='doc.text' size={24} color='#0078ff' />
+                <IconSymbol name='doc.text' size={24} color='#6996b3' />
                 <ThemedText style={styles.statNumber}>
                   {stats.totalExercises}
                 </ThemedText>
@@ -174,7 +174,7 @@ export default function AdminPanel() {
               </View>
 
               <View style={styles.statCard}>
-                <IconSymbol name='person.2' size={24} color='#4CAF50' />
+                <IconSymbol name='person.2' size={24} color='#07b524' />
                 <ThemedText style={styles.statNumber}>
                   {stats.totalUsers}
                 </ThemedText>
@@ -192,7 +192,7 @@ export default function AdminPanel() {
               </View>
 
               <View style={styles.statCard}>
-                <IconSymbol name='circle.fill' size={24} color='#4CAF50' />
+                <IconSymbol name='circle.fill' size={24} color='#07b524' />
                 <ThemedText style={styles.statNumber}>
                   {stats.activeUsers}
                 </ThemedText>
@@ -238,7 +238,7 @@ export default function AdminPanel() {
                   </ThemedText>
                 </View>
 
-                <IconSymbol name='chevron.right' size={20} color='#666' />
+                <IconSymbol name='chevron.right' size={20} color='#464655' />
               </TouchableOpacity>
             ))}
           </View>
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   headerTitleContainer: {

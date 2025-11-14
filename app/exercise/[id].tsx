@@ -90,7 +90,7 @@ export default function ExerciseScreen() {
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+              <IconSymbol name='chevron.left' size={24} color='#6996b3' />
               <ThemedText style={styles.backText}>Back</ThemedText>
             </TouchableOpacity>
           </View>
@@ -151,7 +151,7 @@ export default function ExerciseScreen() {
             style={styles.backButton}
             onPress={handleBackToInstructions}
           >
-            <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
             <ThemedText style={styles.backText}>Instructions</ThemedText>
           </TouchableOpacity>
         </View>
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   content: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   beginner: {
     backgroundColor: '#e8f5e8',
-    color: '#2e7d2e',
+    color: '#07b524',
   },
   intermediate: {
     backgroundColor: '#fff3cd',
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#f0f0f0',
-    padding: 16,
+    padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 20,
@@ -259,8 +259,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   primaryButton: {
-    backgroundColor: '#0078ff',
-    padding: 16,
+    backgroundColor: '#6996b3',
+    padding: 12,
     borderRadius: 8,
     alignItems: 'center',
   },

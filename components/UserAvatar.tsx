@@ -90,7 +90,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
 const styles = StyleSheet.create({
   avatar: {
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     justifyContent: 'center',
     alignItems: 'center',
   },

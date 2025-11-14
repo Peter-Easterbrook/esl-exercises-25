@@ -164,7 +164,7 @@ export default function UploadFilesScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -263,7 +263,7 @@ export default function UploadFilesScreen() {
                         : 'doc.fill'
                     }
                     size={28}
-                    color='#0078ff'
+                    color='#6996b3'
                   />
                 </View>
                 <View style={styles.fileInfo}>
@@ -287,7 +287,7 @@ export default function UploadFilesScreen() {
                   onPress={() => handleDeleteFile(file)}
                   activeOpacity={0.7}
                 >
-                  <IconSymbol name='trash' size={20} color='#F44336' />
+                  <IconSymbol name='trash' size={20} color='#6f0202' />
                 </TouchableOpacity>
               </View>
             ))}
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 20,
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
   },
   sectionTitle: {
     fontSize: 20,
@@ -477,22 +477,22 @@ const styles = StyleSheet.create({
   },
   selectedCategory: {
     backgroundColor: '#e3f2fd',
-    borderColor: '#0078ff',
+    borderColor: '#6996b3',
     boxShadow: '0px 2px 6px rgba(0, 120, 255, 0.3)',
   },
   categoryText: {
     fontSize: 14,
-    color: '#0078ff',
+    color: '#6996b3',
   },
   selectedCategoryText: {
-    color: '#0078ff',
+    color: '#6996b3',
     fontWeight: '600',
   },
   uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
     paddingVertical: 16,
     borderRadius: 8,
     gap: 8,
@@ -561,8 +561,8 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   selectedExerciseChip: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: '#07b524',
+    borderColor: '#07b524',
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
   },
   pressedChip: {
@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
   },
   linkedExercise: {
     fontSize: 11,
-    color: '#4CAF50',
+    color: '#07b524',
     marginTop: 2,
   },
 });

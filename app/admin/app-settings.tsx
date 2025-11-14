@@ -112,7 +112,7 @@ export default function AppSettingsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#0078ff' />
+          <ActivityIndicator size='large' color='#6996b3' />
           <ThemedText style={styles.loadingText}>
             Loading settings...
           </ThemedText>
@@ -128,7 +128,7 @@ export default function AppSettingsScreen() {
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back</ThemedText>
         </TouchableOpacity>
 
@@ -141,7 +141,7 @@ export default function AppSettingsScreen() {
         {/* Exercise Settings */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <IconSymbol name='doc.text' size={20} color='#4CAF50' />
+            <IconSymbol name='doc.text' size={20} color='#07b524' />
             <ThemedText type='subtitle' style={styles.sectionTitle}>
               Exercise Settings
             </ThemedText>
@@ -197,7 +197,7 @@ export default function AppSettingsScreen() {
                     },
                   })
                 }
-                trackColor={{ false: '#ddd', true: '#4CAF50' }}
+                trackColor={{ false: '#ddd', true: '#07b524' }}
                 thumbColor='#fff'
               />
             </View>
@@ -224,7 +224,7 @@ export default function AppSettingsScreen() {
                     },
                   })
                 }
-                trackColor={{ false: '#ddd', true: '#4CAF50' }}
+                trackColor={{ false: '#ddd', true: '#07b524' }}
                 thumbColor='#fff'
               />
             </View>
@@ -390,7 +390,7 @@ export default function AppSettingsScreen() {
                     },
                   })
                 }
-                trackColor={{ false: '#ddd', true: '#F44336' }}
+                trackColor={{ false: '#ddd', true: '#6f0202' }}
                 thumbColor='#fff'
               />
             </View>
@@ -456,7 +456,7 @@ export default function AppSettingsScreen() {
             <IconSymbol
               name='arrow.counterclockwise'
               size={20}
-              color='#F44336'
+              color='#6f0202'
             />
             <ThemedText style={[styles.buttonText, styles.resetButtonText]}>
               Reset to Defaults
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   settingCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   settingRow: {
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
   },
   settingDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#464655',
     lineHeight: 18,
   },
   divider: {
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   numberInput: {
     width: 80,
     height: 40,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   timeInput: {
     width: 100,
     height: 40,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   },
   textAreaInput: {
     marginTop: 12,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,
@@ -602,13 +602,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   resetButton: {
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#F44336',
+    borderWidth: 0.5,
+    borderColor: '#6f0202',
   },
   buttonText: {
     color: '#fff',
@@ -616,6 +616,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   resetButtonText: {
-    color: '#F44336',
+    color: '#6f0202',
   },
 });

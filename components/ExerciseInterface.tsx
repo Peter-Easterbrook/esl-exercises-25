@@ -186,8 +186,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                 '#FFD700',
                 '#FFA500',
                 '#FF6347',
-                '#4CAF50',
-                '#0078ff',
+                '#07b524',
+                '#6996b3',
                 '#9C27B0',
               ]}
             />
@@ -212,10 +212,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                   {
                     backgroundColor:
                       score >= 70
-                        ? '#4CAF50'
+                        ? '#07b524'
                         : score >= 50
                         ? '#FF9800'
-                        : '#F44336',
+                        : '#6f0202',
                   },
                 ]}
               />
@@ -254,7 +254,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                           : 'xmark.circle.fill'
                       }
                       size={20}
-                      color={isCorrect ? '#4CAF50' : '#F44336'}
+                      color={isCorrect ? '#07b524' : '#6f0202'}
                     />
                   </View>
 
@@ -293,7 +293,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               <IconSymbol
                 name='square.and.arrow.down'
                 size={20}
-                color='#0078ff'
+                color='#6996b3'
               />
               <ThemedText style={styles.secondaryButtonText}>
                 Download Exercise
@@ -304,7 +304,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={styles.secondaryButton}
               onPress={handleRestart}
             >
-              <IconSymbol name='arrow.clockwise' size={20} color='#0078ff' />
+              <IconSymbol name='arrow.clockwise' size={20} color='#6996b3' />
               <ThemedText style={styles.secondaryButtonText}>
                 Try Again
               </ThemedText>
@@ -399,7 +399,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           <IconSymbol
             name='chevron.left'
             size={20}
-            color={currentQuestionIndex === 0 ? '#ccc' : '#0078ff'}
+            color={currentQuestionIndex === 0 ? '#ccc' : '#6996b3'}
           />
           <ThemedText
             style={[
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     borderRadius: 2,
   },
   questionSection: {
@@ -497,10 +497,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#eee',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
   },
   selectedOption: {
-    borderColor: '#0078ff',
+    borderColor: '#6996b3',
     backgroundColor: '#f0f8ff',
   },
   optionContent: {
@@ -516,15 +516,15 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   selectedIndicator: {
-    borderColor: '#0078ff',
-    backgroundColor: '#0078ff',
+    borderColor: '#6996b3',
+    backgroundColor: '#6996b3',
   },
   optionText: {
     fontSize: 16,
     flex: 1,
   },
   selectedOptionText: {
-    color: '#0078ff',
+    color: '#6996b3',
   },
   navigationFooter: {
     flexDirection: 'row',
@@ -542,11 +542,11 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     fontSize: 16,
-    color: '#0078ff',
+    color: '#6996b3',
     marginLeft: 4,
   },
   primaryButton: {
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 32,
 
-    color: '#0078ff',
+    color: '#6996b3',
     marginBottom: 16,
   },
   scoreIndicator: {
@@ -641,14 +641,14 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   correctAnswer: {
-    color: '#4CAF50',
+    color: '#07b524',
   },
   explanation: {
     backgroundColor: '#f8f9fa',
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#0078ff',
+    borderLeftColor: '#6996b3',
   },
   explanationText: {
     fontSize: 14,
@@ -667,12 +667,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     borderWidth: 0.5,
-    borderColor: '#0078ff',
+    borderColor: '#6996b3',
     borderRadius: 8,
     gap: 8,
   },
   secondaryButtonText: {
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
 });

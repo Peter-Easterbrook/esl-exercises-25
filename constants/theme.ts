@@ -4,6 +4,7 @@
  */
 
 import { Platform } from 'react-native';
+import { blue, green, red } from 'react-native-reanimated/lib/typescript/Colors';
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
@@ -54,3 +55,48 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const colors = {
+  primary: '#004c6d',
+  icon: '#3d526e',
+  secondary: '#FF7F50',
+  tertiary: '#9bc3e1',
+  success: '#07b524',
+  warning: '#ff9500',
+  danger: '#ff3b30',
+  signoutBackground: '#feded2',
+  borderColor: '#fea382',
+  signoutText: '#f54707',
+};
+
+export const blues = {
+  blue1: '#004c6d',
+  blue2: '#255e7e',
+  blue3: '#3d708f',
+  blue4: '#5383a1',
+  blue5: '#6996b3',
+  blue6: '#7faac6',
+  blue7: '#94bed9',
+  blue8: '#abd2ec',
+  blue9: '#c1e7ff',
+};
+  --lightgrey: #e4e8eb;
+  --grey: #6b7e8d;
+  --darkgrey: #161a1d;
+  --lightblue: #eaeffc;
+  --blue: #235ac2;
+  --darkblue: #050d1c;
+  --darkorange: #ff3d00;
+  --orange: #ee5522;
+  --green: #08ff08;
+  --red: #e10600;
+  --yellow: #f6a800;
+  --terracotta: #b84221;
+  --hotpink: #e31c79;
+  --cherry: #cd001a;
+  --lightochra: #fff8e8;
+  --california-sunshine: #f6a800;
+  --stardustblue: #9bc3e1;
+  --coral:#FF7F50;
+--lightsalmon: #FFA07A;
+--tomato: #FF6347; 

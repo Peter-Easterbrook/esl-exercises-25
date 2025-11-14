@@ -24,7 +24,7 @@ export function ThemedLoader({
     'background'
   );
   const indicatorColor = useThemeColor(
-    { light: '#0078ff', dark: '#64B5F6' },
+    { light: '#6996b3', dark: '#64B5F6' },
     'tint'
   );
 

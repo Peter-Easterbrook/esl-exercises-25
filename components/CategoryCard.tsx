@@ -117,7 +117,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
-          <IconSymbol name={category.icon as any} size={24} color='#0078ff' />
+          <IconSymbol name={category.icon as any} size={24} color='#6996b3' />
           <View style={styles.titleContainer}>
             <ThemedText type='defaultSemiBold' style={styles.title}>
               {category.name}
@@ -130,7 +130,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         <IconSymbol
           name={isExpanded ? 'chevron.up' : 'chevron.down'}
           size={20}
-          color='#666'
+          color='#464655'
         />
       </TouchableOpacity>
 
@@ -141,72 +141,79 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           exiting={FadeOut.duration(200)}
         >
           <Animated.View style={heightStyle}>
-          <Collapsible collapsed={!isExpanded}>
-            <View style={styles.exercisesList}>
-              {exercises.map((exercise) => (
-                <TouchableOpacity
-                  key={exercise.id}
-                  style={styles.exerciseItem}
-                  onPress={() => handleExercisePress(exercise)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.exerciseContent}>
-                    <ThemedText
-                      type='defaultSemiBold'
-                      style={styles.exerciseTitle}
-                    >
-                      {exercise.title}
-                    </ThemedText>
-                    <ThemedText style={styles.exerciseDescription}>
-                      {exercise.description}
-                    </ThemedText>
-                    <View style={styles.exerciseFooter}>
-                      <Text
-                        style={[styles.difficulty, styles[exercise.difficulty]]}
-                      >
-                        {exercise.difficulty}
-                      </Text>
-                      <Text style={styles.exerciseType}>
-                        {exercise.content.type.replace('-', ' ')}
-                      </Text>
-                    </View>
-                  </View>
-                  <IconSymbol name='chevron.right' size={16} color='#666' />
-                </TouchableOpacity>
-              ))}
-
-              {exercises.length === 0 && (
-                <ThemedText style={styles.noExercises}>
-                  No exercises available yet
-                </ThemedText>
-              )}
-            </View>
-
-            {downloadableFiles.length > 0 && (
-              <View style={styles.filesSection}>
-                <ThemedText style={styles.filesSectionTitle}>
-                  Downloadable Files
-                </ThemedText>
-                {downloadableFiles.map((file) => (
+            <Collapsible collapsed={!isExpanded}>
+              <View style={styles.exercisesList}>
+                {exercises.map((exercise) => (
                   <TouchableOpacity
-                    key={file.id}
-                    style={styles.fileItem}
-                    onPress={() => handleDownloadFile(file)}
+                    key={exercise.id}
+                    style={styles.exerciseItem}
+                    onPress={() => handleExercisePress(exercise)}
+                    activeOpacity={0.7}
                   >
-                    <IconSymbol name='doc.text' size={16} color='#0078ff' />
-                    <ThemedText style={styles.fileItemText}>
-                      {file.name}
-                    </ThemedText>
+                    <View style={styles.exerciseContent}>
+                      <ThemedText
+                        type='defaultSemiBold'
+                        style={styles.exerciseTitle}
+                      >
+                        {exercise.title}
+                      </ThemedText>
+                      <ThemedText style={styles.exerciseDescription}>
+                        {exercise.description}
+                      </ThemedText>
+                      <View style={styles.exerciseFooter}>
+                        <Text
+                          style={[
+                            styles.difficulty,
+                            styles[exercise.difficulty],
+                          ]}
+                        >
+                          {exercise.difficulty}
+                        </Text>
+                        <Text style={styles.exerciseType}>
+                          {exercise.content.type.replace('-', ' ')}
+                        </Text>
+                      </View>
+                    </View>
                     <IconSymbol
-                      name='arrow.down.circle'
+                      name='chevron.right'
                       size={16}
-                      color='#666'
+                      color='#464655'
                     />
                   </TouchableOpacity>
                 ))}
+
+                {exercises.length === 0 && (
+                  <ThemedText style={styles.noExercises}>
+                    No exercises available yet
+                  </ThemedText>
+                )}
               </View>
-            )}
-          </Collapsible>
+
+              {downloadableFiles.length > 0 && (
+                <View style={styles.filesSection}>
+                  <ThemedText style={styles.filesSectionTitle}>
+                    Downloadable Files
+                  </ThemedText>
+                  {downloadableFiles.map((file) => (
+                    <TouchableOpacity
+                      key={file.id}
+                      style={styles.fileItem}
+                      onPress={() => handleDownloadFile(file)}
+                    >
+                      <IconSymbol name='doc.text' size={16} color='#6996b3' />
+                      <ThemedText style={styles.fileItemText}>
+                        {file.name}
+                      </ThemedText>
+                      <IconSymbol
+                        name='arrow.down.circle'
+                        size={16}
+                        color='#464655'
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </Collapsible>
           </Animated.View>
         </Animated.View>
       )}
@@ -284,15 +291,15 @@ const styles = StyleSheet.create({
   },
   beginner: {
     backgroundColor: '#e8f5e8',
-    color: '#2e7d2e',
+    color: '#07b524',
   },
   intermediate: {
-    backgroundColor: '#fff3cd',
-    color: '#856404',
+    backgroundColor: '#fff8dc',
+    color: '#ff9500',
   },
   advanced: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
+    backgroundColor: '#f9dfd8',
+    color: '#6f0202',
   },
   exerciseType: {
     fontSize: 12,

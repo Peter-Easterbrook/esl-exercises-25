@@ -114,7 +114,7 @@ export default function AboutScreen() {
               <IconSymbol
                 name='book.circle.fill'
                 size={20}
-                color='#0078ff'
+                color='#6996b3'
                 style={styles.serviceIcon}
               />
               <ThemedText style={styles.serviceText}>
@@ -125,7 +125,7 @@ export default function AboutScreen() {
               <IconSymbol
                 name='doc.text.fill'
                 size={20}
-                color='#0078ff'
+                color='#6996b3'
                 style={styles.serviceIcon}
               />
               <ThemedText style={styles.serviceText}>
@@ -136,7 +136,7 @@ export default function AboutScreen() {
               <IconSymbol
                 name='person.2.fill'
                 size={20}
-                color='#0078ff'
+                color='#6996b3'
                 style={styles.serviceIcon}
               />
               <ThemedText style={styles.serviceText}>
@@ -147,7 +147,7 @@ export default function AboutScreen() {
               <IconSymbol
                 name='lightbulb.fill'
                 size={20}
-                color='#0078ff'
+                color='#6996b3'
                 style={styles.serviceIcon}
               />
               <ThemedText style={styles.serviceText}>
@@ -192,7 +192,7 @@ export default function AboutScreen() {
             <IconSymbol
               name='globe'
               size={18}
-              color='#0078ff'
+              color='#6996b3'
               style={styles.contactIcon}
             />
             <ThemedText style={styles.contactText}>
@@ -207,7 +207,7 @@ export default function AboutScreen() {
             <IconSymbol
               name='envelope.fill'
               size={18}
-              color='#0078ff'
+              color='#6996b3'
               style={styles.contactIcon}
             />
             <ThemedText style={styles.contactText}>
@@ -273,12 +273,12 @@ const styles = StyleSheet.create({
   },
   version: {
     fontSize: 14,
-    color: '#666',
+    color: '#464655',
   },
   section: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 20,
+    padding: 12,
     marginBottom: 16,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 15,
-    color: '#0078ff',
+    color: '#6996b3',
   },
   footer: {
     alignItems: 'center',
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
     marginBottom: 4,
   },
 });

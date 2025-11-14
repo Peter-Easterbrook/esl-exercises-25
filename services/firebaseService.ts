@@ -910,10 +910,10 @@ export const getAnalyticsData = async () => {
           count,
           color:
             name === 'beginner'
-              ? '#4CAF50'
+              ? '#07b524'
               : name === 'intermediate'
               ? '#FF9800'
-              : '#F44336',
+              : '#6f0202',
         })
       ),
       userActivityTrend,

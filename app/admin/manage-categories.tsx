@@ -161,7 +161,7 @@ export default function ManageCategoriesScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -173,7 +173,7 @@ export default function ManageCategoriesScreen() {
       <View style={styles.content}>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#666' />
+          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
           <TextInput
             style={styles.searchInput}
             placeholder='Search categories...'
@@ -220,7 +220,7 @@ export default function ManageCategoriesScreen() {
                   <IconSymbol
                     name={category.icon as any}
                     size={32}
-                    color='#0078ff'
+                    color='#6996b3'
                   />
                 </View>
 
@@ -236,7 +236,7 @@ export default function ManageCategoriesScreen() {
                     <IconSymbol
                       name='questionmark.circle'
                       size={14}
-                      color='#666'
+                      color='#464655'
                     />
                     <ThemedText style={styles.metadataText}>
                       {category.exercises?.length || 0} exercises
@@ -249,14 +249,14 @@ export default function ManageCategoriesScreen() {
                     style={[styles.actionButton, styles.editButton]}
                     onPress={() => handleEditCategory(category)}
                   >
-                    <IconSymbol name='pencil' size={16} color='#0078ff' />
+                    <IconSymbol name='pencil' size={16} color='#6996b3' />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={[styles.actionButton, styles.deleteButton]}
                     onPress={() => handleDeleteCategory(category)}
                   >
-                    <IconSymbol name='trash' size={16} color='#F44336' />
+                    <IconSymbol name='trash' size={16} color='#6f0202' />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -279,7 +279,7 @@ export default function ManageCategoriesScreen() {
                 {editingCategory ? 'Edit Category' : 'Add New Category'}
               </ThemedText>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <IconSymbol name='xmark' size={24} color='#666' />
+                <IconSymbol name='xmark' size={24} color='#464655' />
               </TouchableOpacity>
             </View>
 
@@ -332,7 +332,9 @@ export default function ManageCategoriesScreen() {
                       <IconSymbol
                         name={iconName as any}
                         size={28}
-                        color={formData.icon === iconName ? '#0078ff' : '#666'}
+                        color={
+                          formData.icon === iconName ? '#6996b3' : '#464655'
+                        }
                       />
                     </TouchableOpacity>
                   ))}
@@ -387,7 +389,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -422,7 +424,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
     paddingVertical: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -454,7 +456,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
     alignItems: 'center',
@@ -487,7 +489,7 @@ const styles = StyleSheet.create({
   },
   metadataText: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
   },
   categoryActions: {
     flexDirection: 'row',
@@ -545,7 +547,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 14,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#e0e0e0',
   },
   textAreaInput: {
@@ -571,7 +573,7 @@ const styles = StyleSheet.create({
   },
   iconOptionSelected: {
     backgroundColor: '#e3f2fd',
-    borderColor: '#0078ff',
+    borderColor: '#6996b3',
   },
   formActions: {
     flexDirection: 'row',
@@ -589,11 +591,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   cancelButtonText: {
-    color: '#666',
+    color: '#464655',
     fontSize: 16,
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
   },
   saveButtonText: {
     color: '#fff',

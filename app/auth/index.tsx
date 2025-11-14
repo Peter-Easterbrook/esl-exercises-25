@@ -137,7 +137,7 @@ export default function AuthScreen() {
               <IconSymbol
                 name={showPassword ? 'eye' : 'eye.slash'}
                 size={20}
-                color='#666'
+                color='#464655'
               />
             </TouchableOpacity>
           </View>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 0.5,
     borderColor: '#ddd',
-    padding: 16,
+    padding: 12,
     borderRadius: 8,
     fontSize: 16,
     backgroundColor: '#fff',
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0.5,
     borderColor: '#ddd',
-    padding: 16,
+    padding: 12,
     paddingRight: 50,
     borderRadius: 8,
     fontSize: 16,
@@ -248,8 +248,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   button: {
-    backgroundColor: '#0078ff',
-    padding: 16,
+    backgroundColor: '#6996b3',
+    padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 8,
@@ -260,10 +260,10 @@ const styles = StyleSheet.create({
   },
   linkButton: {
     alignItems: 'center',
-    padding: 16,
+    padding: 12,
   },
   linkText: {
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
 });

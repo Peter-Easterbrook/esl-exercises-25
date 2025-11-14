@@ -1,8 +1,8 @@
 import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { UserAvatar } from '@/components/UserAvatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { UserAvatar } from '@/components/UserAvatar';
 import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -114,7 +114,9 @@ export default function ManageUsersScreen() {
     setLoadingStats(true);
 
     try {
-      const { getUserProgressStats } = await import('@/services/firebaseService');
+      const { getUserProgressStats } = await import(
+        '@/services/firebaseService'
+      );
       const stats = await getUserProgressStats(user.id);
       setUserStats(stats);
     } catch (error) {
@@ -136,7 +138,9 @@ export default function ManageUsersScreen() {
 
     try {
       setSavingEdit(true);
-      const { updateUserDisplayName } = await import('@/services/firebaseService');
+      const { updateUserDisplayName } = await import(
+        '@/services/firebaseService'
+      );
       await updateUserDisplayName(selectedUser.id, editDisplayName.trim());
       Alert.alert('Success', 'User updated successfully');
       setEditModalVisible(false);
@@ -152,7 +156,9 @@ export default function ManageUsersScreen() {
   const handleResetProgress = (user: UserData) => {
     Alert.alert(
       'Reset Progress',
-      `Are you sure you want to reset all progress for ${user.displayName || user.email}?\n\nThis will delete:\n• All completed exercises\n• All scores and achievements\n• All activity history\n\nThis action cannot be undone.`,
+      `Are you sure you want to reset all progress for ${
+        user.displayName || user.email
+      }?\n\nThis will delete:\n• All completed exercises\n• All scores and achievements\n• All activity history\n\nThis action cannot be undone.`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -196,20 +202,28 @@ export default function ManageUsersScreen() {
                   text: 'Delete',
                   style: 'destructive',
                   onPress: async (inputEmail?: string) => {
-                    if (inputEmail?.toLowerCase() === user.email.toLowerCase()) {
+                    if (
+                      inputEmail?.toLowerCase() === user.email.toLowerCase()
+                    ) {
                       try {
                         const { deleteUserAccount } = await import(
                           '@/services/firebaseService'
                         );
                         await deleteUserAccount(user.id);
-                        Alert.alert('Success', 'User account deleted successfully');
+                        Alert.alert(
+                          'Success',
+                          'User account deleted successfully'
+                        );
                         loadUsers();
                       } catch (error) {
                         console.error('Error deleting account:', error);
                         Alert.alert('Error', 'Failed to delete user account');
                       }
                     } else {
-                      Alert.alert('Error', 'Email does not match. Deletion cancelled.');
+                      Alert.alert(
+                        'Error',
+                        'Email does not match. Deletion cancelled.'
+                      );
                     }
                   },
                 },
@@ -255,7 +269,7 @@ export default function ManageUsersScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -267,7 +281,7 @@ export default function ManageUsersScreen() {
       <View style={styles.content}>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#666' />
+          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
           <TextInput
             style={styles.searchInput}
             placeholder='Search by name or email...'
@@ -312,7 +326,9 @@ export default function ManageUsersScreen() {
                         </View>
                       )}
                     </View>
-                    <ThemedText style={styles.userEmail}>{user.email}</ThemedText>
+                    <ThemedText style={styles.userEmail}>
+                      {user.email}
+                    </ThemedText>
                     <ThemedText style={styles.userMeta}>
                       Joined {formatDate(user.createdAt)}
                     </ThemedText>
@@ -325,24 +341,34 @@ export default function ManageUsersScreen() {
                     style={[styles.actionButton, styles.infoButton]}
                     onPress={() => handleViewDetails(user)}
                   >
-                    <IconSymbol name='info.circle' size={20} color='#0078ff' />
-                    <ThemedText style={styles.actionButtonText}>Info</ThemedText>
+                    <IconSymbol name='info.circle' size={20} color='#6996b3' />
+                    <ThemedText style={styles.actionButtonText}>
+                      Info
+                    </ThemedText>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={[styles.actionButton, styles.editButton]}
                     onPress={() => handleEditUser(user)}
                   >
-                    <IconSymbol name='pencil' size={20} color='#0078ff' />
-                    <ThemedText style={styles.actionButtonText}>Edit</ThemedText>
+                    <IconSymbol name='pencil' size={20} color='#6996b3' />
+                    <ThemedText style={styles.actionButtonText}>
+                      Edit
+                    </ThemedText>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={[styles.actionButton, styles.resetButton]}
                     onPress={() => handleResetProgress(user)}
                   >
-                    <IconSymbol name='arrow.clockwise' size={20} color='#FF9800' />
-                    <ThemedText style={[styles.actionButtonText, styles.resetText]}>
+                    <IconSymbol
+                      name='arrow.clockwise'
+                      size={20}
+                      color='#FF9800'
+                    />
+                    <ThemedText
+                      style={[styles.actionButtonText, styles.resetText]}
+                    >
                       Reset
                     </ThemedText>
                   </TouchableOpacity>
@@ -351,8 +377,10 @@ export default function ManageUsersScreen() {
                     style={[styles.actionButton, styles.deleteButton]}
                     onPress={() => handleDeleteAccount(user)}
                   >
-                    <IconSymbol name='trash' size={20} color='#F44336' />
-                    <ThemedText style={[styles.actionButtonText, styles.deleteText]}>
+                    <IconSymbol name='trash' size={20} color='#6f0202' />
+                    <ThemedText
+                      style={[styles.actionButtonText, styles.deleteText]}
+                    >
                       Delete
                     </ThemedText>
                   </TouchableOpacity>
@@ -380,7 +408,7 @@ export default function ManageUsersScreen() {
                 onPress={() => setDetailsModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name='xmark' size={24} color='#666' />
+                <IconSymbol name='xmark' size={24} color='#464655' />
               </TouchableOpacity>
             </View>
 
@@ -451,16 +479,26 @@ export default function ManageUsersScreen() {
                         <ThemedText style={styles.sectionTitle}>
                           Category Progress
                         </ThemedText>
-                        {userStats.categories.map((cat: { name: string; completed: number; total: number; avgScore: number }, idx: number) => (
-                          <View key={idx} style={styles.categoryRow}>
-                            <ThemedText style={styles.categoryName}>
-                              {cat.name}
-                            </ThemedText>
-                            <ThemedText style={styles.categoryProgress}>
-                              {cat.completed}/{cat.total} • {cat.avgScore}%
-                            </ThemedText>
-                          </View>
-                        ))}
+                        {userStats.categories.map(
+                          (
+                            cat: {
+                              name: string;
+                              completed: number;
+                              total: number;
+                              avgScore: number;
+                            },
+                            idx: number
+                          ) => (
+                            <View key={idx} style={styles.categoryRow}>
+                              <ThemedText style={styles.categoryName}>
+                                {cat.name}
+                              </ThemedText>
+                              <ThemedText style={styles.categoryProgress}>
+                                {cat.completed}/{cat.total} • {cat.avgScore}%
+                              </ThemedText>
+                            </View>
+                          )
+                        )}
                       </View>
 
                       {/* Recent Activity */}
@@ -473,30 +511,40 @@ export default function ManageUsersScreen() {
                             No recent activity
                           </ThemedText>
                         ) : (
-                          userStats.recentActivity.map((activity: { exerciseTitle: string; score: number; completedAt: Date; success: boolean }, idx: number) => (
-                            <View key={idx} style={styles.activityRow}>
-                              <View style={styles.activityInfo}>
-                                <ThemedText style={styles.activityTitle}>
-                                  {activity.exerciseTitle}
-                                </ThemedText>
-                                <ThemedText style={styles.activityDate}>
-                                  {formatRelativeTime(activity.completedAt)}
-                                </ThemedText>
+                          userStats.recentActivity.map(
+                            (
+                              activity: {
+                                exerciseTitle: string;
+                                score: number;
+                                completedAt: Date;
+                                success: boolean;
+                              },
+                              idx: number
+                            ) => (
+                              <View key={idx} style={styles.activityRow}>
+                                <View style={styles.activityInfo}>
+                                  <ThemedText style={styles.activityTitle}>
+                                    {activity.exerciseTitle}
+                                  </ThemedText>
+                                  <ThemedText style={styles.activityDate}>
+                                    {formatRelativeTime(activity.completedAt)}
+                                  </ThemedText>
+                                </View>
+                                <View
+                                  style={[
+                                    styles.scoreChip,
+                                    activity.success
+                                      ? styles.scoreSuccess
+                                      : styles.scoreFail,
+                                  ]}
+                                >
+                                  <ThemedText style={styles.scoreText}>
+                                    {activity.score}%
+                                  </ThemedText>
+                                </View>
                               </View>
-                              <View
-                                style={[
-                                  styles.scoreChip,
-                                  activity.success
-                                    ? styles.scoreSuccess
-                                    : styles.scoreFail,
-                                ]}
-                              >
-                                <ThemedText style={styles.scoreText}>
-                                  {activity.score}%
-                                </ThemedText>
-                              </View>
-                            </View>
-                          ))
+                            )
+                          )
                         )}
                       </View>
                     </>
@@ -525,7 +573,7 @@ export default function ManageUsersScreen() {
                 onPress={() => setEditModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name='xmark' size={24} color='#666' />
+                <IconSymbol name='xmark' size={24} color='#464655' />
               </TouchableOpacity>
             </View>
 
@@ -542,7 +590,9 @@ export default function ManageUsersScreen() {
                   </View>
 
                   <View style={styles.formGroup}>
-                    <ThemedText style={styles.formLabel}>Display Name</ThemedText>
+                    <ThemedText style={styles.formLabel}>
+                      Display Name
+                    </ThemedText>
                     <TextInput
                       style={styles.formInput}
                       value={editDisplayName}
@@ -605,7 +655,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -649,7 +699,7 @@ const styles = StyleSheet.create({
   userCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
@@ -689,7 +739,7 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 14,
-    color: '#666',
+    color: '#464655',
     marginBottom: 4,
   },
   userMeta: {
@@ -726,13 +776,13 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#0078ff',
+    color: '#6996b3',
   },
   resetText: {
     color: '#FF9800',
   },
   deleteText: {
-    color: '#F44336',
+    color: '#6f0202',
   },
   modalOverlay: {
     flex: 1,
@@ -779,7 +829,7 @@ const styles = StyleSheet.create({
   },
   detailEmail: {
     fontSize: 14,
-    color: '#666',
+    color: '#464655',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -795,18 +845,18 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     alignItems: 'center',
   },
   statNumber: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#0078ff',
+    color: '#6996b3',
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
     marginTop: 4,
   },
   sectionTitle: {
@@ -829,7 +879,7 @@ const styles = StyleSheet.create({
   },
   categoryProgress: {
     fontSize: 14,
-    color: '#666',
+    color: '#464655',
   },
   noActivity: {
     fontSize: 14,
@@ -890,7 +940,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     color: '#000',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#e0e0e0',
   },
   formInputDisabled: {
@@ -912,12 +962,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   cancelButtonText: {
-    color: '#666',
+    color: '#464655',
     fontSize: 16,
     fontWeight: '600',
   },
   saveButton: {
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
   },
   saveButtonText: {
     color: '#fff',

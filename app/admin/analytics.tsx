@@ -79,7 +79,7 @@ export default function AnalyticsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#0078ff' />
+          <ActivityIndicator size='large' color='#6996b3' />
           <ThemedText style={styles.loadingText}>
             Loading analytics...
           </ThemedText>
@@ -113,7 +113,7 @@ export default function AnalyticsScreen() {
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back</ThemedText>
         </TouchableOpacity>
 
@@ -179,7 +179,7 @@ export default function AnalyticsScreen() {
               <IconSymbol
                 name='checkmark.circle.fill'
                 size={32}
-                color='#4CAF50'
+                color='#07b524'
               />
               <ThemedText style={styles.metricValue}>
                 {analyticsData.totalCompletions}
@@ -201,7 +201,7 @@ export default function AnalyticsScreen() {
               <IconSymbol
                 name='chart.line.uptrend.xyaxis'
                 size={32}
-                color='#0078ff'
+                color='#6996b3'
               />
               <ThemedText style={styles.metricValue}>
                 {analyticsData.completionRate}%
@@ -263,8 +263,8 @@ export default function AnalyticsScreen() {
                   }}
                   width={screenWidth - 40}
                   height={220}
-                  yAxisLabel=""
-                  yAxisSuffix=""
+                  yAxisLabel=''
+                  yAxisSuffix=''
                   chartConfig={{
                     ...chartConfig,
                     color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
@@ -360,7 +360,7 @@ export default function AnalyticsScreen() {
                       <IconSymbol
                         name='person.circle.fill'
                         size={24}
-                        color='#0078ff'
+                        color='#6996b3'
                       />
                     </View>
                     <View style={styles.activityInfo}>
@@ -409,8 +409,8 @@ export default function AnalyticsScreen() {
                   }}
                   width={screenWidth - 40}
                   height={220}
-                  yAxisLabel=""
-                  yAxisSuffix=""
+                  yAxisLabel=''
+                  yAxisSuffix=''
                   chartConfig={{
                     ...chartConfig,
                     color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
@@ -437,7 +437,11 @@ export default function AnalyticsScreen() {
                         {exercise.completions} completions
                       </ThemedText>
                     </View>
-                    <IconSymbol name='chevron.right' size={20} color='#666' />
+                    <IconSymbol
+                      name='chevron.right'
+                      size={20}
+                      color='#464655'
+                    />
                   </View>
                 ))}
               </View>
@@ -490,7 +494,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -521,14 +525,14 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: '#0078ff',
+    borderBottomColor: '#6996b3',
   },
   tabText: {
     fontSize: 14,
-    color: '#666',
+    color: '#464655',
   },
   activeTabText: {
-    color: '#0078ff',
+    color: '#6996b3',
     fontWeight: '600',
   },
   content: {
@@ -568,7 +572,7 @@ const styles = StyleSheet.create({
   chartContainer: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     alignItems: 'center',
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
@@ -584,7 +588,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
@@ -603,7 +607,7 @@ const styles = StyleSheet.create({
   categoryPercentage: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#07b524',
   },
   activityList: {
     gap: 12,
@@ -612,7 +616,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     gap: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
@@ -643,7 +647,7 @@ const styles = StyleSheet.create({
   activityScore: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#07b524',
     marginBottom: 4,
   },
   activityDate: {
@@ -658,7 +662,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     gap: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
@@ -674,7 +678,7 @@ const styles = StyleSheet.create({
   rankNumber: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2e7d2e',
+    color: '#07b524',
   },
   exerciseInfo: {
     flex: 1,

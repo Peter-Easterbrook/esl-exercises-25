@@ -5,8 +5,7 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { checkUserDocument, logCurrentUserInfo } from '@/utils/adminSetup';
-import { useFocusEffect } from 'expo-router';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
   Alert,
@@ -201,7 +200,7 @@ Your UID: ${user?.uid}`,
             >
               <View style={styles.menuItemLeft}>
                 <View style={styles.menuIcon}>
-                  <IconSymbol name={item.icon} size={20} color='#0078ff' />
+                  <IconSymbol name={item.icon} size={20} color='#6996b3' />
                 </View>
                 <View style={styles.menuTextContainer}>
                   <ThemedText type='defaultSemiBold' style={styles.menuTitle}>
@@ -212,7 +211,7 @@ Your UID: ${user?.uid}`,
                   </ThemedText>
                 </View>
               </View>
-              <IconSymbol name='chevron.right' size={16} color='#666' />
+              <IconSymbol name='chevron.right' size={16} color='#464655' />
             </TouchableOpacity>
           ))}
         </View>
@@ -282,7 +281,7 @@ const styles = StyleSheet.create({
   },
   adminText: {
     fontSize: 12,
-    color: '#2e7d2e',
+    color: '#07b524',
   },
   menuSection: {
     backgroundColor: '#fff',
@@ -330,8 +329,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#feded2ff',
-    padding: 16,
+    backgroundColor: '#feded2',
+    padding: 12,
     borderRadius: 8,
     borderWidth: 0.5,
     borderColor: '#fea382',

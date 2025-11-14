@@ -104,7 +104,8 @@ export default function PrivacyPolicy() {
 
         <ThemedText style={styles.paragraph}>
           <ThemedText style={styles.bold}>
-            You have full control over your personal data. You can delete your data at any time through the app or by contacting us directly.
+            You have full control over your personal data. You can delete your
+            data at any time through the app or by contacting us directly.
           </ThemedText>
         </ThemedText>
 
@@ -114,31 +115,50 @@ export default function PrivacyPolicy() {
 
         <View style={styles.listContainer}>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 1:</ThemedText> Open the ESL Exercises app and log in to your account
+            <ThemedText style={styles.bold}>Step 1:</ThemedText> Open the ESL
+            Exercises app and log in to your account
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 2:</ThemedText> Tap on the "Profile" tab in the bottom navigation
+            <ThemedText style={styles.bold}>Step 2:</ThemedText> Tap on the
+            "Profile" tab in the bottom navigation
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 3:</ThemedText> Tap on "Account Settings" in the menu
+            <ThemedText style={styles.bold}>Step 3:</ThemedText> Tap on "Account
+            Settings" in the menu
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 4:</ThemedText> Scroll to the "Danger Zone" section at the bottom
+            <ThemedText style={styles.bold}>Step 4:</ThemedText> Scroll to the
+            "Danger Zone" section at the bottom
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 5:</ThemedText> Choose one of the following options:
+            <ThemedText style={styles.bold}>Step 5:</ThemedText> Choose one of
+            the following options:
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            • <ThemedText style={styles.bold}>Delete Progress Data Only:</ThemedText> Removes all your exercise completion history and scores while keeping your account active. You can continue using the app with a fresh start.
+            •{' '}
+            <ThemedText style={styles.bold}>
+              Delete Progress Data Only:
+            </ThemedText>{' '}
+            Removes all your exercise completion history and scores while
+            keeping your account active. You can continue using the app with a
+            fresh start.
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            • <ThemedText style={styles.bold}>Delete Account Completely:</ThemedText> Permanently deletes your account, profile information, and all exercise data. This action cannot be undone.
+            •{' '}
+            <ThemedText style={styles.bold}>
+              Delete Account Completely:
+            </ThemedText>{' '}
+            Permanently deletes your account, profile information, and all
+            exercise data. This action cannot be undone.
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 6:</ThemedText> Follow the on-screen confirmation prompts and enter your password when requested
+            <ThemedText style={styles.bold}>Step 6:</ThemedText> Follow the
+            on-screen confirmation prompts and enter your password when
+            requested
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 7:</ThemedText> Your data will be immediately deleted from our systems
+            <ThemedText style={styles.bold}>Step 7:</ThemedText> Your data will
+            be immediately deleted from our systems
           </ThemedText>
         </View>
 
@@ -147,7 +167,8 @@ export default function PrivacyPolicy() {
         </ThemedText>
 
         <ThemedText style={styles.paragraph}>
-          If you prefer, you can request data deletion by emailing us at support@onestepweb.dev. Please include:
+          If you prefer, you can request data deletion by emailing us at
+          support@onestepweb.dev. Please include:
         </ThemedText>
 
         <View style={styles.listContainer}>
@@ -158,12 +179,14 @@ export default function PrivacyPolicy() {
             • Subject line: "Data Deletion Request"
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            • Specify whether you want to delete only progress data or your entire account
+            • Specify whether you want to delete only progress data or your
+            entire account
           </ThemedText>
         </View>
 
         <ThemedText style={styles.paragraph}>
-          We will process your request within 30 days and send you a confirmation email once completed.
+          We will process your request within 30 days and send you a
+          confirmation email once completed.
         </ThemedText>
 
         <ThemedText style={styles.subheading} type='subtitle'>
@@ -190,7 +213,9 @@ export default function PrivacyPolicy() {
 
         <View style={styles.listContainer}>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Complete Account Deletion:</ThemedText>
+            <ThemedText style={styles.bold}>
+              Complete Account Deletion:
+            </ThemedText>
           </ThemedText>
           <ThemedText style={styles.listItem}>
             • User profile (email, display name, user ID)
@@ -210,7 +235,10 @@ export default function PrivacyPolicy() {
         </View>
 
         <ThemedText style={styles.paragraph}>
-          <ThemedText style={styles.bold}>Important:</ThemedText> Account deletion is permanent and cannot be undone. We recommend using the "Export My Data" feature in Account Settings before deletion if you want to keep a copy of your learning history.
+          <ThemedText style={styles.bold}>Important:</ThemedText> Account
+          deletion is permanent and cannot be undone. We recommend using the
+          "Export My Data" feature in Account Settings before deletion if you
+          want to keep a copy of your learning history.
         </ThemedText>
 
         <ThemedText style={styles.heading} type='subtitle'>
@@ -1135,7 +1163,7 @@ const styles = StyleSheet.create({
   tableContainer: {
     width: '100%',
     marginBottom: 15,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 5,
     overflow: 'hidden',

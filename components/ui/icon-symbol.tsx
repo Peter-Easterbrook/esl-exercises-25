@@ -76,6 +76,7 @@ const MAPPING = {
   'folder.circle': 'folder',
   eye: 'visibility',
   'eye.slash': 'visibility-off',
+  'camera.fill': 'camera', // Added mapping for camera.fill
 } as IconMapping;
 
 /**

@@ -1,7 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Category, Exercise, Question } from '@/types';
+import { Category, Question } from '@/types';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -277,15 +277,23 @@ export default function AddExerciseScreen() {
         ]);
       }
     } catch (error) {
-      console.error(`Error ${isEditMode ? 'updating' : 'creating'} exercise:`, error);
-      Alert.alert('Error', `Failed to ${isEditMode ? 'update' : 'create'} exercise. Please try again.`);
+      console.error(
+        `Error ${isEditMode ? 'updating' : 'creating'} exercise:`,
+        error
+      );
+      Alert.alert(
+        'Error',
+        `Failed to ${
+          isEditMode ? 'update' : 'create'
+        } exercise. Please try again.`
+      );
     }
   };
 
   if (loading) {
     return (
       <ThemedView style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#0078ff" />
+        <ActivityIndicator size='large' color='#6996b3' />
         <ThemedText style={styles.loadingText}>Loading exercise...</ThemedText>
       </ThemedView>
     );
@@ -296,9 +304,11 @@ export default function AddExerciseScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push(isEditMode ? '/admin/manage-exercises' : '/admin')}
+          onPress={() =>
+            router.push(isEditMode ? '/admin/manage-exercises' : '/admin')
+          }
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>
             {isEditMode ? 'Back to Manage' : 'Back to Admin'}
           </ThemedText>
@@ -462,7 +472,7 @@ export default function AddExerciseScreen() {
                       style={styles.removeButton}
                       onPress={() => handleRemoveQuestion(qIndex)}
                     >
-                      <IconSymbol name='trash' size={16} color='#F44336' />
+                      <IconSymbol name='trash' size={16} color='#6f0202' />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -570,7 +580,11 @@ export default function AddExerciseScreen() {
               disabled={loading}
             >
               <ThemedText style={styles.saveButtonText}>
-                {loading ? 'Loading...' : isEditMode ? 'Update Exercise' : 'Save Exercise'}
+                {loading
+                  ? 'Loading...'
+                  : isEditMode
+                  ? 'Update Exercise'
+                  : 'Save Exercise'}
               </ThemedText>
             </TouchableOpacity>
           </View>
@@ -606,7 +620,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -678,7 +692,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   selectedText: {
-    color: '#0078ff',
+    color: '#6996b3',
   },
   disabledText: {
     color: '#ccc',
@@ -686,7 +700,7 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
@@ -699,7 +713,7 @@ const styles = StyleSheet.create({
   questionCard: {
     backgroundColor: '#f8f9fa',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
   },
   questionHeader: {
@@ -711,7 +725,7 @@ const styles = StyleSheet.create({
   questionNumber: {
     fontSize: 16,
 
-    color: '#0078ff',
+    color: '#6996b3',
   },
   removeButton: {
     padding: 4,
@@ -739,7 +753,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   saveButton: {
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -755,6 +769,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: '#464655',
   },
 });

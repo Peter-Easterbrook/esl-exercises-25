@@ -98,7 +98,7 @@ export default function ProgressScreen() {
           </View>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#0078ff' />
+          <ActivityIndicator size='large' color='#6996b3' />
           <ThemedText style={styles.loadingText}>
             Loading your progress...
           </ThemedText>
@@ -148,7 +148,7 @@ export default function ProgressScreen() {
                 <IconSymbol
                   name='checkmark.circle.fill'
                   size={20}
-                  color='#4CAF50'
+                  color='#07b524'
                 />
                 <ThemedText style={styles.statText}>
                   {stats.completedExercises} of {stats.totalExercises} exercises
@@ -157,7 +157,7 @@ export default function ProgressScreen() {
               </View>
 
               <View style={styles.statRow}>
-                <IconSymbol name='chart.bar.fill' size={20} color='#0078ff' />
+                <IconSymbol name='chart.bar.fill' size={20} color='#6996b3' />
                 <ThemedText style={styles.statText}>
                   Average score: {stats.averageScore}%
                 </ThemedText>
@@ -202,7 +202,7 @@ export default function ProgressScreen() {
                         {
                           width: `${categoryProgress}%`,
                           backgroundColor:
-                            categoryProgress >= 70 ? '#4CAF50' : '#0078ff',
+                            categoryProgress >= 70 ? '#07b524' : '#6996b3',
                         },
                       ]}
                     />
@@ -239,7 +239,7 @@ export default function ProgressScreen() {
                   <IconSymbol
                     name={activity.success ? 'checkmark' : 'xmark'}
                     size={16}
-                    color={activity.success ? '#4CAF50' : '#F44336'}
+                    color={activity.success ? '#07b524' : '#6f0202'}
                   />
                 </View>
                 <View style={styles.activityContent}>
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   progressPercentage: {
     fontSize: 20,
-    color: '#0078ff',
+    color: '#6996b3',
   },
   progressDetails: {
     flex: 1,

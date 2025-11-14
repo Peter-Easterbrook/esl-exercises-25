@@ -85,7 +85,7 @@ export default function ManageExercisesScreen() {
           style={styles.backButton}
           onPress={() => router.push('/admin')}
         >
-          <IconSymbol name='chevron.left' size={24} color='#0078ff' />
+          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
           <ThemedText style={styles.backText}>Back to Admin</ThemedText>
         </TouchableOpacity>
 
@@ -97,7 +97,7 @@ export default function ManageExercisesScreen() {
       <View style={styles.content}>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#666' />
+          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
           <TextInput
             style={styles.searchInput}
             placeholder='Search exercises...'
@@ -150,14 +150,14 @@ export default function ManageExercisesScreen() {
 
                   <View style={styles.exerciseMetadata}>
                     <View style={styles.metadataItem}>
-                      <IconSymbol name='folder' size={14} color='#666' />
+                      <IconSymbol name='folder' size={14} color='#464655' />
                       <ThemedText style={styles.metadataText}>
                         {exercise.category}
                       </ThemedText>
                     </View>
 
                     <View style={styles.metadataItem}>
-                      <IconSymbol name='chart.bar' size={14} color='#666' />
+                      <IconSymbol name='chart.bar' size={14} color='#464655' />
                       <ThemedText
                         style={[
                           styles.metadataText,
@@ -172,7 +172,7 @@ export default function ManageExercisesScreen() {
                       <IconSymbol
                         name='questionmark.circle'
                         size={14}
-                        color='#666'
+                        color='#464655'
                       />
                       <ThemedText style={styles.metadataText}>
                         {exercise.content.questions.length} questions
@@ -186,14 +186,14 @@ export default function ManageExercisesScreen() {
                     style={[styles.actionButton, styles.editButton]}
                     onPress={() => handleEditExercise(exercise)}
                   >
-                    <IconSymbol name='pencil' size={16} color='#0078ff' />
+                    <IconSymbol name='pencil' size={16} color='#6996b3' />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={[styles.actionButton, styles.deleteButton]}
                     onPress={() => handleDeleteExercise(exercise)}
                   >
-                    <IconSymbol name='trash' size={16} color='#F44336' />
+                    <IconSymbol name='trash' size={16} color='#6f0202' />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#07b524',
     paddingVertical: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
@@ -327,13 +327,13 @@ const styles = StyleSheet.create({
     color: '#444',
   },
   beginner: {
-    color: '#4CAF50',
+    color: '#07b524',
   },
   intermediate: {
     color: '#FF9800',
   },
   advanced: {
-    color: '#F44336',
+    color: '#6f0202',
   },
   exerciseActions: {
     flexDirection: 'row',

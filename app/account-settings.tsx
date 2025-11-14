@@ -406,7 +406,7 @@ export default function AccountSettingsScreen() {
               photoUri={profilePhotoUri}
             />
             <View style={styles.cameraIconBadge}>
-              <IconSymbol name='camera.fill' size={16} color='#fff' />
+              <Ionicons name='camera' size={16} color='#fff' />
             </View>
           </TouchableOpacity>
           <ThemedText type='subtitle' style={styles.emailText}>
@@ -551,7 +551,7 @@ export default function AccountSettingsScreen() {
               <IconSymbol
                 name='square.and.arrow.up'
                 size={18}
-                color='#0078ff'
+                color='#6996b3'
               />
               <ThemedText style={styles.secondaryButtonText}>
                 Export My Data
@@ -575,7 +575,7 @@ export default function AccountSettingsScreen() {
               onPress={handleDeleteProgress}
               disabled={loading}
             >
-              <IconSymbol name='trash' size={18} color='#ff9500' />
+              <IconSymbol name='trash' size={18} color='#f54707' />
               <ThemedText style={styles.warningButtonText}>
                 Delete Progress Data
               </ThemedText>
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -668,12 +668,12 @@ const styles = StyleSheet.create({
   },
   emailText: {
     marginTop: 12,
-    color: '#666',
+    color: '#464655',
   },
   tapToChangeText: {
     marginTop: 4,
     fontSize: 12,
-    color: '#0078ff',
+    color: '#6996b3',
   },
   section: {
     marginBottom: 24,
@@ -691,21 +691,21 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   dangerCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#ffcccc',
+    padding: 12,
+    borderWidth: 0.5,
+    borderColor: '#fea382',
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   statsCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   statRow: {
@@ -719,12 +719,12 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 24,
-    color: '#0078ff',
+    color: '#6996b3',
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
     textAlign: 'center',
   },
   input: {
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0078ff',
+    backgroundColor: '#6996b3',
     borderRadius: 8,
     padding: 14,
     gap: 8,
@@ -758,9 +758,11 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 8,
     marginBottom: 8,
+    borderWidth: 0.5,
+    borderColor: '#6996b3',
   },
   secondaryButtonText: {
-    color: '#0078ff',
+    color: '#6996b3',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -768,14 +770,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff5e6',
+    backgroundColor: '#feded2',
     borderRadius: 8,
     padding: 14,
     gap: 8,
     marginBottom: 8,
+    borderWidth: 0.5,
+    borderColor: '#fea382',
   },
   warningButtonText: {
-    color: '#ff9500',
+    color: '#f54707',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -796,7 +800,7 @@ const styles = StyleSheet.create({
   },
   helperText: {
     fontSize: 12,
-    color: '#666',
+    color: '#464655',
     lineHeight: 16,
   },
   divider: {
