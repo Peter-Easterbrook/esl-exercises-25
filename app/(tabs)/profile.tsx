@@ -3,9 +3,11 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
+import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { checkUserDocument, logCurrentUserInfo } from '@/utils/adminSetup';
+import { useFocusEffect } from 'expo-router';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Alert,
   Image,
@@ -17,6 +19,20 @@ import {
 
 export default function ProfileScreen() {
   const { user, appUser, logout } = useAuth();
+  const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
+
+  // Load profile photo when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserPhoto = async () => {
+        if (user) {
+          const photoUri = await loadProfilePhoto(user.uid);
+          setProfilePhotoUri(photoUri);
+        }
+      };
+      loadUserPhoto();
+    }, [user])
+  );
 
   const handleLogout = async () => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -158,6 +174,7 @@ Your UID: ${user?.uid}`,
             displayName={appUser?.displayName}
             email={user?.email || ''}
             size={64}
+            photoUri={profilePhotoUri}
           />
 
           <View style={styles.userInfo}>

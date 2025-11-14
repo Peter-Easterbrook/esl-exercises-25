@@ -1,17 +1,19 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { ThemedText } from './themed-text';
 
 interface UserAvatarProps {
   displayName?: string;
   email: string;
   size?: number;
+  photoUri?: string | null;
 }
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
   displayName,
   email,
   size = 64,
+  photoUri,
 }) => {
   // Get initials from displayName or email
   const getInitials = (): string => {
@@ -31,6 +33,35 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const initials = getInitials();
   const fontSize = size * 0.5; // 40% of avatar size
 
+  // If photo URI is provided, show the photo
+  if (photoUri) {
+    return (
+      <View
+        style={[
+          styles.avatar,
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+          },
+        ]}
+      >
+        <Image
+          source={{ uri: photoUri }}
+          style={[
+            styles.photo,
+            {
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+            },
+          ]}
+        />
+      </View>
+    );
+  }
+
+  // Otherwise, show initials
   return (
     <View
       style={[
@@ -67,5 +98,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  photo: {
+    resizeMode: 'cover',
   },
 });

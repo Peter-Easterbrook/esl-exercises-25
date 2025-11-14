@@ -9,6 +9,13 @@ import {
   deleteAllUserProgress,
   getUserProgress,
 } from '@/services/firebaseService';
+import {
+  deleteProfilePhoto,
+  loadProfilePhoto,
+  pickPhoto,
+  saveProfilePhoto,
+  takePhoto,
+} from '@/services/profilePhotoService';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -37,6 +44,7 @@ export default function AccountSettingsScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [deleteConfirmPassword, setDeleteConfirmPassword] = useState('');
+  const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
 
   const colorScheme = useColorScheme();
 
@@ -50,7 +58,14 @@ export default function AccountSettingsScreen() {
 
   useEffect(() => {
     loadUserStats();
+    loadUserPhoto();
   }, [user]);
+
+  const loadUserPhoto = async () => {
+    if (!user) return;
+    const photoUri = await loadProfilePhoto(user.uid);
+    setProfilePhotoUri(photoUri);
+  };
 
   const loadUserStats = async () => {
     if (!user) return;
@@ -267,6 +282,91 @@ export default function AccountSettingsScreen() {
     );
   };
 
+  const handleChangePhoto = () => {
+    Alert.alert(
+      'Change Profile Photo',
+      'Choose how you want to update your profile photo',
+      [
+        {
+          text: 'Take Photo',
+          onPress: handleTakePhoto,
+        },
+        {
+          text: 'Choose from Library',
+          onPress: handlePickPhoto,
+        },
+        ...(profilePhotoUri
+          ? [
+              {
+                text: 'Remove Photo',
+                style: 'destructive' as const,
+                onPress: handleRemovePhoto,
+              },
+            ]
+          : []),
+        {
+          text: 'Cancel',
+          style: 'cancel' as const,
+        },
+      ]
+    );
+  };
+
+  const handleTakePhoto = async () => {
+    if (!user) return;
+
+    const photoUri = await takePhoto();
+    if (photoUri) {
+      try {
+        await saveProfilePhoto(user.uid, photoUri);
+        setProfilePhotoUri(photoUri);
+        Alert.alert('Success', 'Profile photo updated successfully');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save profile photo');
+      }
+    }
+  };
+
+  const handlePickPhoto = async () => {
+    if (!user) return;
+
+    const photoUri = await pickPhoto();
+    if (photoUri) {
+      try {
+        await saveProfilePhoto(user.uid, photoUri);
+        setProfilePhotoUri(photoUri);
+        Alert.alert('Success', 'Profile photo updated successfully');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save profile photo');
+      }
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (!user) return;
+
+    Alert.alert(
+      'Remove Photo',
+      'Are you sure you want to remove your profile photo?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteProfilePhoto(user.uid);
+              setProfilePhotoUri(null);
+              Alert.alert('Success', 'Profile photo removed');
+            } catch (error) {
+              Alert.alert('Error', 'Failed to remove profile photo');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ThemedView style={styles.container}>
       {/* Header */}
@@ -294,13 +394,26 @@ export default function AccountSettingsScreen() {
       >
         {/* User Avatar & Info */}
         <View style={styles.avatarSection}>
-          <UserAvatar
-            displayName={appUser?.displayName}
-            email={user?.email || ''}
-            size={80}
-          />
+          <TouchableOpacity
+            onPress={handleChangePhoto}
+            activeOpacity={0.7}
+            style={styles.avatarTouchable}
+          >
+            <UserAvatar
+              displayName={appUser?.displayName}
+              email={user?.email || ''}
+              size={80}
+              photoUri={profilePhotoUri}
+            />
+            <View style={styles.cameraIconBadge}>
+              <IconSymbol name='camera.fill' size={16} color='#fff' />
+            </View>
+          </TouchableOpacity>
           <ThemedText type='subtitle' style={styles.emailText}>
             {user?.email}
+          </ThemedText>
+          <ThemedText style={styles.tapToChangeText}>
+            Tap to change photo
           </ThemedText>
         </View>
 
@@ -537,9 +650,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
+  avatarTouchable: {
+    position: 'relative',
+  },
+  cameraIconBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#0078ff',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
   emailText: {
     marginTop: 12,
     color: '#666',
+  },
+  tapToChangeText: {
+    marginTop: 4,
+    fontSize: 12,
+    color: '#0078ff',
   },
   section: {
     marginBottom: 24,

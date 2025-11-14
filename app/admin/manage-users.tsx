@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { UserAvatar } from '@/components/UserAvatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -47,6 +48,9 @@ export default function ManageUsersScreen() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userPhotos, setUserPhotos] = useState<Record<string, string | null>>(
+    {}
+  );
 
   // Modal states
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
@@ -69,6 +73,16 @@ export default function ManageUsersScreen() {
       const { getAllUsers } = await import('@/services/firebaseService');
       const allUsers = await getAllUsers();
       setUsers(allUsers);
+
+      // Load profile photos for all users
+      const photos: Record<string, string | null> = {};
+      await Promise.all(
+        allUsers.map(async (user) => {
+          const photoUri = await loadProfilePhoto(user.id);
+          photos[user.id] = photoUri;
+        })
+      );
+      setUserPhotos(photos);
     } catch (error) {
       console.error('Error loading users:', error);
       Alert.alert('Error', 'Failed to load users');
@@ -181,7 +195,7 @@ export default function ManageUsersScreen() {
                 {
                   text: 'Delete',
                   style: 'destructive',
-                  onPress: async (inputEmail) => {
+                  onPress: async (inputEmail?: string) => {
                     if (inputEmail?.toLowerCase() === user.email.toLowerCase()) {
                       try {
                         const { deleteUserAccount } = await import(
@@ -283,6 +297,7 @@ export default function ManageUsersScreen() {
                     displayName={user.displayName}
                     email={user.email}
                     size={50}
+                    photoUri={userPhotos[user.id]}
                   />
                   <View style={styles.userInfo}>
                     <View style={styles.userNameRow}>
@@ -379,6 +394,7 @@ export default function ManageUsersScreen() {
                         displayName={selectedUser.displayName}
                         email={selectedUser.email}
                         size={80}
+                        photoUri={userPhotos[selectedUser.id]}
                       />
                     </View>
                     <ThemedText style={styles.detailName}>
