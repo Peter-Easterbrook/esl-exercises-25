@@ -77,7 +77,7 @@ export default function ManageUsersScreen() {
       // Load profile photos for all users
       const photos: Record<string, string | null> = {};
       await Promise.all(
-        allUsers.map(async (user) => {
+        allUsers.map(async (user: UserData) => {
           const photoUri = await loadProfilePhoto(user.id);
           photos[user.id] = photoUri;
         })
@@ -290,7 +290,7 @@ export default function ManageUsersScreen() {
               </ThemedText>
             </View>
           ) : (
-            users.map((user) => (
+            users.map((user: UserData) => (
               <View key={user.id} style={styles.userCard}>
                 <View style={styles.userHeader}>
                   <UserAvatar
@@ -451,7 +451,7 @@ export default function ManageUsersScreen() {
                         <ThemedText style={styles.sectionTitle}>
                           Category Progress
                         </ThemedText>
-                        {userStats.categories.map((cat, idx) => (
+                        {userStats.categories.map((cat: { name: string; completed: number; total: number; avgScore: number }, idx: number) => (
                           <View key={idx} style={styles.categoryRow}>
                             <ThemedText style={styles.categoryName}>
                               {cat.name}
