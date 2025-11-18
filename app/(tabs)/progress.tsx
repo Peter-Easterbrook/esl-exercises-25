@@ -88,6 +88,30 @@ export default function ProgressScreen() {
   if (loading) {
     return (
       <ThemedView style={styles.container}>
+        <View style={styles.contentWrapper}>
+          <View style={styles.header}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+              <Image
+                source={require('@/assets/images/favicon.png')}
+                style={{ width: 40, height: 40 }}
+              />
+              <ThemedText type='title'>Your Progress</ThemedText>
+            </View>
+          </View>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size='large' color='#6996b3' />
+            <ThemedText style={styles.loadingText}>
+              Loading your progress...
+            </ThemedText>
+          </View>
+        </View>
+      </ThemedView>
+    );
+  }
+
+  return (
+    <ThemedView style={styles.container}>
+      <View style={styles.contentWrapper}>
         <View style={styles.header}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
             <Image
@@ -96,40 +120,19 @@ export default function ProgressScreen() {
             />
             <ThemedText type='title'>Your Progress</ThemedText>
           </View>
-        </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#6996b3' />
-          <ThemedText style={styles.loadingText}>
-            Loading your progress...
+          <View style={{ height: 10 }} />
+          <ThemedText style={styles.subtitle}>
+            Keep up the great work, {appUser?.displayName || 'Student'}!
           </ThemedText>
         </View>
-      </ThemedView>
-    );
-  }
 
-  return (
-    <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
-          <Image
-            source={require('@/assets/images/favicon.png')}
-            style={{ width: 40, height: 40 }}
-          />
-          <ThemedText type='title'>Your Progress</ThemedText>
-        </View>
-        <View style={{ height: 10 }} />
-        <ThemedText style={styles.subtitle}>
-          Keep up the great work, {appUser?.displayName || 'Student'}!
-        </ThemedText>
-      </View>
-
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
         {/* Overall Progress */}
         <View style={styles.card}>
           <ThemedText type='subtitle' style={styles.cardTitle}>
@@ -256,6 +259,7 @@ export default function ProgressScreen() {
           )}
         </View>
       </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -264,6 +268,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,

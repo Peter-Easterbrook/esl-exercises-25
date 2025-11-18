@@ -84,11 +84,12 @@ export default function AuthScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior='height'>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps='handled'
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.contentWrapper}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps='handled'
+          showsVerticalScrollIndicator={false}
+        >
         <View style={styles.titleContainer}>
           <View style={styles.titleText}>
             <Image
@@ -176,6 +177,7 @@ export default function AuthScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -184,6 +186,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
@@ -214,6 +222,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center',
     gap: 16,
     marginTop: 20,
   },

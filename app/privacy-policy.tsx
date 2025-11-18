@@ -19,31 +19,32 @@ export default function PrivacyPolicy() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView
-        // style={{ backgroundColor: theme.navBackground }}
-        edges={['top']}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-            activeOpacity={0.7}
-            style={styles.backButton}
-          >
-            <Ionicons
-              name='arrow-back-circle-outline'
-              size={24}
-              color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
-            />
-          </TouchableOpacity>
-          <View style={{ width: 24 }} />
-        </View>
-      </SafeAreaView>
+      <View style={styles.contentWrapper}>
+        <SafeAreaView
+          // style={{ backgroundColor: theme.navBackground }}
+          edges={['top']}
+        >
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+              activeOpacity={0.7}
+              style={styles.backButton}
+            >
+              <Ionicons
+                name='arrow-back-circle-outline'
+                size={24}
+                color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
+              />
+            </TouchableOpacity>
+            <View style={{ width: 24 }} />
+          </View>
+        </SafeAreaView>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
         <ThemedText style={styles.title} type='title'>
           PRIVACY POLICY
         </ThemedText>
@@ -1089,6 +1090,7 @@ export default function PrivacyPolicy() {
 
         <Spacer height={20} />
       </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -1096,7 +1098,12 @@ export default function PrivacyPolicy() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -1111,6 +1118,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,

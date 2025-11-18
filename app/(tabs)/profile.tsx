@@ -151,22 +151,23 @@ Your UID: ${user?.uid}`,
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
-          <Image
-            source={require('@/assets/images/LL2020.png')}
-            style={{ width: 45, height: 45 }}
-            resizeMode='contain'
-          />
-          <ThemedText type='title'>Profile</ThemedText>
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+            <Image
+              source={require('@/assets/images/LL2020.png')}
+              style={{ width: 45, height: 45 }}
+              resizeMode='contain'
+            />
+            <ThemedText type='title'>Profile</ThemedText>
+          </View>
         </View>
-      </View>
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
         {/* User Info Card */}
         <View style={styles.userCard}>
           <UserAvatar
@@ -226,6 +227,7 @@ Your UID: ${user?.uid}`,
           <ThemedText style={styles.signOutText}>Sign Out</ThemedText>
         </TouchableOpacity>
       </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -234,6 +236,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     paddingHorizontal: 16,

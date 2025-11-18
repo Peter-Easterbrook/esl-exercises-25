@@ -80,7 +80,8 @@ export default function ManageExercisesScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.push('/admin')}
@@ -201,6 +202,7 @@ export default function ManageExercisesScreen() {
           )}
         </ScrollView>
       </View>
+      </View>
     </ThemedView>
   );
 }
@@ -209,6 +211,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     paddingTop: 60,

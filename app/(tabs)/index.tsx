@@ -95,28 +95,30 @@ export default function CategoriesScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 60 }}>
-          <Image
-            source={require('@/assets/images/favicon.png')}
-            style={{ width: 40, height: 40 }}
-          />
-          <ThemedText type='title'>ESL Exercises</ThemedText>
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 60 }}>
+            <Image
+              source={require('@/assets/images/favicon.png')}
+              style={{ width: 40, height: 40 }}
+            />
+            <ThemedText type='title'>ESL Exercises</ThemedText>
+          </View>
+          <View style={{ height: 10 }} />
+          <ThemedText type='subtitle'>
+            Choose a category to start learning
+          </ThemedText>
         </View>
-        <View style={{ height: 10 }} />
-        <ThemedText type='subtitle'>
-          Choose a category to start learning
-        </ThemedText>
-      </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        {categories.map((category) => (
-          <CategoryCard key={category.id} category={category} />
-        ))}
-      </ScrollView>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -125,6 +127,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     paddingHorizontal: 16,

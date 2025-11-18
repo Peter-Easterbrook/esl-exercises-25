@@ -126,7 +126,8 @@ export default function AdminPanel() {
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.push('/(tabs)/profile')}
@@ -244,6 +245,7 @@ export default function AdminPanel() {
           </View>
         </View>
       </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -252,9 +254,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+    paddingTop: 60,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
-    paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
     backgroundColor: '#fff',

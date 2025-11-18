@@ -369,29 +369,30 @@ export default function AccountSettingsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          activeOpacity={0.7}
-          style={styles.backButton}
-        >
-          <Ionicons
-            name='arrow-back-circle-outline'
-            size={24}
-            color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
-          />
-        </TouchableOpacity>
-        <ThemedText type='title'>Account Settings</ThemedText>
-        <View style={{ width: 24 }} />
-      </View>
+      <View style={styles.contentWrapper}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
+            <Ionicons
+              name='arrow-back-circle-outline'
+              size={24}
+              color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
+            />
+          </TouchableOpacity>
+          <ThemedText type='title'>Account Settings</ThemedText>
+          <View style={{ width: 24 }} />
+        </View>
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
         {/* User Avatar & Info */}
         <View style={styles.avatarSection}>
           <TouchableOpacity
@@ -620,6 +621,7 @@ export default function AccountSettingsScreen() {
           </View>
         </View>
       </ScrollView>
+      </View>
     </ThemedView>
   );
 }
@@ -628,6 +630,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',

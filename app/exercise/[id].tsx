@@ -61,7 +61,9 @@ export default function ExerciseScreen() {
   if (loading) {
     return (
       <ThemedView style={styles.container}>
-        <ThemedText>Loading exercise...</ThemedText>
+        <View style={styles.contentWrapper}>
+          <ThemedText>Loading exercise...</ThemedText>
+        </View>
       </ThemedView>
     );
   }
@@ -69,10 +71,12 @@ export default function ExerciseScreen() {
   if (!exercise) {
     return (
       <ThemedView style={styles.container}>
-        <ThemedText>Exercise not found</ThemedText>
-        <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-          <ThemedText style={styles.buttonText}>Go Back</ThemedText>
-        </TouchableOpacity>
+        <View style={styles.contentWrapper}>
+          <ThemedText>Exercise not found</ThemedText>
+          <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+            <ThemedText style={styles.buttonText}>Go Back</ThemedText>
+          </TouchableOpacity>
+        </View>
       </ThemedView>
     );
   }
@@ -85,7 +89,8 @@ export default function ExerciseScreen() {
         style={{ flex: 1 }}
       >
         <ThemedView style={styles.container}>
-          <View style={styles.header}>
+          <View style={styles.contentWrapper}>
+            <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => router.back()}
@@ -134,6 +139,7 @@ export default function ExerciseScreen() {
               </ThemedText>
             </TouchableOpacity>
           </View>
+          </View>
         </ThemedView>
       </Animated.View>
     );
@@ -146,7 +152,8 @@ export default function ExerciseScreen() {
       style={{ flex: 1 }}
     >
       <ThemedView style={styles.container}>
-        <View style={styles.header}>
+        <View style={styles.contentWrapper}>
+          <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={handleBackToInstructions}
@@ -157,6 +164,7 @@ export default function ExerciseScreen() {
         </View>
 
         <ExerciseInterface exercise={exercise} />
+        </View>
       </ThemedView>
     </Animated.View>
   );
@@ -166,6 +174,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
+    flex: 1,
   },
   header: {
     paddingTop: 40,

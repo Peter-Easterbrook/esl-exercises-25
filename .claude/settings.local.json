@@ -22,7 +22,8 @@
       "WebSearch",
       "WebFetch(domain:developers.google.com)",
       "Bash(dir \"C:\\Users\\peter\\Documents\\2024\\esl-exercises-25\\.husky\" /b)",
-      "Bash(npx husky install)"
+      "Bash(npx husky install)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
