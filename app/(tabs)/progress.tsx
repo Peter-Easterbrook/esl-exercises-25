@@ -90,7 +90,9 @@ export default function ProgressScreen() {
       <ThemedView style={styles.container}>
         <View style={styles.contentWrapper}>
           <View style={styles.header}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}
+            >
               <Image
                 source={require('@/assets/images/favicon.png')}
                 style={{ width: 40, height: 40 }}
@@ -133,132 +135,144 @@ export default function ProgressScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-        {/* Overall Progress */}
-        <View style={styles.card}>
-          <ThemedText type='subtitle' style={styles.cardTitle}>
-            Overall Progress
-          </ThemedText>
+          {/* Overall Progress */}
+          <View style={styles.card}>
+            <ThemedText type='subtitle' style={styles.cardTitle}>
+              Overall Progress
+            </ThemedText>
 
-          <View style={styles.progressContainer}>
-            <View style={styles.progressCircle}>
-              <ThemedText style={styles.progressPercentage}>
-                {Math.round(progressPercentage)}%
-              </ThemedText>
-            </View>
-
-            <View style={styles.progressDetails}>
-              <View style={styles.statRow}>
-                <IconSymbol
-                  name='checkmark.circle.fill'
-                  size={20}
-                  color='#07b524'
-                />
-                <ThemedText style={styles.statText}>
-                  {stats.completedExercises} of {stats.totalExercises} exercises
-                  completed
+            <View style={styles.progressContainer}>
+              <View style={styles.progressCircle}>
+                <ThemedText style={styles.progressPercentage}>
+                  {Math.round(progressPercentage)}%
                 </ThemedText>
               </View>
 
-              <View style={styles.statRow}>
-                <IconSymbol name='chart.bar.fill' size={20} color='#6996b3' />
-                <ThemedText style={styles.statText}>
-                  Average score: {stats.averageScore}%
-                </ThemedText>
-              </View>
+              <View style={styles.progressDetails}>
+                <View style={styles.statRow}>
+                  <IconSymbol
+                    name='checkmark.circle.fill'
+                    size={20}
+                    color='#07b524'
+                  />
+                  <ThemedText style={styles.statText}>
+                    {stats.completedExercises} of {stats.totalExercises}{' '}
+                    exercises completed
+                  </ThemedText>
+                </View>
 
-              <View style={styles.statRow}>
-                <IconSymbol name='flame.fill' size={20} color='#FF9800' />
-                <ThemedText style={styles.statText}>
-                  {stats.streak} day streak
-                </ThemedText>
+                <View style={styles.statRow}>
+                  <IconSymbol name='chart.bar.fill' size={20} color='#6996b3' />
+                  <ThemedText style={styles.statText}>
+                    Average score: {stats.averageScore}%
+                  </ThemedText>
+                </View>
+
+                <View style={styles.statRow}>
+                  <IconSymbol name='flame.fill' size={20} color='#FF9800' />
+                  <ThemedText style={styles.statText}>
+                    {stats.streak} day streak
+                  </ThemedText>
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        {/* Category Progress */}
-        <View style={styles.card}>
-          <ThemedText type='subtitle' style={styles.cardTitle}>
-            Progress by Category
-          </ThemedText>
+          {/* Category Progress */}
+          <View style={styles.card}>
+            <ThemedText type='subtitle' style={styles.cardTitle}>
+              Progress by Category
+            </ThemedText>
 
-          {stats.categories.map((category, index) => {
-            const categoryProgress =
-              (category.completed / category.total) * 100;
+            {stats.categories.map((category, index) => {
+              const categoryProgress =
+                category.total > 0
+                  ? (category.completed / category.total) * 100
+                  : 0;
 
-            return (
-              <View key={index} style={styles.categoryItem}>
-                <View style={styles.categoryHeader}>
-                  <ThemedText style={styles.categoryName}>
-                    {category.name}
-                  </ThemedText>
-                  <ThemedText style={styles.categoryScore}>
-                    Avg: {category.avgScore}%
-                  </ThemedText>
+              // Determine color based on progress
+              let barColor = '#FF9800'; // Default orange for in-progress
+              if (categoryProgress === 0) {
+                barColor = '#6996b3'; // Blue for not started
+              } else if (categoryProgress >= 90) {
+                barColor = '#07b524'; // Green for almost/fully complete
+              }
+
+              return (
+                <View key={index} style={styles.categoryItem}>
+                  <View style={styles.categoryHeader}>
+                    <ThemedText style={styles.categoryName}>
+                      {category.name}
+                    </ThemedText>
+                    <ThemedText style={styles.categoryScore}>
+                      Avg: {category.avgScore}%
+                    </ThemedText>
+                  </View>
+
+                  <View style={styles.categoryProgress}>
+                    <View style={styles.progressBarBackground}>
+                      <View
+                        style={[
+                          styles.progressBarFill,
+                          {
+                            width:
+                              categoryProgress === 0
+                                ? '5%'
+                                : `${categoryProgress}%`,
+                            backgroundColor: barColor,
+                          },
+                        ]}
+                      />
+                    </View>
+                    <ThemedText style={styles.progressText}>
+                      {category.completed}/{category.total}
+                    </ThemedText>
+                  </View>
                 </View>
+              );
+            })}
+          </View>
 
-                <View style={styles.categoryProgress}>
-                  <View style={styles.progressBarBackground}>
-                    <View
-                      style={[
-                        styles.progressBarFill,
-                        {
-                          width: `${categoryProgress}%`,
-                          backgroundColor:
-                            categoryProgress >= 70 ? '#07b524' : '#6996b3',
-                        },
-                      ]}
+          {/* Recent Activity */}
+          <View style={styles.card}>
+            <ThemedText type='subtitle' style={styles.cardTitle}>
+              Recent Activity
+            </ThemedText>
+
+            {stats.recentActivity.length === 0 ? (
+              <View style={styles.emptyState}>
+                <IconSymbol name='clock' size={48} color='#ccc' />
+                <ThemedText style={styles.emptyStateText}>
+                  No exercises completed yet
+                </ThemedText>
+                <ThemedText style={styles.emptyStateSubtext}>
+                  Start an exercise to see your activity here!
+                </ThemedText>
+              </View>
+            ) : (
+              stats.recentActivity.map((activity, index) => (
+                <View key={index} style={styles.activityItem}>
+                  <View style={styles.activityIcon}>
+                    <IconSymbol
+                      name={activity.success ? 'checkmark' : 'xmark'}
+                      size={16}
+                      color={activity.success ? '#07b524' : '#6f0202'}
                     />
                   </View>
-                  <ThemedText style={styles.progressText}>
-                    {category.completed}/{category.total}
-                  </ThemedText>
+                  <View style={styles.activityContent}>
+                    <ThemedText style={styles.activityTitle}>
+                      {activity.exerciseTitle}
+                    </ThemedText>
+                    <ThemedText style={styles.activityDetails}>
+                      {activity.success ? 'Completed' : 'Attempted'} • Score:{' '}
+                      {activity.score}% • {formatTimeAgo(activity.completedAt)}
+                    </ThemedText>
+                  </View>
                 </View>
-              </View>
-            );
-          })}
-        </View>
-
-        {/* Recent Activity */}
-        <View style={styles.card}>
-          <ThemedText type='subtitle' style={styles.cardTitle}>
-            Recent Activity
-          </ThemedText>
-
-          {stats.recentActivity.length === 0 ? (
-            <View style={styles.emptyState}>
-              <IconSymbol name='clock' size={48} color='#ccc' />
-              <ThemedText style={styles.emptyStateText}>
-                No exercises completed yet
-              </ThemedText>
-              <ThemedText style={styles.emptyStateSubtext}>
-                Start an exercise to see your activity here!
-              </ThemedText>
-            </View>
-          ) : (
-            stats.recentActivity.map((activity, index) => (
-              <View key={index} style={styles.activityItem}>
-                <View style={styles.activityIcon}>
-                  <IconSymbol
-                    name={activity.success ? 'checkmark' : 'xmark'}
-                    size={16}
-                    color={activity.success ? '#07b524' : '#6f0202'}
-                  />
-                </View>
-                <View style={styles.activityContent}>
-                  <ThemedText style={styles.activityTitle}>
-                    {activity.exerciseTitle}
-                  </ThemedText>
-                  <ThemedText style={styles.activityDetails}>
-                    {activity.success ? 'Completed' : 'Attempted'} • Score:{' '}
-                    {activity.score}% • {formatTimeAgo(activity.completedAt)}
-                  </ThemedText>
-                </View>
-              </View>
-            ))
-          )}
-        </View>
-      </ScrollView>
+              ))
+            )}
+          </View>
+        </ScrollView>
       </View>
     </ThemedView>
   );

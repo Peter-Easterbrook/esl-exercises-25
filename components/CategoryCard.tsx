@@ -2,7 +2,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAuth } from '@/contexts/AuthContext';
 import { downloadFile, getFilesByCategory } from '@/services/fileService';
+import { getUserProgress } from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -19,11 +21,15 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
+  const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [downloadableFiles, setDownloadableFiles] = useState<
     DownloadableFile[]
   >([]);
+  const [completedExerciseIds, setCompletedExerciseIds] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     const loadExercises = async () => {
@@ -89,6 +95,23 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     loadFiles();
   }, [isExpanded, category.id]);
 
+  useEffect(() => {
+    const loadUserProgress = async () => {
+      if (isExpanded && user) {
+        try {
+          const progress = await getUserProgress(user.uid);
+          const completed = new Set(
+            progress.filter((p) => p.completed).map((p) => p.exerciseId)
+          );
+          setCompletedExerciseIds(completed);
+        } catch (error) {
+          console.error('Error loading user progress:', error);
+        }
+      }
+    };
+    loadUserProgress();
+  }, [isExpanded, user]);
+
   const handleExercisePress = (exercise: Exercise) => {
     router.push(`/exercise/${exercise.id}`);
   };
@@ -143,44 +166,57 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           <Animated.View style={heightStyle}>
             <Collapsible collapsed={!isExpanded}>
               <View style={styles.exercisesList}>
-                {exercises.map((exercise) => (
-                  <TouchableOpacity
-                    key={exercise.id}
-                    style={styles.exerciseItem}
-                    onPress={() => handleExercisePress(exercise)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.exerciseContent}>
-                      <ThemedText
-                        type='defaultSemiBold'
-                        style={styles.exerciseTitle}
-                      >
-                        {exercise.title}
-                      </ThemedText>
-                      <ThemedText style={styles.exerciseDescription}>
-                        {exercise.description}
-                      </ThemedText>
-                      <View style={styles.exerciseFooter}>
-                        <Text
-                          style={[
-                            styles.difficulty,
-                            styles[exercise.difficulty],
-                          ]}
-                        >
-                          {exercise.difficulty}
-                        </Text>
-                        <Text style={styles.exerciseType}>
-                          {exercise.content.type.replace('-', ' ')}
-                        </Text>
+                {exercises.map((exercise) => {
+                  const isCompleted = completedExerciseIds.has(exercise.id);
+
+                  return (
+                    <TouchableOpacity
+                      key={exercise.id}
+                      style={styles.exerciseItem}
+                      onPress={() => handleExercisePress(exercise)}
+                      activeOpacity={0.7}
+                    >
+                      <View style={styles.exerciseContent}>
+                        <View style={styles.exerciseTitleRow}>
+                          <ThemedText
+                            type='defaultSemiBold'
+                            style={styles.exerciseTitle}
+                          >
+                            {exercise.title}
+                          </ThemedText>
+                          {isCompleted && (
+                            <IconSymbol
+                              name='checkmark.circle.fill'
+                              size={20}
+                              color='#07b524'
+                            />
+                          )}
+                        </View>
+                        <ThemedText style={styles.exerciseDescription}>
+                          {exercise.description}
+                        </ThemedText>
+                        <View style={styles.exerciseFooter}>
+                          <Text
+                            style={[
+                              styles.difficulty,
+                              styles[exercise.difficulty],
+                            ]}
+                          >
+                            {exercise.difficulty}
+                          </Text>
+                          <Text style={styles.exerciseType}>
+                            {exercise.content.type.replace('-', ' ')}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    <IconSymbol
-                      name='chevron.right'
-                      size={16}
-                      color='#464655'
-                    />
-                  </TouchableOpacity>
-                ))}
+                      <IconSymbol
+                        name='chevron.right'
+                        size={16}
+                        color='#464655'
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
 
                 {exercises.length === 0 && (
                   <ThemedText style={styles.noExercises}>
@@ -268,9 +304,17 @@ const styles = StyleSheet.create({
   exerciseContent: {
     flex: 1,
   },
+  exerciseTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+    marginRight: -16,
+    // gap: 8,
+  },
   exerciseTitle: {
     fontSize: 16,
-    marginBottom: 4,
+    flex: 1,
   },
   exerciseDescription: {
     fontSize: 14,
