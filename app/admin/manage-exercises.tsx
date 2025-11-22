@@ -19,10 +19,26 @@ export default function ManageExercisesScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     loadExercises();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const { getCategories } = await import('@/services/firebaseService');
+      const categories = await getCategories();
+      const map: Record<string, string> = {};
+      categories.forEach((cat) => {
+        map[cat.id] = cat.name;
+      });
+      setCategoryMap(map);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
 
   const loadExercises = async () => {
     try {
@@ -74,6 +90,10 @@ export default function ManageExercisesScreen() {
       exercise.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const getCategoryName = (categoryId: string): string => {
+    return categoryMap[categoryId] || categoryId;
+  };
+
   if (loading) {
     return <ThemedLoader />;
   }
@@ -82,126 +102,132 @@ export default function ManageExercisesScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/admin')}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/admin')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          </TouchableOpacity>
 
-        <ThemedText type='title' style={styles.title}>
-          Manage Exercises
-        </ThemedText>
-      </View>
-
-      <View style={styles.content}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
-          <TextInput
-            style={styles.searchInput}
-            placeholder='Search exercises...'
-            placeholderTextColor='rgba(102, 102, 102, 0.5)'
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+          <ThemedText type='title' style={styles.title}>
+            Manage Exercises
+          </ThemedText>
         </View>
 
-        {/* Add New Exercise Button */}
-        <Pressable
-          onPress={() => router.push('/admin/add-exercise')}
-          android_ripple={{
-            color: 'rgba(149, 194, 151, 0.3)',
-            foreground: true,
-          }}
-          style={styles.addButton}
-        >
-          <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
-          <ThemedText style={styles.addButtonText}>Add New Exercise</ThemedText>
-        </Pressable>
+        <View style={styles.content}>
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <IconSymbol name='magnifyingglass' size={20} color='#464655' />
+            <TextInput
+              style={styles.searchInput}
+              placeholder='Search exercises...'
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
 
-        {/* Exercise List */}
-        <ScrollView
-          style={styles.exerciseList}
-          showsVerticalScrollIndicator={false}
-        >
-          {filteredExercises.length === 0 ? (
-            <View style={styles.emptyState}>
-              <IconSymbol name='doc.text' size={48} color='#ccc' />
-              <ThemedText style={styles.emptyText}>
-                {searchQuery
-                  ? 'No exercises match your search'
-                  : 'No exercises found'}
-              </ThemedText>
-              <ThemedText style={styles.emptySubtext}>
-                {!searchQuery && 'Start by adding your first exercise'}
-              </ThemedText>
-            </View>
-          ) : (
-            filteredExercises.map((exercise) => (
-              <View key={exercise.id} style={styles.exerciseCard}>
-                <View style={styles.exerciseInfo}>
-                  <ThemedText style={styles.exerciseTitle}>
-                    {exercise.title}
-                  </ThemedText>
-                  <ThemedText style={styles.exerciseDescription}>
-                    {exercise.description}
-                  </ThemedText>
+          {/* Add New Exercise Button */}
+          <Pressable
+            onPress={() => router.push('/admin/add-exercise')}
+            android_ripple={{
+              color: 'rgba(149, 194, 151, 0.3)',
+              foreground: true,
+            }}
+            style={styles.addButton}
+          >
+            <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
+            <ThemedText style={styles.addButtonText}>
+              Add New Exercise
+            </ThemedText>
+          </Pressable>
 
-                  <View style={styles.exerciseMetadata}>
-                    <View style={styles.metadataItem}>
-                      <IconSymbol name='folder' size={14} color='#464655' />
-                      <ThemedText style={styles.metadataText}>
-                        {exercise.category}
-                      </ThemedText>
-                    </View>
+          {/* Exercise List */}
+          <ScrollView
+            style={styles.exerciseList}
+            showsVerticalScrollIndicator={false}
+          >
+            {filteredExercises.length === 0 ? (
+              <View style={styles.emptyState}>
+                <IconSymbol name='doc.text' size={48} color='#ccc' />
+                <ThemedText style={styles.emptyText}>
+                  {searchQuery
+                    ? 'No exercises match your search'
+                    : 'No exercises found'}
+                </ThemedText>
+                <ThemedText style={styles.emptySubtext}>
+                  {!searchQuery && 'Start by adding your first exercise'}
+                </ThemedText>
+              </View>
+            ) : (
+              filteredExercises.map((exercise) => (
+                <View key={exercise.id} style={styles.exerciseCard}>
+                  <View style={styles.exerciseInfo}>
+                    <ThemedText style={styles.exerciseTitle}>
+                      {exercise.title}
+                    </ThemedText>
+                    <ThemedText style={styles.exerciseDescription}>
+                      {exercise.description}
+                    </ThemedText>
 
-                    <View style={styles.metadataItem}>
-                      <IconSymbol name='chart.bar' size={14} color='#464655' />
-                      <ThemedText
-                        style={[
-                          styles.metadataText,
-                          styles[exercise.difficulty],
-                        ]}
-                      >
-                        {exercise.difficulty}
-                      </ThemedText>
-                    </View>
+                    <View style={styles.exerciseMetadata}>
+                      <View style={styles.metadataItem}>
+                        <IconSymbol name='folder' size={14} color='#464655' />
+                        <ThemedText style={styles.metadataText}>
+                          {getCategoryName(exercise.category)}
+                        </ThemedText>
+                      </View>
 
-                    <View style={styles.metadataItem}>
-                      <IconSymbol
-                        name='questionmark.circle'
-                        size={14}
-                        color='#464655'
-                      />
-                      <ThemedText style={styles.metadataText}>
-                        {exercise.content.questions.length} questions
-                      </ThemedText>
+                      <View style={styles.metadataItem}>
+                        <IconSymbol
+                          name='chart.bar'
+                          size={14}
+                          color='#464655'
+                        />
+                        <ThemedText
+                          style={[
+                            styles.metadataText,
+                            styles[exercise.difficulty],
+                          ]}
+                        >
+                          {exercise.difficulty}
+                        </ThemedText>
+                      </View>
+
+                      <View style={styles.metadataItem}>
+                        <IconSymbol
+                          name='questionmark.circle'
+                          size={14}
+                          color='#464655'
+                        />
+                        <ThemedText style={styles.metadataText}>
+                          {exercise.content.questions.length} questions
+                        </ThemedText>
+                      </View>
                     </View>
                   </View>
-                </View>
 
-                <View style={styles.exerciseActions}>
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.editButton]}
-                    onPress={() => handleEditExercise(exercise)}
-                  >
-                    <IconSymbol name='pencil' size={16} color='#6996b3' />
-                  </TouchableOpacity>
+                  <View style={styles.exerciseActions}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.editButton]}
+                      onPress={() => handleEditExercise(exercise)}
+                    >
+                      <IconSymbol name='pencil' size={16} color='#6996b3' />
+                    </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.deleteButton]}
-                    onPress={() => handleDeleteExercise(exercise)}
-                  >
-                    <IconSymbol name='trash' size={16} color='#6f0202' />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.deleteButton]}
+                      onPress={() => handleDeleteExercise(exercise)}
+                    >
+                      <IconSymbol name='trash' size={16} color='#6f0202' />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ))
-          )}
-        </ScrollView>
-      </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
       </View>
     </ThemedView>
   );
