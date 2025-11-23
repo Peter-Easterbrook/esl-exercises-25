@@ -12,6 +12,7 @@ import {
   getExercisesByCategory,
 } from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
+import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -161,140 +162,136 @@ export default function UploadFilesScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/admin')}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/admin')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          </TouchableOpacity>
 
-        <ThemedText type='title' style={styles.title}>
-          Upload Files
-        </ThemedText>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Category Selection */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Select Category
+          <ThemedText type='title' style={styles.title}>
+            Upload Files
           </ThemedText>
-          <View style={styles.categoryGrid}>
-            {categories.map((category) => (
-              <CategoryButton
-                key={category.id}
-                category={category}
-                isSelected={selectedCategory === category.id}
-                onPress={() => setSelectedCategory(category.id)}
-              />
-            ))}
-          </View>
         </View>
 
-        {/* Exercise Selection */}
-        {selectedCategory && exercises.length > 0 && (
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Category Selection */}
           <View style={styles.section}>
             <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Link to Exercise (Optional)
+              Select Category
             </ThemedText>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.exerciseList}>
-                <ExerciseChip
-                  label='None'
-                  isSelected={!selectedExercise}
-                  onPress={() => setSelectedExercise('')}
+            <View style={styles.categoryGrid}>
+              {categories.map((category) => (
+                <CategoryButton
+                  key={category.id}
+                  category={category}
+                  isSelected={selectedCategory === category.id}
+                  onPress={() => setSelectedCategory(category.id)}
                 />
-                {exercises.map((exercise) => (
+              ))}
+            </View>
+          </View>
+
+          {/* Exercise Selection */}
+          {selectedCategory && exercises.length > 0 && (
+            <View style={styles.section}>
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Link to Exercise (Optional)
+              </ThemedText>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.exerciseList}>
                   <ExerciseChip
-                    key={exercise.id}
-                    label={exercise.title}
-                    isSelected={selectedExercise === exercise.id}
-                    onPress={() => setSelectedExercise(exercise.id)}
+                    label='None'
+                    isSelected={!selectedExercise}
+                    onPress={() => setSelectedExercise('')}
                   />
-                ))}
-              </View>
-            </ScrollView>
-            <ThemedText style={styles.helpText}>
-              {selectedExercise
-                ? 'File will be linked to selected exercise'
-                : 'File will be available for all exercises in category'}
-            </ThemedText>
-          </View>
-        )}
-
-        {/* Upload Button */}
-        {selectedCategory && (
-          <View style={styles.section}>
-            <TouchableOpacity
-              style={[styles.uploadButton, uploading && styles.uploadingButton]}
-              onPress={handlePickDocument}
-              disabled={uploading}
-            >
-              {uploading ? (
-                <ActivityIndicator color='#fff' />
-              ) : (
-                <>
-                  <IconSymbol name='doc.badge.plus' size={24} color='#fff' />
-                  <ThemedText style={styles.uploadButtonText}>
-                    Upload Document
-                  </ThemedText>
-                </>
-              )}
-            </TouchableOpacity>
-            <ThemedText style={styles.helpText}>
-              Supported formats: PDF, DOC, DOCX (max 10MB)
-            </ThemedText>
-          </View>
-        )}
-
-        {/* Files List */}
-        {selectedCategory && files.length > 0 && (
-          <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Uploaded Files
-            </ThemedText>
-            {files.map((file) => (
-              <View key={file.id} style={styles.fileCard}>
-                <View style={styles.fileIcon}>
-                  <IconSymbol
-                    name={
-                      file.fileType.toLowerCase() === 'pdf'
-                        ? 'doc.text.fill'
-                        : 'doc.fill'
-                    }
-                    size={28}
-                    color='#6996b3'
-                  />
+                  {exercises.map((exercise) => (
+                    <ExerciseChip
+                      key={exercise.id}
+                      label={exercise.title}
+                      isSelected={selectedExercise === exercise.id}
+                      onPress={() => setSelectedExercise(exercise.id)}
+                    />
+                  ))}
                 </View>
-                <View style={styles.fileInfo}>
-                  <ThemedText type='defaultSemiBold' style={styles.fileName}>
-                    {file.name}
-                  </ThemedText>
-                  <ThemedText style={styles.fileDetails}>
-                    {formatFileSize(file.size)} • {file.fileType.toUpperCase()}
-                  </ThemedText>
-                  {file.exerciseId && (
-                    <ThemedText style={styles.linkedExercise}>
-                      📎 Linked to exercise
+              </ScrollView>
+              <ThemedText style={styles.helpText}>
+                {selectedExercise
+                  ? 'File will be linked to selected exercise'
+                  : 'File will be available for all exercises in category'}
+              </ThemedText>
+            </View>
+          )}
+
+          {/* Upload Button */}
+          {selectedCategory && (
+            <View style={styles.section}>
+              <TouchableOpacity
+                style={[
+                  styles.uploadButton,
+                  uploading && styles.uploadingButton,
+                ]}
+                onPress={handlePickDocument}
+                disabled={uploading}
+              >
+                {uploading ? (
+                  <ActivityIndicator color='#fff' />
+                ) : (
+                  <>
+                    <IconSymbol name='doc.badge.plus' size={24} color='#fff' />
+                    <ThemedText style={styles.uploadButtonText}>
+                      Upload Document
                     </ThemedText>
-                  )}
-                  <ThemedText style={styles.fileDate}>
-                    {file.uploadedAt.toLocaleDateString()}
-                  </ThemedText>
+                  </>
+                )}
+              </TouchableOpacity>
+              <ThemedText style={styles.helpText}>
+                Supported formats: PDF, DOC, DOCX (max 10MB)
+              </ThemedText>
+            </View>
+          )}
+
+          {/* Files List */}
+          {selectedCategory && files.length > 0 && (
+            <View style={styles.section}>
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Uploaded Files
+              </ThemedText>
+              {files.map((file) => (
+                <View key={file.id} style={styles.fileCard}>
+                  <View style={styles.fileIcon}>
+                    <Ionicons name='document-text' size={28} color='#6996b3' />
+                  </View>
+                  <View style={styles.fileInfo}>
+                    <ThemedText type='defaultSemiBold' style={styles.fileName}>
+                      {file.name}
+                    </ThemedText>
+                    <ThemedText style={styles.fileDetails}>
+                      {formatFileSize(file.size)} •{' '}
+                      {file.fileType.toUpperCase()}
+                    </ThemedText>
+                    {file.exerciseId && (
+                      <ThemedText style={styles.linkedExercise}>
+                        📎 Linked to exercise
+                      </ThemedText>
+                    )}
+                    <ThemedText style={styles.fileDate}>
+                      {file.uploadedAt.toLocaleDateString()}
+                    </ThemedText>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteFile(file)}
+                    activeOpacity={0.7}
+                  >
+                    <IconSymbol name='trash' size={20} color='#6f0202' />
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteFile(file)}
-                  activeOpacity={0.7}
-                >
-                  <IconSymbol name='trash' size={20} color='#6f0202' />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+              ))}
+            </View>
+          )}
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -423,7 +420,7 @@ function ExerciseChip({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
   },
   contentWrapper: {
     width: '100%',
@@ -451,7 +448,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-
     lineHeight: 34,
   },
   content: {

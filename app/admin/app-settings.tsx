@@ -125,348 +125,350 @@ export default function AppSettingsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back</ThemedText>
-        </TouchableOpacity>
-
-        <ThemedText type='title' style={styles.title}>
-          App Settings
-        </ThemedText>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Exercise Settings */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name='doc.text' size={20} color='#07b524' />
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Exercise Settings
-            </ThemedText>
-          </View>
-
-          <View style={styles.settingCard}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Default Time Limit
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Default duration for timed exercises (minutes)
-                </ThemedText>
-              </View>
-              <TextInput
-                style={styles.numberInput}
-                value={settings.exerciseSettings.defaultTimeLimit.toString()}
-                onChangeText={(text) => {
-                  const num = parseInt(text) || 0;
-                  setSettings({
-                    ...settings,
-                    exerciseSettings: {
-                      ...settings.exerciseSettings,
-                      defaultTimeLimit: num,
-                    },
-                  });
-                }}
-                keyboardType='numeric'
-                placeholder='30'
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Show Solutions Immediately
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Allow users to see answers right away
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.exerciseSettings.showSolutionsImmediately}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    exerciseSettings: {
-                      ...settings.exerciseSettings,
-                      showSolutionsImmediately: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#07b524' }}
-                thumbColor='#fff'
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Enable Points System
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Award points for completed exercises
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.exerciseSettings.enablePointsSystem}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    exerciseSettings: {
-                      ...settings.exerciseSettings,
-                      enablePointsSystem: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#07b524' }}
-                thumbColor='#fff'
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* User Management */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name='person.2' size={20} color='#9C27B0' />
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
-              User Management
-            </ThemedText>
-          </View>
-
-          <View style={styles.settingCard}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Allow New Registrations
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Enable new users to create accounts
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.userManagement.allowNewRegistrations}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    userManagement: {
-                      ...settings.userManagement,
-                      allowNewRegistrations: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#9C27B0' }}
-                thumbColor='#fff'
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Require Email Verification
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Users must verify email before accessing app
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.userManagement.requireEmailVerification}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    userManagement: {
-                      ...settings.userManagement,
-                      requireEmailVerification: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#9C27B0' }}
-                thumbColor='#fff'
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Notifications */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name='bell' size={20} color='#FF9800' />
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Notifications
-            </ThemedText>
-          </View>
-
-          <View style={styles.settingCard}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Enable Push Notifications
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Send notifications to users
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.notifications.enablePushNotifications}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    notifications: {
-                      ...settings.notifications,
-                      enablePushNotifications: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#FF9800' }}
-                thumbColor='#fff'
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Daily Reminder Time
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Time for daily practice reminders (HH:MM)
-                </ThemedText>
-              </View>
-              <TextInput
-                style={styles.timeInput}
-                value={settings.notifications.dailyReminderTime}
-                onChangeText={(text) =>
-                  setSettings({
-                    ...settings,
-                    notifications: {
-                      ...settings.notifications,
-                      dailyReminderTime: text,
-                    },
-                  })
-                }
-                placeholder='09:00'
-                maxLength={5}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Admin Settings */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name='gear' size={20} color='#795548' />
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
-              Admin
-            </ThemedText>
-          </View>
-
-          <View style={styles.settingCard}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Maintenance Mode
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Disable app for non-admin users
-                </ThemedText>
-              </View>
-              <Switch
-                value={settings.admin.maintenanceMode}
-                onValueChange={(value) =>
-                  setSettings({
-                    ...settings,
-                    admin: {
-                      ...settings.admin,
-                      maintenanceMode: value,
-                    },
-                  })
-                }
-                trackColor={{ false: '#ddd', true: '#6f0202' }}
-                thumbColor='#fff'
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRowColumn}>
-              <View style={styles.settingInfo}>
-                <ThemedText style={styles.settingLabel}>
-                  Announcement Banner
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
-                  Message to display to all users
-                </ThemedText>
-              </View>
-              <TextInput
-                style={styles.textAreaInput}
-                value={settings.admin.announcementBanner}
-                onChangeText={(text) =>
-                  setSettings({
-                    ...settings,
-                    admin: {
-                      ...settings.admin,
-                      announcementBanner: text,
-                    },
-                  })
-                }
-                placeholder='Enter announcement message...'
-                multiline
-                numberOfLines={3}
-                textAlignVertical='top'
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.actionButtons}>
           <TouchableOpacity
-            style={[styles.button, styles.saveButton]}
-            onPress={handleSaveSettings}
-            disabled={saving}
+            style={styles.backButton}
+            onPress={() => router.back()}
           >
-            {saving ? (
-              <ActivityIndicator size='small' color='#fff' />
-            ) : (
-              <>
-                <IconSymbol
-                  name='checkmark.circle.fill'
-                  size={20}
-                  color='#fff'
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back</ThemedText>
+          </TouchableOpacity>
+
+          <ThemedText type='title' style={styles.title}>
+            App Settings
+          </ThemedText>
+        </View>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Exercise Settings */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <IconSymbol name='doc.text' size={20} color='#07b524' />
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Exercise Settings
+              </ThemedText>
+            </View>
+
+            <View style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Default Time Limit
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Default duration for timed exercises (minutes)
+                  </ThemedText>
+                </View>
+                <TextInput
+                  style={styles.numberInput}
+                  value={settings.exerciseSettings.defaultTimeLimit.toString()}
+                  onChangeText={(text) => {
+                    const num = parseInt(text) || 0;
+                    setSettings({
+                      ...settings,
+                      exerciseSettings: {
+                        ...settings.exerciseSettings,
+                        defaultTimeLimit: num,
+                      },
+                    });
+                  }}
+                  keyboardType='numeric'
+                  placeholder='30'
                 />
-                <ThemedText style={styles.buttonText}>Save Settings</ThemedText>
-              </>
-            )}
-          </TouchableOpacity>
+              </View>
 
-          <TouchableOpacity
-            style={[styles.button, styles.resetButton]}
-            onPress={handleResetSettings}
-            disabled={saving}
-          >
-            <IconSymbol
-              name='arrow.counterclockwise'
-              size={20}
-              color='#6f0202'
-            />
-            <ThemedText style={[styles.buttonText, styles.resetButtonText]}>
-              Reset to Defaults
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
+              <View style={styles.divider} />
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Show Solutions Immediately
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Allow users to see answers right away
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.exerciseSettings.showSolutionsImmediately}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      exerciseSettings: {
+                        ...settings.exerciseSettings,
+                        showSolutionsImmediately: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#07b524' }}
+                  thumbColor='#fff'
+                />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Enable Points System
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Award points for completed exercises
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.exerciseSettings.enablePointsSystem}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      exerciseSettings: {
+                        ...settings.exerciseSettings,
+                        enablePointsSystem: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#07b524' }}
+                  thumbColor='#fff'
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* User Management */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <IconSymbol name='person.2' size={20} color='#9C27B0' />
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                User Management
+              </ThemedText>
+            </View>
+
+            <View style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Allow New Registrations
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Enable new users to create accounts
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.userManagement.allowNewRegistrations}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      userManagement: {
+                        ...settings.userManagement,
+                        allowNewRegistrations: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#9C27B0' }}
+                  thumbColor='#fff'
+                />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Require Email Verification
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Users must verify email before accessing app
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.userManagement.requireEmailVerification}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      userManagement: {
+                        ...settings.userManagement,
+                        requireEmailVerification: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#9C27B0' }}
+                  thumbColor='#fff'
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Notifications */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <IconSymbol name='bell' size={20} color='#FF9800' />
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Notifications
+              </ThemedText>
+            </View>
+
+            <View style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Enable Push Notifications
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Send notifications to users
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.notifications.enablePushNotifications}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      notifications: {
+                        ...settings.notifications,
+                        enablePushNotifications: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#FF9800' }}
+                  thumbColor='#fff'
+                />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Daily Reminder Time
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Time for daily practice reminders (HH:MM)
+                  </ThemedText>
+                </View>
+                <TextInput
+                  style={styles.timeInput}
+                  value={settings.notifications.dailyReminderTime}
+                  onChangeText={(text) =>
+                    setSettings({
+                      ...settings,
+                      notifications: {
+                        ...settings.notifications,
+                        dailyReminderTime: text,
+                      },
+                    })
+                  }
+                  placeholder='09:00'
+                  maxLength={5}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Admin Settings */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <IconSymbol name='gear' size={20} color='#795548' />
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Admin
+              </ThemedText>
+            </View>
+
+            <View style={styles.settingCard}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Maintenance Mode
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Disable app for non-admin users
+                  </ThemedText>
+                </View>
+                <Switch
+                  value={settings.admin.maintenanceMode}
+                  onValueChange={(value) =>
+                    setSettings({
+                      ...settings,
+                      admin: {
+                        ...settings.admin,
+                        maintenanceMode: value,
+                      },
+                    })
+                  }
+                  trackColor={{ false: '#ddd', true: '#6f0202' }}
+                  thumbColor='#fff'
+                />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingRowColumn}>
+                <View style={styles.settingInfo}>
+                  <ThemedText style={styles.settingLabel}>
+                    Announcement Banner
+                  </ThemedText>
+                  <ThemedText style={styles.settingDescription}>
+                    Message to display to all users
+                  </ThemedText>
+                </View>
+                <TextInput
+                  style={styles.textAreaInput}
+                  value={settings.admin.announcementBanner}
+                  onChangeText={(text) =>
+                    setSettings({
+                      ...settings,
+                      admin: {
+                        ...settings.admin,
+                        announcementBanner: text,
+                      },
+                    })
+                  }
+                  placeholder='Enter announcement message...'
+                  multiline
+                  numberOfLines={3}
+                  textAlignVertical='top'
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            <TouchableOpacity
+              style={[styles.button, styles.saveButton]}
+              onPress={handleSaveSettings}
+              disabled={saving}
+            >
+              {saving ? (
+                <ActivityIndicator size='small' color='#fff' />
+              ) : (
+                <>
+                  <IconSymbol
+                    name='checkmark.circle.fill'
+                    size={20}
+                    color='#fff'
+                  />
+                  <ThemedText style={styles.buttonText}>
+                    Save Settings
+                  </ThemedText>
+                </>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, styles.resetButton]}
+              onPress={handleResetSettings}
+              disabled={saving}
+            >
+              <IconSymbol
+                name='arrow.counterclockwise'
+                size={20}
+                color='#6f0202'
+              />
+              <ThemedText style={[styles.buttonText, styles.resetButtonText]}>
+                Reset to Defaults
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -557,7 +559,7 @@ const styles = StyleSheet.create({
   },
   settingDescription: {
     fontSize: 13,
-    color: '#464655',
+    color: '#202029',
     lineHeight: 18,
   },
   divider: {

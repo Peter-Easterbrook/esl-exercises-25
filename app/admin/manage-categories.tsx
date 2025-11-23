@@ -158,113 +158,115 @@ export default function ManageCategoriesScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/admin')}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/admin')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          </TouchableOpacity>
 
-        <ThemedText type='title' style={styles.title}>
-          Manage Categories
-        </ThemedText>
-      </View>
-
-      <View style={styles.content}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
-          <TextInput
-            style={styles.searchInput}
-            placeholder='Search categories...'
-            placeholderTextColor='rgba(102, 102, 102, 0.5)'
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+          <ThemedText type='title' style={styles.title}>
+            Manage Categories
+          </ThemedText>
         </View>
 
-        {/* Add New Category Button */}
-        <Pressable
-          onPress={handleAddCategory}
-          android_ripple={{
-            color: 'rgba(149, 194, 151, 0.3)',
-            foreground: true,
-          }}
-          style={styles.addButton}
-        >
-          <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
-          <ThemedText style={styles.addButtonText}>Add New Category</ThemedText>
-        </Pressable>
+        <View style={styles.content}>
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <IconSymbol name='magnifyingglass' size={20} color='#464655' />
+            <TextInput
+              style={styles.searchInput}
+              placeholder='Search categories...'
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
 
-        {/* Category List */}
-        <ScrollView
-          style={styles.categoryList}
-          showsVerticalScrollIndicator={false}
-        >
-          {filteredCategories.length === 0 ? (
-            <View style={styles.emptyState}>
-              <IconSymbol name='folder' size={48} color='#ccc' />
-              <ThemedText style={styles.emptyText}>
-                {searchQuery
-                  ? 'No categories match your search'
-                  : 'No categories found'}
-              </ThemedText>
-              <ThemedText style={styles.emptySubtext}>
-                {!searchQuery && 'Start by adding your first category'}
-              </ThemedText>
-            </View>
-          ) : (
-            filteredCategories.map((category) => (
-              <View key={category.id} style={styles.categoryCard}>
-                <View style={styles.categoryIconContainer}>
-                  <IconSymbol
-                    name={category.icon as any}
-                    size={32}
-                    color='#6996b3'
-                  />
-                </View>
+          {/* Add New Category Button */}
+          <Pressable
+            onPress={handleAddCategory}
+            android_ripple={{
+              color: 'rgba(149, 194, 151, 0.3)',
+              foreground: true,
+            }}
+            style={styles.addButton}
+          >
+            <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
+            <ThemedText style={styles.addButtonText}>
+              Add New Category
+            </ThemedText>
+          </Pressable>
 
-                <View style={styles.categoryInfo}>
-                  <ThemedText style={styles.categoryName}>
-                    {category.name}
-                  </ThemedText>
-                  <ThemedText style={styles.categoryDescription}>
-                    {category.description}
-                  </ThemedText>
-
-                  <View style={styles.categoryMetadata}>
+          {/* Category List */}
+          <ScrollView
+            style={styles.categoryList}
+            showsVerticalScrollIndicator={false}
+          >
+            {filteredCategories.length === 0 ? (
+              <View style={styles.emptyState}>
+                <IconSymbol name='folder' size={48} color='#ccc' />
+                <ThemedText style={styles.emptyText}>
+                  {searchQuery
+                    ? 'No categories match your search'
+                    : 'No categories found'}
+                </ThemedText>
+                <ThemedText style={styles.emptySubtext}>
+                  {!searchQuery && 'Start by adding your first category'}
+                </ThemedText>
+              </View>
+            ) : (
+              filteredCategories.map((category) => (
+                <View key={category.id} style={styles.categoryCard}>
+                  <View style={styles.categoryIconContainer}>
                     <IconSymbol
-                      name='questionmark.circle'
-                      size={14}
-                      color='#464655'
+                      name={category.icon as any}
+                      size={32}
+                      color='#6996b3'
                     />
-                    <ThemedText style={styles.metadataText}>
-                      {category.exercises?.length || 0} exercises
+                  </View>
+
+                  <View style={styles.categoryInfo}>
+                    <ThemedText style={styles.categoryName}>
+                      {category.name}
                     </ThemedText>
+                    <ThemedText style={styles.categoryDescription}>
+                      {category.description}
+                    </ThemedText>
+
+                    <View style={styles.categoryMetadata}>
+                      <IconSymbol
+                        name='questionmark.circle'
+                        size={14}
+                        color='#464655'
+                      />
+                      <ThemedText style={styles.metadataText}>
+                        {category.exercises?.length || 0} exercises
+                      </ThemedText>
+                    </View>
+                  </View>
+
+                  <View style={styles.categoryActions}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.editButton]}
+                      onPress={() => handleEditCategory(category)}
+                    >
+                      <IconSymbol name='pencil' size={16} color='#6996b3' />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.deleteButton]}
+                      onPress={() => handleDeleteCategory(category)}
+                    >
+                      <IconSymbol name='trash' size={16} color='#6f0202' />
+                    </TouchableOpacity>
                   </View>
                 </View>
-
-                <View style={styles.categoryActions}>
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.editButton]}
-                    onPress={() => handleEditCategory(category)}
-                  >
-                    <IconSymbol name='pencil' size={16} color='#6996b3' />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.deleteButton]}
-                    onPress={() => handleDeleteCategory(category)}
-                  >
-                    <IconSymbol name='trash' size={16} color='#6f0202' />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
-          )}
-        </ScrollView>
-      </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
       </View>
 
       {/* Add/Edit Category Modal */}
@@ -374,7 +376,7 @@ export default function ManageCategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
   },
   contentWrapper: {
     width: '100%',
@@ -497,7 +499,7 @@ const styles = StyleSheet.create({
   },
   metadataText: {
     fontSize: 12,
-    color: '#464655',
+    color: '#202029',
   },
   categoryActions: {
     flexDirection: 'row',
@@ -599,7 +601,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   cancelButtonText: {
-    color: '#464655',
+    color: '#202029',
     fontSize: 16,
   },
   saveButton: {

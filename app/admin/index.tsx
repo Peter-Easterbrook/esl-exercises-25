@@ -128,123 +128,123 @@ export default function AdminPanel() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/(tabs)/profile')}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back to Profile</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/(tabs)/profile')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back to Profile</ThemedText>
+          </TouchableOpacity>
 
-        <View style={styles.headerTitleContainer}>
-          <Image
-            source={require('@/assets/images/LL2020.png')}
-            style={styles.headerLogo}
-            resizeMode='contain'
-          />
-          <ThemedText type='title' style={styles.title}>
-            Admin Panel
-          </ThemedText>
-        </View>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Stats Overview */}
-        <View style={styles.statsContainer}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Overview
-          </ThemedText>
-
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size='large' color='#6996b3' />
-              <ThemedText style={styles.loadingText}>
-                Loading statistics...
-              </ThemedText>
-            </View>
-          ) : (
-            <View style={styles.statsGrid}>
-              <View style={styles.statCard}>
-                <IconSymbol name='doc.text' size={24} color='#6996b3' />
-                <ThemedText style={styles.statNumber}>
-                  {stats.totalExercises}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>
-                  Total Exercises
-                </ThemedText>
-              </View>
-
-              <View style={styles.statCard}>
-                <IconSymbol name='person.2' size={24} color='#07b524' />
-                <ThemedText style={styles.statNumber}>
-                  {stats.totalUsers}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>Total Users</ThemedText>
-              </View>
-
-              <View style={styles.statCard}>
-                <IconSymbol name='calendar' size={24} color='#FF9800' />
-                <ThemedText style={styles.statNumber}>
-                  {stats.exercisesAddedThisMonth}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>
-                  Added This Month
-                </ThemedText>
-              </View>
-
-              <View style={styles.statCard}>
-                <IconSymbol name='circle.fill' size={24} color='#07b524' />
-                <ThemedText style={styles.statNumber}>
-                  {stats.activeUsers}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>Active Users</ThemedText>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Admin Actions */}
-        <View style={styles.actionsContainer}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Actions
-          </ThemedText>
-
-          <View style={styles.actionsList}>
-            {adminActions.map((action, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.actionCard}
-                onPress={action.onPress}
-                activeOpacity={0.7}
-              >
-                <View
-                  style={[
-                    styles.actionIcon,
-                    { backgroundColor: `${action.color}20` },
-                  ]}
-                >
-                  <IconSymbol
-                    name={action.icon}
-                    size={28}
-                    color={action.color}
-                  />
-                </View>
-
-                <View style={styles.actionContent}>
-                  <ThemedText style={styles.actionTitle}>
-                    {action.title}
-                  </ThemedText>
-                  <ThemedText style={styles.actionSubtitle}>
-                    {action.subtitle}
-                  </ThemedText>
-                </View>
-
-                <IconSymbol name='chevron.right' size={20} color='#464655' />
-              </TouchableOpacity>
-            ))}
+          <View style={styles.headerTitleContainer}>
+            <Image
+              source={require('@/assets/images/LL2020.png')}
+              style={styles.headerLogo}
+              resizeMode='contain'
+            />
+            <ThemedText type='title' style={styles.title}>
+              Admin Panel
+            </ThemedText>
           </View>
         </View>
-      </ScrollView>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Stats Overview */}
+          <View style={styles.statsContainer}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Overview
+            </ThemedText>
+
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size='large' color='#6996b3' />
+                <ThemedText style={styles.loadingText}>
+                  Loading statistics...
+                </ThemedText>
+              </View>
+            ) : (
+              <View style={styles.statsGrid}>
+                <View style={styles.statCard}>
+                  <IconSymbol name='doc.text' size={24} color='#6996b3' />
+                  <ThemedText style={styles.statNumber}>
+                    {stats.totalExercises}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>
+                    Total Exercises
+                  </ThemedText>
+                </View>
+
+                <View style={styles.statCard}>
+                  <IconSymbol name='person.2' size={24} color='#07b524' />
+                  <ThemedText style={styles.statNumber}>
+                    {stats.totalUsers}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>Total Users</ThemedText>
+                </View>
+
+                <View style={styles.statCard}>
+                  <IconSymbol name='calendar' size={24} color='#FF9800' />
+                  <ThemedText style={styles.statNumber}>
+                    {stats.exercisesAddedThisMonth}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>
+                    Added This Month
+                  </ThemedText>
+                </View>
+
+                <View style={styles.statCard}>
+                  <IconSymbol name='circle.fill' size={24} color='#07b524' />
+                  <ThemedText style={styles.statNumber}>
+                    {stats.activeUsers}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>Active Users</ThemedText>
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* Admin Actions */}
+          <View style={styles.actionsContainer}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Actions
+            </ThemedText>
+
+            <View style={styles.actionsList}>
+              {adminActions.map((action, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.actionCard}
+                  onPress={action.onPress}
+                  activeOpacity={0.7}
+                >
+                  <View
+                    style={[
+                      styles.actionIcon,
+                      { backgroundColor: `${action.color}20` },
+                    ]}
+                  >
+                    <IconSymbol
+                      name={action.icon}
+                      size={28}
+                      color={action.color}
+                    />
+                  </View>
+
+                  <View style={styles.actionContent}>
+                    <ThemedText style={styles.actionTitle}>
+                      {action.title}
+                    </ThemedText>
+                    <ThemedText style={styles.actionSubtitle}>
+                      {action.subtitle}
+                    </ThemedText>
+                  </View>
+
+                  <IconSymbol name='chevron.right' size={20} color='#464655' />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -253,7 +253,7 @@ export default function AdminPanel() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
     paddingTop: 60,
   },
   contentWrapper: {

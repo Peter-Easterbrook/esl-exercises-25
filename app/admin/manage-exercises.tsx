@@ -236,7 +236,7 @@ export default function ManageExercisesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
   },
   contentWrapper: {
     width: '100%',

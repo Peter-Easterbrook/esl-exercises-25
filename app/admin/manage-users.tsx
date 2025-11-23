@@ -266,131 +266,137 @@ export default function ManageUsersScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push('/admin')}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back to Admin</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/admin')}
+          >
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back to Admin</ThemedText>
+          </TouchableOpacity>
 
-        <ThemedText type='title' style={styles.title}>
-          Manage Users
-        </ThemedText>
-      </View>
-
-      <View style={styles.content}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <IconSymbol name='magnifyingglass' size={20} color='#464655' />
-          <TextInput
-            style={styles.searchInput}
-            placeholder='Search by name or email...'
-            placeholderTextColor='rgba(102, 102, 102, 0.5)'
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
+          <ThemedText type='title' style={styles.title}>
+            Manage Users
+          </ThemedText>
         </View>
 
-        {/* Users List */}
-        <ScrollView
-          style={styles.usersList}
-          showsVerticalScrollIndicator={false}
-        >
-          {users.length === 0 ? (
-            <View style={styles.emptyState}>
-              <IconSymbol name='person.2' size={48} color='#ccc' />
-              <ThemedText style={styles.emptyText}>
-                {searchQuery ? 'No users match your search' : 'No users found'}
-              </ThemedText>
-            </View>
-          ) : (
-            users.map((user: UserData) => (
-              <View key={user.id} style={styles.userCard}>
-                <View style={styles.userHeader}>
-                  <UserAvatar
-                    displayName={user.displayName}
-                    email={user.email}
-                    size={50}
-                    photoUri={userPhotos[user.id]}
-                  />
-                  <View style={styles.userInfo}>
-                    <View style={styles.userNameRow}>
-                      <ThemedText style={styles.userName}>
-                        {user.displayName || 'No Name'}
+        <View style={styles.content}>
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <IconSymbol name='magnifyingglass' size={20} color='#464655' />
+            <TextInput
+              style={styles.searchInput}
+              placeholder='Search by name or email...'
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+          </View>
+
+          {/* Users List */}
+          <ScrollView
+            style={styles.usersList}
+            showsVerticalScrollIndicator={false}
+          >
+            {users.length === 0 ? (
+              <View style={styles.emptyState}>
+                <IconSymbol name='person.2' size={48} color='#ccc' />
+                <ThemedText style={styles.emptyText}>
+                  {searchQuery
+                    ? 'No users match your search'
+                    : 'No users found'}
+                </ThemedText>
+              </View>
+            ) : (
+              users.map((user: UserData) => (
+                <View key={user.id} style={styles.userCard}>
+                  <View style={styles.userHeader}>
+                    <UserAvatar
+                      displayName={user.displayName}
+                      email={user.email}
+                      size={50}
+                      photoUri={userPhotos[user.id]}
+                    />
+                    <View style={styles.userInfo}>
+                      <View style={styles.userNameRow}>
+                        <ThemedText style={styles.userName}>
+                          {user.displayName || 'No Name'}
+                        </ThemedText>
+                        {user.isAdmin && (
+                          <View style={styles.adminBadge}>
+                            <ThemedText style={styles.adminBadgeText}>
+                              Admin
+                            </ThemedText>
+                          </View>
+                        )}
+                      </View>
+                      <ThemedText style={styles.userEmail}>
+                        {user.email}
                       </ThemedText>
-                      {user.isAdmin && (
-                        <View style={styles.adminBadge}>
-                          <ThemedText style={styles.adminBadgeText}>
-                            Admin
-                          </ThemedText>
-                        </View>
-                      )}
+                      <ThemedText style={styles.userMeta}>
+                        Joined {formatDate(user.createdAt)}
+                      </ThemedText>
                     </View>
-                    <ThemedText style={styles.userEmail}>
-                      {user.email}
-                    </ThemedText>
-                    <ThemedText style={styles.userMeta}>
-                      Joined {formatDate(user.createdAt)}
-                    </ThemedText>
+                  </View>
+
+                  {/* Action Buttons */}
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.infoButton]}
+                      onPress={() => handleViewDetails(user)}
+                    >
+                      <IconSymbol
+                        name='info.circle'
+                        size={20}
+                        color='#6996b3'
+                      />
+                      <ThemedText style={styles.actionButtonText}>
+                        Info
+                      </ThemedText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.editButton]}
+                      onPress={() => handleEditUser(user)}
+                    >
+                      <IconSymbol name='pencil' size={20} color='#6996b3' />
+                      <ThemedText style={styles.actionButtonText}>
+                        Edit
+                      </ThemedText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.resetButton]}
+                      onPress={() => handleResetProgress(user)}
+                    >
+                      <IconSymbol
+                        name='arrow.clockwise'
+                        size={20}
+                        color='#FF9800'
+                      />
+                      <ThemedText
+                        style={[styles.actionButtonText, styles.resetText]}
+                      >
+                        Reset
+                      </ThemedText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.deleteButton]}
+                      onPress={() => handleDeleteAccount(user)}
+                    >
+                      <IconSymbol name='trash' size={20} color='#6f0202' />
+                      <ThemedText
+                        style={[styles.actionButtonText, styles.deleteText]}
+                      >
+                        Delete
+                      </ThemedText>
+                    </TouchableOpacity>
                   </View>
                 </View>
-
-                {/* Action Buttons */}
-                <View style={styles.actionButtons}>
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.infoButton]}
-                    onPress={() => handleViewDetails(user)}
-                  >
-                    <IconSymbol name='info.circle' size={20} color='#6996b3' />
-                    <ThemedText style={styles.actionButtonText}>
-                      Info
-                    </ThemedText>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.editButton]}
-                    onPress={() => handleEditUser(user)}
-                  >
-                    <IconSymbol name='pencil' size={20} color='#6996b3' />
-                    <ThemedText style={styles.actionButtonText}>
-                      Edit
-                    </ThemedText>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.resetButton]}
-                    onPress={() => handleResetProgress(user)}
-                  >
-                    <IconSymbol
-                      name='arrow.clockwise'
-                      size={20}
-                      color='#FF9800'
-                    />
-                    <ThemedText
-                      style={[styles.actionButtonText, styles.resetText]}
-                    >
-                      Reset
-                    </ThemedText>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.deleteButton]}
-                    onPress={() => handleDeleteAccount(user)}
-                  >
-                    <IconSymbol name='trash' size={20} color='#6f0202' />
-                    <ThemedText
-                      style={[styles.actionButtonText, styles.deleteText]}
-                    >
-                      Delete
-                    </ThemedText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
-          )}
-        </ScrollView>
-      </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
       </View>
 
       {/* User Details Modal */}
@@ -640,7 +646,7 @@ export default function ManageUsersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
   },
   contentWrapper: {
     width: '100%',
@@ -747,7 +753,7 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 14,
-    color: '#464655',
+    color: '#202029',
     marginBottom: 4,
   },
   userMeta: {
@@ -837,7 +843,7 @@ const styles = StyleSheet.create({
   },
   detailEmail: {
     fontSize: 14,
-    color: '#464655',
+    color: '#202029',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -864,7 +870,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#464655',
+    color: '#202029',
     marginTop: 4,
   },
   sectionTitle: {
@@ -887,7 +893,7 @@ const styles = StyleSheet.create({
   },
   categoryProgress: {
     fontSize: 14,
-    color: '#464655',
+    color: '#202029',
   },
   noActivity: {
     fontSize: 14,
@@ -970,7 +976,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   cancelButtonText: {
-    color: '#464655',
+    color: '#202029',
     fontSize: 16,
     fontWeight: '600',
   },

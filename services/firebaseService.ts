@@ -159,15 +159,25 @@ export const createExercise = async (
   exercise: Omit<Exercise, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> => {
   try {
+    console.log('🔥 Firebase: Attempting to create exercise...');
+    console.log('🔥 Firebase: Exercise data:', exercise);
+
     const now = Timestamp.now();
-    const docRef = await addDoc(collection(db, 'exercises'), {
+    const exerciseData = {
       ...exercise,
       createdAt: now,
       updatedAt: now,
-    });
+    };
+
+    console.log('🔥 Firebase: Adding document to collection...');
+    const docRef = await addDoc(collection(db, 'exercises'), exerciseData);
+
+    console.log('🔥 Firebase: Document created with ID:', docRef.id);
     return docRef.id;
-  } catch (error) {
-    console.error('Error creating exercise:', error);
+  } catch (error: any) {
+    console.error('🔥 Firebase: Error creating exercise:', error);
+    console.error('🔥 Firebase: Error code:', error?.code);
+    console.error('🔥 Firebase: Error message:', error?.message);
     throw error;
   }
 };

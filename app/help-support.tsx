@@ -47,355 +47,365 @@ export default function HelpSupportScreen() {
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         >
-        {/* Introduction */}
-        <View style={styles.introSection}>
-          <IconSymbol
-            name='questionmark.circle.fill'
-            size={48}
-            color='#6996b3'
-          />
-          <ThemedText style={styles.introText}>
-            Welcome to the ESL Exercises Help Center. Find answers to common
-            questions and learn how to make the most of your learning
-            experience.
-          </ThemedText>
-        </View>
-
-        {/* Quick Start Guide */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Quick Start Guide
-          </ThemedText>
-          <View style={styles.card}>
-            <View style={styles.guideItem}>
-              <View style={styles.guideNumber}>
-                <ThemedText style={styles.guideNumberText}>1</ThemedText>
-              </View>
-              <View style={styles.guideContent}>
-                <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
-                  Browse Exercises
-                </ThemedText>
-                <ThemedText style={styles.guideText}>
-                  Tap on any category card to expand and view available
-                  exercises. Each category contains exercises organized by
-                  difficulty level.
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.guideItem}>
-              <View style={styles.guideNumber}>
-                <ThemedText style={styles.guideNumberText}>2</ThemedText>
-              </View>
-              <View style={styles.guideContent}>
-                <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
-                  Complete Exercises
-                </ThemedText>
-                <ThemedText style={styles.guideText}>
-                  Read the instructions, answer all questions, and submit when
-                  ready. Your score is calculated based on correct answers.
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.guideItem}>
-              <View style={styles.guideNumber}>
-                <ThemedText style={styles.guideNumberText}>3</ThemedText>
-              </View>
-              <View style={styles.guideContent}>
-                <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
-                  Track Progress
-                </ThemedText>
-                <ThemedText style={styles.guideText}>
-                  Visit the Progress tab to see your statistics, completion
-                  rates, and learning streaks across all categories.
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.guideItem}>
-              <View style={styles.guideNumber}>
-                <ThemedText style={styles.guideNumberText}>4</ThemedText>
-              </View>
-              <View style={styles.guideContent}>
-                <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
-                  Download Materials
-                </ThemedText>
-                <ThemedText style={styles.guideText}>
-                  Look for downloadable files in expanded categories. Tap to
-                  download PDF or DOC files for offline study.
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* FAQ Section */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Frequently Asked Questions
-          </ThemedText>
-          <View style={styles.card}>
-            <Collapsible title='How do I change my password?'>
-              <ThemedText style={styles.faqAnswer}>
-                Go to Profile → Account Settings → Change Password. You will
-                need to enter your current password, then your new password
-                twice for confirmation.
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='How is my score calculated?'>
-              <ThemedText style={styles.faqAnswer}>
-                Your score is the percentage of correct answers. For example, if
-                you answer 8 out of 10 questions correctly, your score is 80%.
-                Get 100% to see a special celebration!
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='Can I retake exercises?'>
-              <ThemedText style={styles.faqAnswer}>
-                Yes! You can retake any exercise as many times as you would
-                like. Your highest score and most recent completion will be
-                saved to your progress.
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='How do I download exercise materials?'>
-              <ThemedText style={styles.faqAnswer}>
-                Expand a category card by tapping on it. If downloadable files
-                are available, you will see them listed with a download icon.
-                Tap to open the sharing dialog and save the file to your device.
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='What do the difficulty levels mean?'>
-              <ThemedText style={styles.faqAnswer}>
-                • Beginner: Basic concepts, simple vocabulary, fundamental
-                grammar{'\n'}• Intermediate: More complex structures, expanded
-                vocabulary{'\n'}• Advanced: Complex grammar, idioms, nuanced
-                language usage
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='How do I delete my progress?'>
-              <ThemedText style={styles.faqAnswer}>
-                Go to Profile → Account Settings → scroll to the Danger Zone
-                section. You can delete just your progress data (keeping your
-                account) or delete your entire account permanently.
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='Is my data private and secure?'>
-              <ThemedText style={styles.faqAnswer}>
-                Yes! All your data is securely stored in Firebase with
-                industry-standard encryption. We comply with GDPR and CCPA
-                regulations. You can export or delete your data anytime. See our
-                Privacy Policy for details.
-              </ThemedText>
-            </Collapsible>
-
-            <View style={styles.faqDivider} />
-
-            <Collapsible title='Can I use the app offline?'>
-              <ThemedText style={styles.faqAnswer}>
-                Currently, the app requires an internet connection to load
-                exercises and save your progress. Offline mode is planned for a
-                future update.
-              </ThemedText>
-            </Collapsible>
-          </View>
-        </View>
-
-        {/* Troubleshooting Section */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Troubleshooting
-          </ThemedText>
-          <View style={styles.card}>
-            <View style={styles.troubleshootItem}>
-              <IconSymbol
-                name='exclamationmark.triangle'
-                size={24}
-                color='#ff9500'
-              />
-              <View style={styles.troubleshootContent}>
-                <ThemedText
-                  type='defaultSemiBold'
-                  style={styles.troubleshootTitle}
-                >
-                  Exercises won't load
-                </ThemedText>
-                <ThemedText style={styles.troubleshootText}>
-                  • Check your internet connection{'\n'}• Pull down on the
-                  screen to refresh{'\n'}• Try logging out and back in{'\n'}•
-                  Restart the app
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.troubleshootItem}>
-              <IconSymbol name='lock.fill' size={24} color='#ff9500' />
-              <View style={styles.troubleshootContent}>
-                <ThemedText
-                  type='defaultSemiBold'
-                  style={styles.troubleshootTitle}
-                >
-                  Can't log in
-                </ThemedText>
-                <ThemedText style={styles.troubleshootText}>
-                  • Double-check your email and password{'\n'}• Ensure your
-                  internet connection is stable{'\n'}• Try resetting your
-                  password{'\n'}• Contact support if the issue persists
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.troubleshootItem}>
-              <IconSymbol name='arrow.down.circle' size={24} color='#ff9500' />
-              <View style={styles.troubleshootContent}>
-                <ThemedText
-                  type='defaultSemiBold'
-                  style={styles.troubleshootTitle}
-                >
-                  Files won't download
-                </ThemedText>
-                <ThemedText style={styles.troubleshootText}>
-                  • Check your internet connection{'\n'}• Ensure you have
-                  storage space available{'\n'}• Check app permissions for file
-                  access{'\n'}• Try downloading a different file first
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.guideDivider} />
-
-            <View style={styles.troubleshootItem}>
-              <IconSymbol
-                name='externaldrive.badge.xmark'
-                size={24}
-                color='#ff9500'
-              />
-              <View style={styles.troubleshootContent}>
-                <ThemedText
-                  type='defaultSemiBold'
-                  style={styles.troubleshootTitle}
-                >
-                  Progress not saving
-                </ThemedText>
-                <ThemedText style={styles.troubleshootText}>
-                  • Ensure you're connected to the internet{'\n'}• Complete the
-                  entire exercise before closing{'\n'}• Check the Progress tab
-                  to verify{'\n'}• Try completing a different exercise to test
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Contact Support Section */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Still Need Help?
-          </ThemedText>
-          <View style={styles.contactCard}>
-            <IconSymbol name='envelope.fill' size={32} color='#6996b3' />
-            <ThemedText style={styles.contactText}>
-              If you are experiencing technical issues with the app that are not
-              resolved by the information above, please contact our support
-              team.
-            </ThemedText>
-            <TouchableOpacity
-              style={styles.emailButton}
-              onPress={handleEmailSupport}
-            >
-              <IconSymbol name='paperplane.fill' size={18} color='#fff' />
-              <ThemedText style={styles.emailButtonText}>
-                Email Support
-              </ThemedText>
-            </TouchableOpacity>
-            <ThemedText style={styles.emailText}>esl@easterbrook.at</ThemedText>
-            <ThemedText style={styles.responseText}>
-              We typically respond within 1-2 business days.
+          {/* Introduction */}
+          <View style={styles.introSection}>
+            <IconSymbol
+              name='questionmark.circle.fill'
+              size={48}
+              color='#6996b3'
+            />
+            <ThemedText style={styles.introText}>
+              Welcome to the ESL Exercises Help Center. Find answers to common
+              questions and learn how to make the most of your learning
+              experience.
             </ThemedText>
           </View>
-        </View>
 
-        {/* Additional Resources */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Additional Resources
-          </ThemedText>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.resourceItem}
-              onPress={() => router.push('/about')}
-            >
-              <IconSymbol name='info.circle' size={24} color='#6996b3' />
-              <View style={styles.resourceContent}>
-                <ThemedText type='defaultSemiBold'>About Us</ThemedText>
-                <ThemedText style={styles.resourceSubtext}>
-                  Learn about Easterbrook Language Services
-                </ThemedText>
+          {/* Quick Start Guide */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Quick Start Guide
+            </ThemedText>
+            <View style={styles.card}>
+              <View style={styles.guideItem}>
+                <View style={styles.guideNumber}>
+                  <ThemedText style={styles.guideNumberText}>1</ThemedText>
+                </View>
+                <View style={styles.guideContent}>
+                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                    Browse Exercises
+                  </ThemedText>
+                  <ThemedText style={styles.guideText}>
+                    Tap on any category card to expand and view available
+                    exercises. Each category contains exercises organized by
+                    difficulty level.
+                  </ThemedText>
+                </View>
               </View>
-              <IconSymbol name='chevron.right' size={16} color='#999' />
-            </TouchableOpacity>
 
-            <View style={styles.guideDivider} />
+              <View style={styles.guideDivider} />
 
-            <TouchableOpacity
-              style={styles.resourceItem}
-              onPress={() => router.push('/privacy-policy' as any)}
-            >
-              <IconSymbol name='doc.text' size={24} color='#6996b3' />
-              <View style={styles.resourceContent}>
-                <ThemedText type='defaultSemiBold'>Privacy Policy</ThemedText>
-                <ThemedText style={styles.resourceSubtext}>
-                  How we protect your data
-                </ThemedText>
+              <View style={styles.guideItem}>
+                <View style={styles.guideNumber}>
+                  <ThemedText style={styles.guideNumberText}>2</ThemedText>
+                </View>
+                <View style={styles.guideContent}>
+                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                    Complete Exercises
+                  </ThemedText>
+                  <ThemedText style={styles.guideText}>
+                    Read the instructions, answer all questions, and submit when
+                    ready. Your score is calculated based on correct answers.
+                  </ThemedText>
+                </View>
               </View>
-              <IconSymbol name='chevron.right' size={16} color='#999' />
-            </TouchableOpacity>
 
-            <View style={styles.guideDivider} />
+              <View style={styles.guideDivider} />
 
-            <TouchableOpacity
-              style={styles.resourceItem}
-              onPress={() => router.push('/account-settings')}
-            >
-              <IconSymbol name='gear' size={24} color='#6996b3' />
-              <View style={styles.resourceContent}>
-                <ThemedText type='defaultSemiBold'>Account Settings</ThemedText>
-                <ThemedText style={styles.resourceSubtext}>
-                  Manage your profile and data
-                </ThemedText>
+              <View style={styles.guideItem}>
+                <View style={styles.guideNumber}>
+                  <ThemedText style={styles.guideNumberText}>3</ThemedText>
+                </View>
+                <View style={styles.guideContent}>
+                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                    Track Progress
+                  </ThemedText>
+                  <ThemedText style={styles.guideText}>
+                    Visit the Progress tab to see your statistics, completion
+                    rates, and learning streaks across all categories.
+                  </ThemedText>
+                </View>
               </View>
-              <IconSymbol name='chevron.right' size={16} color='#999' />
-            </TouchableOpacity>
+
+              <View style={styles.guideDivider} />
+
+              <View style={styles.guideItem}>
+                <View style={styles.guideNumber}>
+                  <ThemedText style={styles.guideNumberText}>4</ThemedText>
+                </View>
+                <View style={styles.guideContent}>
+                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                    Download Materials
+                  </ThemedText>
+                  <ThemedText style={styles.guideText}>
+                    Look for downloadable files in expanded categories. Tap to
+                    download PDF or DOC files for offline study.
+                  </ThemedText>
+                </View>
+              </View>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+
+          {/* FAQ Section */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Frequently Asked Questions
+            </ThemedText>
+            <View style={styles.card}>
+              <Collapsible title='How do I change my password?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Go to Profile → Account Settings → Change Password. You will
+                  need to enter your current password, then your new password
+                  twice for confirmation.
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='How is my score calculated?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Your score is the percentage of correct answers. For example,
+                  if you answer 8 out of 10 questions correctly, your score is
+                  80%. Get 100% to see a special celebration!
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='Can I retake exercises?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Yes! You can retake any exercise as many times as you would
+                  like. Your highest score and most recent completion will be
+                  saved to your progress.
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='How do I download exercise materials?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Expand a category card by tapping on it. If downloadable files
+                  are available, you will see them listed with a download icon.
+                  Tap to open the sharing dialog and save the file to your
+                  device.
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='What do the difficulty levels mean?'>
+                <ThemedText style={styles.faqAnswer}>
+                  • Beginner: Basic concepts, simple vocabulary, fundamental
+                  grammar{'\n'}• Intermediate: More complex structures, expanded
+                  vocabulary{'\n'}• Advanced: Complex grammar, idioms, nuanced
+                  language usage
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='How do I delete my progress?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Go to Profile → Account Settings → scroll to the Danger Zone
+                  section. You can delete just your progress data (keeping your
+                  account) or delete your entire account permanently.
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='Is my data private and secure?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Yes! All your data is securely stored in Firebase with
+                  industry-standard encryption. We comply with GDPR and CCPA
+                  regulations. You can export or delete your data anytime. See
+                  our Privacy Policy for details.
+                </ThemedText>
+              </Collapsible>
+
+              <View style={styles.faqDivider} />
+
+              <Collapsible title='Can I use the app offline?'>
+                <ThemedText style={styles.faqAnswer}>
+                  Currently, the app requires an internet connection to load
+                  exercises and save your progress. Offline mode is planned for
+                  a future update.
+                </ThemedText>
+              </Collapsible>
+            </View>
+          </View>
+
+          {/* Troubleshooting Section */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Troubleshooting
+            </ThemedText>
+            <View style={styles.card}>
+              <View style={styles.troubleshootItem}>
+                <IconSymbol
+                  name='exclamationmark.triangle'
+                  size={24}
+                  color='#ff9500'
+                />
+                <View style={styles.troubleshootContent}>
+                  <ThemedText
+                    type='defaultSemiBold'
+                    style={styles.troubleshootTitle}
+                  >
+                    Exercises won't load
+                  </ThemedText>
+                  <ThemedText style={styles.troubleshootText}>
+                    • Check your internet connection{'\n'}• Pull down on the
+                    screen to refresh{'\n'}• Try logging out and back in{'\n'}•
+                    Restart the app
+                  </ThemedText>
+                </View>
+              </View>
+
+              <View style={styles.guideDivider} />
+
+              <View style={styles.troubleshootItem}>
+                <IconSymbol name='lock.fill' size={24} color='#ff9500' />
+                <View style={styles.troubleshootContent}>
+                  <ThemedText
+                    type='defaultSemiBold'
+                    style={styles.troubleshootTitle}
+                  >
+                    Can't log in
+                  </ThemedText>
+                  <ThemedText style={styles.troubleshootText}>
+                    • Double-check your email and password{'\n'}• Ensure your
+                    internet connection is stable{'\n'}• Try resetting your
+                    password{'\n'}• Contact support if the issue persists
+                  </ThemedText>
+                </View>
+              </View>
+
+              <View style={styles.guideDivider} />
+
+              <View style={styles.troubleshootItem}>
+                <IconSymbol
+                  name='arrow.down.circle'
+                  size={24}
+                  color='#ff9500'
+                />
+                <View style={styles.troubleshootContent}>
+                  <ThemedText
+                    type='defaultSemiBold'
+                    style={styles.troubleshootTitle}
+                  >
+                    Files won't download
+                  </ThemedText>
+                  <ThemedText style={styles.troubleshootText}>
+                    • Check your internet connection{'\n'}• Ensure you have
+                    storage space available{'\n'}• Check app permissions for
+                    file access{'\n'}• Try downloading a different file first
+                  </ThemedText>
+                </View>
+              </View>
+
+              <View style={styles.guideDivider} />
+
+              <View style={styles.troubleshootItem}>
+                <IconSymbol
+                  name='externaldrive.badge.xmark'
+                  size={24}
+                  color='#ff9500'
+                />
+                <View style={styles.troubleshootContent}>
+                  <ThemedText
+                    type='defaultSemiBold'
+                    style={styles.troubleshootTitle}
+                  >
+                    Progress not saving
+                  </ThemedText>
+                  <ThemedText style={styles.troubleshootText}>
+                    • Ensure you're connected to the internet{'\n'}• Complete
+                    the entire exercise before closing{'\n'}• Check the Progress
+                    tab to verify{'\n'}• Try completing a different exercise to
+                    test
+                  </ThemedText>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Contact Support Section */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Still Need Help?
+            </ThemedText>
+            <View style={styles.contactCard}>
+              <IconSymbol name='envelope.fill' size={32} color='#6996b3' />
+              <ThemedText style={styles.contactText}>
+                If you are experiencing technical issues with the app that are
+                not resolved by the information above, please contact our
+                support team.
+              </ThemedText>
+              <TouchableOpacity
+                style={styles.emailButton}
+                onPress={handleEmailSupport}
+              >
+                <IconSymbol name='paperplane.fill' size={18} color='#fff' />
+                <ThemedText style={styles.emailButtonText}>
+                  Email Support
+                </ThemedText>
+              </TouchableOpacity>
+              <ThemedText style={styles.emailText}>
+                esl@easterbrook.at
+              </ThemedText>
+              <ThemedText style={styles.responseText}>
+                We typically respond within 1-2 business days.
+              </ThemedText>
+            </View>
+          </View>
+
+          {/* Additional Resources */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Additional Resources
+            </ThemedText>
+            <View style={styles.card}>
+              <TouchableOpacity
+                style={styles.resourceItem}
+                onPress={() => router.push('/about')}
+              >
+                <IconSymbol name='info.circle' size={24} color='#6996b3' />
+                <View style={styles.resourceContent}>
+                  <ThemedText type='defaultSemiBold'>About Us</ThemedText>
+                  <ThemedText style={styles.resourceSubtext}>
+                    Learn about Easterbrook Language Services
+                  </ThemedText>
+                </View>
+                <IconSymbol name='chevron.right' size={16} color='#999' />
+              </TouchableOpacity>
+
+              <View style={styles.guideDivider} />
+
+              <TouchableOpacity
+                style={styles.resourceItem}
+                onPress={() => router.push('/privacy-policy' as any)}
+              >
+                <IconSymbol name='doc.text' size={24} color='#6996b3' />
+                <View style={styles.resourceContent}>
+                  <ThemedText type='defaultSemiBold'>Privacy Policy</ThemedText>
+                  <ThemedText style={styles.resourceSubtext}>
+                    How we protect your data
+                  </ThemedText>
+                </View>
+                <IconSymbol name='chevron.right' size={16} color='#999' />
+              </TouchableOpacity>
+
+              <View style={styles.guideDivider} />
+
+              <TouchableOpacity
+                style={styles.resourceItem}
+                onPress={() => router.push('/account-settings')}
+              >
+                <IconSymbol name='gear' size={24} color='#6996b3' />
+                <View style={styles.resourceContent}>
+                  <ThemedText type='defaultSemiBold'>
+                    Account Settings
+                  </ThemedText>
+                  <ThemedText style={styles.resourceSubtext}>
+                    Manage your profile and data
+                  </ThemedText>
+                </View>
+                <IconSymbol name='chevron.right' size={16} color='#999' />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -439,7 +449,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     lineHeight: 24,
-    color: '#464655',
+    color: '#202029',
   },
   section: {
     marginBottom: 24,
@@ -492,7 +502,7 @@ const styles = StyleSheet.create({
   guideText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#464655',
+    color: '#202029',
   },
   guideDivider: {
     height: 1,
@@ -502,7 +512,7 @@ const styles = StyleSheet.create({
   faqAnswer: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#464655',
+    color: '#202029',
     marginTop: 8,
   },
   faqDivider: {
@@ -526,14 +536,14 @@ const styles = StyleSheet.create({
   troubleshootText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#464655',
+    color: '#202029',
   },
   contactText: {
     textAlign: 'center',
     marginTop: 16,
     fontSize: 14,
     lineHeight: 20,
-    color: '#464655',
+    color: '#202029',
     marginBottom: 16,
   },
   emailButton: {
@@ -573,7 +583,7 @@ const styles = StyleSheet.create({
   },
   resourceSubtext: {
     fontSize: 12,
-    color: '#464655',
+    color: '#202029',
     marginTop: 2,
   },
 });

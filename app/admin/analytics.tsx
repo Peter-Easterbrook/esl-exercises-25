@@ -110,367 +110,370 @@ export default function AnalyticsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-          <ThemedText style={styles.backText}>Back</ThemedText>
-        </TouchableOpacity>
-
-        <ThemedText type='title' style={styles.title}>
-          Analytics Dashboard
-        </ThemedText>
-      </View>
-
-      {/* Tab Navigation */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, selectedTab === 'overview' && styles.activeTab]}
-          onPress={() => setSelectedTab('overview')}
-        >
-          <ThemedText
-            style={[
-              styles.tabText,
-              selectedTab === 'overview' && styles.activeTabText,
-            ]}
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
           >
-            Overview
+            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <ThemedText style={styles.backText}>Back</ThemedText>
+          </TouchableOpacity>
+
+          <ThemedText type='title' style={styles.title}>
+            Analytics Dashboard
           </ThemedText>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.tab, selectedTab === 'users' && styles.activeTab]}
-          onPress={() => setSelectedTab('users')}
-        >
-          <ThemedText
-            style={[
-              styles.tabText,
-              selectedTab === 'users' && styles.activeTabText,
-            ]}
-          >
-            Users
-          </ThemedText>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.tab, selectedTab === 'exercises' && styles.activeTab]}
-          onPress={() => setSelectedTab('exercises')}
-        >
-          <ThemedText
-            style={[
-              styles.tabText,
-              selectedTab === 'exercises' && styles.activeTabText,
-            ]}
-          >
-            Exercises
-          </ThemedText>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Key Metrics */}
-        <View style={styles.section}>
-          <ThemedText type='subtitle' style={styles.sectionTitle}>
-            Key Metrics
-          </ThemedText>
-
-          <View style={styles.metricsGrid}>
-            <View style={styles.metricCard}>
-              <IconSymbol
-                name='checkmark.circle.fill'
-                size={32}
-                color='#07b524'
-              />
-              <ThemedText style={styles.metricValue}>
-                {analyticsData.totalCompletions}
-              </ThemedText>
-              <ThemedText style={styles.metricLabel}>
-                Total Completions
-              </ThemedText>
-            </View>
-
-            <View style={styles.metricCard}>
-              <IconSymbol name='star.fill' size={32} color='#FF9800' />
-              <ThemedText style={styles.metricValue}>
-                {analyticsData.averageScore}%
-              </ThemedText>
-              <ThemedText style={styles.metricLabel}>Avg Score</ThemedText>
-            </View>
-
-            <View style={styles.metricCard}>
-              <IconSymbol
-                name='chart.line.uptrend.xyaxis'
-                size={32}
-                color='#6996b3'
-              />
-              <ThemedText style={styles.metricValue}>
-                {analyticsData.completionRate}%
-              </ThemedText>
-              <ThemedText style={styles.metricLabel}>
-                Completion Rate
-              </ThemedText>
-            </View>
-          </View>
         </View>
 
-        {selectedTab === 'overview' && (
-          <>
-            {/* User Activity Trend */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                User Activity (Last 7 Days)
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <LineChart
-                  data={{
-                    labels: analyticsData.userActivityTrend.map((d) => d.day),
-                    datasets: [
-                      {
-                        data: analyticsData.userActivityTrend.map(
-                          (d) => d.users
-                        ),
-                      },
-                    ],
-                  }}
-                  width={screenWidth - 40}
-                  height={220}
-                  chartConfig={chartConfig}
-                  bezier
-                  style={styles.chart}
-                  fromZero
+        {/* Tab Navigation */}
+        <View style={styles.tabContainer}>
+          <TouchableOpacity
+            style={[styles.tab, selectedTab === 'overview' && styles.activeTab]}
+            onPress={() => setSelectedTab('overview')}
+          >
+            <ThemedText
+              style={[
+                styles.tabText,
+                selectedTab === 'overview' && styles.activeTabText,
+              ]}
+            >
+              Overview
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.tab, selectedTab === 'users' && styles.activeTab]}
+            onPress={() => setSelectedTab('users')}
+          >
+            <ThemedText
+              style={[
+                styles.tabText,
+                selectedTab === 'users' && styles.activeTabText,
+              ]}
+            >
+              Users
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.tab,
+              selectedTab === 'exercises' && styles.activeTab,
+            ]}
+            onPress={() => setSelectedTab('exercises')}
+          >
+            <ThemedText
+              style={[
+                styles.tabText,
+                selectedTab === 'exercises' && styles.activeTabText,
+              ]}
+            >
+              Exercises
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Key Metrics */}
+          <View style={styles.section}>
+            <ThemedText type='subtitle' style={styles.sectionTitle}>
+              Key Metrics
+            </ThemedText>
+
+            <View style={styles.metricsGrid}>
+              <View style={styles.metricCard}>
+                <IconSymbol
+                  name='checkmark.circle.fill'
+                  size={32}
+                  color='#07b524'
                 />
+                <ThemedText style={styles.metricValue}>
+                  {analyticsData.totalCompletions}
+                </ThemedText>
+                <ThemedText style={styles.metricLabel}>
+                  Total Completions
+                </ThemedText>
+              </View>
+
+              <View style={styles.metricCard}>
+                <IconSymbol name='star.fill' size={32} color='#FF9800' />
+                <ThemedText style={styles.metricValue}>
+                  {analyticsData.averageScore}%
+                </ThemedText>
+                <ThemedText style={styles.metricLabel}>Avg Score</ThemedText>
+              </View>
+
+              <View style={styles.metricCard}>
+                <IconSymbol
+                  name='chart.line.uptrend.xyaxis'
+                  size={32}
+                  color='#6996b3'
+                />
+                <ThemedText style={styles.metricValue}>
+                  {analyticsData.completionRate}%
+                </ThemedText>
+                <ThemedText style={styles.metricLabel}>
+                  Completion Rate
+                </ThemedText>
               </View>
             </View>
+          </View>
 
-            {/* Category Performance */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Category Performance
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <BarChart
-                  data={{
-                    labels: analyticsData.categoryPerformance.map(
-                      (c) => c.name
-                    ),
-                    datasets: [
-                      {
-                        data: analyticsData.categoryPerformance.map(
-                          (c) => c.count
-                        ),
-                      },
-                    ],
-                  }}
-                  width={screenWidth - 40}
-                  height={220}
-                  yAxisLabel=''
-                  yAxisSuffix=''
-                  chartConfig={{
-                    ...chartConfig,
-                    color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
-                  }}
-                  style={styles.chart}
-                  showValuesOnTopOfBars
-                  fromZero
-                />
+          {selectedTab === 'overview' && (
+            <>
+              {/* User Activity Trend */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  User Activity (Last 7 Days)
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <LineChart
+                    data={{
+                      labels: analyticsData.userActivityTrend.map((d) => d.day),
+                      datasets: [
+                        {
+                          data: analyticsData.userActivityTrend.map(
+                            (d) => d.users
+                          ),
+                        },
+                      ],
+                    }}
+                    width={screenWidth - 40}
+                    height={220}
+                    chartConfig={chartConfig}
+                    bezier
+                    style={styles.chart}
+                    fromZero
+                  />
+                </View>
               </View>
 
-              {/* Category List */}
-              <View style={styles.categoryList}>
-                {analyticsData.categoryPerformance.map((category, index) => (
-                  <View key={index} style={styles.categoryItem}>
-                    <View style={styles.categoryInfo}>
-                      <ThemedText style={styles.categoryName}>
-                        {category.name}
-                      </ThemedText>
-                      <ThemedText style={styles.categoryCount}>
-                        {category.count} completions
+              {/* Category Performance */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Category Performance
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <BarChart
+                    data={{
+                      labels: analyticsData.categoryPerformance.map(
+                        (c) => c.name
+                      ),
+                      datasets: [
+                        {
+                          data: analyticsData.categoryPerformance.map(
+                            (c) => c.count
+                          ),
+                        },
+                      ],
+                    }}
+                    width={screenWidth - 40}
+                    height={220}
+                    yAxisLabel=''
+                    yAxisSuffix=''
+                    chartConfig={{
+                      ...chartConfig,
+                      color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                    }}
+                    style={styles.chart}
+                    showValuesOnTopOfBars
+                    fromZero
+                  />
+                </View>
+
+                {/* Category List */}
+                <View style={styles.categoryList}>
+                  {analyticsData.categoryPerformance.map((category, index) => (
+                    <View key={index} style={styles.categoryItem}>
+                      <View style={styles.categoryInfo}>
+                        <ThemedText style={styles.categoryName}>
+                          {category.name}
+                        </ThemedText>
+                        <ThemedText style={styles.categoryCount}>
+                          {category.count} completions
+                        </ThemedText>
+                      </View>
+                      <ThemedText style={styles.categoryPercentage}>
+                        {category.percentage}%
                       </ThemedText>
                     </View>
-                    <ThemedText style={styles.categoryPercentage}>
-                      {category.percentage}%
-                    </ThemedText>
-                  </View>
-                ))}
+                  ))}
+                </View>
               </View>
-            </View>
 
-            {/* Difficulty Distribution */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Difficulty Distribution
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <PieChart
-                  data={pieChartData}
-                  width={screenWidth - 40}
-                  height={220}
-                  chartConfig={chartConfig}
-                  accessor='population'
-                  backgroundColor='transparent'
-                  paddingLeft='15'
-                  absolute
-                />
+              {/* Difficulty Distribution */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Difficulty Distribution
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <PieChart
+                    data={pieChartData}
+                    width={screenWidth - 40}
+                    height={220}
+                    chartConfig={chartConfig}
+                    accessor='population'
+                    backgroundColor='transparent'
+                    paddingLeft='15'
+                    absolute
+                  />
+                </View>
               </View>
-            </View>
-          </>
-        )}
+            </>
+          )}
 
-        {selectedTab === 'users' && (
-          <>
-            {/* User Activity Trend */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Daily Active Users
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <LineChart
-                  data={{
-                    labels: analyticsData.userActivityTrend.map((d) => d.day),
-                    datasets: [
-                      {
-                        data: analyticsData.userActivityTrend.map(
-                          (d) => d.users
-                        ),
-                      },
-                    ],
-                  }}
-                  width={screenWidth - 40}
-                  height={220}
-                  chartConfig={{
-                    ...chartConfig,
-                    color: (opacity = 1) => `rgba(156, 39, 176, ${opacity})`,
-                  }}
-                  bezier
-                  style={styles.chart}
-                  fromZero
-                />
+          {selectedTab === 'users' && (
+            <>
+              {/* User Activity Trend */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Daily Active Users
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <LineChart
+                    data={{
+                      labels: analyticsData.userActivityTrend.map((d) => d.day),
+                      datasets: [
+                        {
+                          data: analyticsData.userActivityTrend.map(
+                            (d) => d.users
+                          ),
+                        },
+                      ],
+                    }}
+                    width={screenWidth - 40}
+                    height={220}
+                    chartConfig={{
+                      ...chartConfig,
+                      color: (opacity = 1) => `rgba(156, 39, 176, ${opacity})`,
+                    }}
+                    bezier
+                    style={styles.chart}
+                    fromZero
+                  />
+                </View>
               </View>
-            </View>
 
-            {/* Recent Activity */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Recent Activity
-              </ThemedText>
-              <View style={styles.activityList}>
-                {analyticsData.recentActivity.map((activity, index) => (
-                  <View key={index} style={styles.activityItem}>
-                    <View style={styles.activityIcon}>
+              {/* Recent Activity */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Recent Activity
+                </ThemedText>
+                <View style={styles.activityList}>
+                  {analyticsData.recentActivity.map((activity, index) => (
+                    <View key={index} style={styles.activityItem}>
+                      <View style={styles.activityIcon}>
+                        <IconSymbol
+                          name='person.circle.fill'
+                          size={24}
+                          color='#6996b3'
+                        />
+                      </View>
+                      <View style={styles.activityInfo}>
+                        <ThemedText style={styles.activityUser}>
+                          {activity.user}
+                        </ThemedText>
+                        <ThemedText style={styles.activityExercise}>
+                          {activity.exercise}
+                        </ThemedText>
+                      </View>
+                      <View style={styles.activityMeta}>
+                        <ThemedText style={styles.activityScore}>
+                          {activity.score}%
+                        </ThemedText>
+                        <ThemedText style={styles.activityDate}>
+                          {activity.date}
+                        </ThemedText>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </>
+          )}
+
+          {selectedTab === 'exercises' && (
+            <>
+              {/* Top Exercises */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Most Completed Exercises
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <BarChart
+                    data={{
+                      labels: analyticsData.topExercises.map(
+                        (_, i) => `#${i + 1}`
+                      ),
+                      datasets: [
+                        {
+                          data: analyticsData.topExercises.map(
+                            (e) => e.completions
+                          ),
+                        },
+                      ],
+                    }}
+                    width={screenWidth - 40}
+                    height={220}
+                    yAxisLabel=''
+                    yAxisSuffix=''
+                    chartConfig={{
+                      ...chartConfig,
+                      color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                    }}
+                    style={styles.chart}
+                    showValuesOnTopOfBars
+                    fromZero
+                  />
+                </View>
+
+                <View style={styles.exerciseList}>
+                  {analyticsData.topExercises.map((exercise, index) => (
+                    <View key={index} style={styles.exerciseItem}>
+                      <View style={styles.exerciseRank}>
+                        <ThemedText style={styles.rankNumber}>
+                          #{index + 1}
+                        </ThemedText>
+                      </View>
+                      <View style={styles.exerciseInfo}>
+                        <ThemedText style={styles.exerciseTitle}>
+                          {exercise.title}
+                        </ThemedText>
+                        <ThemedText style={styles.exerciseCount}>
+                          {exercise.completions} completions
+                        </ThemedText>
+                      </View>
                       <IconSymbol
-                        name='person.circle.fill'
-                        size={24}
-                        color='#6996b3'
+                        name='chevron.right'
+                        size={20}
+                        color='#464655'
                       />
                     </View>
-                    <View style={styles.activityInfo}>
-                      <ThemedText style={styles.activityUser}>
-                        {activity.user}
-                      </ThemedText>
-                      <ThemedText style={styles.activityExercise}>
-                        {activity.exercise}
-                      </ThemedText>
-                    </View>
-                    <View style={styles.activityMeta}>
-                      <ThemedText style={styles.activityScore}>
-                        {activity.score}%
-                      </ThemedText>
-                      <ThemedText style={styles.activityDate}>
-                        {activity.date}
-                      </ThemedText>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </>
-        )}
-
-        {selectedTab === 'exercises' && (
-          <>
-            {/* Top Exercises */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Most Completed Exercises
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <BarChart
-                  data={{
-                    labels: analyticsData.topExercises.map(
-                      (_, i) => `#${i + 1}`
-                    ),
-                    datasets: [
-                      {
-                        data: analyticsData.topExercises.map(
-                          (e) => e.completions
-                        ),
-                      },
-                    ],
-                  }}
-                  width={screenWidth - 40}
-                  height={220}
-                  yAxisLabel=''
-                  yAxisSuffix=''
-                  chartConfig={{
-                    ...chartConfig,
-                    color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
-                  }}
-                  style={styles.chart}
-                  showValuesOnTopOfBars
-                  fromZero
-                />
+                  ))}
+                </View>
               </View>
 
-              <View style={styles.exerciseList}>
-                {analyticsData.topExercises.map((exercise, index) => (
-                  <View key={index} style={styles.exerciseItem}>
-                    <View style={styles.exerciseRank}>
-                      <ThemedText style={styles.rankNumber}>
-                        #{index + 1}
-                      </ThemedText>
-                    </View>
-                    <View style={styles.exerciseInfo}>
-                      <ThemedText style={styles.exerciseTitle}>
-                        {exercise.title}
-                      </ThemedText>
-                      <ThemedText style={styles.exerciseCount}>
-                        {exercise.completions} completions
-                      </ThemedText>
-                    </View>
-                    <IconSymbol
-                      name='chevron.right'
-                      size={20}
-                      color='#464655'
-                    />
-                  </View>
-                ))}
+              {/* Difficulty Distribution */}
+              <View style={styles.section}>
+                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                  Exercise Difficulty Distribution
+                </ThemedText>
+                <View style={styles.chartContainer}>
+                  <PieChart
+                    data={pieChartData}
+                    width={screenWidth - 40}
+                    height={220}
+                    chartConfig={chartConfig}
+                    accessor='population'
+                    backgroundColor='transparent'
+                    paddingLeft='15'
+                    absolute
+                  />
+                </View>
               </View>
-            </View>
+            </>
+          )}
 
-            {/* Difficulty Distribution */}
-            <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
-                Exercise Difficulty Distribution
-              </ThemedText>
-              <View style={styles.chartContainer}>
-                <PieChart
-                  data={pieChartData}
-                  width={screenWidth - 40}
-                  height={220}
-                  chartConfig={chartConfig}
-                  accessor='population'
-                  backgroundColor='transparent'
-                  paddingLeft='15'
-                  absolute
-                />
-              </View>
-            </View>
-          </>
-        )}
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -537,7 +540,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 14,
-    color: '#464655',
+    color: '#202029',
   },
   activeTabText: {
     color: '#6996b3',

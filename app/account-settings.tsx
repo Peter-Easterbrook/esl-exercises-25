@@ -393,234 +393,240 @@ export default function AccountSettingsScreen() {
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         >
-        {/* User Avatar & Info */}
-        <View style={styles.avatarSection}>
-          <TouchableOpacity
-            onPress={handleChangePhoto}
-            activeOpacity={0.7}
-            style={styles.avatarTouchable}
-          >
-            <UserAvatar
-              displayName={appUser?.displayName}
-              email={user?.email || ''}
-              size={80}
-              photoUri={profilePhotoUri}
-            />
-            <View style={styles.cameraIconBadge}>
-              <Ionicons name='camera' size={16} color='#fff' />
-            </View>
-          </TouchableOpacity>
-          <ThemedText type='subtitle' style={styles.emailText}>
-            {user?.email}
-          </ThemedText>
-          <ThemedText style={styles.tapToChangeText}>
-            Tap to change photo
-          </ThemedText>
-        </View>
-
-        {/* Account Statistics */}
-        <View style={styles.section}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-            Account Statistics
-          </ThemedText>
-          <View style={styles.statsCard}>
-            <View style={styles.statRow}>
-              <View style={styles.statItem}>
-                <ThemedText type='defaultSemiBold' style={styles.statValue}>
-                  {stats.totalExercises}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>
-                  Total Exercises
-                </ThemedText>
-              </View>
-              <View style={styles.statItem}>
-                <ThemedText type='defaultSemiBold' style={styles.statValue}>
-                  {stats.completedExercises}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>Completed</ThemedText>
-              </View>
-            </View>
-            <View style={styles.statRow}>
-              <View style={styles.statItem}>
-                <ThemedText type='defaultSemiBold' style={styles.statValue}>
-                  {stats.averageScore}%
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>Average Score</ThemedText>
-              </View>
-              <View style={styles.statItem}>
-                <ThemedText type='defaultSemiBold' style={styles.statValue}>
-                  {stats.memberSince}
-                </ThemedText>
-                <ThemedText style={styles.statLabel}>Member Since</ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Update Display Name */}
-        <View style={styles.section}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-            Display Name
-          </ThemedText>
-          <View style={styles.card}>
-            <TextInput
-              style={styles.input}
-              value={displayName}
-              onChangeText={setDisplayName}
-              placeholder='Enter display name'
-              placeholderTextColor='#999'
-            />
+          {/* User Avatar & Info */}
+          <View style={styles.avatarSection}>
             <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleUpdateDisplayName}
-              disabled={loading}
+              onPress={handleChangePhoto}
+              activeOpacity={0.7}
+              style={styles.avatarTouchable}
             >
-              {loading ? (
-                <ActivityIndicator color='#fff' />
-              ) : (
-                <>
-                  <IconSymbol name='person.fill' size={18} color='#fff' />
-                  <ThemedText style={styles.primaryButtonText}>
-                    Update Name
-                  </ThemedText>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Update Password */}
-        <View style={styles.section}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-            Change Password
-          </ThemedText>
-          <View style={styles.card}>
-            <TextInput
-              style={styles.input}
-              value={currentPassword}
-              onChangeText={setCurrentPassword}
-              placeholder='Current password'
-              placeholderTextColor='#999'
-              secureTextEntry
-            />
-            <TextInput
-              style={styles.input}
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder='New password'
-              placeholderTextColor='#999'
-              secureTextEntry
-            />
-            <TextInput
-              style={styles.input}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder='Confirm new password'
-              placeholderTextColor='#999'
-              secureTextEntry
-            />
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleUpdatePassword}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color='#fff' />
-              ) : (
-                <>
-                  <IconSymbol name='lock.fill' size={18} color='#fff' />
-                  <ThemedText style={styles.primaryButtonText}>
-                    Update Password
-                  </ThemedText>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Privacy & Data */}
-        <View style={styles.section}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-            Privacy & Data
-          </ThemedText>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={handleExportData}
-              disabled={loading}
-            >
-              <IconSymbol
-                name='square.and.arrow.up'
-                size={18}
-                color='#6996b3'
+              <UserAvatar
+                displayName={appUser?.displayName}
+                email={user?.email || ''}
+                size={80}
+                photoUri={profilePhotoUri}
               />
-              <ThemedText style={styles.secondaryButtonText}>
-                Export My Data
-              </ThemedText>
+              <View style={styles.cameraIconBadge}>
+                <Ionicons name='camera' size={16} color='#fff' />
+              </View>
             </TouchableOpacity>
-            <ThemedText style={styles.helperText}>
-              Download all your personal data in JSON format (GDPR/CCPA
-              compliant)
+            <ThemedText type='subtitle' style={styles.emailText}>
+              {user?.email}
+            </ThemedText>
+            <ThemedText style={styles.tapToChangeText}>
+              Tap to change photo
             </ThemedText>
           </View>
-        </View>
 
-        {/* Danger Zone */}
-        <View style={styles.section}>
-          <ThemedText type='defaultSemiBold' style={styles.dangerTitle}>
-            Danger Zone
-          </ThemedText>
-          <View style={styles.dangerCard}>
-            <TouchableOpacity
-              style={styles.warningButton}
-              onPress={handleDeleteProgress}
-              disabled={loading}
-            >
-              <IconSymbol name='trash' size={18} color='#f54707' />
-              <ThemedText style={styles.warningButtonText}>
-                Delete Progress Data
-              </ThemedText>
-            </TouchableOpacity>
-            <ThemedText style={styles.helperText}>
-              Permanently delete all exercise progress and scores
+          {/* Account Statistics */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+              Account Statistics
             </ThemedText>
-
-            <View style={styles.divider} />
-
-            <ThemedText style={styles.deleteAccountLabel}>
-              Delete Account
-            </ThemedText>
-            <TextInput
-              style={styles.input}
-              value={deleteConfirmPassword}
-              onChangeText={setDeleteConfirmPassword}
-              placeholder='Enter password to confirm'
-              placeholderTextColor='#999'
-              secureTextEntry
-            />
-            <TouchableOpacity
-              style={styles.dangerButton}
-              onPress={handleDeleteAccount}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color='#fff' />
-              ) : (
-                <>
-                  <IconSymbol name='xmark.circle.fill' size={18} color='#fff' />
-                  <ThemedText style={styles.dangerButtonText}>
-                    Delete Account Forever
+            <View style={styles.statsCard}>
+              <View style={styles.statRow}>
+                <View style={styles.statItem}>
+                  <ThemedText type='defaultSemiBold' style={styles.statValue}>
+                    {stats.totalExercises}
                   </ThemedText>
-                </>
-              )}
-            </TouchableOpacity>
-            <ThemedText style={styles.helperText}>
-              Permanently delete your account and all associated data. This
-              cannot be undone.
-            </ThemedText>
+                  <ThemedText style={styles.statLabel}>
+                    Total Exercises
+                  </ThemedText>
+                </View>
+                <View style={styles.statItem}>
+                  <ThemedText type='defaultSemiBold' style={styles.statValue}>
+                    {stats.completedExercises}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>Completed</ThemedText>
+                </View>
+              </View>
+              <View style={styles.statRow}>
+                <View style={styles.statItem}>
+                  <ThemedText type='defaultSemiBold' style={styles.statValue}>
+                    {stats.averageScore}%
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>
+                    Average Score
+                  </ThemedText>
+                </View>
+                <View style={styles.statItem}>
+                  <ThemedText type='defaultSemiBold' style={styles.statValue}>
+                    {stats.memberSince}
+                  </ThemedText>
+                  <ThemedText style={styles.statLabel}>Member Since</ThemedText>
+                </View>
+              </View>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+
+          {/* Update Display Name */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+              Display Name
+            </ThemedText>
+            <View style={styles.card}>
+              <TextInput
+                style={styles.input}
+                value={displayName}
+                onChangeText={setDisplayName}
+                placeholder='Enter display name'
+                placeholderTextColor='#999'
+              />
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={handleUpdateDisplayName}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color='#fff' />
+                ) : (
+                  <>
+                    <IconSymbol name='person.fill' size={18} color='#fff' />
+                    <ThemedText style={styles.primaryButtonText}>
+                      Update Name
+                    </ThemedText>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Update Password */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+              Change Password
+            </ThemedText>
+            <View style={styles.card}>
+              <TextInput
+                style={styles.input}
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+                placeholder='Current password'
+                placeholderTextColor='#999'
+                secureTextEntry
+              />
+              <TextInput
+                style={styles.input}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder='New password'
+                placeholderTextColor='#999'
+                secureTextEntry
+              />
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder='Confirm new password'
+                placeholderTextColor='#999'
+                secureTextEntry
+              />
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={handleUpdatePassword}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color='#fff' />
+                ) : (
+                  <>
+                    <IconSymbol name='lock.fill' size={18} color='#fff' />
+                    <ThemedText style={styles.primaryButtonText}>
+                      Update Password
+                    </ThemedText>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Privacy & Data */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+              Privacy & Data
+            </ThemedText>
+            <View style={styles.card}>
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={handleExportData}
+                disabled={loading}
+              >
+                <IconSymbol
+                  name='square.and.arrow.up'
+                  size={18}
+                  color='#6996b3'
+                />
+                <ThemedText style={styles.secondaryButtonText}>
+                  Export My Data
+                </ThemedText>
+              </TouchableOpacity>
+              <ThemedText style={styles.helperText}>
+                Download all your personal data in JSON format (GDPR/CCPA
+                compliant)
+              </ThemedText>
+            </View>
+          </View>
+
+          {/* Danger Zone */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.dangerTitle}>
+              Danger Zone
+            </ThemedText>
+            <View style={styles.dangerCard}>
+              <TouchableOpacity
+                style={styles.warningButton}
+                onPress={handleDeleteProgress}
+                disabled={loading}
+              >
+                <IconSymbol name='trash' size={18} color='#f54707' />
+                <ThemedText style={styles.warningButtonText}>
+                  Delete Progress Data
+                </ThemedText>
+              </TouchableOpacity>
+              <ThemedText style={styles.helperText}>
+                Permanently delete all exercise progress and scores
+              </ThemedText>
+
+              <View style={styles.divider} />
+
+              <ThemedText style={styles.deleteAccountLabel}>
+                Delete Account
+              </ThemedText>
+              <TextInput
+                style={styles.input}
+                value={deleteConfirmPassword}
+                onChangeText={setDeleteConfirmPassword}
+                placeholder='Enter password to confirm'
+                placeholderTextColor='#999'
+                secureTextEntry
+              />
+              <TouchableOpacity
+                style={styles.dangerButton}
+                onPress={handleDeleteAccount}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color='#fff' />
+                ) : (
+                  <>
+                    <IconSymbol
+                      name='xmark.circle.fill'
+                      size={18}
+                      color='#fff'
+                    />
+                    <ThemedText style={styles.dangerButtonText}>
+                      Delete Account Forever
+                    </ThemedText>
+                  </>
+                )}
+              </TouchableOpacity>
+              <ThemedText style={styles.helperText}>
+                Permanently delete your account and all associated data. This
+                cannot be undone.
+              </ThemedText>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </ThemedView>
   );
@@ -676,7 +682,7 @@ const styles = StyleSheet.create({
   },
   emailText: {
     marginTop: 12,
-    color: '#464655',
+    color: '#202029',
   },
   tapToChangeText: {
     marginTop: 4,
@@ -732,7 +738,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#464655',
+    color: '#202029',
     textAlign: 'center',
   },
   input: {
@@ -808,7 +814,7 @@ const styles = StyleSheet.create({
   },
   helperText: {
     fontSize: 12,
-    color: '#464655',
+    color: '#202029',
     lineHeight: 16,
   },
   divider: {
