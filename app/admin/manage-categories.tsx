@@ -106,29 +106,50 @@ export default function ManageCategoriesScreen() {
   };
 
   const handleDeleteCategory = (category: Category) => {
+    console.log('🗑️ Delete button clicked for category:', category.name);
+
+    // Android-compatible confirmation
     Alert.alert(
       'Delete Category',
-      `Are you sure you want to delete "${category.name}"? This action cannot be undone.`,
+      `Are you sure you want to delete "${category.name}"?\n\nThis will permanently remove the category. Any exercises in this category will no longer be associated with it.\n\nThis action cannot be undone.`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => console.log('Delete cancelled')
+        },
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: async () => {
-            try {
-              const { deleteDoc, doc } = await import('firebase/firestore');
-              const { db } = await import('@/config/firebase');
-              await deleteDoc(doc(db, 'categories', category.id));
-              Alert.alert('Success', 'Category deleted successfully');
-              loadCategories(); // Reload the list
-            } catch (error) {
-              console.error('Error deleting category:', error);
-              Alert.alert('Error', 'Failed to delete category');
-            }
+          onPress: () => {
+            console.log('🔥 Delete confirmed, executing deletion...');
+            performDelete(category);
           },
         },
-      ]
+      ],
+      { cancelable: true }
     );
+  };
+
+  const performDelete = async (category: Category) => {
+    try {
+      console.log(`🔄 Attempting to delete category ID: ${category.id}`);
+      const { deleteDoc, doc } = await import('firebase/firestore');
+      const { db } = await import('@/config/firebase');
+
+      await deleteDoc(doc(db, 'categories', category.id));
+      console.log('✅ Category deleted from Firebase successfully');
+
+      Alert.alert('Success', 'Category deleted successfully');
+      await loadCategories(); // Reload the list
+      console.log('✅ Category list reloaded');
+    } catch (error) {
+      console.error('❌ Error deleting category:', error);
+      Alert.alert(
+        'Error',
+        `Failed to delete category.\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
   };
 
   const filteredCategories = categories.filter(

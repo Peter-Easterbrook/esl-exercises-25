@@ -6,9 +6,11 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -27,6 +29,16 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('📚 Exercise loaded:', {
+      type: exercise.content.type,
+      questionsCount: exercise.content.questions.length,
+      title: exercise.title,
+    });
+    console.log('📝 First question:', exercise.content.questions[0]);
+  }, [exercise]);
 
   // Stop confetti after 4 seconds
   useEffect(() => {
@@ -74,8 +86,48 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
   const calculateScore = async () => {
     let correctAnswers = 0;
+
     exercise.content.questions.forEach((question) => {
-      if (answers[question.id] === question.correctAnswer) {
+      const userAnswer = answers[question.id];
+      const correctAnswer = question.correctAnswer;
+
+      console.log('🔍 Checking answer for question:', question.id);
+      console.log('   User answer:', userAnswer, typeof userAnswer);
+      console.log('   Correct answer:', correctAnswer, typeof correctAnswer);
+
+      let isCorrect = false;
+
+      // Handle different question types
+      if (
+        exercise.content.type === 'matching' ||
+        exercise.content.type === 'fill-blanks'
+      ) {
+        // For matching: userAnswer is "ABCDEF", correctAnswer is ["A","B","C","D","E","F"]
+        // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
+        if (Array.isArray(correctAnswer)) {
+          const userAnswerArray =
+            typeof userAnswer === 'string'
+              ? userAnswer.split('').map((a) => a.trim()) // For matching: split into chars
+              : userAnswer;
+
+          // Compare arrays element by element
+          isCorrect =
+            userAnswerArray.length === correctAnswer.length &&
+            userAnswerArray.every(
+              (ans, idx) =>
+                ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+            );
+        } else {
+          isCorrect = userAnswer === correctAnswer;
+        }
+      } else {
+        // For multiple-choice and true-false: simple string comparison
+        isCorrect = userAnswer === correctAnswer;
+      }
+
+      console.log('   Is correct?', isCorrect);
+
+      if (isCorrect) {
         correctAnswers++;
       }
     });
@@ -176,7 +228,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   if (showResults) {
     return (
       <View style={styles.container}>
-        {showConfetti && (
+        {showConfetti && Platform.OS !== 'web' && (
           <View style={styles.confettiContainer}>
             <Confetti
               count={200}
@@ -237,7 +289,23 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
             {exercise.content.questions.map((question, index) => {
               const userAnswer = answers[question.id];
-              const isCorrect = userAnswer === question.correctAnswer;
+              const correctAnswer = question.correctAnswer;
+
+              // Use same logic as calculateScore
+              let isCorrect = false;
+              if (exercise.content.type === 'matching' || exercise.content.type === 'fill-blanks') {
+                if (Array.isArray(correctAnswer)) {
+                  const userAnswerArray = typeof userAnswer === 'string'
+                    ? userAnswer.split('').map(a => a.trim())
+                    : userAnswer;
+                  isCorrect = userAnswerArray.length === correctAnswer.length &&
+                    userAnswerArray.every((ans, idx) => ans.toUpperCase() === correctAnswer[idx].toUpperCase());
+                } else {
+                  isCorrect = userAnswer === correctAnswer;
+                }
+              } else {
+                isCorrect = userAnswer === correctAnswer;
+              }
 
               return (
                 <View key={question.id} style={styles.reviewItem}>
@@ -344,10 +412,34 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       </View>
 
       <ScrollView style={styles.questionSection}>
+        {/* True/False: Show passage on first question */}
+        {exercise.content.type === 'true-false' &&
+          currentQuestionIndex === 0 &&
+          currentQuestion.passageText && (
+            <View style={styles.passageContainer}>
+              <ThemedText style={styles.passageLabel}>
+                Read the passage below:
+              </ThemedText>
+              <ThemedText style={styles.passageText}>
+                {currentQuestion.passageText}
+              </ThemedText>
+            </View>
+          )}
+
         <ThemedText type='subtitle' style={styles.question}>
-          {currentQuestion.question}
+          {exercise.content.type === 'true-false'
+            ? `Statement ${currentQuestionIndex + 1}`
+            : currentQuestion.question}
         </ThemedText>
 
+        {/* Show the statement for true/false */}
+        {exercise.content.type === 'true-false' && (
+          <ThemedText style={styles.statementText}>
+            {currentQuestion.question}
+          </ThemedText>
+        )}
+
+        {/* Multiple Choice */}
         {exercise.content.type === 'multiple-choice' &&
           currentQuestion.options && (
             <View style={styles.optionsContainer}>
@@ -383,6 +475,153 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               ))}
             </View>
           )}
+
+        {/* True/False Options */}
+        {exercise.content.type === 'true-false' && (
+          <View style={styles.optionsContainer}>
+            {['True', 'False'].map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[
+                  styles.optionButton,
+                  answers[currentQuestion.id] === option &&
+                    styles.selectedOption,
+                ]}
+                onPress={() => handleAnswerSelect(option)}
+              >
+                <View style={styles.optionContent}>
+                  <View
+                    style={[
+                      styles.optionIndicator,
+                      answers[currentQuestion.id] === option &&
+                        styles.selectedIndicator,
+                    ]}
+                  />
+                  <ThemedText
+                    style={[
+                      styles.optionText,
+                      answers[currentQuestion.id] === option &&
+                        styles.selectedOptionText,
+                    ]}
+                  >
+                    {option}
+                  </ThemedText>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Matching */}
+        {(() => {
+          console.log('🔍 Checking matching conditions:', {
+            type: exercise.content.type,
+            hasLeftColumn: !!currentQuestion.leftColumn,
+            hasOptions: !!currentQuestion.options,
+            leftColumn: currentQuestion.leftColumn,
+            options: currentQuestion.options,
+          });
+          return null;
+        })()}
+        {exercise.content.type === 'matching' &&
+          currentQuestion.leftColumn &&
+          currentQuestion.options && (
+            <View style={styles.matchingContainer}>
+              <View style={styles.matchingColumns}>
+                <View style={styles.matchingColumn}>
+                  <ThemedText style={styles.columnHeader}>Column A</ThemedText>
+                  {currentQuestion.leftColumn.map((item, index) => (
+                    <View key={index} style={styles.matchingItem}>
+                      <ThemedText style={styles.matchingNumber}>
+                        {index + 1}.
+                      </ThemedText>
+                      <ThemedText style={styles.matchingText}>
+                        {item}
+                      </ThemedText>
+                    </View>
+                  ))}
+                </View>
+
+                <View style={styles.matchingColumn}>
+                  <ThemedText style={styles.columnHeader}>Column B</ThemedText>
+                  {currentQuestion.options.map((item, index) => (
+                    <View key={index} style={styles.matchingItem}>
+                      <ThemedText style={styles.matchingLetter}>
+                        {String.fromCharCode(65 + index)}.
+                      </ThemedText>
+                      <ThemedText style={styles.matchingText}>
+                        {item}
+                      </ThemedText>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.matchingInputContainer}>
+                <ThemedText style={styles.matchingInstructions}>
+                  Enter the letter for each number:
+                </ThemedText>
+                {currentQuestion.leftColumn.map((_, index) => (
+                  <View key={index} style={styles.matchingInputRow}>
+                    <ThemedText style={styles.matchingInputLabel}>
+                      {index + 1} →
+                    </ThemedText>
+                    <TextInput
+                      style={styles.matchingInput}
+                      value={
+                        (answers[currentQuestion.id] as string)?.[index] || ''
+                      }
+                      onChangeText={(text) => {
+                        const currentAnswers =
+                          (answers[currentQuestion.id] as string) || '';
+                        const answersArray = currentAnswers.split('');
+                        answersArray[index] = text.toUpperCase();
+                        handleAnswerSelect(answersArray.join(''));
+                      }}
+                      placeholder='A-F'
+                      maxLength={1}
+                      autoCapitalize='characters'
+                      placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+        {/* Fill Blanks */}
+        {exercise.content.type === 'fill-blanks' && (
+          <View style={styles.fillBlanksContainer}>
+            <ThemedText style={styles.fillBlanksInstruction}>
+              Fill in the blank(s):
+            </ThemedText>
+            <TextInput
+              style={[styles.input, styles.fillBlanksInput]}
+              value={(answers[currentQuestion.id] as string) || ''}
+              onChangeText={(text) => handleAnswerSelect(text)}
+              placeholder='Type your answer here...'
+              multiline
+              numberOfLines={3}
+            />
+          </View>
+        )}
+
+        {/* Essay */}
+        {exercise.content.type === 'essay' && (
+          <View style={styles.essayContainer}>
+            <ThemedText style={styles.essayInstruction}>
+              Write your essay answer below:
+            </ThemedText>
+            <TextInput
+              style={[styles.input, styles.essayInput]}
+              value={(answers[currentQuestion.id] as string) || ''}
+              onChangeText={(text) => handleAnswerSelect(text)}
+              placeholder='Type your essay here...'
+              multiline
+              numberOfLines={10}
+            />
+          </View>
+        )}
       </ScrollView>
 
       <View style={styles.navigationFooter}>
@@ -672,5 +911,137 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#6996b3',
     fontSize: 16,
+  },
+  // True/False styles
+  passageContainer: {
+    backgroundColor: '#f8f9fa',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  passageLabel: {
+    fontSize: 14,
+    marginBottom: 8,
+    color: '#6996b3',
+  },
+  passageText: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333',
+  },
+  statementText: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+    color: '#444',
+    fontStyle: 'italic',
+  },
+  // Matching styles
+  matchingContainer: {
+    paddingBottom: 20,
+  },
+  matchingColumns: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  matchingColumn: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 8,
+  },
+  columnHeader: {
+    fontSize: 14,
+    marginBottom: 12,
+    textAlign: 'center',
+    color: '#6996b3',
+  },
+  matchingItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  matchingNumber: {
+    fontSize: 16,
+    width: 24,
+    color: '#333',
+  },
+  matchingLetter: {
+    fontSize: 16,
+    width: 24,
+    color: '#333',
+  },
+  matchingText: {
+    fontSize: 15,
+    flex: 1,
+    color: '#444',
+  },
+  matchingInputContainer: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  matchingInstructions: {
+    fontSize: 14,
+    marginBottom: 12,
+    color: '#666',
+  },
+  matchingInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  matchingInputLabel: {
+    fontSize: 16,
+    width: 50,
+    color: '#333',
+  },
+  matchingInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 6,
+    padding: 10,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+  },
+  // Fill Blanks styles
+  fillBlanksContainer: {
+    paddingBottom: 20,
+  },
+  fillBlanksInstruction: {
+    fontSize: 14,
+    marginBottom: 12,
+    color: '#666',
+  },
+  fillBlanksInput: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  // Essay styles
+  essayContainer: {
+    paddingBottom: 20,
+  },
+  essayInstruction: {
+    fontSize: 14,
+    marginBottom: 12,
+    color: '#666',
+  },
+  essayInput: {
+    height: 200,
+    textAlignVertical: 'top',
+  },
+  // Common input style
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#fff',
   },
 });

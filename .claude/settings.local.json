@@ -26,7 +26,8 @@
       "Bash(dir:*)",
       "Bash(findstr:*)",
       "Bash(if exist .env type .env)",
-      "Bash(if exist .env.local type .env.local)"
+      "Bash(if exist .env.local type .env.local)",
+      "Bash(powershell -Command \"Get-Content ''C:\\Users\\peter\\Documents\\2024\\esl-exercises-25\\components\\ExerciseInterface.tsx'' | Select-Object -Last 20\")"
     ],
     "deny": [],
     "ask": []

@@ -31,9 +31,13 @@ export interface ExerciseContent {
 export interface Question {
   id: string;
   question: string;
-  options?: string[]; // For multiple choice
+  options?: string[]; // For multiple choice and matching (right column)
   correctAnswer: string | string[];
   explanation?: string;
+  // Additional fields for specific question types
+  passageText?: string; // For true-false questions with reading passage
+  leftColumn?: string[]; // For matching questions (left column items)
+  blanksCount?: number; // For fill-blanks questions
 }
 
 export interface Category {

@@ -105,15 +105,60 @@ export default function AddExerciseScreen() {
   ];
 
   const handleAddQuestion = () => {
-    setQuestions((prev) => [
-      ...prev,
-      {
-        question: '',
-        options: ['', '', '', ''],
-        correctAnswer: '',
-        explanation: '',
-      },
-    ]);
+    let newQuestion: Partial<Question>;
+
+    switch (exerciseData.type) {
+      case 'multiple-choice':
+        newQuestion = {
+          question: '',
+          options: ['', '', '', ''],
+          correctAnswer: '',
+          explanation: '',
+        };
+        break;
+      case 'true-false':
+        newQuestion = {
+          question: '', // This will be the statement
+          passageText: '', // Reading passage (only for first question)
+          options: ['True', 'False'],
+          correctAnswer: '',
+          explanation: '',
+        };
+        break;
+      case 'matching':
+        newQuestion = {
+          question: 'Match the items from Column A with Column B',
+          leftColumn: ['', '', '', '', '', ''], // Column A (numbered)
+          options: ['', '', '', '', '', ''], // Column B (lettered)
+          correctAnswer: ['', '', '', '', '', ''], // Array of letters matching each number
+          explanation: '',
+        };
+        break;
+      case 'fill-blanks':
+        newQuestion = {
+          question: '', // Sentence with ____ for blanks
+          options: [], // Optional word bank
+          correctAnswer: [''], // Array of correct words for each blank
+          explanation: '',
+        };
+        break;
+      case 'essay':
+        newQuestion = {
+          question: '',
+          correctAnswer: '', // Not strictly applicable for essays
+          explanation: 'Essay questions are graded manually',
+        };
+        break;
+      default:
+        newQuestion = {
+          question: '',
+          options: ['', '', '', ''],
+          correctAnswer: '',
+          explanation: '',
+        };
+    }
+
+    setQuestions((prev) => [...prev, newQuestion]);
   };
 
   const handleRemoveQuestion = (index: number) => {
@@ -158,62 +203,259 @@ export default function AddExerciseScreen() {
     );
   };
 
+  const handleLeftColumnChange = (
+    questionIndex: number,
+    itemIndex: number,
+    value: string
+  ) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => {
+        if (i === questionIndex && q.leftColumn) {
+          const newLeftColumn = [...q.leftColumn];
+          newLeftColumn[itemIndex] = value;
+          return { ...q, leftColumn: newLeftColumn };
+        }
+        return q;
+      })
+    );
+  };
+
+  const handleCorrectAnswerArrayChange = (
+    questionIndex: number,
+    itemIndex: number,
+    value: string
+  ) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => {
+        if (i === questionIndex && Array.isArray(q.correctAnswer)) {
+          const newCorrectAnswer = [...q.correctAnswer];
+          newCorrectAnswer[itemIndex] = value;
+          return { ...q, correctAnswer: newCorrectAnswer };
+        }
+        return q;
+      })
+    );
+  };
+
+  const handlePassageTextChange = (questionIndex: number, value: string) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => {
+        if (i === questionIndex) {
+          return { ...q, passageText: value };
+        }
+        return q;
+      })
+    );
+  };
+
   const validateExercise = (): boolean => {
+    console.log('🔍 Starting validation...');
+
     if (!exerciseData.title.trim()) {
+      console.log('❌ Validation failed: No title');
       Alert.alert('Validation Error', 'Please enter an exercise title.');
       return false;
     }
 
     if (!exerciseData.description.trim()) {
+      console.log('❌ Validation failed: No description');
       Alert.alert('Validation Error', 'Please enter an exercise description.');
       return false;
     }
 
     if (!exerciseData.instructions.trim()) {
+      console.log('❌ Validation failed: No instructions');
       Alert.alert('Validation Error', 'Please enter exercise instructions.');
       return false;
     }
 
     if (!exerciseData.category) {
+      console.log('❌ Validation failed: No category selected');
       Alert.alert('Validation Error', 'Please select a category.');
       return false;
     }
 
+    console.log(`📝 Validating ${questions.length} questions...`);
+
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i];
+      console.log(`   Checking question ${i + 1}:`, q);
+
+      // For true-false, check passage text on first question
+      if (exerciseData.type === 'true-false' && i === 0) {
+        if (!q.passageText?.trim()) {
+          console.log(
+            `❌ Validation failed: No passage text for true/false question`
+          );
+          Alert.alert(
+            'Validation Error',
+            'Please enter the reading passage for true/false questions.'
+          );
+          return false;
+        }
+      }
+
       if (!q.question?.trim()) {
-        Alert.alert('Validation Error', `Please enter question ${i + 1}.`);
+        console.log(
+          `❌ Validation failed: No question text for question ${i + 1}`
+        );
+        Alert.alert(
+          'Validation Error',
+          `Please enter ${
+            exerciseData.type === 'true-false' ? 'statement' : 'question'
+          } ${i + 1}.`
+        );
         return false;
       }
 
-      if (exerciseData.type === 'multiple-choice') {
-        if (!q.options || q.options.some((opt) => !opt.trim())) {
-          Alert.alert(
-            'Validation Error',
-            `Please fill all options for question ${i + 1}.`
-          );
-          return false;
-        }
+      // Validate based on question type
+      console.log(`   Question type: ${exerciseData.type}`);
+      switch (exerciseData.type) {
+        case 'multiple-choice':
+          console.log('   Checking multiple-choice options:', q.options);
+          if (!q.options || q.options.some((opt) => !opt.trim())) {
+            console.log(
+              `❌ Validation failed: Empty options in question ${i + 1}`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please fill all options for question ${i + 1}.`
+            );
+            return false;
+          }
 
-        const correctAnswer = q.correctAnswer;
-        if (
-          !correctAnswer ||
-          (typeof correctAnswer === 'string' && !correctAnswer.trim())
-        ) {
-          Alert.alert(
-            'Validation Error',
-            `Please select the correct answer for question ${i + 1}.`
+          const correctAnswer = q.correctAnswer;
+          console.log('   Checking correct answer:', correctAnswer);
+          if (
+            !correctAnswer ||
+            (typeof correctAnswer === 'string' && !correctAnswer.trim())
+          ) {
+            console.log(
+              `❌ Validation failed: No correct answer for question ${i + 1}`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please select the correct answer for question ${i + 1}.`
+            );
+            return false;
+          }
+          break;
+
+        case 'true-false':
+          console.log(
+            '   Checking true/false correct answer:',
+            q.correctAnswer
           );
-          return false;
-        }
+          if (
+            !q.correctAnswer ||
+            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+          ) {
+            console.log(
+              `❌ Validation failed: No True/False answer for question ${i + 1}`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please select True or False for statement ${i + 1}.`
+            );
+            return false;
+          }
+          break;
+
+        case 'matching':
+          console.log('   Checking matching left column:', q.leftColumn);
+          if (!q.leftColumn || q.leftColumn.some((item) => !item.trim())) {
+            console.log(
+              `❌ Validation failed: Empty items in Column A for question ${
+                i + 1
+              }`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please fill all items in Column A for question ${i + 1}.`
+            );
+            return false;
+          }
+
+          console.log('   Checking matching right column:', q.options);
+          if (!q.options || q.options.some((item) => !item.trim())) {
+            console.log(
+              `❌ Validation failed: Empty items in Column B for question ${
+                i + 1
+              }`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please fill all items in Column B for question ${i + 1}.`
+            );
+            return false;
+          }
+
+          console.log('   Checking matching correct answers:', q.correctAnswer);
+          if (
+            !Array.isArray(q.correctAnswer) ||
+            q.correctAnswer.some(
+              (ans) => !ans || (typeof ans === 'string' && !ans.trim())
+            )
+          ) {
+            console.log(
+              `❌ Validation failed: Incomplete matches for question ${i + 1}`
+            );
+            console.log('   correctAnswer array:', q.correctAnswer);
+            Alert.alert(
+              'Validation Error',
+              `Please provide correct matches for all items in question ${
+                i + 1
+              }.`
+            );
+            return false;
+          }
+          break;
+
+        case 'fill-blanks':
+          console.log(
+            '   Checking fill-blanks correct answer:',
+            q.correctAnswer
+          );
+          if (
+            !q.correctAnswer ||
+            (Array.isArray(q.correctAnswer) &&
+              q.correctAnswer.every((ans) => !ans)) ||
+            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+          ) {
+            console.log(
+              `❌ Validation failed: No correct answer(s) for question ${i + 1}`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please provide the correct answer(s) for question ${i + 1}.`
+            );
+            return false;
+          }
+          break;
+
+        case 'essay':
+          console.log('   Essay type - no strict validation needed');
+          // Essay questions don't require strict validation
+          break;
       }
     }
 
+    console.log('✅ Validation passed successfully!');
     return true;
   };
 
   const handleSaveExercise = async () => {
-    if (!validateExercise()) return;
+    console.log('💾 SAVE BUTTON CLICKED!');
+    console.log('📋 Current exercise data:', exerciseData);
+    console.log('❓ Current questions:', questions);
+
+    const isValid = validateExercise();
+    console.log('✅ Validation result:', isValid);
+
+    if (!isValid) {
+      console.log('❌ Validation failed, not saving');
+      return;
+    }
 
     setLoading(true);
 
@@ -239,6 +481,10 @@ export default function AddExerciseScreen() {
             options: q.options,
             correctAnswer: q.correctAnswer!,
             explanation: q.explanation,
+            // Include optional fields for different question types
+            ...(q.leftColumn && { leftColumn: q.leftColumn }), // For matching
+            ...(q.passageText && { passageText: q.passageText }), // For true-false
+            ...(q.blanksCount && { blanksCount: q.blanksCount }), // For fill-blanks
           })),
         },
       };
@@ -468,6 +714,36 @@ export default function AddExerciseScreen() {
                   </View>
                 </View>
               </View>
+
+              <View style={styles.inputGroup}>
+                <ThemedText style={styles.label}>Question Type</ThemedText>
+                <View style={styles.pickerContainer}>
+                  {exerciseTypes.map((type) => (
+                    <TouchableOpacity
+                      key={type}
+                      style={[
+                        styles.pickerOption,
+                        exerciseData.type === type && styles.selectedOption,
+                      ]}
+                      onPress={() =>
+                        setExerciseData((prev) => ({
+                          ...prev,
+                          type: type as any,
+                        }))
+                      }
+                    >
+                      <ThemedText
+                        style={[
+                          styles.pickerText,
+                          exerciseData.type === type && styles.selectedText,
+                        ]}
+                      >
+                        {type.replace('-', ' ')}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
             </View>
 
             {/* Questions */}
@@ -503,19 +779,55 @@ export default function AddExerciseScreen() {
                     )}
                   </View>
 
+                  {/* True/False: Show passage text for first question only */}
+                  {exerciseData.type === 'true-false' && qIndex === 0 && (
+                    <View style={styles.inputGroup}>
+                      <ThemedText style={styles.label}>
+                        Reading Passage
+                      </ThemedText>
+                      <TextInput
+                        style={[styles.input, styles.textArea, { height: 120 }]}
+                        value={question.passageText}
+                        onChangeText={(text) =>
+                          handlePassageTextChange(qIndex, text)
+                        }
+                        placeholder='Enter the text passage that students will read...'
+                        multiline
+                        numberOfLines={6}
+                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      />
+                    </View>
+                  )}
+
+                  {/* Question/Statement field */}
                   <View style={styles.inputGroup}>
-                    <ThemedText style={styles.label}>Question</ThemedText>
+                    <ThemedText style={styles.label}>
+                      {exerciseData.type === 'true-false'
+                        ? 'Statement'
+                        : exerciseData.type === 'matching'
+                        ? 'Instructions'
+                        : 'Question'}
+                    </ThemedText>
                     <TextInput
                       style={styles.input}
                       value={question.question}
                       onChangeText={(text) =>
                         handleQuestionChange(qIndex, 'question', text)
                       }
-                      placeholder='Enter the question'
+                      placeholder={
+                        exerciseData.type === 'true-false'
+                          ? 'Enter a statement about the passage'
+                          : exerciseData.type === 'matching'
+                          ? 'Match the items from Column A with Column B'
+                          : exerciseData.type === 'fill-blanks'
+                          ? 'Enter sentence with ____ for blanks'
+                          : 'Enter the question'
+                      }
                       placeholderTextColor='rgba(102, 102, 102, 0.5)'
                     />
                   </View>
 
+                  {/* Multiple Choice Options */}
                   {exerciseData.type === 'multiple-choice' &&
                     question.options && (
                       <>
@@ -579,6 +891,165 @@ export default function AddExerciseScreen() {
                       </>
                     )}
 
+                  {/* True/False Answer Selection */}
+                  {exerciseData.type === 'true-false' && (
+                    <View style={styles.inputGroup}>
+                      <ThemedText style={styles.label}>
+                        Correct Answer
+                      </ThemedText>
+                      <View style={styles.pickerContainer}>
+                        {['True', 'False'].map((option) => (
+                          <TouchableOpacity
+                            key={option}
+                            style={[
+                              styles.pickerOption,
+                              question.correctAnswer === option &&
+                                styles.selectedOption,
+                            ]}
+                            onPress={() =>
+                              handleQuestionChange(
+                                qIndex,
+                                'correctAnswer',
+                                option
+                              )
+                            }
+                          >
+                            <ThemedText
+                              style={[
+                                styles.pickerText,
+                                question.correctAnswer === option &&
+                                  styles.selectedText,
+                              ]}
+                            >
+                              {option}
+                            </ThemedText>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+
+                  {/* Matching: Left and Right Columns */}
+                  {exerciseData.type === 'matching' && question.leftColumn && (
+                    <>
+                      <View style={styles.inputGroup}>
+                        <ThemedText style={styles.label}>
+                          Column A (Numbered)
+                        </ThemedText>
+                        {question.leftColumn.map((item, itemIndex) => (
+                          <View key={itemIndex} style={styles.optionRow}>
+                            <ThemedText style={styles.optionLabel}>
+                              {itemIndex + 1}.
+                            </ThemedText>
+                            <TextInput
+                              style={[styles.input, styles.optionInput]}
+                              value={item}
+                              onChangeText={(text) =>
+                                handleLeftColumnChange(qIndex, itemIndex, text)
+                              }
+                              placeholder={`Item ${itemIndex + 1}`}
+                              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                            />
+                          </View>
+                        ))}
+                      </View>
+
+                      <View style={styles.inputGroup}>
+                        <ThemedText style={styles.label}>
+                          Column B (Lettered)
+                        </ThemedText>
+                        {question.options?.map((item, itemIndex) => (
+                          <View key={itemIndex} style={styles.optionRow}>
+                            <ThemedText style={styles.optionLabel}>
+                              {String.fromCharCode(65 + itemIndex)}.
+                            </ThemedText>
+                            <TextInput
+                              style={[styles.input, styles.optionInput]}
+                              value={item}
+                              onChangeText={(text) =>
+                                handleOptionChange(qIndex, itemIndex, text)
+                              }
+                              placeholder={`Item ${String.fromCharCode(
+                                65 + itemIndex
+                              )}`}
+                              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                            />
+                          </View>
+                        ))}
+                      </View>
+
+                      <View style={styles.inputGroup}>
+                        <ThemedText style={styles.label}>
+                          Correct Matches (Letter for each number)
+                        </ThemedText>
+                        {Array.isArray(question.correctAnswer) &&
+                          question.correctAnswer.map((answer, itemIndex) => (
+                            <View key={itemIndex} style={styles.optionRow}>
+                              <ThemedText style={styles.optionLabel}>
+                                {itemIndex + 1} →
+                              </ThemedText>
+                              <TextInput
+                                style={[styles.input, styles.optionInput]}
+                                value={answer}
+                                onChangeText={(text) =>
+                                  handleCorrectAnswerArrayChange(
+                                    qIndex,
+                                    itemIndex,
+                                    text.toUpperCase()
+                                  )
+                                }
+                                placeholder='A, B, C, or D'
+                                maxLength={1}
+                                placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                              />
+                            </View>
+                          ))}
+                      </View>
+                    </>
+                  )}
+
+                  {/* Fill Blanks: Correct Answers */}
+                  {exerciseData.type === 'fill-blanks' && (
+                    <View style={styles.inputGroup}>
+                      <ThemedText style={styles.label}>
+                        Correct Answer(s)
+                      </ThemedText>
+                      <ThemedText
+                        style={[styles.label, { fontSize: 12, color: '#666' }]}
+                      >
+                        Enter answers separated by commas for multiple blanks
+                      </ThemedText>
+                      <TextInput
+                        style={styles.input}
+                        value={
+                          Array.isArray(question.correctAnswer)
+                            ? question.correctAnswer.join(', ')
+                            : question.correctAnswer || ''
+                        }
+                        onChangeText={(text) => {
+                          const answers = text.split(',').map((a) => a.trim());
+                          handleQuestionChange(
+                            qIndex,
+                            'correctAnswer',
+                            answers as any
+                          );
+                        }}
+                        placeholder='e.g., answer1, answer2'
+                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      />
+                    </View>
+                  )}
+
+                  {/* Essay: Info message */}
+                  {exerciseData.type === 'essay' && (
+                    <View style={styles.inputGroup}>
+                      <ThemedText style={[styles.label, { color: '#6996b3' }]}>
+                        ℹ️ Essay questions are open-ended and require manual
+                        grading
+                      </ThemedText>
+                    </View>
+                  )}
+
                   <View style={styles.inputGroup}>
                     <ThemedText style={styles.label}>
                       Explanation (Optional)
@@ -589,7 +1060,7 @@ export default function AddExerciseScreen() {
                       onChangeText={(text) =>
                         handleQuestionChange(qIndex, 'explanation', text)
                       }
-                      placeholder='Explain why this is the correct answer'
+                      placeholder='Explain the correct answer'
                       multiline
                       numberOfLines={2}
                       placeholderTextColor='rgba(102, 102, 102, 0.5)'
