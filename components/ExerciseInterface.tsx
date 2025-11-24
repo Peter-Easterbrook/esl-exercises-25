@@ -140,7 +140,6 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       if (files.length === 1) {
         console.log('Downloading single file:', files[0].name);
         await downloadFile(files[0]);
-        Alert.alert('Success', 'File downloaded successfully!');
         return;
       }
 
@@ -159,7 +158,6 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                 files[0].name
               );
               await downloadFile(files[0]);
-              Alert.alert('Success', 'File downloaded successfully!');
             },
           },
         ]

@@ -2,7 +2,9 @@ import { db, storage } from '@/config/firebase';
 import { DownloadableFile } from '@/types';
 import * as DocumentPicker from 'expo-document-picker';
 import { cacheDirectory, downloadAsync } from 'expo-file-system/legacy';
+import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
+import { Alert, Platform } from 'react-native';
 import {
   addDoc,
   collection,
@@ -128,20 +130,34 @@ export const getFilesByExercise = async (
   }
 };
 
-// Download and share file
+// Download file directly to Downloads folder (Android)
 export const downloadFile = async (file: DownloadableFile): Promise<void> => {
   try {
     console.log('Starting download for file:', file.name);
     console.log('Download URL:', file.fileUrl);
 
+    if (Platform.OS !== 'android') {
+      throw new Error('This feature is only available on Android devices');
+    }
+
+    // Request media library permissions
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission Required',
+        'Please grant storage permissions to download files to your Downloads folder.'
+      );
+      throw new Error('Storage permission not granted');
+    }
+
     // Sanitize filename to remove special characters
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
 
-    // Use legacy API which is more stable
+    // Download to cache first
     const fileUri = cacheDirectory + sanitizedName;
 
     console.log('Cache directory:', cacheDirectory);
-    console.log('Downloading to:', fileUri);
+    console.log('Downloading to cache:', fileUri);
 
     // Download file using legacy API
     const downloadResult = await downloadAsync(file.fileUrl, fileUri);
@@ -149,28 +165,25 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
     console.log('Download complete:', downloadResult);
 
     if (downloadResult.status === 200) {
-      // Share the file using the downloaded file's URI
-      const sharingAvailable = await Sharing.isAvailableAsync();
-      console.log('Sharing available:', sharingAvailable);
+      // Save to Downloads folder using MediaLibrary
+      console.log('Saving to Downloads folder...');
+      const asset = await MediaLibrary.createAssetAsync(downloadResult.uri);
 
-      if (sharingAvailable) {
-        await Sharing.shareAsync(downloadResult.uri, {
-          mimeType:
-            file.fileType === 'pdf'
-              ? 'application/pdf'
-              : file.fileType === 'docx'
-              ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-              : 'application/msword',
-          UTI:
-            file.fileType === 'pdf'
-              ? 'com.adobe.pdf'
-              : 'com.microsoft.word.doc',
-          dialogTitle: `Download ${file.name}`,
-        });
-        console.log('File shared successfully');
+      // Get or create Downloads album
+      let album = await MediaLibrary.getAlbumAsync('Download');
+      if (!album) {
+        console.log('Creating Download album...');
+        album = await MediaLibrary.createAlbumAsync('Download', asset, false);
       } else {
-        throw new Error('Sharing is not available on this platform');
+        console.log('Adding to existing Download album...');
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
+
+      console.log('File saved to Downloads folder successfully');
+      Alert.alert(
+        'Success',
+        `${file.name} has been downloaded to your Downloads folder.`
+      );
     } else {
       throw new Error(
         `Failed to download file. Status: ${downloadResult.status}`
