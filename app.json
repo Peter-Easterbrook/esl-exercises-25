@@ -2,7 +2,7 @@
   "expo": {
     "name": "esl-exercises-25",
     "slug": "esl-exercises-25",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",
@@ -25,10 +25,7 @@
       "package": "com.petereasterbro1.eslexercises25",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_MEDIA_IMAGES",
-        "READ_MEDIA_VIDEO",
-        "READ_MEDIA_AUDIO"
+        "WRITE_EXTERNAL_STORAGE"
       ]
     },
     "web": {
