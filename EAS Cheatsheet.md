@@ -219,7 +219,7 @@ npm install
 npx expo-doctor
 npx expo install --fix
 git add .
-git commit -m "Fix npm ci issue"
+git commit -m "Fix npm ci issue prep for build"
 git push
 npx eas build -p android --profile production
 ```
