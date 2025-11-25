@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import { Confetti } from 'react-native-fast-confetti';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ExerciseInterfaceProps {
   exercise: Exercise;
@@ -24,6 +25,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   exercise,
 }) => {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [questionId: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
@@ -351,7 +353,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
             })}
           </View>
 
-          <View style={styles.resultsFooter}>
+          <View style={[styles.resultsFooter, { paddingBottom: Math.max(insets.bottom, 12) }]}>
             <TouchableOpacity
               style={styles.secondaryButton}
               onPress={handleDownloadFile}
@@ -624,7 +626,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
       </ScrollView>
 
-      <View style={styles.navigationFooter}>
+      <View style={[styles.navigationFooter, { paddingBottom: Math.max(insets.bottom, 20) }]}>
         <TouchableOpacity
           style={[
             styles.navButton,

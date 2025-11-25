@@ -1,7 +1,7 @@
 {
   "name": "esl-exercises-25",
   "main": "expo-router/entry",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -32,7 +32,6 @@
     "expo-image": "~3.0.10",
     "expo-image-picker": "^17.0.8",
     "expo-linking": "~8.0.9",
-    "expo-media-library": "^18.2.0",
     "expo-router": "~6.0.15",
     "expo-sharing": "^14.0.7",
     "expo-splash-screen": "~31.0.11",

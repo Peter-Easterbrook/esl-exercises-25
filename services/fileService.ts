@@ -1,10 +1,17 @@
 import { db, storage } from '@/config/firebase';
 import { DownloadableFile } from '@/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as DocumentPicker from 'expo-document-picker';
-import { cacheDirectory, downloadAsync } from 'expo-file-system/legacy';
-import * as MediaLibrary from 'expo-media-library';
+import {
+  cacheDirectory,
+  deleteAsync,
+  downloadAsync,
+  EncodingType,
+  readAsStringAsync,
+  StorageAccessFramework,
+  writeAsStringAsync,
+} from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import { Alert, Platform } from 'react-native';
 import {
   addDoc,
   collection,
@@ -21,6 +28,10 @@ import {
   ref,
   uploadBytes,
 } from 'firebase/storage';
+import { Alert, Platform } from 'react-native';
+
+// Key for storing the user's chosen download directory URI
+const DOWNLOADS_URI_KEY = 'user_downloads_directory_uri';
 
 // Upload file to Firebase Storage
 export const uploadFile = async (
@@ -130,64 +141,141 @@ export const getFilesByExercise = async (
   }
 };
 
-// Download file directly to Downloads folder (Android)
+// Helper function to get MIME type
+const getMimeType = (fileType: string): string => {
+  switch (fileType.toLowerCase()) {
+    case 'pdf':
+      return 'application/pdf';
+    case 'doc':
+      return 'application/msword';
+    case 'docx':
+      return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    default:
+      return 'application/octet-stream';
+  }
+};
+
+// Get or request the downloads directory permission (Android SAF)
+const getOrRequestDownloadsDirectory = async (): Promise<string | null> => {
+  // Check if we already have a saved directory URI
+  const savedUri = await AsyncStorage.getItem(DOWNLOADS_URI_KEY);
+  if (savedUri) {
+    return savedUri;
+  }
+
+  // Request permission to a directory (user picks Downloads folder)
+  const permissions =
+    await StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+  if (permissions.granted) {
+    // Save the URI for future use
+    await AsyncStorage.setItem(DOWNLOADS_URI_KEY, permissions.directoryUri);
+    return permissions.directoryUri;
+  }
+
+  return null;
+};
+
+// Download file directly to user's chosen folder (Android) or share (iOS)
 export const downloadFile = async (file: DownloadableFile): Promise<void> => {
   try {
     console.log('Starting download for file:', file.name);
     console.log('Download URL:', file.fileUrl);
 
-    if (Platform.OS !== 'android') {
-      throw new Error('This feature is only available on Android devices');
-    }
-
-    // Request media library permissions
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert(
-        'Permission Required',
-        'Please grant storage permissions to download files to your Downloads folder.'
-      );
-      throw new Error('Storage permission not granted');
-    }
-
     // Sanitize filename to remove special characters
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
 
     // Download to cache first
-    const fileUri = cacheDirectory + sanitizedName;
+    const cacheUri = cacheDirectory + sanitizedName;
 
     console.log('Cache directory:', cacheDirectory);
-    console.log('Downloading to cache:', fileUri);
+    console.log('Downloading to cache:', cacheUri);
 
-    // Download file using legacy API
-    const downloadResult = await downloadAsync(file.fileUrl, fileUri);
+    // Download file to cache
+    const downloadResult = await downloadAsync(file.fileUrl, cacheUri);
 
     console.log('Download complete:', downloadResult);
 
-    if (downloadResult.status === 200) {
-      // Save to Downloads folder using MediaLibrary
-      console.log('Saving to Downloads folder...');
-      const asset = await MediaLibrary.createAssetAsync(downloadResult.uri);
-
-      // Get or create Downloads album
-      let album = await MediaLibrary.getAlbumAsync('Download');
-      if (!album) {
-        console.log('Creating Download album...');
-        album = await MediaLibrary.createAlbumAsync('Download', asset, false);
-      } else {
-        console.log('Adding to existing Download album...');
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      }
-
-      console.log('File saved to Downloads folder successfully');
-      Alert.alert(
-        'Success',
-        `${file.name} has been downloaded to your Downloads folder.`
-      );
-    } else {
+    if (downloadResult.status !== 200) {
       throw new Error(
         `Failed to download file. Status: ${downloadResult.status}`
       );
+    }
+
+    // Platform-specific handling
+    if (Platform.OS === 'android') {
+      // Use Storage Access Framework to save to user's chosen directory
+      const directoryUri = await getOrRequestDownloadsDirectory();
+
+      if (!directoryUri) {
+        Alert.alert(
+          'Permission Required',
+          'Please grant folder access permission to save files directly to your Downloads folder.'
+        );
+        throw new Error('Folder access permission not granted');
+      }
+
+      try {
+        // Read the downloaded file as base64
+        const fileContent = await readAsStringAsync(downloadResult.uri, {
+          encoding: EncodingType.Base64,
+        });
+
+        // Create file in user-selected directory
+        const mimeType = getMimeType(file.fileType);
+        const fileUri = await StorageAccessFramework.createFileAsync(
+          directoryUri,
+          sanitizedName,
+          mimeType
+        );
+
+        // Write the content to the new file
+        await writeAsStringAsync(fileUri, fileContent, {
+          encoding: EncodingType.Base64,
+        });
+
+        console.log('File saved to:', fileUri);
+
+        // Clean up cache file
+        await deleteAsync(downloadResult.uri, { idempotent: true });
+
+        Alert.alert(
+          'Success',
+          `${file.name} has been saved to your Downloads folder.`
+        );
+      } catch (safError) {
+        console.error('SAF Error:', safError);
+
+        // If SAF fails (e.g., permission expired), clear saved URI and retry
+        await AsyncStorage.removeItem(DOWNLOADS_URI_KEY);
+
+        // Fall back to sharing
+        const isSharingAvailable = await Sharing.isAvailableAsync();
+        if (isSharingAvailable) {
+          await Sharing.shareAsync(downloadResult.uri, {
+            mimeType: getMimeType(file.fileType),
+            dialogTitle: `Save ${file.name}`,
+          });
+        } else {
+          throw safError;
+        }
+      }
+    } else {
+      // iOS: Use share sheet
+      const isSharingAvailable = await Sharing.isAvailableAsync();
+
+      if (isSharingAvailable) {
+        await Sharing.shareAsync(downloadResult.uri, {
+          mimeType: getMimeType(file.fileType),
+          dialogTitle: `Save ${file.name}`,
+        });
+        console.log('File shared successfully');
+      } else {
+        Alert.alert(
+          'Download Complete',
+          `${file.name} has been downloaded. The file is available in the app's cache.`
+        );
+      }
     }
   } catch (error) {
     console.error('Error downloading file:', error);
@@ -197,6 +285,11 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
     }
     throw error;
   }
+};
+
+// Clear saved downloads directory (useful if user wants to change folder)
+export const clearDownloadsDirectoryPermission = async (): Promise<void> => {
+  await AsyncStorage.removeItem(DOWNLOADS_URI_KEY);
 };
 
 // Delete file (admin only)
