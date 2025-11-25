@@ -116,7 +116,7 @@ export default function ManageCategoriesScreen() {
         {
           text: 'Cancel',
           style: 'cancel',
-          onPress: () => console.log('Delete cancelled')
+          onPress: () => console.log('Delete cancelled'),
         },
         {
           text: 'Delete',
@@ -147,7 +147,9 @@ export default function ManageCategoriesScreen() {
       console.error('❌ Error deleting category:', error);
       Alert.alert(
         'Error',
-        `Failed to delete category.\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to delete category.\n\nError: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
       );
     }
   };
@@ -521,6 +523,7 @@ const styles = StyleSheet.create({
   metadataText: {
     fontSize: 12,
     color: '#202029',
+    fontWeight: 'normal',
   },
   categoryActions: {
     flexDirection: 'row',
@@ -623,6 +626,7 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: '#202029',
+    fontWeight: 'normal',
     fontSize: 16,
   },
   saveButton: {

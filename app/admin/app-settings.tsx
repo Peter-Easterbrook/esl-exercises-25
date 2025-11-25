@@ -560,6 +560,7 @@ const styles = StyleSheet.create({
   settingDescription: {
     fontSize: 13,
     color: '#202029',
+    fontWeight: 'normal',
     lineHeight: 18,
   },
   divider: {

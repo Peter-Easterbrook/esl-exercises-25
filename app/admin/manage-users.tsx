@@ -754,6 +754,7 @@ const styles = StyleSheet.create({
   userEmail: {
     fontSize: 14,
     color: '#202029',
+    fontWeight: 'normal',
     marginBottom: 4,
   },
   userMeta: {
@@ -844,6 +845,7 @@ const styles = StyleSheet.create({
   detailEmail: {
     fontSize: 14,
     color: '#202029',
+    fontWeight: 'normal',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -871,6 +873,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 12,
     color: '#202029',
+    fontWeight: 'normal',
     marginTop: 4,
   },
   sectionTitle: {
@@ -894,6 +897,7 @@ const styles = StyleSheet.create({
   categoryProgress: {
     fontSize: 14,
     color: '#202029',
+    fontWeight: 'normal',
   },
   noActivity: {
     fontSize: 14,
@@ -977,6 +981,7 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: '#202029',
+    fontWeight: 'normal',
     fontSize: 16,
     fontWeight: '600',
   },

@@ -683,6 +683,7 @@ const styles = StyleSheet.create({
   emailText: {
     marginTop: 12,
     color: '#202029',
+    fontWeight: 'normal',
   },
   tapToChangeText: {
     marginTop: 4,
@@ -739,6 +740,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 12,
     color: '#202029',
+    fontWeight: 'normal',
     textAlign: 'center',
   },
   input: {
@@ -815,6 +817,7 @@ const styles = StyleSheet.create({
   helperText: {
     fontSize: 12,
     color: '#202029',
+    fontWeight: 'normal',
     lineHeight: 16,
   },
   divider: {

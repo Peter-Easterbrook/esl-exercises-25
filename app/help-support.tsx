@@ -450,6 +450,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#202029',
+    fontWeight: 'normal',
   },
   section: {
     marginBottom: 24,
@@ -503,6 +504,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#202029',
+    fontWeight: 'normal',
   },
   guideDivider: {
     height: 1,
@@ -513,6 +515,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#202029',
+    fontWeight: 'normal',
     marginTop: 8,
   },
   faqDivider: {
@@ -537,6 +540,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#202029',
+    fontWeight: 'normal',
   },
   contactText: {
     textAlign: 'center',
@@ -544,6 +548,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#202029',
+    fontWeight: 'normal',
     marginBottom: 16,
   },
   emailButton: {
@@ -584,6 +589,7 @@ const styles = StyleSheet.create({
   resourceSubtext: {
     fontSize: 12,
     color: '#202029',
+    fontWeight: 'normal',
     marginTop: 2,
   },
 });

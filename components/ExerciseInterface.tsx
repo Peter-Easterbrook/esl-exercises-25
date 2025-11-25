@@ -32,17 +32,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('📚 Exercise loaded:', {
-      type: exercise.content.type,
-      questionsCount: exercise.content.questions.length,
-      title: exercise.title,
-    });
-    console.log('📝 First question:', exercise.content.questions[0]);
-  }, [exercise]);
-
-  // Stop confetti after 4 seconds
+  // Stop confetti after animation completes
   useEffect(() => {
     if (showConfetti) {
       const timer = setTimeout(() => {
@@ -88,78 +78,77 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
   const calculateScore = async () => {
     let correctAnswers = 0;
+    let percentage = 0;
 
-    exercise.content.questions.forEach((question) => {
-      const userAnswer = answers[question.id];
-      const correctAnswer = question.correctAnswer;
+    try {
+      exercise.content.questions.forEach((question) => {
+        const userAnswer = answers[question.id];
+        const correctAnswer = question.correctAnswer;
+        let isCorrect = false;
 
-      console.log('🔍 Checking answer for question:', question.id);
-      console.log('   User answer:', userAnswer, typeof userAnswer);
-      console.log('   Correct answer:', correctAnswer, typeof correctAnswer);
+        // Handle different question types
+        if (
+          exercise.content.type === 'matching' ||
+          exercise.content.type === 'fill-blanks'
+        ) {
+          // For matching: userAnswer is "ABCDEF", correctAnswer is ["A","B","C","D","E","F"]
+          // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
+          if (Array.isArray(correctAnswer)) {
+            const userAnswerArray =
+              typeof userAnswer === 'string'
+                ? userAnswer.split('').map((a) => a.trim()) // For matching: split into chars
+                : userAnswer;
 
-      let isCorrect = false;
-
-      // Handle different question types
-      if (
-        exercise.content.type === 'matching' ||
-        exercise.content.type === 'fill-blanks'
-      ) {
-        // For matching: userAnswer is "ABCDEF", correctAnswer is ["A","B","C","D","E","F"]
-        // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
-        if (Array.isArray(correctAnswer)) {
-          const userAnswerArray =
-            typeof userAnswer === 'string'
-              ? userAnswer.split('').map((a) => a.trim()) // For matching: split into chars
-              : userAnswer;
-
-          // Compare arrays element by element
-          isCorrect =
-            userAnswerArray.length === correctAnswer.length &&
-            userAnswerArray.every(
-              (ans, idx) =>
-                ans.toUpperCase() === correctAnswer[idx].toUpperCase()
-            );
+            // Compare arrays element by element
+            isCorrect =
+              userAnswerArray.length === correctAnswer.length &&
+              userAnswerArray.every(
+                (ans, idx) =>
+                  ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+              );
+          } else {
+            isCorrect = userAnswer === correctAnswer;
+          }
         } else {
+          // For multiple-choice and true-false: simple string comparison
           isCorrect = userAnswer === correctAnswer;
         }
-      } else {
-        // For multiple-choice and true-false: simple string comparison
-        isCorrect = userAnswer === correctAnswer;
+
+        if (isCorrect) {
+          correctAnswers++;
+        }
+      });
+
+      percentage = Math.round(
+        (correctAnswers / exercise.content.questions.length) * 100
+      );
+      setScore(percentage);
+
+      // Trigger confetti for perfect score
+      if (percentage === 100) {
+        setShowConfetti(true);
       }
 
-      console.log('   Is correct?', isCorrect);
-
-      if (isCorrect) {
-        correctAnswers++;
+      // Save progress to Firebase
+      if (user) {
+        try {
+          const { updateUserProgress } = await import(
+            '@/services/firebaseService'
+          );
+          await updateUserProgress(user.uid, exercise.id, {
+            completed: true,
+            score: percentage,
+          });
+        } catch (error) {
+          console.error('Error saving progress:', error);
+        }
       }
-    });
-
-    const percentage = Math.round(
-      (correctAnswers / exercise.content.questions.length) * 100
-    );
-    setScore(percentage);
-
-    // Trigger confetti for perfect score
-    if (percentage === 100) {
-      setShowConfetti(true);
+    } catch (error) {
+      console.error('Error calculating score:', error);
+    } finally {
+      // Always show results, even if there was an error
+      setShowResults(true);
     }
-
-    // Save progress to Firebase
-    if (user) {
-      try {
-        const { updateUserProgress } = await import(
-          '@/services/firebaseService'
-        );
-        await updateUserProgress(user.uid, exercise.id, {
-          completed: true,
-          score: percentage,
-        });
-      } catch (error) {
-        console.error('Error saving progress:', error);
-      }
-    }
-
-    setShowResults(true);
   };
 
   const handleRestart = () => {
@@ -172,15 +161,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
   const handleDownloadFile = async () => {
     try {
-      console.log('handleDownloadFile called for exercise:', exercise.id);
       const { getFilesByExercise, downloadFile } = await import(
         '@/services/fileService'
       );
 
       // Get files linked to this exercise
-      console.log('Fetching files for exercise:', exercise.id);
       const files = await getFilesByExercise(exercise.id);
-      console.log('Files found:', files.length, files);
 
       if (files.length === 0) {
         Alert.alert(
@@ -192,7 +178,6 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
       // If only one file, download it directly
       if (files.length === 1) {
-        console.log('Downloading single file:', files[0].name);
         await downloadFile(files[0]);
         return;
       }
@@ -207,10 +192,6 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           {
             text: 'Download',
             onPress: async () => {
-              console.log(
-                'Downloading first file from multiple:',
-                files[0].name
-              );
               await downloadFile(files[0]);
             },
           },
@@ -295,13 +276,21 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
               // Use same logic as calculateScore
               let isCorrect = false;
-              if (exercise.content.type === 'matching' || exercise.content.type === 'fill-blanks') {
+              if (
+                exercise.content.type === 'matching' ||
+                exercise.content.type === 'fill-blanks'
+              ) {
                 if (Array.isArray(correctAnswer)) {
-                  const userAnswerArray = typeof userAnswer === 'string'
-                    ? userAnswer.split('').map(a => a.trim())
-                    : userAnswer;
-                  isCorrect = userAnswerArray.length === correctAnswer.length &&
-                    userAnswerArray.every((ans, idx) => ans.toUpperCase() === correctAnswer[idx].toUpperCase());
+                  const userAnswerArray =
+                    typeof userAnswer === 'string'
+                      ? userAnswer.split('').map((a) => a.trim())
+                      : userAnswer;
+                  isCorrect =
+                    userAnswerArray.length === correctAnswer.length &&
+                    userAnswerArray.every(
+                      (ans, idx) =>
+                        ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+                    );
                 } else {
                   isCorrect = userAnswer === correctAnswer;
                 }
@@ -332,11 +321,14 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
                   <View style={styles.answerReview}>
                     <Text style={[styles.answerText, styles.userAnswer]}>
-                      Your answer: {userAnswer}
+                      Your answer: {userAnswer || '(no answer)'}
                     </Text>
                     {!isCorrect && (
                       <Text style={[styles.answerText, styles.correctAnswer]}>
-                        Correct answer: {question.correctAnswer}
+                        Correct answer:{' '}
+                        {Array.isArray(question.correctAnswer)
+                          ? question.correctAnswer.join(', ')
+                          : question.correctAnswer}
                       </Text>
                     )}
                   </View>
@@ -353,7 +345,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
             })}
           </View>
 
-          <View style={[styles.resultsFooter, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+          <View
+            style={[
+              styles.resultsFooter,
+              { paddingBottom: Math.max(insets.bottom, 12) },
+            ]}
+          >
             <TouchableOpacity
               style={styles.secondaryButton}
               onPress={handleDownloadFile}
@@ -414,16 +411,15 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       </View>
 
       <ScrollView style={styles.questionSection}>
-        {/* True/False: Show passage on first question */}
+        {/* True/False: Show passage on all questions if available */}
         {exercise.content.type === 'true-false' &&
-          currentQuestionIndex === 0 &&
-          currentQuestion.passageText && (
+          exercise.content.questions[0]?.passageText && (
             <View style={styles.passageContainer}>
               <ThemedText style={styles.passageLabel}>
                 Read the passage below:
               </ThemedText>
-              <ThemedText style={styles.passageText}>
-                {currentQuestion.passageText}
+              <ThemedText style={styles.passageTextContent}>
+                {exercise.content.questions[0].passageText}
               </ThemedText>
             </View>
           )}
@@ -515,16 +511,6 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
 
         {/* Matching */}
-        {(() => {
-          console.log('🔍 Checking matching conditions:', {
-            type: exercise.content.type,
-            hasLeftColumn: !!currentQuestion.leftColumn,
-            hasOptions: !!currentQuestion.options,
-            leftColumn: currentQuestion.leftColumn,
-            options: currentQuestion.options,
-          });
-          return null;
-        })()}
         {exercise.content.type === 'matching' &&
           currentQuestion.leftColumn &&
           currentQuestion.options && (
@@ -626,7 +612,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
       </ScrollView>
 
-      <View style={[styles.navigationFooter, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+      <View
+        style={[
+          styles.navigationFooter,
+          { paddingBottom: Math.max(insets.bottom, 20) },
+        ]}
+      >
         <TouchableOpacity
           style={[
             styles.navButton,
@@ -926,7 +917,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#6996b3',
   },
-  passageText: {
+  passageTextContent: {
     fontSize: 15,
     lineHeight: 24,
     color: '#333',

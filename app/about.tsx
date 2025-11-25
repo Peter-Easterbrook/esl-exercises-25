@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
   version: {
     fontSize: 14,
     color: '#202029',
+    fontWeight: 'normal',
   },
   section: {
     backgroundColor: '#fff',
@@ -349,7 +350,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: '#202029ff',
+    color: '#202029',
+    fontWeight: 'normal',
     marginBottom: 4,
   },
 });
