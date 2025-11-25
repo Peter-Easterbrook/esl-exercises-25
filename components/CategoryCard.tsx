@@ -48,32 +48,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           }
         } catch (error) {
           console.error('Error loading exercises:', error);
-          // Fallback to mock data
-          const mockExercises: Exercise[] = [
-            {
-              id: `${category.id}-1`,
-              title: 'Sample Exercise',
-              description: 'A sample exercise for this category',
-              instructions: 'Complete this sample exercise.',
-              content: {
-                type: 'multiple-choice',
-                questions: [
-                  {
-                    id: '1',
-                    question: 'This is a sample question.',
-                    options: ['Option A', 'Option B', 'Option C', 'Option D'],
-                    correctAnswer: 'Option A',
-                    explanation: 'This is the correct answer.',
-                  },
-                ],
-              },
-              category: category.id,
-              difficulty: 'beginner',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          ];
-          setExercises(mockExercises);
+          Alert.alert(
+            'Error',
+            'Failed to load exercises. Please check your connection and try again.'
+          );
+          setExercises([]);
         }
       }
     };
