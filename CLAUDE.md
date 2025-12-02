@@ -42,6 +42,8 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 - React Navigation v7, Expo Router
 - React Native Reanimated v4 (animations)
 - react-native-chart-kit (analytics visualizations)
+- expo-auth-session (Google OAuth integration)
+- @react-native-async-storage/async-storage (Firebase auth persistence)
 
 ## Code Style
 
@@ -71,10 +73,20 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ## Authentication & Security
 
+### Authentication Methods
+- **Email/Password** - Firebase email authentication with password reset
+- **Google Sign-In** - OAuth 2.0 via expo-auth-session and Firebase
+  - Uses `expo-auth-session/providers/google` for OAuth flow
+  - Configured with `responseType: 'id_token'` and `scopes: ['openid', 'profile', 'email']`
+  - Automatically creates user documents in Firestore on first sign-in
+  - Works on web, iOS, and Android (requires platform-specific OAuth Client IDs for native apps)
+
+### Security
 - Firebase Auth required for all features
 - Admin privileges enforced via Firestore Security Rules (NOT client-side)
 - User can only access own progress/profile data
 - All destructive operations require confirmation
+- Auth persistence via AsyncStorage (React Native) and localStorage (Web)
 
 ## Firebase Firestore Security Rules
 
@@ -165,15 +177,76 @@ service firebase.storage {
 - Some animations may differ on low-end devices
 - Web platform has limited animation support
 
+## Environment Variables
+
+Required environment variables in `.env` file:
+
+```env
+# Firebase Configuration
+EXPO_PUBLIC_FIREBASE_API_KEY=<your_api_key>
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=<your_project>.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=<your_project_id>
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=<your_project>.firebasestorage.app
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<sender_id>
+EXPO_PUBLIC_FIREBASE_APP_ID=<app_id>
+
+# Google OAuth Client IDs
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=<web_client_id>.apps.googleusercontent.com
+# Optional: For native Android/iOS apps
+EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=<android_client_id>.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=<ios_client_id>.apps.googleusercontent.com
+```
+
+**Note:** The app will fallback to using Web Client ID for Android/iOS if platform-specific IDs are not provided. This works for Expo Go testing but requires platform-specific IDs for production builds.
+
+## Google OAuth Configuration
+
+### Google Cloud Console Setup:
+1. Create OAuth 2.0 Client ID at https://console.cloud.google.com/apis/credentials
+2. Application type: **Web application**
+3. Add authorized redirect URIs:
+   - `https://auth.expo.io/@<your_expo_username>/<your_app_slug>`
+   - `http://localhost:8081`
+   - `http://localhost:19006`
+4. Add authorized JavaScript origins:
+   - `http://localhost:8081`
+   - `http://localhost:19006`
+
+### Firebase Console Setup:
+1. Enable Google sign-in provider in Authentication > Sign-in method
+2. Configure Web SDK with the Web Client ID from Google Cloud Console
+3. Add Web Client Secret if required
+
+### For Android Production:
+1. Generate SHA-1 fingerprint: `cd android && ./gradlew signingReport`
+2. Create Android OAuth Client in Google Cloud Console
+3. Add SHA-1 to Firebase Console (Project Settings > Your apps > Android)
+4. Add package name: `com.petereasterbro1.eslexercises25`
+
+### For iOS Production:
+1. Create iOS OAuth Client in Google Cloud Console
+2. Configure with bundle identifier: `com.petereasterbro1.eslexercises25`
+
 ## Path Aliases
 
 - `@/*` - Maps to root directory for clean imports
 
 ## Production Checklist
 
+### Firebase & Security
 - [ ] Verify Firebase Security Rules are configured
 - [ ] Test non-admin users cannot access admin features
 - [ ] Test data deletion flows (progress, account deletion)
 - [ ] Remove or secure admin test data
 - [ ] Ensure no hardcoded test credentials
 - [ ] Review Privacy Policy matches actual practices
+
+### Google OAuth
+- [ ] Configure Google OAuth consent screen (External, with app details)
+- [ ] Add test users to OAuth consent screen if app is in Testing mode
+- [ ] Verify Web OAuth Client has correct redirect URIs configured
+- [ ] For Android: Generate and add SHA-1 fingerprint to Firebase
+- [ ] For Android: Create Android OAuth Client with correct package name
+- [ ] For iOS: Create iOS OAuth Client with correct bundle identifier
+- [ ] Test Google Sign-In on all target platforms (web, Android, iOS)
+- [ ] Verify user documents are created correctly in Firestore after Google sign-in

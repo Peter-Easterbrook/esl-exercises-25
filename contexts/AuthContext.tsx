@@ -9,12 +9,18 @@ import {
   updateProfile,
   deleteUser,
   reauthenticateWithCredential,
-  EmailAuthProvider
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  signInWithCredential
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/config/firebase';
 import { User as AppUser } from '@/types';
 import { updateUserDisplayName, deleteUserAccount } from '@/services/firebaseService';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+
+WebBrowser.maybeCompleteAuthSession();
 
 interface AuthContextType {
   user: User | null;
@@ -22,6 +28,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   updateUserPassword: (currentPassword: string, newPassword: string) => Promise<void>;
   updateDisplayName: (newDisplayName: string) => Promise<void>;
@@ -43,6 +50,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    scopes: ['openid', 'profile', 'email'],
+    responseType: 'id_token',
+  });
+
+  // Handle Google sign-in response
+  useEffect(() => {
+    if (response?.type === 'success') {
+      console.log('📱 Google auth response:', response);
+
+      const { id_token, idToken, access_token } = response.params;
+      const tokenToUse = id_token || idToken;
+
+      if (!tokenToUse) {
+        console.error('❌ No id_token found in response. Available params:', Object.keys(response.params));
+        return;
+      }
+
+      console.log('🔑 Using id_token to create credential');
+      const credential = GoogleAuthProvider.credential(tokenToUse);
+
+      signInWithCredential(auth, credential)
+        .then(() => {
+          console.log('✅ Google sign-in successful');
+        })
+        .catch((error) => {
+          console.error('❌ Google sign-in error:', error);
+        });
+    } else if (response?.type === 'error') {
+      console.error('❌ Google auth error:', response.error);
+    }
+  }, [response]);
 
   useEffect(() => {
     console.log('Setting up auth state listener...');
@@ -130,6 +173,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      await promptAsync();
+    } catch (error) {
+      console.error('❌ Error initiating Google sign-in:', error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
@@ -199,6 +251,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     signIn,
     signUp,
+    signInWithGoogle,
     logout,
     updateUserPassword,
     updateDisplayName,
