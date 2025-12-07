@@ -212,6 +212,8 @@ eas submit -p ios
 
 ### **Quick Fix Command Sequence:**
 
+#### **First, update the versions in the app & package.json files!**
+
 ```bash
 rm -rf node_modules package-lock.json
 npm cache clean --force
