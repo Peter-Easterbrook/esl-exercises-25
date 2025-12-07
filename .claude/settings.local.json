@@ -34,7 +34,8 @@
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
       "Bash(powershell -Command \"Stop-Process -Id 15868 -Force\")",
-      "Bash(powershell -Command \"Stop-Process -Id 44484 -Force\")"
+      "Bash(powershell -Command \"Stop-Process -Id 44484 -Force\")",
+      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\CLAUDE.md'').Count\")"
     ],
     "deny": [],
     "ask": []
