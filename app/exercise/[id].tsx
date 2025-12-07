@@ -19,12 +19,19 @@ import Animated, {
   SlideInRight,
   SlideOutLeft,
 } from 'react-native-reanimated';
+import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER, DEFAULT_LANGUAGE, type LanguageCode } from '@/constants/languages';
+import { getInstructionsForLanguage } from '@/utils/languageHelpers';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ExerciseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { appUser } = useAuth();
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
+    (appUser?.preferredLanguage as LanguageCode) || DEFAULT_LANGUAGE
+  );
 
   useEffect(() => {
     const loadExercise = async () => {
@@ -122,9 +129,47 @@ export default function ExerciseScreen() {
               </View>
             </View>
 
+            {/* Language Selector */}
+            <View style={styles.languageSelectorSection}>
+              <ThemedText style={styles.languageSelectorLabel}>
+                Instructions Language:
+              </ThemedText>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.languageButtonsContainer}
+              >
+                {LANGUAGE_ORDER.map((langCode) => {
+                  const lang = SUPPORTED_LANGUAGES[langCode];
+                  const isSelected = selectedLanguage === langCode;
+
+                  return (
+                    <TouchableOpacity
+                      key={langCode}
+                      style={[
+                        styles.languageButton,
+                        isSelected && styles.languageButtonSelected,
+                      ]}
+                      onPress={() => setSelectedLanguage(langCode)}
+                    >
+                      <Text style={styles.languageButtonFlag}>{lang.flag}</Text>
+                      <Text
+                        style={[
+                          styles.languageButtonCode,
+                          isSelected && styles.languageButtonCodeSelected,
+                        ]}
+                      >
+                        {langCode.toUpperCase()}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+
             <View style={styles.instructionsSection}>
               <ThemedText style={styles.instructions}>
-                {exercise.instructions}
+                {getInstructionsForLanguage(exercise.instructions, selectedLanguage)}
               </ThemedText>
             </View>
           </ScrollView>
@@ -282,5 +327,47 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  languageSelectorSection: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    marginBottom: 16,
+  },
+  languageSelectorLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#333',
+  },
+  languageButtonsContainer: {
+    gap: 8,
+    paddingRight: 16,
+  },
+  languageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    gap: 6,
+  },
+  languageButtonSelected: {
+    backgroundColor: '#e3f2fd',
+    borderColor: '#6996b3',
+  },
+  languageButtonFlag: {
+    fontSize: 20,
+  },
+  languageButtonCode: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#999',
+  },
+  languageButtonCodeSelected: {
+    color: '#6996b3',
   },
 });

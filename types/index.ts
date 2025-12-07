@@ -10,11 +10,18 @@ export interface DownloadableFile {
   uploadedBy: string; // admin user ID
 }
 
+export interface MultiLanguageInstructions {
+  en: string;
+  es: string;
+  fr: string;
+  de: string;
+}
+
 export interface Exercise {
   id: string;
   title: string;
   description: string;
-  instructions: string;
+  instructions: MultiLanguageInstructions | string; // Support both old and new format
   content: ExerciseContent;
   category: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
@@ -54,6 +61,7 @@ export interface User {
   displayName?: string;
   isAdmin: boolean;
   progress: UserProgress[];
+  preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de'
 }
 
 export interface UserProgress {

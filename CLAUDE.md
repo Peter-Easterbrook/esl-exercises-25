@@ -124,3 +124,41 @@ Required `.env` file:
 - [ ] Platform-specific OAuth Clients created for Android/iOS
 - [ ] Test Google Sign-In on all platforms
 - [ ] Privacy Policy reviewed
+
+## Recent Features
+
+### Multi-Language Support ✅
+Exercise instructions now available in 4 languages: English 🇬🇧, Spanish 🇪🇸, French 🇫🇷, German 🇩🇪
+
+**User Features:**
+- Set preferred language in account settings (applies to all exercises by default)
+- Temporarily override language when viewing individual exercises
+- Flag-based language selector with visual feedback
+
+**Admin Features:**
+- 4 separate input fields when creating/editing exercises
+- English required, other languages optional
+- Automatic conversion of legacy string-format instructions
+
+**Technical:**
+- Fully backwards compatible (no database migration needed)
+- Instructions stored as `{ en, es, fr, de }` object or legacy string
+- Helper functions handle both formats seamlessly
+- User preference: `preferredLanguage` field in User type
+
+**Files:**
+- `constants/languages.ts` - Language definitions
+- `utils/languageHelpers.ts` - Format detection and conversion
+- `app/admin/add-exercise.tsx` - Multi-language input UI
+- `app/account-settings.tsx` - Language preference selector
+- `app/exercise/[id].tsx` - Per-exercise language switcher
+
+## Planned Features
+
+### Download Paywall
+**See `PAYWALL.md` for complete implementation plan**
+
+One-time €1 purchase to unlock all downloadable files via Google Play Billing
+- Status: Fully planned, ready for implementation
+- Platform: Android initially (iOS future)
+- Implementation guide with code samples in PAYWALL.md

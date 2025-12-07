@@ -614,6 +614,21 @@ export const updateUserDisplayName = async (
   }
 };
 
+// Update user language preference
+export const updateUserLanguagePreference = async (
+  userId: string,
+  preferredLanguage: string
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      preferredLanguage,
+    });
+  } catch (error) {
+    console.error('Error updating user language preference:', error);
+    throw error;
+  }
+};
+
 // Delete all user progress data
 export const deleteAllUserProgress = async (userId: string): Promise<void> => {
   try {

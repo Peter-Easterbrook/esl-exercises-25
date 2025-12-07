@@ -24,10 +24,12 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER, DEFAULT_LANGUAGE, type LanguageCode } from '@/constants/languages';
 
 export default function AccountSettingsScreen() {
   const {
@@ -35,11 +37,15 @@ export default function AccountSettingsScreen() {
     appUser,
     updateUserPassword,
     updateDisplayName,
+    updateLanguagePreference,
     deleteAccount,
     refreshUserData,
   } = useAuth();
 
   const [displayName, setDisplayName] = useState(appUser?.displayName || '');
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
+    (appUser?.preferredLanguage as LanguageCode) || DEFAULT_LANGUAGE
+  );
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -172,6 +178,43 @@ export default function AccountSettingsScreen() {
                   ? 'Current password is incorrect'
                   : error.message || 'Failed to update password';
               Alert.alert('Error', errorMessage);
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleUpdateLanguage = async () => {
+    if (!selectedLanguage) {
+      Alert.alert('Error', 'Please select a language');
+      return;
+    }
+
+    if (selectedLanguage === appUser?.preferredLanguage) {
+      Alert.alert('Info', 'This is already your preferred language');
+      return;
+    }
+
+    Alert.alert(
+      'Update Language Preference',
+      `Change your preferred language to ${SUPPORTED_LANGUAGES[selectedLanguage].name}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Update',
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await updateLanguagePreference(selectedLanguage);
+              Alert.alert('Success', 'Language preference updated successfully');
+            } catch (error: any) {
+              Alert.alert(
+                'Error',
+                error.message || 'Failed to update language preference'
+              );
             } finally {
               setLoading(false);
             }
@@ -484,6 +527,75 @@ export default function AccountSettingsScreen() {
                     <IconSymbol name='person.fill' size={18} color='#fff' />
                     <ThemedText style={styles.primaryButtonText}>
                       Update Name
+                    </ThemedText>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Language Preference */}
+          <View style={styles.section}>
+            <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+              Preferred Language
+            </ThemedText>
+            <View style={styles.card}>
+              <ThemedText style={styles.helperText}>
+                Choose your preferred language for exercise instructions
+              </ThemedText>
+
+              <View style={styles.languageSelectorContainer}>
+                {LANGUAGE_ORDER.map((langCode) => {
+                  const lang = SUPPORTED_LANGUAGES[langCode];
+                  const isSelected = selectedLanguage === langCode;
+
+                  return (
+                    <TouchableOpacity
+                      key={langCode}
+                      style={[
+                        styles.languageOption,
+                        isSelected && styles.languageOptionSelected,
+                      ]}
+                      onPress={() => setSelectedLanguage(langCode)}
+                    >
+                      <Text style={styles.languageFlag}>{lang.flag}</Text>
+                      <View style={styles.languageInfo}>
+                        <ThemedText
+                          style={[
+                            styles.languageName,
+                            isSelected && styles.languageNameSelected,
+                          ]}
+                        >
+                          {lang.nativeLabel}
+                        </ThemedText>
+                        <ThemedText style={styles.languageCodeText}>
+                          {langCode.toUpperCase()}
+                        </ThemedText>
+                      </View>
+                      {isSelected && (
+                        <IconSymbol
+                          name='checkmark.circle.fill'
+                          size={24}
+                          color='#6996b3'
+                        />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={handleUpdateLanguage}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color='#fff' />
+                ) : (
+                  <>
+                    <IconSymbol name='globe' size={18} color='#fff' />
+                    <ThemedText style={styles.primaryButtonText}>
+                      Update Language
                     </ThemedText>
                   </>
                 )}
@@ -830,5 +942,43 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#ff3b30',
     marginBottom: 8,
+  },
+  languageSelectorContainer: {
+    marginVertical: 12,
+    gap: 8,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    gap: 12,
+  },
+  languageOptionSelected: {
+    backgroundColor: '#e3f2fd',
+    borderColor: '#6996b3',
+  },
+  languageFlag: {
+    fontSize: 32,
+  },
+  languageInfo: {
+    flex: 1,
+  },
+  languageName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+  languageNameSelected: {
+    color: '#6996b3',
+    fontWeight: '600',
+  },
+  languageCodeText: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 2,
   },
 });

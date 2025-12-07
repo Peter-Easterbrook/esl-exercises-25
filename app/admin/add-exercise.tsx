@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
-import { Category, Question } from '@/types';
+import { Category, Question, MultiLanguageInstructions } from '@/types';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -12,28 +12,33 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER } from '@/constants/languages';
+import { createEmptyInstructions, isMultiLanguageInstructions } from '@/utils/languageHelpers';
 
 export default function AddExerciseScreen() {
   const { id: exerciseId } = useLocalSearchParams();
   const isEditMode = !!exerciseId;
   const { appUser, user } = useAuth();
 
-  const [exerciseData, setExerciseData] = useState({
+  const [exerciseData, setExerciseData] = useState<{
+    title: string;
+    description: string;
+    instructions: MultiLanguageInstructions;
+    category: string;
+    difficulty: 'beginner' | 'intermediate' | 'advanced';
+    type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay';
+  }>({
     title: '',
     description: '',
-    instructions: '',
+    instructions: createEmptyInstructions(),
     category: '',
-    difficulty: 'beginner' as 'beginner' | 'intermediate' | 'advanced',
-    type: 'multiple-choice' as
-      | 'multiple-choice'
-      | 'fill-blanks'
-      | 'true-false'
-      | 'matching'
-      | 'essay',
+    difficulty: 'beginner',
+    type: 'multiple-choice',
   });
 
   const [questions, setQuestions] = useState<Partial<Question>[]>([
@@ -73,10 +78,25 @@ export default function AddExerciseScreen() {
       const exercise = await getExerciseById(id);
 
       if (exercise) {
+        // Convert old string format to new multi-language format if needed
+        let instructions: MultiLanguageInstructions;
+        if (typeof exercise.instructions === 'string') {
+          // Legacy format - put in English field, leave others empty
+          instructions = {
+            en: exercise.instructions,
+            es: '',
+            fr: '',
+            de: '',
+          };
+        } else {
+          // Already in multi-language format
+          instructions = exercise.instructions;
+        }
+
         setExerciseData({
           title: exercise.title,
           description: exercise.description,
-          instructions: exercise.instructions,
+          instructions: instructions,
           category: exercise.category,
           difficulty: exercise.difficulty,
           type: exercise.content.type,
@@ -263,10 +283,24 @@ export default function AddExerciseScreen() {
       return false;
     }
 
-    if (!exerciseData.instructions.trim()) {
-      console.log('❌ Validation failed: No instructions');
-      Alert.alert('Validation Error', 'Please enter exercise instructions.');
+    // Validate instructions - at least English must be provided
+    if (!exerciseData.instructions.en.trim()) {
+      console.log('❌ Validation failed: No English instructions');
+      Alert.alert('Validation Error', 'Please enter instructions in English (required).');
       return false;
+    }
+
+    // Optionally warn about missing translations
+    const missingLanguages = LANGUAGE_ORDER.filter(
+      (lang) => lang !== 'en' && !exerciseData.instructions[lang].trim()
+    );
+
+    if (missingLanguages.length > 0) {
+      const langNames = missingLanguages
+        .map((code) => SUPPORTED_LANGUAGES[code].name)
+        .join(', ');
+      console.log(`⚠️ Warning: Missing translations for ${langNames}`);
+      // Optional: Show warning but allow saving
     }
 
     if (!exerciseData.category) {
@@ -634,19 +668,53 @@ export default function AddExerciseScreen() {
                 />
               </View>
 
+              {/* Instructions Section - Multi-Language */}
               <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>Instructions</ThemedText>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  value={exerciseData.instructions}
-                  onChangeText={(text) =>
-                    setExerciseData((prev) => ({ ...prev, instructions: text }))
-                  }
-                  placeholder='Detailed instructions for students'
-                  multiline
-                  numberOfLines={4}
-                  placeholderTextColor='rgba(102, 102, 102, 0.5)'
-                />
+                <ThemedText style={styles.label}>
+                  Instructions (All Languages)
+                </ThemedText>
+                <ThemedText style={[styles.helperText, { marginBottom: 12 }]}>
+                  Provide instructions in all supported languages. English is required.
+                </ThemedText>
+
+                {LANGUAGE_ORDER.map((langCode) => {
+                  const lang = SUPPORTED_LANGUAGES[langCode];
+                  return (
+                    <View key={langCode} style={styles.languageInputContainer}>
+                      <View style={styles.languageHeader}>
+                        <Text style={styles.flagIcon}>{lang.flag}</Text>
+                        <ThemedText style={styles.languageCode}>
+                          {langCode.toUpperCase()}
+                        </ThemedText>
+                        <ThemedText style={styles.languageLabel}>
+                          ({lang.nativeLabel})
+                        </ThemedText>
+                        {langCode === 'en' && (
+                          <ThemedText style={styles.requiredBadge}>
+                            Required
+                          </ThemedText>
+                        )}
+                      </View>
+                      <TextInput
+                        style={[styles.input, styles.textArea]}
+                        value={exerciseData.instructions[langCode]}
+                        onChangeText={(text) =>
+                          setExerciseData((prev) => ({
+                            ...prev,
+                            instructions: {
+                              ...prev.instructions,
+                              [langCode]: text,
+                            },
+                          }))
+                        }
+                        placeholder={`Instructions in ${lang.name}`}
+                        multiline
+                        numberOfLines={4}
+                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      />
+                    </View>
+                  );
+                })}
               </View>
 
               <View style={styles.row}>
@@ -1275,5 +1343,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#202029',
     fontWeight: 'normal',
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#666',
+    lineHeight: 16,
+  },
+  languageInputContainer: {
+    marginBottom: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  languageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 6,
+  },
+  flagIcon: {
+    fontSize: 24,
+  },
+  languageCode: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#999',
+    textTransform: 'uppercase',
+  },
+  languageLabel: {
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  requiredBadge: {
+    fontSize: 10,
+    color: '#fff',
+    backgroundColor: '#07b524',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginLeft: 'auto',
+    overflow: 'hidden',
   },
 });

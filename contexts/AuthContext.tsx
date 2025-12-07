@@ -16,7 +16,7 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/config/firebase';
 import { User as AppUser } from '@/types';
-import { updateUserDisplayName, deleteUserAccount } from '@/services/firebaseService';
+import { updateUserDisplayName, updateUserLanguagePreference, deleteUserAccount } from '@/services/firebaseService';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 
@@ -32,6 +32,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUserPassword: (currentPassword: string, newPassword: string) => Promise<void>;
   updateDisplayName: (newDisplayName: string) => Promise<void>;
+  updateLanguagePreference: (language: string) => Promise<void>;
   deleteAccount: (password: string) => Promise<void>;
   refreshUserData: () => Promise<void>;
 }
@@ -214,6 +215,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await refreshUserData();
   };
 
+  const updateLanguagePreference = async (language: string) => {
+    if (!user) {
+      throw new Error('No user logged in');
+    }
+
+    // Update in Firestore
+    await updateUserLanguagePreference(user.uid, language);
+
+    // Refresh local user data
+    await refreshUserData();
+  };
+
   const deleteAccount = async (password: string) => {
     if (!user || !user.email) {
       throw new Error('No user logged in');
@@ -255,6 +268,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     updateUserPassword,
     updateDisplayName,
+    updateLanguagePreference,
     deleteAccount,
     refreshUserData,
   };
