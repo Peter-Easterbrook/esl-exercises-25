@@ -27,28 +27,28 @@ export default function ExerciseScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadExercise = async () => {
+      try {
+        const { getExerciseById } = await import('@/services/firebaseService');
+        const exerciseData = await getExerciseById(id!);
+
+        if (!exerciseData) {
+          Alert.alert('Error', 'Exercise not found');
+          router.back();
+          return;
+        }
+
+        setExercise(exerciseData);
+      } catch (error) {
+        console.error('Error loading exercise:', error);
+        Alert.alert('Error', 'Failed to load exercise');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadExercise();
   }, [id]);
-
-  const loadExercise = async () => {
-    try {
-      const { getExerciseById } = await import('@/services/firebaseService');
-      const exerciseData = await getExerciseById(id!);
-
-      if (!exerciseData) {
-        Alert.alert('Error', 'Exercise not found');
-        router.back();
-        return;
-      }
-
-      setExercise(exerciseData);
-    } catch (error) {
-      console.error('Error loading exercise:', error);
-      Alert.alert('Error', 'Failed to load exercise');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleStartExercise = () => {
     setShowInstructions(false);
@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: '#eee',
+    marginBottom: 20,
   },
   button: {
     backgroundColor: '#f0f0f0',

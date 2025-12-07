@@ -53,7 +53,7 @@ export default function AddExerciseScreen() {
     if (isEditMode && typeof exerciseId === 'string') {
       loadExercise(exerciseId);
     }
-  }, [exerciseId]);
+  }, [exerciseId,isEditMode]);
 
   const loadCategories = async () => {
     try {
@@ -1253,7 +1253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 20,
     paddingBottom: 40,
-    marginTop: 16,
+    marginVertical: 20,
     backgroundColor: '#fff',
   },
   saveButton: {

@@ -44,7 +44,7 @@ export default function ProfileScreen() {
             await logout();
             // Navigation to /auth is handled automatically by TabLayout
             // when auth state changes - no need to manually navigate
-          } catch (error) {
+          } catch {
             Alert.alert('Error', 'Failed to sign out');
           }
         },
@@ -99,12 +99,12 @@ Your UID: ${user?.uid}`,
     | 'doc.text'
     | 'gear';
 
-  const menuItems: Array<{
+  const menuItems: {
     icon: MenuItemIcon;
     title: string;
     subtitle: string;
     onPress: () => void;
-  }> = [
+  }[] = [
     {
       icon: 'person.circle',
       title: 'Account Settings',
@@ -342,6 +342,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 0.5,
     borderColor: '#fea382',
+    marginBottom: 30,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
   },
   signOutText: {
