@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "esl-exercises-25",
+    "name": "ESL Exercises",
     "slug": "esl-exercises-25",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",

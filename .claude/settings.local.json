@@ -38,7 +38,8 @@
       "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\CLAUDE.md'').Count\")",
       "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\app\\admin\\add-exercise.tsx'' | Select-Object -Last 20)\")",
       "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\app\\account-settings.tsx'' | Select-Object -Last 30)\")",
-      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\app\\exercise\\[id].tsx'' | Select-Object -Last 30)\")"
+      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\app\\exercise\\[id].tsx'' | Select-Object -Last 30)\")",
+      "Bash(powershell -Command \"if (Test-Path .env) { Get-Content .env }\")"
     ],
     "deny": [],
     "ask": []
