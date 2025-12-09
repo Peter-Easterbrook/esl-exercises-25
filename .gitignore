@@ -51,3 +51,4 @@ credentials.txt
 .env
 .env.local
 .env.production
+Google.json
