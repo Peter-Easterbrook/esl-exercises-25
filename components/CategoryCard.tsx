@@ -238,10 +238,13 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: 16,
+    marginBottom: 20,
     backgroundColor: '#fff',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
@@ -274,11 +277,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    marginBottom: 8,
+    backgroundColor: 'rgba(105, 150, 179, 0.03)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
+    marginBottom: 10,
   },
   exerciseContent: {
     flex: 1,
@@ -307,10 +312,11 @@ const styles = StyleSheet.create({
   },
   difficulty: {
     fontSize: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
     overflow: 'hidden',
+    fontWeight: '600',
   },
   beginner: {
     backgroundColor: '#e8f5e8',
@@ -351,11 +357,13 @@ const styles = StyleSheet.create({
   fileItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#f1f3f5',
-    marginBottom: 8,
+    borderRadius: 12,
+    backgroundColor: 'rgba(105, 150, 179, 0.03)',
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
+    marginBottom: 10,
   },
   fileItemText: {
     flex: 1,

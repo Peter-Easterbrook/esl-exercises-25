@@ -5,7 +5,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'display' | 'body-large' | 'caption';
 };
 
 export function ThemedText({
@@ -24,12 +24,15 @@ export function ThemedText({
   return (
     <Text
       style={[
-        { color: type === 'title' ? titleColor : color },
+        { color: type === 'title' || type === 'display' ? titleColor : color },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
+        type === 'display' ? styles.display : undefined,
+        type === 'body-large' ? styles.bodyLarge : undefined,
+        type === 'caption' ? styles.caption : undefined,
         style,
       ]}
       {...rest}
@@ -51,16 +54,36 @@ const styles = StyleSheet.create({
     fontFamily: 'berlin-sans-fb-bold',
     letterSpacing: 1,
   },
+  display: {
+    fontSize: 42,
+    lineHeight: 48,
+    fontFamily: 'berlin-sans-fb-bold',
+    letterSpacing: 0.5,
+  },
   title: {
     fontSize: 32,
     fontFamily: 'berlin-sans-fb-bold',
-    letterSpacing: 1,
+    letterSpacing: 0.75,
     lineHeight: 40,
   },
   subtitle: {
     fontSize: 20,
     fontFamily: 'berlin-sans-fb-bold',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
+    lineHeight: 28,
+  },
+  bodyLarge: {
+    fontSize: 18,
+    lineHeight: 28,
+    fontFamily: 'berlin-sans-fb',
+    letterSpacing: 0.5,
+  },
+  caption: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: 'berlin-sans-fb',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
   },
   link: {
     lineHeight: 30,

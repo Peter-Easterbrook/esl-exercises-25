@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
+import { DEFAULT_LANGUAGE, LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { exportAllUserData } from '@/services/exportService';
@@ -18,7 +19,7 @@ import {
 } from '@/services/profilePhotoService';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -29,7 +30,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER, DEFAULT_LANGUAGE, type LanguageCode } from '@/constants/languages';
 
 export default function AccountSettingsScreen() {
   const {
@@ -39,7 +39,6 @@ export default function AccountSettingsScreen() {
     updateDisplayName,
     updateLanguagePreference,
     deleteAccount,
-    refreshUserData,
   } = useAuth();
 
   const [displayName, setDisplayName] = useState(appUser?.displayName || '');
@@ -62,18 +61,13 @@ export default function AccountSettingsScreen() {
     memberSince: '',
   });
 
-  useEffect(() => {
-    loadUserStats();
-    loadUserPhoto();
-  }, [user]);
-
-  const loadUserPhoto = async () => {
+  const loadUserPhoto = useCallback(async () => {
     if (!user) return;
     const photoUri = await loadProfilePhoto(user.uid);
     setProfilePhotoUri(photoUri);
-  };
+  }, [user]);
 
-  const loadUserStats = async () => {
+  const loadUserStats = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -102,7 +96,12 @@ export default function AccountSettingsScreen() {
     } catch (error) {
       console.error('Error loading user stats:', error);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadUserStats();
+    loadUserPhoto();
+  }, [loadUserStats, loadUserPhoto]);
 
   const handleUpdateDisplayName = async () => {
     if (!displayName.trim()) {
@@ -365,6 +364,7 @@ export default function AccountSettingsScreen() {
         setProfilePhotoUri(photoUri);
         Alert.alert('Success', 'Profile photo updated successfully');
       } catch (error) {
+        console.error('Failed to save profile photo:', error);
         Alert.alert('Error', 'Failed to save profile photo');
       }
     }
@@ -380,6 +380,7 @@ export default function AccountSettingsScreen() {
         setProfilePhotoUri(photoUri);
         Alert.alert('Success', 'Profile photo updated successfully');
       } catch (error) {
+        console.error('Failed to save profile photo:', error);
         Alert.alert('Error', 'Failed to save profile photo');
       }
     }
@@ -402,6 +403,7 @@ export default function AccountSettingsScreen() {
               setProfilePhotoUri(null);
               Alert.alert('Success', 'Profile photo removed');
             } catch (error) {
+              console.error('Failed to remove profile photo:', error);
               Alert.alert('Error', 'Failed to remove profile photo');
             }
           },

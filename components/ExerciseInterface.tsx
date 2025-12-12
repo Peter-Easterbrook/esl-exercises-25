@@ -670,7 +670,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fafbfc',
   },
   confettiContainer: {
     position: 'absolute',
@@ -699,14 +699,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   progressBar: {
-    height: 4,
-    backgroundColor: '#eee',
-    borderRadius: 2,
+    height: 6,
+    backgroundColor: 'rgba(105, 150, 179, 0.15)',
+    borderRadius: 4,
   },
   progressFill: {
     height: '100%',
     backgroundColor: '#6996b3',
-    borderRadius: 2,
+    borderRadius: 4,
+    boxShadow: '0px 1px 4px rgba(83, 131, 161, 0.4)',
   },
   questionSection: {
     flex: 1,
@@ -724,14 +725,17 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   optionButton: {
-    borderWidth: 0.5,
-    borderColor: '#eee',
-    borderRadius: 8,
-    padding: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.15)',
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: '#fff',
   },
   selectedOption: {
+    borderWidth: 2,
     borderColor: '#6996b3',
-    backgroundColor: '#f0f8ff',
+    backgroundColor: 'rgba(105, 150, 179, 0.08)',
+    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.2)',
   },
   optionContent: {
     flexDirection: 'row',
@@ -780,9 +784,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingHorizontal: 28,
+    paddingVertical: 16,
+    borderRadius: 12,
+    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.3), 0px 8px 16px rgba(83, 131, 161, 0.15)',
   },
   primaryButtonText: {
     color: 'white',
@@ -811,17 +816,18 @@ const styles = StyleSheet.create({
     lineHeight: 34,
   },
   scoreText: {
-    fontSize: 32,
-
+    fontSize: 48,
+    fontWeight: '700',
     color: '#6996b3',
     marginBottom: 16,
   },
   scoreIndicator: {
-    width: 100,
-    height: 8,
-    backgroundColor: '#eee',
-    borderRadius: 4,
+    width: 120,
+    height: 12,
+    backgroundColor: 'rgba(105, 150, 179, 0.15)',
+    borderRadius: 6,
     marginBottom: 16,
+    boxShadow: 'inset 0px 2px 4px rgba(0, 76, 109, 0.1)',
   },
   scoreBar: {
     height: '100%',
@@ -840,10 +846,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   reviewItem: {
-    marginBottom: 24,
-    paddingBottom: 20,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#eee',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    borderLeftWidth: 4,
+    borderLeftColor: '#6996b3',
   },
   questionHeader: {
     flexDirection: 'row',
@@ -874,11 +883,13 @@ const styles = StyleSheet.create({
     color: '#07b524',
   },
   explanation: {
-    backgroundColor: '#f8f9fa',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: 'rgba(105, 150, 179, 0.05)',
+    padding: 14,
+    borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#6996b3',
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.1)',
   },
   explanationText: {
     fontSize: 14,
@@ -895,11 +906,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    borderWidth: 0.5,
+    paddingVertical: 14,
+    borderWidth: 2,
     borderColor: '#6996b3',
-    borderRadius: 8,
+    backgroundColor: 'rgba(105, 150, 179, 0.03)',
+    borderRadius: 12,
     gap: 8,
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.04)',
   },
   secondaryButtonText: {
     color: '#6996b3',
@@ -907,10 +920,12 @@ const styles = StyleSheet.create({
   },
   // True/False styles
   passageContainer: {
-    backgroundColor: '#f8f9fa',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: 'rgba(105, 150, 179, 0.05)',
+    padding: 18,
+    borderRadius: 12,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.1)',
   },
   passageLabel: {
     fontSize: 14,
@@ -940,9 +955,11 @@ const styles = StyleSheet.create({
   },
   matchingColumn: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: 'rgba(105, 150, 179, 0.03)',
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
   },
   columnHeader: {
     fontSize: 14,
@@ -972,10 +989,11 @@ const styles = StyleSheet.create({
   },
   matchingInputContainer: {
     backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#eee',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.15)',
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.04)',
   },
   matchingInstructions: {
     fontSize: 14,
@@ -1030,11 +1048,12 @@ const styles = StyleSheet.create({
   },
   // Common input style
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
     backgroundColor: '#fff',
+    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
   },
 });

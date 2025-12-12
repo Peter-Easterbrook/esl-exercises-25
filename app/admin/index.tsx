@@ -58,14 +58,14 @@ export default function AdminPanel() {
     | 'chart.pie'
     | 'gear';
 
-  const adminActions: Array<{
+  const adminActions: {
     icon: AdminActionIcon;
     title: string;
     subtitle: string;
     color: string;
     onPress: () => void;
     animation?: 'slide_from_right' | 'slide_from_bottom' | 'fade';
-  }> = [
+  }[] = [
     {
       icon: 'plus.circle',
       title: 'Add New Exercise',
@@ -253,7 +253,7 @@ export default function AdminPanel() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fafbfc',
     paddingTop: 60,
   },
   contentWrapper: {
@@ -265,9 +265,12 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingBottom: 20,
+    paddingTop: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    borderRadius: 8,
+     boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
   },
   backButton: {
     flexDirection: 'row',
@@ -322,10 +325,12 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: '45%',
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 12,
+    padding: 24,
+    borderRadius: 16,
     alignItems: 'center',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
   },
   statNumber: {
     fontSize: 24,
@@ -349,8 +354,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    borderRadius: 16,
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.08)',
   },
   actionIcon: {
     width: 56,

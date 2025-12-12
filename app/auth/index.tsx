@@ -215,7 +215,7 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fafbfc',
   },
   contentWrapper: {
     width: '100%',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     paddingBottom: 40,
-    backgroundColor: '#fff',
+    backgroundColor: '#fafbfc',
   },
   titleContainer: {
     marginBottom: 40,
@@ -259,13 +259,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    padding: 12,
-    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
+    padding: 16,
+    borderRadius: 12,
     fontSize: 16,
     backgroundColor: '#fff',
     color: '#000',
+    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
   },
   passwordContainer: {
     position: 'relative',
@@ -274,14 +275,15 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    padding: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
+    padding: 16,
     paddingRight: 50,
-    borderRadius: 8,
+    borderRadius: 12,
     fontSize: 16,
     backgroundColor: '#fff',
     color: '#000',
+    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
   },
   eyeIcon: {
     position: 'absolute',
@@ -290,14 +292,16 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#6996b3',
-    padding: 12,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
     marginTop: 8,
+    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.3), 0px 8px 16px rgba(83, 131, 161, 0.15)',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: '600',
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -316,14 +320,15 @@ const styles = StyleSheet.create({
   },
   googleButton: {
     backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 12,
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08)',
   },
   googleIcon: {
     width: 20,

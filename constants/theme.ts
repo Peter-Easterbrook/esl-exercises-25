@@ -79,3 +79,48 @@ export const blues = {
   blue8: '#abd2ec',
   blue9: '#c1e7ff',
 };
+
+// Enhanced elevation system with blue-tinted shadows
+export const elevation = {
+  level1: {
+    shadowColor: '#004c6d',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+    // Web fallback
+    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+  },
+  level2: {
+    shadowColor: '#004c6d',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 4,
+    boxShadow: '0px 4px 8px rgba(0, 76, 109, 0.12), 0px 8px 24px rgba(0, 76, 109, 0.08)',
+  },
+  level3: {
+    shadowColor: '#004c6d',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 8,
+    boxShadow: '0px 12px 28px rgba(0, 76, 109, 0.15), 0px 24px 48px rgba(0, 76, 109, 0.1)',
+  },
+};
+
+// Refined border colors
+export const borders = {
+  subtle: 'rgba(105, 150, 179, 0.08)',
+  light: 'rgba(105, 150, 179, 0.15)',
+  medium: 'rgba(105, 150, 179, 0.2)',
+  strong: '#6996b3',
+};
+
+// Background colors
+export const backgrounds = {
+  primary: '#ffffff',
+  subtle: '#fafbfc',
+  tinted: 'rgba(105, 150, 179, 0.03)',
+  tintedStrong: 'rgba(105, 150, 179, 0.08)',
+};
