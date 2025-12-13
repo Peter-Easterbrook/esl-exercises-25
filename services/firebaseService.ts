@@ -473,7 +473,12 @@ export const initializeDefaultData = async (): Promise<void> => {
       {
         name: 'Grammar',
         description: 'Master English grammar rules and structures',
-        icon: 'book',
+        icon: 'textformat',
+      },
+      {
+        name: 'Language Skills',
+        description: 'Develop comprehensive English language abilities',
+        icon: 'person.2.wave',
       },
       {
         name: 'Vocabulary',
@@ -1049,6 +1054,56 @@ export const resetAppSettings = async (): Promise<void> => {
     await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
   } catch (error) {
     console.error('Error resetting app settings:', error);
+    throw error;
+  }
+};
+
+// Admin Utility Functions for Category Management
+
+// Add a new Grammar category to Firebase
+export const addGrammarCategory = async (): Promise<string> => {
+  try {
+    const grammarCategory = {
+      name: 'Grammar',
+      description: 'Master English grammar rules and structures',
+      icon: 'textformat',
+    };
+
+    const docRef = await addDoc(collection(db, 'categories'), grammarCategory);
+    console.log('Grammar category created with ID:', docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error('Error creating Grammar category:', error);
+    throw error;
+  }
+};
+
+// Update an existing category's icon
+export const updateCategoryIcon = async (
+  categoryId: string,
+  newIcon: string
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'categories', categoryId), {
+      icon: newIcon,
+    });
+    console.log(`Category ${categoryId} icon updated to ${newIcon}`);
+  } catch (error) {
+    console.error('Error updating category icon:', error);
+    throw error;
+  }
+};
+
+// Update an existing category's details
+export const updateCategory = async (
+  categoryId: string,
+  updates: { name?: string; description?: string; icon?: string }
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'categories', categoryId), updates);
+    console.log(`Category ${categoryId} updated successfully`);
+  } catch (error) {
+    console.error('Error updating category:', error);
     throw error;
   }
 };

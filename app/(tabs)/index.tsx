@@ -1,5 +1,5 @@
 import { CategoryCard } from '@/components/CategoryCard';
-import ThemedLoader from '@/components/themed-loader';
+import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Category } from '@/types';
@@ -30,17 +30,17 @@ export default function CategoriesScreen() {
         await initializeDefaultData();
         categoriesData = await getCategories();
       }
-
+      
       setCategories(categoriesData);
     } catch (error) {
       console.error('Error loading categories:', error);
       // Fallback to mock data if Firebase fails
       const mockCategories: Category[] = [
         {
-          id: '5',
-          name: 'Find the Mistake',
-          description: 'Identify and correct common English errors',
-          icon: 'exclamationmark.circle',
+          id: '1',
+          name: 'Tenses',
+          description: 'Learn and practice different English tenses',
+          icon: 'clock',
           exercises: [],
         },
         {
@@ -51,10 +51,10 @@ export default function CategoriesScreen() {
           exercises: [],
         },
         {
-          id: '6',
-          name: 'Listening Skills',
-          description: 'Enhance your English listening abilities',
-          icon: 'ear',
+          id: '3',
+          name: 'Vocabulary',
+          description: 'Expand your English vocabulary',
+          icon: 'text.bubble',
           exercises: [],
         },
         {
@@ -65,17 +65,17 @@ export default function CategoriesScreen() {
           exercises: [],
         },
         {
-          id: '1',
-          name: 'Tenses',
-          description: 'Learn and practice different English tenses',
-          icon: 'clock',
+          id: '5',
+          name: 'Find the Mistake',
+          description: 'Identify and correct common English errors',
+          icon: 'exclamationmark.circle',
           exercises: [],
         },
         {
-          id: '3',
-          name: 'Vocabulary',
-          description: 'Expand your English vocabulary',
-          icon: 'text.bubble',
+          id: '6',
+          name: 'Listening Skills',
+          description: 'Enhance your English listening abilities',
+          icon: 'ear',
           exercises: [],
         },
       ];

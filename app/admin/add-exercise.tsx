@@ -1,8 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
-import { Category, Question, MultiLanguageInstructions } from '@/types';
+import { Category, MultiLanguageInstructions, Question } from '@/types';
+import { createEmptyInstructions } from '@/utils/languageHelpers';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -17,8 +19,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER } from '@/constants/languages';
-import { createEmptyInstructions, isMultiLanguageInstructions } from '@/utils/languageHelpers';
 
 export default function AddExerciseScreen() {
   const { id: exerciseId } = useLocalSearchParams();
@@ -552,7 +552,7 @@ export default function AddExerciseScreen() {
               setExerciseData({
                 title: '',
                 description: '',
-                instructions: '',
+                instructions: createEmptyInstructions(),
                 category: '',
                 difficulty: 'beginner',
                 type: 'multiple-choice',

@@ -161,16 +161,48 @@ export default function ManageCategoriesScreen() {
   );
 
   const availableIcons = [
-    'folder',
+    'house.fill',
+    'paperplane.fill',
+    'list.bullet',
+    'chart.bar.fill',
+    'person.fill',
+    'plus',
+    'plus.circle',
+    'plus.circle.fill',
+    'pencil',
+    'trash',
+    'gear',
+    'checkmark',
+    'checkmark.circle.fill',
+    'xmark',
+    'clock',
     'book',
     'text.bubble',
     'doc.text',
-    'exclamationmark.circle',
+    'doc.badge.plus',
     'ear',
-    'chart.bar',
-    'pencil',
-    'star',
-    'flag',
+    'folder',
+    'magnifyingglass',
+    'questionmark.circle',
+    'info.circle',
+    'bell',
+    'person.circle',
+    'person.2',
+    'person.2.circle',
+    'calendar',
+    'exclamationmark.circle',
+    'eye',
+    'eye.slash',
+    'camera.fill',
+    'circle.fill',
+    'flame.fill',
+    'square.and.arrow.down',
+    'square.and.arrow.up',
+    'arrow.right.square',
+    'arrow.clockwise',
+    'chart.pie',
+
+
   ];
 
   if (loading) {
@@ -612,7 +644,7 @@ const styles = StyleSheet.create({
   formActions: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 20,
+    marginVertical: 20,
   },
   button: {
     flex: 1,

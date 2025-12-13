@@ -15,7 +15,7 @@ import { Category, DownloadableFile, Exercise } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -35,20 +35,12 @@ export default function UploadFilesScreen() {
   const [selectedExercise, setSelectedExercise] = useState<string>('');
   const [files, setFiles] = useState<DownloadableFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadCategories();
   }, []);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      loadFiles();
-      loadExercises();
-    }
-  }, [selectedCategory]);
-
-  const loadExercises = async () => {
+  const loadExercises = useCallback(async () => {
     try {
       const exercisesData = await getExercisesByCategory(selectedCategory);
       setExercises(exercisesData);
@@ -56,7 +48,24 @@ export default function UploadFilesScreen() {
     } catch (error) {
       console.error('Error loading exercises:', error);
     }
-  };
+  }, [selectedCategory]);
+
+  const loadFiles = useCallback(async () => {
+    try {
+      const filesData = await getFilesByCategory(selectedCategory);
+      setFiles(filesData);
+    } catch (error) {
+      console.error('Error loading files:', error);
+      Alert.alert('Error', 'Failed to load files');
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      loadFiles();
+      loadExercises();
+    }
+  }, [selectedCategory, loadFiles, loadExercises]);
 
   const loadCategories = async () => {
     try {
@@ -65,18 +74,6 @@ export default function UploadFilesScreen() {
     } catch (error) {
       console.error('Error loading categories:', error);
       Alert.alert('Error', 'Failed to load categories');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadFiles = async () => {
-    try {
-      const filesData = await getFilesByCategory(selectedCategory);
-      setFiles(filesData);
-    } catch (error) {
-      console.error('Error loading files:', error);
-      Alert.alert('Error', 'Failed to load files');
     }
   };
 

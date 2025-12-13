@@ -51,6 +51,8 @@ const MAPPING = {
   'exclamationmark.circle': 'error-outline',
 
   // Content icons
+  photo: 'photo',
+  link: 'link',  
   clock: 'schedule',
   book: 'menu-book',
   'text.bubble': 'chat-bubble-outline',

@@ -3,7 +3,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserProgressStats } from '@/services/firebaseService';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -22,25 +22,21 @@ export default function ProgressScreen() {
     totalExercises: 0,
     averageScore: 0,
     streak: 0,
-    categories: [] as Array<{
+    categories: [] as {
       name: string;
       completed: number;
       total: number;
       avgScore: number;
-    }>,
-    recentActivity: [] as Array<{
+    }[],
+    recentActivity: [] as {
       exerciseTitle: string;
       score: number;
       completedAt: Date;
       success: boolean;
-    }>,
+    }[],
   });
 
-  useEffect(() => {
-    loadProgressData();
-  }, [user]);
-
-  const loadProgressData = async () => {
+  const loadProgressData = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -52,7 +48,11 @@ export default function ProgressScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadProgressData();
+  }, [loadProgressData]);
 
   const onRefresh = async () => {
     setRefreshing(true);
