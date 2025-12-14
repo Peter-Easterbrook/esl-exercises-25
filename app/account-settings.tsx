@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
-import { DEFAULT_LANGUAGE, LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
+import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { exportAllUserData } from '@/services/exportService';
@@ -17,6 +17,7 @@ import {
   saveProfilePhoto,
   takePhoto,
 } from '@/services/profilePhotoService';
+import { getDeviceDefaultLanguage } from '@/utils/languageHelpers';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -43,7 +44,7 @@ export default function AccountSettingsScreen() {
 
   const [displayName, setDisplayName] = useState(appUser?.displayName || '');
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
-    (appUser?.preferredLanguage as LanguageCode) || DEFAULT_LANGUAGE
+    (appUser?.preferredLanguage as LanguageCode) || getDeviceDefaultLanguage()
   );
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');

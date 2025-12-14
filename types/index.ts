@@ -15,6 +15,7 @@ export interface MultiLanguageInstructions {
   es: string;
   fr: string;
   de: string;
+  it: string;
 }
 
 export interface Exercise {
@@ -61,7 +62,7 @@ export interface User {
   displayName?: string;
   isAdmin: boolean;
   progress: UserProgress[];
-  preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de'
+  preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de', 'it'
 }
 
 export interface UserProgress {

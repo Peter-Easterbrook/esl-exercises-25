@@ -2,10 +2,10 @@ import { ExerciseInterface } from '@/components/ExerciseInterface';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DEFAULT_LANGUAGE, LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
+import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { Exercise } from '@/types';
-import { getInstructionsForLanguage } from '@/utils/languageHelpers';
+import { getDeviceDefaultLanguage, getInstructionsForLanguage } from '@/utils/languageHelpers';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -30,7 +30,7 @@ export default function ExerciseScreen() {
   const [showInstructions, setShowInstructions] = useState(true);
   const [loading, setLoading] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
-    (appUser?.preferredLanguage as LanguageCode) || DEFAULT_LANGUAGE
+    (appUser?.preferredLanguage as LanguageCode) || getDeviceDefaultLanguage()
   );
 
   useEffect(() => {

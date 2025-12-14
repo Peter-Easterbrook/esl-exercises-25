@@ -41,7 +41,8 @@
       "Bash(powershell -Command \"(Get-Content ''C:\\Users\\Peter\\GitHub\\esl-exercises-25\\app\\exercise\\[id].tsx'' | Select-Object -Last 30)\")",
       "Bash(powershell -Command \"if (Test-Path .env) { Get-Content .env }\")",
       "Skill(frontend-design)",
-      "Bash(powershell -Command \"Stop-Process -Id 26336 -Force\")"
+      "Bash(powershell -Command \"Stop-Process -Id 26336 -Force\")",
+      "Bash(npx expo install:*)"
     ],
     "deny": [],
     "ask": []

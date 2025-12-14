@@ -1,5 +1,26 @@
-import { DEFAULT_LANGUAGE, type LanguageCode } from '@/constants/languages';
+import { getLocales } from 'expo-localization';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
 import type { MultiLanguageInstructions } from '@/types';
+
+/**
+ * Get the device's default language if supported, otherwise fallback to English
+ */
+export function getDeviceDefaultLanguage(): LanguageCode {
+  try {
+    // Get the device's primary language code (e.g., 'en', 'es', 'fr')
+    const deviceLanguage = getLocales()[0].languageCode;
+
+    // Check if the device language is in our supported languages
+    if (deviceLanguage && deviceLanguage in SUPPORTED_LANGUAGES) {
+      return deviceLanguage as LanguageCode;
+    }
+  } catch (error) {
+    console.warn('Failed to get device language:', error);
+  }
+
+  // Fallback to English
+  return 'en';
+}
 
 /**
  * Get instructions for a specific language, with fallback to English
@@ -36,5 +57,6 @@ export function createEmptyInstructions(): MultiLanguageInstructions {
     es: '',
     fr: '',
     de: '',
+    it: '',
   };
 }
