@@ -99,6 +99,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     try {
       await downloadFile(file);
     } catch (error) {
+      console.error('Error downloading file:', error);
       Alert.alert('Error', 'Failed to download file');
     }
   };
@@ -239,7 +240,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: '#fff',
     boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
     borderWidth: 1,

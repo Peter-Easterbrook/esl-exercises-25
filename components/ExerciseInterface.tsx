@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   selectedOption: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#6996b3',
     backgroundColor: 'rgba(105, 150, 179, 0.08)',
     boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.2)',
@@ -816,8 +816,8 @@ const styles = StyleSheet.create({
     lineHeight: 34,
   },
   scoreText: {
-    fontSize: 48,
-    fontWeight: '700',
+    fontSize: 'clamp(32px, 10vw, 48px)' as any,
+    fontWeight: '600',
     color: '#6996b3',
     marginBottom: 16,
   },
@@ -848,7 +848,7 @@ const styles = StyleSheet.create({
   reviewItem: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 20,
+    padding: 12,
     marginBottom: 16,
     boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
     borderLeftWidth: 4,
@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
   },
   explanation: {
     backgroundColor: 'rgba(105, 150, 179, 0.05)',
-    padding: 14,
+    padding: 10,
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#6996b3',
@@ -907,7 +907,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#6996b3',
     backgroundColor: 'rgba(105, 150, 179, 0.03)',
     borderRadius: 12,
@@ -921,7 +921,7 @@ const styles = StyleSheet.create({
   // True/False styles
   passageContainer: {
     backgroundColor: 'rgba(105, 150, 179, 0.05)',
-    padding: 18,
+    padding: 14,
     borderRadius: 12,
     marginBottom: 20,
     borderWidth: 1,

@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     verticalAlign: 'middle',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'transparent',
   },
   iconOptionSelected: {

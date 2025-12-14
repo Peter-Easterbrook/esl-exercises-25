@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#fff',
   },
   emailText: {
@@ -955,7 +955,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#f5f5f5',
     borderRadius: 8,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'transparent',
     gap: 12,
   },

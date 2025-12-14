@@ -2,7 +2,10 @@ import { ExerciseInterface } from '@/components/ExerciseInterface';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DEFAULT_LANGUAGE, LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
+import { useAuth } from '@/contexts/AuthContext';
 import { Exercise } from '@/types';
+import { getInstructionsForLanguage } from '@/utils/languageHelpers';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -19,9 +22,6 @@ import Animated, {
   SlideInRight,
   SlideOutLeft,
 } from 'react-native-reanimated';
-import { SUPPORTED_LANGUAGES, LANGUAGE_ORDER, DEFAULT_LANGUAGE, type LanguageCode } from '@/constants/languages';
-import { getInstructionsForLanguage } from '@/utils/languageHelpers';
-import { useAuth } from '@/contexts/AuthContext';
 
 export default function ExerciseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -299,6 +299,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#333',
+    paddingBottom: 10,
+    paddingHorizontal: 4,
   },
   footer: {
     paddingHorizontal: 10,
@@ -351,7 +353,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#f5f5f5',
     borderRadius: 20,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'transparent',
     gap: 6,
   },
