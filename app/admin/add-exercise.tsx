@@ -87,6 +87,7 @@ export default function AddExerciseScreen() {
             es: '',
             fr: '',
             de: '',
+            it: '',
           };
         } else {
           // Already in multi-language format

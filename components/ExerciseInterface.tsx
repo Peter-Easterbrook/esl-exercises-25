@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import { Confetti } from 'react-native-fast-confetti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,16 +22,25 @@ interface ExerciseInterfaceProps {
   exercise: Exercise;
 }
 
+// Responsive font size helper
+const getResponsiveFontSize = (screenWidth: number): number => {
+  if (screenWidth < 400) return 32;
+  if (screenWidth < 768) return 40;
+  return 48;
+};
+
 export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   exercise,
 }) => {
   const { user } = useAuth();
+  const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [questionId: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const scoreTextSize = getResponsiveFontSize(width);
 
   // Stop confetti after animation completes
   useEffect(() => {
@@ -234,7 +244,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
             <ThemedText type='title' style={styles.resultsTitle}>
               Exercise Complete!
             </ThemedText>
-            <ThemedText style={styles.scoreText}>
+            <ThemedText style={[styles.scoreText, { fontSize: scoreTextSize }]}>
               Your Score: {score}%
             </ThemedText>
 
@@ -813,12 +823,12 @@ const styles = StyleSheet.create({
   resultsTitle: {
     fontSize: 28,
     marginBottom: 16,
-    lineHeight: 34,
+    lineHeight: 40,
   },
   scoreText: {
-    fontSize: 'clamp(32px, 10vw, 48px)' as any,
     fontWeight: '600',
     color: '#6996b3',
+    paddingVertical: 8,
     marginBottom: 16,
   },
   scoreIndicator: {

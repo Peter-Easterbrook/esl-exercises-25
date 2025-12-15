@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 16,
     marginBottom: 24,
-    marginRight: 16,
+    marginHorizontal: 2,
     gap: 16,
     boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
     borderWidth: 1,

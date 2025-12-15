@@ -205,6 +205,13 @@ export default function ManageExercisesScreen() {
                           {exercise.content.questions.length} questions
                         </ThemedText>
                       </View>
+
+                      <View style={styles.metadataItem}>
+                        <IconSymbol name='doc.text' size={14} color='#464655' />
+                        <ThemedText style={styles.metadataText}>
+                          {exercise.id}
+                        </ThemedText>
+                      </View>
                     </View>
                   </View>
 
