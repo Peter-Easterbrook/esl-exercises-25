@@ -1,24 +1,24 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { auth, db } from '@/config/firebase';
+import { deleteUserAccount, updateUserDisplayName, updateUserLanguagePreference } from '@/services/firebaseService';
+import { User as AppUser } from '@/types';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
 import {
-  User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  updatePassword,
-  updateProfile,
-  deleteUser,
-  reauthenticateWithCredential,
   EmailAuthProvider,
   GoogleAuthProvider,
-  signInWithCredential
+  User,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  onAuthStateChanged,
+  reauthenticateWithCredential,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  updateProfile
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@/config/firebase';
-import { User as AppUser } from '@/types';
-import { updateUserDisplayName, updateUserLanguagePreference, deleteUserAccount } from '@/services/firebaseService';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [_request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
     androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
     iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (response?.type === 'success') {
       console.log('📱 Google auth response:', response);
 
-      const { id_token, idToken, access_token } = response.params;
+      const { id_token, idToken } = response.params;
       const tokenToUse = id_token || idToken;
 
       if (!tokenToUse) {
