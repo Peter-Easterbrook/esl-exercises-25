@@ -1096,7 +1096,20 @@ export default function AddExerciseScreen() {
                             : question.correctAnswer || ''
                         }
                         onChangeText={(text) => {
+                          // Store as-is during typing, trim only when we split for validation
                           const answers = text.split(',').map((a) => a.trim());
+                          handleQuestionChange(
+                            qIndex,
+                            'correctAnswer',
+                            text // Store the raw text instead of the trimmed array
+                          );
+                        }}
+                        onBlur={() => {
+                          // Trim and format when user leaves the field
+                          const currentValue = Array.isArray(question.correctAnswer)
+                            ? question.correctAnswer.join(', ')
+                            : question.correctAnswer || '';
+                          const answers = currentValue.split(',').map((a) => a.trim()).filter((a) => a);
                           handleQuestionChange(
                             qIndex,
                             'correctAnswer',

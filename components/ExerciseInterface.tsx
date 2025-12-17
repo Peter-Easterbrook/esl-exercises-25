@@ -97,16 +97,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         let isCorrect = false;
 
         // Handle different question types
-        if (
-          exercise.content.type === 'matching' ||
-          exercise.content.type === 'fill-blanks'
-        ) {
+        if (exercise.content.type === 'matching') {
           // For matching: userAnswer is "ABCDEF", correctAnswer is ["A","B","C","D","E","F"]
-          // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
           if (Array.isArray(correctAnswer)) {
             const userAnswerArray =
               typeof userAnswer === 'string'
-                ? userAnswer.split('').map((a) => a.trim()) // For matching: split into chars
+                ? userAnswer.split('').map((a) => a.trim()) // Split into chars
                 : userAnswer;
 
             // Compare arrays element by element
@@ -115,6 +111,24 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               userAnswerArray.every(
                 (ans, idx) =>
                   ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+              );
+          } else {
+            isCorrect = userAnswer === correctAnswer;
+          }
+        } else if (exercise.content.type === 'fill-blanks') {
+          // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
+          if (Array.isArray(correctAnswer)) {
+            const userAnswerArray =
+              typeof userAnswer === 'string'
+                ? userAnswer.split(',').map((a) => a.trim()) // Split by commas
+                : userAnswer;
+
+            // Compare arrays element by element (case-insensitive)
+            isCorrect =
+              userAnswerArray.length === correctAnswer.length &&
+              userAnswerArray.every(
+                (ans, idx) =>
+                  ans.toLowerCase() === correctAnswer[idx].toLowerCase()
               );
           } else {
             isCorrect = userAnswer === correctAnswer;
@@ -286,10 +300,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
               // Use same logic as calculateScore
               let isCorrect = false;
-              if (
-                exercise.content.type === 'matching' ||
-                exercise.content.type === 'fill-blanks'
-              ) {
+              if (exercise.content.type === 'matching') {
                 if (Array.isArray(correctAnswer)) {
                   const userAnswerArray =
                     typeof userAnswer === 'string'
@@ -300,6 +311,21 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                     userAnswerArray.every(
                       (ans, idx) =>
                         ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+                    );
+                } else {
+                  isCorrect = userAnswer === correctAnswer;
+                }
+              } else if (exercise.content.type === 'fill-blanks') {
+                if (Array.isArray(correctAnswer)) {
+                  const userAnswerArray =
+                    typeof userAnswer === 'string'
+                      ? userAnswer.split(',').map((a) => a.trim())
+                      : userAnswer;
+                  isCorrect =
+                    userAnswerArray.length === correctAnswer.length &&
+                    userAnswerArray.every(
+                      (ans, idx) =>
+                        ans.toLowerCase() === correctAnswer[idx].toLowerCase()
                     );
                 } else {
                   isCorrect = userAnswer === correctAnswer;
