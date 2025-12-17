@@ -1,7 +1,7 @@
 {
   "name": "esl-exercises-25",
   "main": "expo-router/entry",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -9,7 +9,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "lint-secrets": "echo 'Checking for secrets...' && git diff --cached | grep -i 'apiKey\\|password\\|secret\\|token' && exit 1 || exit 0"
+    "lint-secrets": "echo 'Checking for secrets...' && git diff --cached | grep -i 'apiKey\\|password\\|secret\\|token' && exit 1 || exit 0",
+    "bump-version": "node ./scripts/bump-version.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",

@@ -212,16 +212,27 @@ eas submit -p ios
 
 ### **Quick Fix Command Sequence:**
 
-#### **First, update the versions in the app & package.json files!**
-
 ```bash
+# Automatically bump version (patch by default: 1.0.12 -> 1.0.13)
+npm run bump-version
+
+# Or specify version type:
+# npm run bump-version patch   (1.0.12 -> 1.0.13)
+# npm run bump-version minor   (1.0.12 -> 1.1.0)
+# npm run bump-version major   (1.0.12 -> 2.0.0)
+
+# Clean and rebuild
 rm -rf node_modules package-lock.json
 npm cache clean --force
 npm install
 npx expo-doctor
 npx expo install --fix
+
+# Commit and push
 git add .
-git commit -m "Fix npm ci issue prep for build"
+git commit -m "Bump version and prep for build"
 git push
+
+# Build for production
 npx eas build -p android --profile production
 ```
