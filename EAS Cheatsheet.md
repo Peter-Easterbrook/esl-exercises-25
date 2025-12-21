@@ -294,7 +294,7 @@ eas submit -p ios
 
 ```bash
 # Automatically bump version (patch by default: 1.0.12 -> 1.0.13)
-npm run bump-version
+npm run bump-version patch
 
 # Or specify version type:
 # npm run bump-version patch   (1.0.12 -> 1.0.13)
