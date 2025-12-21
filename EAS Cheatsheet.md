@@ -40,6 +40,86 @@
 | `eas update --auto`                                      | Update your app using EAS Update               |
 | `eas update --branch main`                               | Publish an update to the main branch           |
 
+## 🔄 **EAS Update vs New Build: When Do You Need to Rebuild?**
+
+### **✅ Use EAS Update (No Rebuild Needed):**
+
+Push over-the-air (OTA) updates for:
+- ✏️ JavaScript/TypeScript code changes
+- 🎨 UI/component updates
+- 🧠 Logic changes and bug fixes
+- 📄 New screens/features in pure JS/TS
+- 🔥 Firebase queries and business logic changes
+- 📝 Content updates
+
+```bash
+# Push an update without rebuilding
+eas update --branch production --message "Fixed validation logic"
+```
+
+Users get updates automatically when they reopen the app!
+
+### **🏗️ New Build Required:**
+
+You **must rebuild** when changing:
+- 📦 Native dependencies (adding/removing packages with native code)
+- ⚙️ `app.json` configuration (permissions, plugins, scheme, icons)
+- 🖼️ Assets bundled at build time (app icon, splash screen)
+- 🔧 Native code modifications
+- 📱 Expo SDK version upgrades
+- 🔐 OAuth/authentication configuration in native modules
+
+```bash
+# Build and submit new version
+npx eas build -p android --profile production
+eas submit -p android
+```
+
+### **💡 Recommended Workflow:**
+
+1. 🧪 Make changes in your code
+2. ❓ Ask: "Did I change native code or app.json?"
+   - **No** → Use `eas update`
+   - **Yes** → Use `eas build`
+3. ✅ For closed testing on Google Play, most feature updates only need `eas update`!
+
+## 🔑 **Google OAuth Configuration for Android**
+
+### **Get Your Production SHA-1 Certificate:**
+
+After building with EAS, you need to configure Google Cloud Console with your production signing certificate:
+
+```bash
+# Get your Android credentials including SHA-1 fingerprint
+eas credentials -p android
+```
+
+Look for output like:
+```
+Android Keystore
+  SHA1 Fingerprint: A1:B2:C3:D4:E5:F6:...
+  SHA256 Fingerprint: ...
+```
+
+Copy the **SHA1 Fingerprint**.
+
+### **Configure Google Cloud Console:**
+
+1. 🌐 Go to [Google Cloud Console](https://console.cloud.google.com)
+2. 🔧 Navigate to: **APIs & Services** → **Credentials**
+3. 📱 Find your **Android OAuth 2.0 Client ID**
+4. ✏️ Click to edit and configure:
+   - **Package name**: `com.petereasterbro1.eslexercises25`
+   - **SHA-1 certificate fingerprint**: Click "Add fingerprint" and paste your SHA-1
+5. 💾 Save changes
+
+### **Important Notes:**
+
+- ⚠️ **No redirect URI field for Android clients** - Google constructs it automatically from your package name
+- 🔄 The redirect URI is: `com.petereasterbro1.eslexercises25:/oauth2redirect`
+- ✅ You must add the production SHA-1 after each new EAS build if signing keys change
+- 🔐 Each build profile (development/preview/production) may have different SHA-1 fingerprints
+
 ## 🔐 **Environment & Configuration**
 
 | Command                                       | Description                          |
