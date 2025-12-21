@@ -52,3 +52,5 @@ credentials.txt
 .env.local
 .env.production
 Google.json
+
+OAUTH_TROUBLESHOOTING.md
