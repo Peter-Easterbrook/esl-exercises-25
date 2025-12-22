@@ -133,6 +133,11 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           } else {
             isCorrect = userAnswer === correctAnswer;
           }
+        } else if (exercise.content.type === 'short-answer') {
+          // For short-answer: case-insensitive comparison with trimmed whitespace
+          if (typeof correctAnswer === 'string' && typeof userAnswer === 'string') {
+            isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+          }
         } else {
           // For multiple-choice and true-false: simple string comparison
           isCorrect = userAnswer === correctAnswer;
@@ -329,6 +334,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                     );
                 } else {
                   isCorrect = userAnswer === correctAnswer;
+                }
+              } else if (exercise.content.type === 'short-answer') {
+                if (typeof correctAnswer === 'string' && typeof userAnswer === 'string') {
+                  isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
                 }
               } else {
                 isCorrect = userAnswer === correctAnswer;
@@ -643,6 +652,24 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               placeholder='Type your essay here...'
               multiline
               numberOfLines={10}
+            />
+          </View>
+        )}
+
+        {/* Short Answer */}
+        {exercise.content.type === 'short-answer' && (
+          <View style={styles.shortAnswerContainer}>
+            <ThemedText style={styles.shortAnswerInstruction}>
+              Write your answer below:
+            </ThemedText>
+            <TextInput
+              style={[styles.input, styles.shortAnswerInput]}
+              value={(answers[currentQuestion.id] as string) || ''}
+              onChangeText={(text) => handleAnswerSelect(text)}
+              placeholder='Type your answer here...'
+              multiline
+              numberOfLines={3}
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
             />
           </View>
         )}
@@ -1056,6 +1083,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     textAlign: 'center',
   },
+  // Common input style
+  input: {
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
+  },
   // Fill Blanks styles
   fillBlanksContainer: {
     paddingBottom: 20,
@@ -1082,14 +1119,17 @@ const styles = StyleSheet.create({
     height: 200,
     textAlignVertical: 'top',
   },
-  // Common input style
-  input: {
-    borderWidth: 1.5,
-    borderColor: 'rgba(105, 150, 179, 0.2)',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
+  // Short Answer styles
+  shortAnswerContainer: {
+    paddingBottom: 20,
+  },
+  shortAnswerInstruction: {
+    fontSize: 14,
+    marginBottom: 12,
+    color: '#666',
+  },
+  shortAnswerInput: {
+    height: 100,
+    textAlignVertical: 'top',
   },
 });

@@ -235,12 +235,12 @@ export default function UploadFilesScreen() {
                 {uploading ? (
                   <ActivityIndicator color='#fff' />
                 ) : (
-                  <>
+                  <View style={styles.uploadButtonContent}>
                     <IconSymbol name='doc.badge.plus' size={24} color='#fff' />
                     <ThemedText style={styles.uploadButtonText}>
                       Upload Document
                     </ThemedText>
-                  </>
+                  </View>
                 )}
               </TouchableOpacity>
               <ThemedText style={styles.helpText}>
@@ -265,8 +265,7 @@ export default function UploadFilesScreen() {
                       {file.name}
                     </ThemedText>
                     <ThemedText style={styles.fileDetails}>
-                      {formatFileSize(file.size)} •{' '}
-                      {file.fileType.toUpperCase()}
+                      {`${formatFileSize(file.size)} • ${file.fileType.toUpperCase()}`}
                     </ThemedText>
                     {file.exerciseId && (
                       <ThemedText style={styles.linkedExercise}>
@@ -498,6 +497,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 8,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
+  },
+  uploadButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   uploadingButton: {
     opacity: 0.6,

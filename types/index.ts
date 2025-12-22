@@ -32,7 +32,7 @@ export interface Exercise {
 }
 
 export interface ExerciseContent {
-  type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay';
+  type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay' | 'short-answer';
   questions: Question[];
 }
 

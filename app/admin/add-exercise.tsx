@@ -31,7 +31,7 @@ export default function AddExerciseScreen() {
     instructions: MultiLanguageInstructions;
     category: string;
     difficulty: 'beginner' | 'intermediate' | 'advanced';
-    type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay';
+    type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay' | 'short-answer';
   }>({
     title: '',
     description: '',
@@ -123,6 +123,7 @@ export default function AddExerciseScreen() {
     'true-false',
     'matching',
     'essay',
+    'short-answer',
   ];
 
   const handleAddQuestion = () => {
@@ -168,6 +169,13 @@ export default function AddExerciseScreen() {
           question: '',
           correctAnswer: '', // Not strictly applicable for essays
           explanation: 'Essay questions are graded manually',
+        };
+        break;
+      case 'short-answer':
+        newQuestion = {
+          question: '',
+          correctAnswer: '', // The exact answer required
+          explanation: '',
         };
         break;
       default:
@@ -463,6 +471,26 @@ export default function AddExerciseScreen() {
             Alert.alert(
               'Validation Error',
               `Please provide the correct answer(s) for question ${i + 1}.`
+            );
+            return false;
+          }
+          break;
+
+        case 'short-answer':
+          console.log(
+            '   Checking short-answer correct answer:',
+            q.correctAnswer
+          );
+          if (
+            !q.correctAnswer ||
+            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+          ) {
+            console.log(
+              `❌ Validation failed: No correct answer for question ${i + 1}`
+            );
+            Alert.alert(
+              'Validation Error',
+              `Please provide the correct answer for question ${i + 1}.`
             );
             return false;
           }
@@ -1096,12 +1124,11 @@ export default function AddExerciseScreen() {
                             : question.correctAnswer || ''
                         }
                         onChangeText={(text) => {
-                          // Store as-is during typing, trim only when we split for validation
-                          const answers = text.split(',').map((a) => a.trim());
+                          // Store the raw text during typing
                           handleQuestionChange(
                             qIndex,
                             'correctAnswer',
-                            text // Store the raw text instead of the trimmed array
+                            text
                           );
                         }}
                         onBlur={() => {
@@ -1129,6 +1156,35 @@ export default function AddExerciseScreen() {
                         ℹ️ Essay questions are open-ended and require manual
                         grading
                       </ThemedText>
+                    </View>
+                  )}
+
+                  {/* Short Answer: Correct Answer */}
+                  {exerciseData.type === 'short-answer' && (
+                    <View style={styles.inputGroup}>
+                      <ThemedText style={styles.label}>
+                        Correct Answer
+                      </ThemedText>
+                      <ThemedText
+                        style={[styles.label, { fontSize: 12, color: '#666' }]}
+                      >
+                        Enter the exact answer the user must provide
+                      </ThemedText>
+                      <TextInput
+                        style={[styles.input, styles.textArea]}
+                        value={
+                          typeof question.correctAnswer === 'string'
+                            ? question.correctAnswer
+                            : ''
+                        }
+                        onChangeText={(text) =>
+                          handleQuestionChange(qIndex, 'correctAnswer', text)
+                        }
+                        placeholder='e.g., The sky is blue.'
+                        multiline
+                        numberOfLines={2}
+                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      />
                     </View>
                   )}
 
