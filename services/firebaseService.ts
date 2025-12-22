@@ -470,11 +470,11 @@ export const initializeDefaultData = async (): Promise<void> => {
         description: 'Learn and practice different English tenses',
         icon: 'clock',
       },
-      {
-        name: 'Grammar',
-        description: 'Master English grammar rules and structures',
-        icon: 'textformat',
-      },
+      // {
+      //   name: 'Grammar',
+      //   description: 'Master English grammar rules and structures',
+      //   icon: 'textformat',
+      // },
       {
         name: 'Language Skills',
         description: 'Develop comprehensive English language abilities',
@@ -495,11 +495,11 @@ export const initializeDefaultData = async (): Promise<void> => {
         description: 'Identify and correct common English errors',
         icon: 'exclamationmark.circle',
       },
-      {
-        name: 'Listening Skills',
-        description: 'Enhance your English listening abilities',
-        icon: 'ear',
-      },
+      // {
+      //   name: 'Listening Skills',
+      //   description: 'Enhance your English listening abilities',
+      //   icon: 'ear',
+      // },
     ];
 
     const categoryIds: string[] = [];

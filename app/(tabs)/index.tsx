@@ -45,9 +45,9 @@ export default function CategoriesScreen() {
         },
         {
           id: '2',
-          name: 'Grammar',
-          description: 'Master English grammar rules and structures',
-          icon: 'book',
+          name: 'Language Skills',
+          description: 'Develop comprehensive English language abilities',
+          icon: 'person.2.wave',
           exercises: [],
         },
         {
@@ -69,13 +69,6 @@ export default function CategoriesScreen() {
           name: 'Find the Mistake',
           description: 'Identify and correct common English errors',
           icon: 'exclamationmark.circle',
-          exercises: [],
-        },
-        {
-          id: '6',
-          name: 'Listening Skills',
-          description: 'Enhance your English listening abilities',
-          icon: 'ear',
           exercises: [],
         },
       ];
