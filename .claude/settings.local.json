@@ -50,7 +50,8 @@
       "Bash(powershell -Command \"if \\(Test-Path ~\\\\.claude\\\\skills\\) { Get-ChildItem ~\\\\.claude\\\\skills -Recurse | Select-Object FullName }\")",
       "Bash(powershell -Command \"Get-ChildItem ~\\\\.claude -Recurse -File | Select-Object FullName\")",
       "Bash(powershell -Command \"Get-ChildItem -Path ~\\\\.claude\\\\plugins -Recurse -Filter ''SKILL.md'' | Where-Object { $_FullName -like ''*frontend-design*'' } | Select-Object FullName\")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "WebFetch(domain:mdn.github.io)"
     ],
     "deny": [],
     "ask": []
