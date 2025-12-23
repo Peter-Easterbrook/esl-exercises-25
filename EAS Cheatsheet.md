@@ -315,4 +315,6 @@ git push
 
 # Build for production
 npx eas build -p android --profile production
+# Or push an update without rebuilding
+npx eas update --branch production --message "Updates analytic logic"
 ```
