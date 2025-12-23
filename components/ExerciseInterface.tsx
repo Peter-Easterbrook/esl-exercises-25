@@ -626,7 +626,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         {exercise.content.type === 'fill-blanks' && (
           <View style={styles.fillBlanksContainer}>
             <ThemedText style={styles.fillBlanksInstruction}>
-              Fill in the blank(s):
+              Fill in the blank(s) with a comma separating each answer:
             </ThemedText>
             <TextInput
               style={[styles.input, styles.fillBlanksInput]}

@@ -18,6 +18,12 @@ import { BarChart, LineChart, PieChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
 
+// Calculate proper chart width accounting for all padding
+const contentMaxWidth = 600;
+const contentPadding = 20; // content paddingHorizontal: 10 * 2
+const chartContainerPadding = 24; // chartContainer padding: 12 * 2
+const chartWidth = Math.min(screenWidth, contentMaxWidth) - contentPadding - chartContainerPadding;
+
 interface AnalyticsData {
   totalCompletions: number;
   averageScore: number;
@@ -93,7 +99,7 @@ export default function AnalyticsScreen() {
     backgroundGradientTo: '#fff',
     color: (opacity = 1) => `rgba(0, 120, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: 0.7,
+    barPercentage: 0.85,
     useShadowColorFromDataset: false,
     decimalPlaces: 0,
   };
@@ -236,7 +242,7 @@ export default function AnalyticsScreen() {
                         },
                       ],
                     }}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     chartConfig={chartConfig}
                     bezier
@@ -265,7 +271,7 @@ export default function AnalyticsScreen() {
                         },
                       ],
                     }}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     yAxisLabel=''
                     yAxisSuffix=''
@@ -307,7 +313,7 @@ export default function AnalyticsScreen() {
                 <View style={styles.chartContainer}>
                   <PieChart
                     data={pieChartData}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     chartConfig={chartConfig}
                     accessor='population'
@@ -339,7 +345,7 @@ export default function AnalyticsScreen() {
                         },
                       ],
                     }}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     chartConfig={{
                       ...chartConfig,
@@ -411,7 +417,7 @@ export default function AnalyticsScreen() {
                         },
                       ],
                     }}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     yAxisLabel=''
                     yAxisSuffix=''
@@ -459,7 +465,7 @@ export default function AnalyticsScreen() {
                 <View style={styles.chartContainer}>
                   <PieChart
                     data={pieChartData}
-                    width={screenWidth - 40}
+                    width={chartWidth}
                     height={220}
                     chartConfig={chartConfig}
                     accessor='population'

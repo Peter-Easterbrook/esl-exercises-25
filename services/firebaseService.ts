@@ -199,7 +199,21 @@ export const updateExercise = async (
 
 export const deleteExercise = async (exerciseId: string): Promise<void> => {
   try {
+    // First, delete all userProgress records associated with this exercise
+    const progressRef = collection(db, 'userProgress');
+    const progressQuery = query(progressRef, where('exerciseId', '==', exerciseId));
+    const progressSnapshot = await getDocs(progressQuery);
+
+    console.log(`🗑️ Deleting ${progressSnapshot.docs.length} progress records for exercise ${exerciseId}`);
+
+    // Delete all progress documents for this exercise
+    const deleteProgressPromises = progressSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deleteProgressPromises);
+
+    // Then delete the exercise itself
     await deleteDoc(doc(db, 'exercises', exerciseId));
+
+    console.log(`✅ Exercise ${exerciseId} and all associated data deleted successfully`);
   } catch (error) {
     console.error('Error deleting exercise:', error);
     throw error;
@@ -904,12 +918,20 @@ export const getAnalyticsData = async () => {
           timeAgo = diffMins > 0 ? `${diffMins}m ago` : 'Just now';
         }
 
+        // Show email for existing users, or indicate deleted user
+        let userDisplay: string;
+        if (user) {
+          userDisplay = (user as any)?.email || (user as any)?.displayName || `User ID: ${progress.userId}`;
+        } else {
+          userDisplay = `Deleted User (${progress.userId.substring(0, 8)}...)`;
+        }
+
+        // Show exercise title or indicate deleted exercise
+        const exerciseDisplay = exercise?.title || `Deleted Exercise (${progress.exerciseId.substring(0, 8)}...)`;
+
         return {
-          user:
-            (user as any)?.displayName ||
-            (user as any)?.email?.split('@')[0] ||
-            'Anonymous',
-          exercise: exercise?.title || 'Unknown Exercise',
+          user: userDisplay,
+          exercise: exerciseDisplay,
           score: progress.score || 0,
           date: timeAgo,
         };
@@ -1054,6 +1076,106 @@ export const resetAppSettings = async (): Promise<void> => {
     await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
   } catch (error) {
     console.error('Error resetting app settings:', error);
+    throw error;
+  }
+};
+
+// Data Integrity and Cleanup Utilities
+
+// Audit orphaned userProgress records
+export const auditOrphanedRecords = async () => {
+  try {
+    console.log('🔍 Starting data integrity audit...');
+
+    // Get all collections
+    const [progressSnapshot, usersSnapshot, exercisesSnapshot] =
+      await Promise.all([
+        getDocs(collection(db, 'userProgress')),
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'exercises')),
+      ]);
+
+    // Create sets of valid IDs
+    const validUserIds = new Set(usersSnapshot.docs.map((doc) => doc.id));
+    const validExerciseIds = new Set(
+      exercisesSnapshot.docs.map((doc) => doc.id)
+    );
+
+    // Find orphaned records
+    const orphanedUserProgress: Array<{
+      id: string;
+      userId: string;
+      exerciseId: string;
+      reason: string;
+    }> = [];
+
+    progressSnapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      const reasons: string[] = [];
+
+      if (!validUserIds.has(data.userId)) {
+        reasons.push('User not found');
+      }
+
+      if (!validExerciseIds.has(data.exerciseId)) {
+        reasons.push('Exercise not found');
+      }
+
+      if (reasons.length > 0) {
+        orphanedUserProgress.push({
+          id: doc.id,
+          userId: data.userId,
+          exerciseId: data.exerciseId,
+          reason: reasons.join(', '),
+        });
+      }
+    });
+
+    const report = {
+      totalProgressRecords: progressSnapshot.size,
+      totalUsers: usersSnapshot.size,
+      totalExercises: exercisesSnapshot.size,
+      orphanedRecords: orphanedUserProgress.length,
+      details: orphanedUserProgress,
+    };
+
+    console.log('📊 Audit Report:', report);
+    return report;
+  } catch (error) {
+    console.error('Error auditing orphaned records:', error);
+    throw error;
+  }
+};
+
+// Clean up orphaned userProgress records
+export const cleanupOrphanedRecords = async () => {
+  try {
+    console.log('🧹 Starting cleanup of orphaned records...');
+
+    const auditReport = await auditOrphanedRecords();
+
+    if (auditReport.orphanedRecords === 0) {
+      console.log('✅ No orphaned records found. Database is clean!');
+      return { deleted: 0, message: 'No orphaned records found' };
+    }
+
+    // Delete orphaned records
+    const deletePromises = auditReport.details.map((record) =>
+      deleteDoc(doc(db, 'userProgress', record.id))
+    );
+
+    await Promise.all(deletePromises);
+
+    console.log(
+      `✅ Cleaned up ${auditReport.orphanedRecords} orphaned records`
+    );
+
+    return {
+      deleted: auditReport.orphanedRecords,
+      message: `Successfully deleted ${auditReport.orphanedRecords} orphaned records`,
+    };
+  } catch (error) {
+    console.error('Error cleaning up orphaned records:', error);
     throw error;
   }
 };
