@@ -66,6 +66,8 @@ export interface User {
 }
 
 export interface UserProgress {
+  id: string;
+  userId: string;
   exerciseId: string;
   completed: boolean;
   score?: number;

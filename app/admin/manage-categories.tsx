@@ -6,14 +6,14 @@ import { Category } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function ManageCategoriesScreen() {
@@ -215,7 +215,7 @@ export default function ManageCategoriesScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.push('/admin')}
+            onPress={() => router.back()}
           >
             <IconSymbol name='chevron.left' size={24} color='#6996b3' />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>

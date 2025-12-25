@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { backgrounds, blues, borders, colors, elevation } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAdminStats } from '@/services/firebaseService';
 import { router } from 'expo-router';
@@ -70,7 +71,7 @@ export default function AdminPanel() {
       icon: 'plus.circle',
       title: 'Add New Exercise',
       subtitle: 'Create a new exercise for students',
-      color: '#07b524',
+      color: colors.success,
       onPress: () => router.push('/admin/add-exercise'),
       animation: 'slide_from_right',
     },
@@ -78,7 +79,7 @@ export default function AdminPanel() {
       icon: 'doc.badge.plus',
       title: 'Upload Files',
       subtitle: 'Upload PDFs and documents for students',
-      color: '#FF9800',
+      color: colors.warning,
       onPress: () => router.push('/admin/upload-files'),
       animation: 'slide_from_right',
     },
@@ -86,7 +87,7 @@ export default function AdminPanel() {
       icon: 'pencil.circle',
       title: 'Manage Exercises',
       subtitle: 'Edit or delete existing exercises',
-      color: '#6996b3',
+      color: blues.blue5,
       onPress: () => router.push('/admin/manage-exercises'),
       animation: 'slide_from_right',
     },
@@ -94,7 +95,7 @@ export default function AdminPanel() {
       icon: 'folder.circle',
       title: 'Manage Categories',
       subtitle: 'Add, edit or organize categories',
-      color: '#FF9800',
+      color: colors.secondary,
       onPress: () => router.push('/admin/manage-categories'),
       animation: 'slide_from_right',
     },
@@ -102,7 +103,7 @@ export default function AdminPanel() {
       icon: 'person.2.circle',
       title: 'User Management',
       subtitle: 'View and manage user accounts',
-      color: '#9C27B0',
+      color: colors.primary,
       onPress: () => router.push('/admin/manage-users'),
       animation: 'slide_from_right',
     },
@@ -110,7 +111,7 @@ export default function AdminPanel() {
       icon: 'chart.pie',
       title: 'Analytics',
       subtitle: 'View detailed usage statistics',
-      color: '#607D8B',
+      color: blues.blue4,
       onPress: () => router.push('/admin/analytics'),
       animation: 'slide_from_right',
     },
@@ -118,7 +119,7 @@ export default function AdminPanel() {
       icon: 'gear',
       title: 'App Settings',
       subtitle: 'Configure app-wide settings',
-      color: '#795548',
+      color: colors.icon,
       onPress: () => router.push('/admin/app-settings'),
       animation: 'slide_from_right',
     },
@@ -130,9 +131,9 @@ export default function AdminPanel() {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.push('/(tabs)/profile')}
+            onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
             <ThemedText style={styles.backText}>Back to Profile</ThemedText>
           </TouchableOpacity>
 
@@ -157,7 +158,7 @@ export default function AdminPanel() {
 
             {loading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size='large' color='#6996b3' />
+                <ActivityIndicator size='large' color={blues.blue5} />
                 <ThemedText style={styles.loadingText}>
                   Loading statistics...
                 </ThemedText>
@@ -165,7 +166,7 @@ export default function AdminPanel() {
             ) : (
               <View style={styles.statsGrid}>
                 <View style={styles.statCard}>
-                  <IconSymbol name='doc.text' size={24} color='#6996b3' />
+                  <IconSymbol name='doc.text' size={24} color={blues.blue5} />
                   <ThemedText style={styles.statNumber}>
                     {stats.totalExercises}
                   </ThemedText>
@@ -175,7 +176,7 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='person.2' size={24} color='#07b524' />
+                  <IconSymbol name='person.2' size={24} color={colors.success} />
                   <ThemedText style={styles.statNumber}>
                     {stats.totalUsers}
                   </ThemedText>
@@ -183,7 +184,7 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='calendar' size={24} color='#FF9800' />
+                  <IconSymbol name='calendar' size={24} color={colors.warning} />
                   <ThemedText style={styles.statNumber}>
                     {stats.exercisesAddedThisMonth}
                   </ThemedText>
@@ -193,7 +194,7 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='circle.fill' size={24} color='#07b524' />
+                  <IconSymbol name='circle.fill' size={24} color={colors.success} />
                   <ThemedText style={styles.statNumber}>
                     {stats.activeUsers}
                   </ThemedText>
@@ -251,10 +252,9 @@ export default function AdminPanel() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+    container: {
     flex: 1,
-    backgroundColor: '#fafbfc',
-    paddingTop: 60,
+    backgroundColor: backgrounds.subtle,
   },
   contentWrapper: {
     width: '100%',
@@ -263,16 +263,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    paddingTop: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    borderRadius: 8,
-    marginHorizontal: 10,
-   
-     boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
   },
   backButton: {
     flexDirection: 'row',
@@ -281,7 +277,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#6996b3',
+    color: blues.blue5,
     fontSize: 16,
   },
   headerTitleContainer: {
@@ -326,13 +322,13 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 24,
     borderRadius: 16,
     alignItems: 'center',
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    ...elevation.level1,
     borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.08)',
+    borderColor: borders.subtle,
   },
   statNumber: {
     fontSize: 24,
@@ -354,12 +350,12 @@ const styles = StyleSheet.create({
   actionCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 20,
     borderRadius: 16,
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    ...elevation.level1,
     borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.08)',
+    borderColor: borders.subtle,
   },
   actionIcon: {
     width: 56,

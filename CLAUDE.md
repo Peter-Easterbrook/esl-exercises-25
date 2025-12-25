@@ -54,6 +54,15 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 - Themed components use `useThemeColor` hook
 - Single light theme (Colors.dark contains light appearance colors)
 - Animations configured in navigation options
+- **IMPORTANT:** Always use color schemes from `constants/theme.ts`:
+  - `Colors` (uppercase) - Theme object with `dark`/`light` properties for text, background, tint, icons
+  - `colors` (lowercase) - Semantic colors: `primary`, `secondary`, `tertiary`, `success`, `warning`, `danger`
+  - `blues` - Blue palette scale (blue1-blue9)
+  - `backgrounds` - Background variants: `primary`, `subtle`, `tinted`, `tintedStrong`
+  - `borders` - Border colors: `subtle`, `light`, `medium`, `strong`
+  - `elevation` - Shadow presets: `level1`, `level2`, `level3` with blue-tinted shadows
+  - `Fonts` (uppercase) - Platform-specific font families: `sans`, `serif`, `rounded`, `mono`
+  - ⚠️ **Note:** `Colors` vs `colors` - Use correct casing to avoid bugs!
 
 ## Theme Configuration
 

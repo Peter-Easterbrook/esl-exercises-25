@@ -598,7 +598,7 @@ export default function AddExerciseScreen() {
           },
           {
             text: 'Done',
-            onPress: () => router.push('/admin'),
+            onPress: () => router.back(),
           },
         ]);
       }
@@ -639,9 +639,7 @@ export default function AddExerciseScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() =>
-              router.push(isEditMode ? '/admin/manage-exercises' : '/admin')
-            }
+            onPress={() => router.back()}
           >
             <IconSymbol name='chevron.left' size={24} color='#6996b3' />
             <ThemedText style={styles.backText}>

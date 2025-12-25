@@ -1,4 +1,5 @@
 import { db } from '@/config/firebase';
+import { colors } from '@/constants/theme';
 import { Category, Exercise, UserProgress } from '@/types';
 import {
   addDoc,
@@ -962,10 +963,10 @@ export const getAnalyticsData = async () => {
           count,
           color:
             name === 'beginner'
-              ? '#07b524'
+              ? colors.success
               : name === 'intermediate'
-              ? '#FF9800'
-              : '#6f0202',
+              ? colors.warning
+              : colors.danger,
         })
       ),
       userActivityTrend,
@@ -1102,12 +1103,12 @@ export const auditOrphanedRecords = async () => {
     );
 
     // Find orphaned records
-    const orphanedUserProgress: Array<{
+    const orphanedUserProgress: {
       id: string;
       userId: string;
       exerciseId: string;
       reason: string;
-    }> = [];
+    }[] = [];
 
     progressSnapshot.docs.forEach((doc) => {
       const data = doc.data();

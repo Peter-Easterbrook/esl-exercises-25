@@ -72,13 +72,14 @@ export default function RootLayout() {
               }}
             />
 
-            {/* Admin panel - slide from bottom (modal-like for special access) */}
+            {/* Admin panel - slide from right (consistent with admin sub-screens) */}
             <Stack.Screen
               name='admin/index'
               options={{
                 headerShown: false,
-                animation: 'slide_from_bottom',
-                presentation: 'modal',
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
 
@@ -88,6 +89,8 @@ export default function RootLayout() {
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
 
@@ -97,6 +100,8 @@ export default function RootLayout() {
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
             {/* Manage categories - slide from right (sequential flow) */}
@@ -105,6 +110,8 @@ export default function RootLayout() {
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
 
@@ -114,6 +121,8 @@ export default function RootLayout() {
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
 
@@ -123,6 +132,30 @@ export default function RootLayout() {
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
+
+            {/* Analytics - slide from right (sequential flow) */}
+            <Stack.Screen
+              name='admin/analytics'
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
+
+            {/* App Settings - slide from right (sequential flow) */}
+            <Stack.Screen
+              name='admin/app-settings'
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
               }}
             />
 

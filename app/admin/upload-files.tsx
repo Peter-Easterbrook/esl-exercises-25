@@ -3,13 +3,13 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import {
-  deleteFile,
-  getFilesByCategory,
-  uploadFile,
+    deleteFile,
+    getFilesByCategory,
+    uploadFile,
 } from '@/services/fileService';
 import {
-  getCategories,
-  getExercisesByCategory,
+    getCategories,
+    getExercisesByCategory,
 } from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,14 +17,14 @@ import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Animated,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Animated,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function UploadFilesScreen() {
@@ -161,7 +161,7 @@ export default function UploadFilesScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.push('/admin')}
+            onPress={() => router.back()}
           >
             <IconSymbol name='chevron.left' size={24} color='#6996b3' />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>

@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { backgrounds, blues, borders, colors, elevation } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAnalyticsData } from '@/services/firebaseService';
 import { router } from 'expo-router';
@@ -85,7 +86,7 @@ export default function AnalyticsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#6996b3' />
+          <ActivityIndicator size='large' color={blues.blue5} />
           <ThemedText style={styles.loadingText}>
             Loading analytics...
           </ThemedText>
@@ -95,9 +96,9 @@ export default function AnalyticsScreen() {
   }
 
   const chartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
-    color: (opacity = 1) => `rgba(0, 120, 255, ${opacity})`,
+    backgroundGradientFrom: backgrounds.primary,
+    backgroundGradientTo: backgrounds.primary,
+    color: (opacity = 1) => `rgba(105, 150, 179, ${opacity})`,
     strokeWidth: 2,
     barPercentage: 0.85,
     useShadowColorFromDataset: false,
@@ -108,7 +109,7 @@ export default function AnalyticsScreen() {
     name: item.name,
     population: item.count,
     color: item.color,
-    legendFontColor: '#444',
+    legendFontColor: '#202029',
     legendFontSize: 12,
   }));
 
@@ -116,13 +117,13 @@ export default function AnalyticsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
-            <ThemedText style={styles.backText}>Back</ThemedText>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
+          <ThemedText style={styles.backText}>Back</ThemedText>
+        </TouchableOpacity>
 
           <ThemedText type='title' style={styles.title}>
             Analytics Dashboard
@@ -189,7 +190,7 @@ export default function AnalyticsScreen() {
                 <IconSymbol
                   name='checkmark.circle.fill'
                   size={32}
-                  color='#07b524'
+                  color={colors.success}
                 />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.totalCompletions}
@@ -200,7 +201,7 @@ export default function AnalyticsScreen() {
               </View>
 
               <View style={styles.metricCard}>
-                <IconSymbol name='star.fill' size={32} color='#FF9800' />
+                <IconSymbol name='star.fill' size={32} color={colors.warning} />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.averageScore}%
                 </ThemedText>
@@ -211,7 +212,7 @@ export default function AnalyticsScreen() {
                 <IconSymbol
                   name='chart.line.uptrend.xyaxis'
                   size={32}
-                  color='#6996b3'
+                  color={blues.blue5}
                 />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.completionRate}%
@@ -370,7 +371,7 @@ export default function AnalyticsScreen() {
                         <IconSymbol
                           name='person.circle.fill'
                           size={24}
-                          color='#6996b3'
+                          color={blues.blue5}
                         />
                       </View>
                       <View style={styles.activityInfo}>
@@ -488,7 +489,7 @@ export default function AnalyticsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: backgrounds.subtle,
   },
   contentWrapper: {
     width: '100%',
@@ -511,7 +512,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: '#6996b3',
+    color: blues.blue5,
     fontSize: 16,
   },
   title: {
@@ -530,9 +531,9 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: borders.light,
   },
   tab: {
     flex: 1,
@@ -542,7 +543,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: '#6996b3',
+    borderBottomColor: blues.blue5,
   },
   tabText: {
     fontSize: 14,
@@ -550,7 +551,7 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
   },
   activeTabText: {
-    color: '#6996b3',
+    color: blues.blue5,
     fontWeight: '600',
   },
   content: {
@@ -570,11 +571,11 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    ...elevation.level1,
   },
   metricValue: {
     fontSize: 24,
@@ -588,11 +589,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   chartContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderRadius: 12,
     padding: 12,
-    alignItems: 'center',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    paddingLeft: 0,
+    ...elevation.level1,
   },
   chart: {
     borderRadius: 12,
@@ -605,10 +606,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    ...elevation.level1,
   },
   categoryInfo: {
     flex: 1,
@@ -624,8 +625,8 @@ const styles = StyleSheet.create({
   },
   categoryPercentage: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#07b524',
+    fontWeight: 'normal',
+    color: colors.success,
   },
   activityList: {
     gap: 12,
@@ -633,17 +634,17 @@ const styles = StyleSheet.create({
   activityItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
     gap: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    ...elevation.level1,
   },
   activityIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#e3f2fd',
+    backgroundColor: backgrounds.tinted,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -665,7 +666,7 @@ const styles = StyleSheet.create({
   activityScore: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#07b524',
+    color: colors.success,
     marginBottom: 4,
   },
   activityDate: {
@@ -679,24 +680,24 @@ const styles = StyleSheet.create({
   exerciseItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
     gap: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+    ...elevation.level1,
   },
   exerciseRank: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#e8f5e8',
+    backgroundColor: backgrounds.tinted,
     justifyContent: 'center',
     alignItems: 'center',
   },
   rankNumber: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#07b524',
+    color: colors.success,
   },
   exerciseInfo: {
     flex: 1,

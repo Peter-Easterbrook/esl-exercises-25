@@ -1,8 +1,8 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { backgrounds, blues, borders, colors, elevation } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
-import { colors, blues, elevation, borders } from '@/constants/theme';
 import {
   AppSettings,
   auditOrphanedRecords,
@@ -170,13 +170,13 @@ export default function AppSettingsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
-            <ThemedText style={styles.backText}>Back</ThemedText>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
+          <ThemedText style={styles.backText}>Back</ThemedText>
+        </TouchableOpacity>
 
           <ThemedText type='title' style={styles.title}>
             App Settings
@@ -722,7 +722,7 @@ export default function AppSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: backgrounds.subtle,
   },
   contentWrapper: {
     width: '100%',
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   settingCard: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderRadius: 12,
     padding: 12,
     ...elevation.level1,
@@ -817,32 +817,32 @@ const styles = StyleSheet.create({
     width: 80,
     height: 40,
     borderWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: borders.medium,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
     textAlign: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
   },
   timeInput: {
     width: 100,
     height: 40,
     borderWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: borders.medium,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
     textAlign: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
   },
   textAreaInput: {
     marginTop: 12,
     borderWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: borders.medium,
     borderRadius: 8,
     padding: 12,
     fontSize: 14,
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     minHeight: 80,
   },
   actionButtons: {
@@ -862,7 +862,7 @@ const styles = StyleSheet.create({
     ...elevation.level1,
   },
   resetButton: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderWidth: 0.5,
     borderColor: colors.danger,
   },
@@ -885,7 +885,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   auditButton: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderWidth: 0.5,
     borderColor: blues.blue5,
   },
@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderRadius: 16,
     width: '100%',
     maxWidth: 500,
@@ -1023,9 +1023,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: backgrounds.primary,
     borderWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: borders.medium,
   },
   cancelButtonText: {
     color: '#444',
