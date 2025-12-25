@@ -290,7 +290,7 @@ eas submit -p ios
 - **AAB** (`buildType: "app-bundle"`): For Google Play Store (required for production)
 - **IPA**: For iOS App Store distribution
 
-### **Quick Fix Command Sequence:**
+### **Quick Fix Command Sequence (on Bash):**
 
 ```bash
 # Automatically bump version (patch by default: 1.0.12 -> 1.0.13)
