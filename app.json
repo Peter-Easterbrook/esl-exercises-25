@@ -2,7 +2,7 @@
   "expo": {
     "name": "ESL Exercises",
     "slug": "esl-exercises-25",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",
@@ -57,7 +57,13 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-updates",
+        {
+          "username": "petereasterbro1"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
