@@ -37,14 +37,22 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         try {
           // First check if category already has exercises loaded
           if (category.exercises && category.exercises.length > 0) {
-            setExercises(category.exercises);
+            // ensure exercises are shown alphabetically
+            setExercises(
+              [...category.exercises].sort((a, b) =>
+                a.title.localeCompare(b.title)
+              )
+            );
           } else {
             // Fetch exercises from Firebase
             const { getExercisesByCategory } = await import(
               '@/services/firebaseService'
             );
             const categoryExercises = await getExercisesByCategory(category.id);
-            setExercises(categoryExercises);
+            // sort fetched exercises alphabetically by title
+            setExercises(
+              [...categoryExercises].sort((a, b) => a.title.localeCompare(b.title))
+            );
           }
         } catch (error) {
           console.error('Error loading exercises:', error);
@@ -65,7 +73,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
       if (isExpanded) {
         try {
           const files = await getFilesByCategory(category.id);
-          setDownloadableFiles(files);
+          // sort alphabetically by file name
+          setDownloadableFiles([...files].sort((a, b) => a.name.localeCompare(b.name)));
         } catch (error) {
           console.error('Error loading files:', error);
         }

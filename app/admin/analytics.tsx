@@ -261,8 +261,8 @@ export default function AnalyticsScreen() {
                 <View style={styles.chartContainer}>
                   <BarChart
                     data={{
-                      labels: analyticsData.categoryPerformance.map(
-                        (c) => c.name
+                      labels: analyticsData.categoryPerformance.map((c) =>
+                        c.name.length > 4 ? c.name.slice(0, 4) : c.name
                       ),
                       datasets: [
                         {
