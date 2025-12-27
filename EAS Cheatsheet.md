@@ -316,6 +316,6 @@ git push
 # Build for production
 npx eas build -p android --profile production
 # Or push an update without rebuilding
-npx eas update --channel production --message "Updates admin UI"
+npx eas update --channel production --message "Updates list order to alphabetic"
 npx eas update:list --branch production
 ```
