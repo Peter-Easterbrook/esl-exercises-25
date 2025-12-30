@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
   purchaseButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   restoreButton: {
     paddingVertical: 12,

@@ -1,15 +1,14 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { ThemedLoader } from '@/components/themed-loader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Redirect } from 'expo-router';
+// import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Redirect, Tabs } from 'expo-router';
+import React from 'react';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
   const { user, loading } = useAuth();
 
   console.log('TabLayout - user:', !!user, 'loading:', loading);

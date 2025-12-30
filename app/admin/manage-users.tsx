@@ -7,14 +7,14 @@ import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 interface UserData {
@@ -30,18 +30,18 @@ interface UserStats {
   totalExercises: number;
   averageScore: number;
   streak: number;
-  categories: Array<{
+  categories: {
     name: string;
     completed: number;
     total: number;
     avgScore: number;
-  }>;
-  recentActivity: Array<{
+  }[];
+  recentActivity: {
     exerciseTitle: string;
     score: number;
     completedAt: Date;
     success: boolean;
-  }>;
+  }[];
 }
 
 export default function ManageUsersScreen() {
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#333',
   },
   adminBadge: {
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
   adminBadgeText: {
     color: '#fff',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   userEmail: {
     fontSize: 14,
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#6996b3',
   },
   resetText: {
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
   },
   detailName: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '500',
     textAlign: 'center',
     marginBottom: 4,
   },
@@ -878,7 +878,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 12,
     color: '#333',
   },
@@ -939,7 +939,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#333',
   },
   formGroup: {
@@ -947,7 +947,7 @@ const styles = StyleSheet.create({
   },
   formLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 8,
     color: '#333',
   },
@@ -981,9 +981,8 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: '#202029',
-    fontWeight: 'normal',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   saveButton: {
     backgroundColor: '#6996b3',
@@ -991,7 +990,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   disabledButton: {
     opacity: 0.5,

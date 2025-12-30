@@ -799,7 +799,7 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 4,
   },
   settingDescription: {
@@ -869,7 +869,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   resetButtonText: {
     color: colors.danger,
@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
   auditButtonText: {
     color: blues.blue5,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   cleanupButton: {
     backgroundColor: colors.danger,
@@ -900,7 +900,7 @@ const styles = StyleSheet.create({
   cleanupButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   // Modal styles
   modalOverlay: {
@@ -928,7 +928,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#202029',
   },
   modalBody: {
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
   statLabelBold: {
     fontSize: 16,
     color: '#202029',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   statValueBold: {
     fontSize: 18,
@@ -1008,7 +1008,7 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   modalActions: {
     flexDirection: 'row',
@@ -1030,7 +1030,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: '#444',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   confirmButton: {
     backgroundColor: colors.danger,
@@ -1038,6 +1038,6 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
 });

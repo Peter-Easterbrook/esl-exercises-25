@@ -8,16 +8,16 @@ import { createEmptyInstructions } from '@/utils/languageHelpers';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function AddExerciseScreen() {
@@ -1436,7 +1436,7 @@ const styles = StyleSheet.create({
   },
   languageCode: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#999',
     textTransform: 'uppercase',
   },

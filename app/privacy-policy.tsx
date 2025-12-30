@@ -55,10 +55,10 @@ export default function PrivacyPolicy() {
         <Spacer height={20} />
 
         <ThemedText style={styles.paragraph}>
-          This Privacy Notice for OneStepWeb ('we', 'us', or 'our'), describes
+          This Privacy Notice for OneStepWeb (&#39;we&#39;, &#39;us&#39;, or &#39;our&#39;), describes
           how and why we might access, collect, store, use, and/or share
-          ('process') your personal information when you use our services
-          ('Services'), including when you:
+          (&#39;process&#39;) your personal information when you use our services
+          (&#39;Services&#39;), including when you:
         </ThemedText>
 
         <View style={styles.listContainer}>
@@ -121,15 +121,15 @@ export default function PrivacyPolicy() {
           </ThemedText>
           <ThemedText style={styles.listItem}>
             <ThemedText style={styles.bold}>Step 2:</ThemedText> Tap on the
-            "Profile" tab in the bottom navigation
+            &apos;Profile&apos; tab in the bottom navigation
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            <ThemedText style={styles.bold}>Step 3:</ThemedText> Tap on "Account
-            Settings" in the menu
+            <ThemedText style={styles.bold}>Step 3:</ThemedText> Tap on &apos;Account
+            Settings&apos; in the menu
           </ThemedText>
           <ThemedText style={styles.listItem}>
             <ThemedText style={styles.bold}>Step 4:</ThemedText> Scroll to the
-            "Danger Zone" section at the bottom
+            &apos;Danger Zone&apos; section at the bottom
           </ThemedText>
           <ThemedText style={styles.listItem}>
             <ThemedText style={styles.bold}>Step 5:</ThemedText> Choose one of
@@ -177,7 +177,7 @@ export default function PrivacyPolicy() {
             • Your registered email address
           </ThemedText>
           <ThemedText style={styles.listItem}>
-            • Subject line: "Data Deletion Request"
+            • Subject line: &apos;Data Deletion Request&apos;
           </ThemedText>
           <ThemedText style={styles.listItem}>
             • Specify whether you want to delete only progress data or your
@@ -238,7 +238,7 @@ export default function PrivacyPolicy() {
         <ThemedText style={styles.paragraph}>
           <ThemedText style={styles.bold}>Important:</ThemedText> Account
           deletion is permanent and cannot be undone. We recommend using the
-          "Export My Data" feature in Account Settings before deletion if you
+          &apos;Export My Data&apos; feature in Account Settings before deletion if you
           want to keep a copy of your learning history.
         </ThemedText>
 
@@ -330,10 +330,10 @@ export default function PrivacyPolicy() {
           <ThemedText style={styles.listItem}>
             •{' '}
             <ThemedText style={styles.bold}>
-              To save or protect an individual's vital interest.{' '}
+              To save or protect an individual&apos;s vital interest.{' '}
             </ThemedText>
             We may process your information when necessary to save or protect an
-            individual's vital interest, such as to prevent harm.
+            individual&apos;s vital interest, such as to prevent harm.
           </ThemedText>
         </View>
         <Spacer height={10} />
@@ -623,8 +623,8 @@ export default function PrivacyPolicy() {
             request human review. In certain circumstances, you may also have
             the right to object to the processing of your personal information.
             You can make such a request by contacting us by using the contact
-            details provided in the section 'HOW CAN YOU CONTACT US ABOUT THIS
-            NOTICE?' below.
+            details provided in the section &apos;HOW CAN YOU CONTACT US ABOUT THIS
+            NOTICE?&apos; below.
           </ThemedText>
           <ThemedText style={styles.listItem}>
             We will consider and act upon any request in accordance with
@@ -648,8 +648,8 @@ export default function PrivacyPolicy() {
             information, which may be express and/or implied consent depending
             on the applicable law, you have the right to withdraw your consent
             at any time. You can withdraw your consent at any time by contacting
-            us by using the contact details provided in the section 'HOW CAN YOU
-            CONTACT US ABOUT THIS NOTICE?' below.
+            us by using the contact details provided in the section &apos;HOW CAN YOU
+            CONTACT US ABOUT THIS NOTICE?&apos; below.
           </ThemedText>
           <ThemedText style={styles.listItem}>
             However, please note that this will not affect the lawfulness of the
@@ -688,7 +688,7 @@ export default function PrivacyPolicy() {
         <View style={styles.listContainer}>
           <ThemedText style={styles.listItem}>
             Most web browsers and some mobile operating systems and mobile
-            applications include a Do-Not-Track ('DNT') feature or setting you
+            applications include a Do-Not-Track (&apos;DNT&apos;) feature or setting you
             can activate to signal your privacy preference not to have data
             about your online browsing activities monitored and collected. At
             this stage, no uniform technology standard for recognising and
@@ -736,7 +736,7 @@ export default function PrivacyPolicy() {
           illustrative examples of each category and does not reflect the
           personal information we collect from you. For a comprehensive
           inventory of all personal information we process, please refer to the
-          section 'WHAT INFORMATION DO WE COLLECT?'
+          section &apos;WHAT INFORMATION DO WE COLLECT?&apos;
         </ThemedText>
 
         <View style={styles.tableContainer}>
@@ -868,14 +868,14 @@ export default function PrivacyPolicy() {
         </ThemedText>
         <ThemedText style={styles.listItem}>
           Learn more about the sources of personal information we collect in
-          'WHAT INFORMATION DO WE COLLECT?'
+          &apos;WHAT INFORMATION DO WE COLLECT?&apos;
         </ThemedText>
         <ThemedText style={styles.heading} type='subtitle'>
           How We Use and Share Personal Information
         </ThemedText>
         <ThemedText style={styles.listItem}>
           Learn more about how we use your personal information in the section,
-          'HOW DO WE PROCESS YOUR INFORMATION?'
+          &apos;HOW DO WE PROCESS YOUR INFORMATION?&apos;
         </ThemedText>
         <ThemedText style={styles.paragraph}>
           <ThemedText style={styles.bold}>
@@ -886,12 +886,12 @@ export default function PrivacyPolicy() {
           We may disclose your personal information with our service providers
           pursuant to a written contract between us and each service provider.
           Learn more about how we disclose personal information to in the
-          section, 'WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?'
+          section, &apos;WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?&apos;
         </ThemedText>
         <ThemedText style={styles.listItem}>
           We may use your personal information for our own business purposes,
           such as for undertaking internal research for technological
-          development and demonstration. This is not considered to be 'selling'
+          development and demonstration. This is not considered to be &apos;selling&apos;
           of your personal information.
         </ThemedText>
         <ThemedText style={styles.listItem}>
@@ -932,7 +932,7 @@ export default function PrivacyPolicy() {
           used for targeted advertising (or sharing as defined under
           California’s privacy law), the sale of personal data, or profiling in
           furtherance of decisions that produce legal or similarly significant
-          effects ('profiling')
+          effects (&apos;profiling&apos;)
         </ThemedText>
         <ThemedText style={styles.listItem}>
           Depending upon the state where you live, you may also have the
@@ -1015,11 +1015,11 @@ export default function PrivacyPolicy() {
           is denied, you may submit a complaint to your state attorney general.
         </ThemedText>
         <ThemedText style={styles.heading} type='subtitle'>
-          California 'Shine The Light' Law
+          California &apos;Shine The Light&apos; Law
         </ThemedText>
         <ThemedText style={styles.listItem}>
-          California Civil Code Section 1798.83, also known as the 'Shine The
-          Light' law, permits our users who are California residents to request
+          California Civil Code Section 1798.83, also known as the &apos;Shine The
+          Light&apos; law, permits our users who are California residents to request
           and obtain from us, once a year and free of charge, information about
           categories of personal information (if any) we disclosed to third
           parties for direct marketing purposes and the names and addresses of
@@ -1027,7 +1027,7 @@ export default function PrivacyPolicy() {
           immediately preceding calendar year. If you are a California resident
           and would like to make such a request, please submit your request in
           writing to us by using the contact details provided in the section
-          'HOW CAN YOU CONTACT US ABOUT THIS NOTICE?'
+          &apos;HOW CAN YOU CONTACT US ABOUT THIS NOTICE?&apos;
         </ThemedText>
         <ThemedText style={styles.heading} type='subtitle'>
           11. DO WE MAKE UPDATES TO THIS NOTICE?
@@ -1043,7 +1043,7 @@ export default function PrivacyPolicy() {
 
         <ThemedText style={styles.paragraph}>
           We may update this Privacy Notice from time to time. The updated
-          version will be indicated by an updated 'Revised' date at the top of
+          version will be indicated by an updated &apos;Revised&apos; date at the top of
           this Privacy Notice. If we make material changes to this Privacy
           Notice, we may notify you either by prominently posting a notice of
           such changes or by directly sending you a notification. We encourage

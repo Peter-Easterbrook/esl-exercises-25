@@ -242,7 +242,7 @@ export default function HelpSupportScreen() {
                     type='defaultSemiBold'
                     style={styles.troubleshootTitle}
                   >
-                    Exercises won't load
+                    Exercises won&apos;t load
                   </ThemedText>
                   <ThemedText style={styles.troubleshootText}>
                     • Check your internet connection{'\n'}• Pull down on the
@@ -261,7 +261,7 @@ export default function HelpSupportScreen() {
                     type='defaultSemiBold'
                     style={styles.troubleshootTitle}
                   >
-                    Can't log in
+                    Can&apos;t log in
                   </ThemedText>
                   <ThemedText style={styles.troubleshootText}>
                     • Double-check your email and password{'\n'}• Ensure your
@@ -284,7 +284,7 @@ export default function HelpSupportScreen() {
                     type='defaultSemiBold'
                     style={styles.troubleshootTitle}
                   >
-                    Files won't download
+                    Files won&apos;t download
                   </ThemedText>
                   <ThemedText style={styles.troubleshootText}>
                     • Check your internet connection{'\n'}• Ensure you have
@@ -310,7 +310,7 @@ export default function HelpSupportScreen() {
                     Progress not saving
                   </ThemedText>
                   <ThemedText style={styles.troubleshootText}>
-                    • Ensure you're connected to the internet{'\n'}• Complete
+                    • Ensure you&apos;re connected to the internet{'\n'}• Complete
                     the entire exercise before closing{'\n'}• Check the Progress
                     tab to verify{'\n'}• Try completing a different exercise to
                     test
@@ -565,12 +565,12 @@ const styles = StyleSheet.create({
   emailButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   emailText: {
     fontSize: 14,
     color: '#6996b3',
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 8,
   },
   responseText: {

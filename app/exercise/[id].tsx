@@ -9,18 +9,18 @@ import { getDeviceDefaultLanguage, getInstructionsForLanguage } from '@/utils/la
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideInRight,
-  SlideOutLeft,
+    FadeIn,
+    FadeOut,
+    SlideInRight,
+    SlideOutLeft,
 } from 'react-native-reanimated';
 
 export default function ExerciseScreen() {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   languageSelectorLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 12,
     color: '#333',
   },
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   },
   languageButtonCode: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#999',
   },
   languageButtonCodeSelected: {

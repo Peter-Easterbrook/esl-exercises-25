@@ -5,15 +5,15 @@ import { Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
+    Alert,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+    useWindowDimensions,
 } from 'react-native';
 import { Confetti } from 'react-native-fast-confetti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -879,7 +879,7 @@ const styles = StyleSheet.create({
     lineHeight: 40,
   },
   scoreText: {
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#6996b3',
     paddingVertical: 8,
     marginBottom: 16,

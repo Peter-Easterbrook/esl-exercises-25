@@ -6,12 +6,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
-  Image,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
+    Image,
+    Linking,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function AboutScreen() {
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   bold: {
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#000',
   },
   servicesList: {

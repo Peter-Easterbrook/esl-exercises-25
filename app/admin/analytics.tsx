@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: blues.blue5,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   content: {
     flex: 1,
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: '500',
     marginVertical: 8,
     color: '#333',
   },
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 4,
   },
   categoryCount: {
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
   },
   activityUser: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 4,
   },
   activityExercise: {
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   activityScore: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     color: colors.success,
     marginBottom: 4,
   },
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
   },
   rankNumber: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     color: colors.success,
   },
   exerciseInfo: {
@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
   },
   exerciseTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 4,
   },
   exerciseCount: {

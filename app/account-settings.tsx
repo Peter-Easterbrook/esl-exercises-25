@@ -7,29 +7,29 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { exportAllUserData } from '@/services/exportService';
 import {
-  deleteAllUserProgress,
-  getUserProgress,
+    deleteAllUserProgress,
+    getUserProgress,
 } from '@/services/firebaseService';
 import {
-  deleteProfilePhoto,
-  loadProfilePhoto,
-  pickPhoto,
-  saveProfilePhoto,
-  takePhoto,
+    deleteProfilePhoto,
+    loadProfilePhoto,
+    pickPhoto,
+    saveProfilePhoto,
+    takePhoto,
 } from '@/services/profilePhotoService';
 import { getDeviceDefaultLanguage } from '@/utils/languageHelpers';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function AccountSettingsScreen() {
@@ -878,7 +878,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   secondaryButton: {
     flexDirection: 'row',
@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#6996b3',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   warningButton: {
     flexDirection: 'row',
@@ -912,7 +912,7 @@ const styles = StyleSheet.create({
   warningButtonText: {
     color: '#f54707',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   dangerButton: {
     flexDirection: 'row',
@@ -927,7 +927,7 @@ const styles = StyleSheet.create({
   dangerButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   helperText: {
     fontSize: 12,
@@ -942,7 +942,7 @@ const styles = StyleSheet.create({
   },
   deleteAccountLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#ff3b30',
     marginBottom: 8,
   },
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
   },
   languageNameSelected: {
     color: '#6996b3',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   languageCodeText: {
     fontSize: 12,

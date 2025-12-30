@@ -23,6 +23,7 @@ interface CategoryCardProps {
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isFilesExpanded, setIsFilesExpanded] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [downloadableFiles, setDownloadableFiles] = useState<
     DownloadableFile[]
@@ -216,26 +217,41 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 
               {downloadableFiles.length > 0 && (
                 <View style={styles.filesSection}>
-                  <ThemedText style={styles.filesSectionTitle}>
-                    Downloadable Files
-                  </ThemedText>
-                  {downloadableFiles.map((file) => (
-                    <TouchableOpacity
-                      key={file.id}
-                      style={styles.fileItem}
-                      onPress={() => handleDownloadFile(file)}
-                    >
-                      <IconSymbol name='doc.text' size={16} color='#6996b3' />
-                      <ThemedText style={styles.fileItemText}>
-                        {file.name}
-                      </ThemedText>
-                      <IconSymbol
-                        name='arrow.down.circle'
-                        size={16}
-                        color='#464655'
-                      />
-                    </TouchableOpacity>
-                  ))}
+                  <TouchableOpacity
+                    style={styles.filesSectionHeader}
+                    onPress={() => setIsFilesExpanded(!isFilesExpanded)}
+                    activeOpacity={0.7}
+                  >
+                    <ThemedText style={styles.filesSectionTitle}>
+                      Downloadable Files ({downloadableFiles.length})
+                    </ThemedText>
+                    <IconSymbol
+                      name={isFilesExpanded ? 'chevron.up' : 'chevron.down'}
+                      size={16}
+                      color='#464655'
+                    />
+                  </TouchableOpacity>
+                  <Collapsible collapsed={!isFilesExpanded}>
+                    <View style={styles.filesList}>
+                      {downloadableFiles.map((file) => (
+                        <TouchableOpacity
+                          key={file.id}
+                          style={styles.fileItem}
+                          onPress={() => handleDownloadFile(file)}
+                        >
+                          <IconSymbol name='doc.text' size={16} color='#6996b3' />
+                          <ThemedText style={styles.fileItemText}>
+                            {file.name}
+                          </ThemedText>
+                          <IconSymbol
+                            name='arrow.down.circle'
+                            size={16}
+                            color='#464655'
+                          />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </Collapsible>
                 </View>
               )}
             </Collapsible>
@@ -326,7 +342,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
     overflow: 'hidden',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   beginner: {
     backgroundColor: '#e8f5e8',
@@ -358,11 +374,23 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
     paddingHorizontal: 10,
   },
+  filesSectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: 'rgba(105, 150, 179, 0.05)',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
   filesSectionTitle: {
     fontSize: 16,
-    marginBottom: 12,
     letterSpacing: 1,
-    paddingLeft: 10,
+    fontWeight: '500',
+  },
+  filesList: {
+    paddingBottom: 4,
   },
   fileItem: {
     flexDirection: 'row',
