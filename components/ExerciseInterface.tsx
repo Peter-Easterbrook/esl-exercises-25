@@ -2,18 +2,19 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { Exercise } from '@/types';
+import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    useWindowDimensions,
+  Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
 } from 'react-native';
 import { Confetti } from 'react-native-fast-confetti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -153,9 +154,15 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       );
       setScore(percentage);
 
-      // Trigger confetti for perfect score
+      // Trigger confetti and haptic feedback for perfect score
       if (percentage === 100) {
         setShowConfetti(true);
+        // Trigger haptic feedback on non-web platforms
+        if (Platform.OS !== 'web') {
+          Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success
+          );
+        }
       }
 
       // Save progress to Firebase
