@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { colors as themeColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { downloadFile, getFilesByCategory } from '@/services/fileService';
 import { getUserProgress } from '@/services/firebaseService';
@@ -178,7 +179,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                             <IconSymbol
                               name='checkmark.circle.fill'
                               size={20}
-                              color='#07b524'
+                              color={themeColors.success}
                             />
                           )}
                         </View>
@@ -346,15 +347,15 @@ const styles = StyleSheet.create({
   },
   beginner: {
     backgroundColor: '#e8f5e8',
-    color: '#07b524',
+    color: themeColors.beginner,
   },
   intermediate: {
     backgroundColor: '#fff8dc',
-    color: '#ff9500',
+    color: themeColors.intermediate,
   },
   advanced: {
     backgroundColor: '#f9dfd8',
-    color: '#6f0202',
+    color: themeColors.advanced,
   },
   exerciseType: {
     fontSize: 12,

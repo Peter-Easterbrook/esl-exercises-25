@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { colors as themeColors } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   deleteFile,
@@ -33,6 +34,7 @@ export default function UploadFilesScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<string>('');
+  const [selectedLevel, setSelectedLevel] = useState<'beginner' | 'intermediate' | 'advanced' | ''>('');
   const [files, setFiles] = useState<DownloadableFile[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -112,7 +114,8 @@ export default function UploadFilesScreen() {
         file,
         selectedCategory,
         selectedExercise || null,
-        user!.uid
+        user!.uid,
+        selectedLevel || undefined
       );
 
       Alert.alert('Success', 'File uploaded successfully');
@@ -221,6 +224,45 @@ export default function UploadFilesScreen() {
             </View>
           )}
 
+          {/* Level Selection */}
+          {selectedCategory && (
+            <View style={styles.section}>
+              <ThemedText type='subtitle' style={styles.sectionTitle}>
+                Select Level (Optional)
+              </ThemedText>
+              <View style={styles.levelList}>
+                <LevelChip
+                  label='None'
+                  isSelected={!selectedLevel}
+                  onPress={() => setSelectedLevel('')}
+                />
+                <LevelChip
+                  label='Beginner'
+                  level='beginner'
+                  isSelected={selectedLevel === 'beginner'}
+                  onPress={() => setSelectedLevel('beginner')}
+                />
+                <LevelChip
+                  label='Intermediate'
+                  level='intermediate'
+                  isSelected={selectedLevel === 'intermediate'}
+                  onPress={() => setSelectedLevel('intermediate')}
+                />
+                <LevelChip
+                  label='Advanced'
+                  level='advanced'
+                  isSelected={selectedLevel === 'advanced'}
+                  onPress={() => setSelectedLevel('advanced')}
+                />
+              </View>
+              <ThemedText style={styles.helpText}>
+                {selectedLevel
+                  ? `File will be marked for ${selectedLevel} level exercises`
+                  : 'File will be available for all difficulty levels'}
+              </ThemedText>
+            </View>
+          )}
+
           {/* Upload Button */}
           {selectedCategory && (
             <View style={styles.section}>
@@ -271,6 +313,15 @@ export default function UploadFilesScreen() {
                       <ThemedText style={styles.linkedExercise}>
                         📎 Linked to exercise
                       </ThemedText>
+                    )}
+                    {file.level && (
+                      <View style={styles.levelBadge}>
+                        <ThemedText style={styles.levelBadgeText}>
+                          {file.level === 'beginner' && '🟢 Beginner'}
+                          {file.level === 'intermediate' && '🟠 Intermediate'}
+                          {file.level === 'advanced' && '🔴 Advanced'}
+                        </ThemedText>
+                      </View>
                     )}
                     <ThemedText style={styles.fileDate}>
                       {file.uploadedAt.toLocaleDateString()}
@@ -404,6 +455,113 @@ function ExerciseChip({
           style={[
             styles.exerciseChipText,
             isSelected && styles.selectedExerciseChipText,
+          ]}
+        >
+          {label}
+        </ThemedText>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
+// Level Chip Component with Animation
+function LevelChip({
+  label,
+  level,
+  isSelected,
+  onPress,
+}: {
+  label: string;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  isSelected: boolean;
+  onPress: () => void;
+}) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.92,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  // Color scheme for different levels using theme colors
+  const getLevelColors = () => {
+    if (!level) {
+      return {
+        background: '#f8f9fa',
+        border: '#ddd',
+        text: '#444',
+        selectedBg: '#6996b3',
+        selectedBorder: '#6996b3',
+        selectedText: '#fff',
+      };
+    }
+
+    const baseColor = themeColors[level];
+
+    // Create lighter background variants for unselected state
+    const backgroundColors = {
+      beginner: '#e8f5e9',
+      intermediate: '#fff3e0',
+      advanced: '#fce4ec',
+    };
+
+    const borderColors = {
+      beginner: '#a5d6a7',
+      intermediate: '#ffcc80',
+      advanced: '#f48fb1',
+    };
+
+    return {
+      background: backgroundColors[level],
+      border: borderColors[level],
+      text: baseColor,
+      selectedBg: baseColor,
+      selectedBorder: baseColor,
+      selectedText: '#fff',
+    };
+  };
+
+  const colors = getLevelColors();
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      android_ripple={{
+        color: 'rgba(0, 0, 0, 0.1)',
+        foreground: true,
+      }}
+    >
+      <Animated.View
+        style={[
+          styles.levelChip,
+          {
+            backgroundColor: isSelected ? colors.selectedBg : colors.background,
+            borderColor: isSelected ? colors.selectedBorder : colors.border,
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
+      >
+        <ThemedText
+          style={[
+            styles.levelChipText,
+            {
+              color: isSelected ? colors.selectedText : colors.text,
+            },
           ]}
         >
           {label}
@@ -584,5 +742,30 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#07b524',
     marginTop: 2,
+  },
+  levelBadge: {
+    marginTop: 4,
+    alignSelf: 'flex-start',
+  },
+  levelBadgeText: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  levelList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  levelChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.15)',
+  },
+  levelChipText: {
+    fontSize: 13,
+    fontWeight: '500',
   },
 });

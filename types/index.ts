@@ -6,6 +6,7 @@ export interface DownloadableFile {
   size: number; // in bytes
   categoryId: string;
   exerciseId?: string; // optional - can be linked to specific exercise
+  level?: 'beginner' | 'intermediate' | 'advanced'; // optional - difficulty level
   uploadedAt: Date;
   uploadedBy: string; // admin user ID
 }

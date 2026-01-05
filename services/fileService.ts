@@ -38,7 +38,8 @@ export const uploadFile = async (
   file: DocumentPicker.DocumentPickerAsset,
   categoryId: string,
   exerciseId: string | null,
-  userId: string
+  userId: string,
+  level?: 'beginner' | 'intermediate' | 'advanced'
 ): Promise<string> => {
   try {
     // Create a unique file name
@@ -71,6 +72,7 @@ export const uploadFile = async (
       size: file.size || 0,
       categoryId,
       ...(exerciseId && { exerciseId }),
+      ...(level && { level }),
       uploadedAt: new Date(),
       uploadedBy: userId,
     };

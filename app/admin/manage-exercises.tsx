@@ -2,6 +2,7 @@ import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { colors as themeColors } from '@/constants/theme';
 import { Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -227,7 +228,7 @@ export default function ManageExercisesScreen() {
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteExercise(exercise)}
                     >
-                      <IconSymbol name='trash' size={16} color='#6f0202' />
+                      <IconSymbol name='trash' size={16} color={themeColors.danger} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#07b524',
+    backgroundColor: themeColors.success,
     paddingVertical: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -368,13 +369,13 @@ const styles = StyleSheet.create({
     color: '#444',
   },
   beginner: {
-    color: '#07b524',
+    color: themeColors.beginner,
   },
   intermediate: {
-    color: '#FF9800',
+    color: themeColors.intermediate,
   },
   advanced: {
-    color: '#6f0202',
+    color: themeColors.advanced,
   },
   exerciseActions: {
     flexDirection: 'row',

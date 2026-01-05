@@ -63,7 +63,10 @@ export const colors = {
   signoutBackground: '#feded2',
   borderColor: '#fea382',
   signoutText: '#f54707',
-};
+  beginner: '#07b524',
+  intermediate: '#FF9800',
+  advanced: '#6f0202'
+  };
 
 export const blues = {
   blue1: '#004c6d',
