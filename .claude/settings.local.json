@@ -53,7 +53,8 @@
       "WebFetch(domain:mdn.github.io)",
       "Bash(eas build:list:*)",
       "Bash(eas update:list:*)",
-      "Bash(eas update:*)"
+      "Bash(eas update:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

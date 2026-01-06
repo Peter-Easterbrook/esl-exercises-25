@@ -642,6 +642,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               placeholder='Type your answer here...'
               multiline
               numberOfLines={3}
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
             />
           </View>
         )}
@@ -659,6 +660,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               placeholder='Type your essay here...'
               multiline
               numberOfLines={10}
+              placeholderTextColor='rgba(102, 102, 102, 0.5)'
             />
           </View>
         )}

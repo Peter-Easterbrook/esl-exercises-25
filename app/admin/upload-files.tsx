@@ -307,7 +307,7 @@ export default function UploadFilesScreen() {
                       {file.name}
                     </ThemedText>
                     <ThemedText style={styles.fileDetails}>
-                      {`${formatFileSize(file.size)} • ${file.fileType.toUpperCase()}`}
+                      {formatFileSize(file.size)} • {file.fileType.toUpperCase()}
                     </ThemedText>
                     {file.exerciseId && (
                       <ThemedText style={styles.linkedExercise}>
