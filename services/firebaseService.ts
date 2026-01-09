@@ -1230,3 +1230,26 @@ export const updateCategory = async (
     throw error;
   }
 };
+
+// Premium Status Operations
+
+// Update user premium status after purchase
+export const updateUserPremiumStatus = async (
+  userId: string,
+  premiumData: {
+    hasPremiumAccess: boolean;
+    premiumPurchaseDate: Date;
+    premiumPurchaseToken: string;
+    premiumPurchaseOrderId: string;
+    premiumPurchaseReceipt: string;
+    premiumPlatform: 'android' | 'ios' | 'web';
+  }
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'users', userId), premiumData);
+    console.log(`User ${userId} premium status updated successfully`);
+  } catch (error) {
+    console.error('Error updating user premium status:', error);
+    throw error;
+  }
+};

@@ -1,3 +1,4 @@
+import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
@@ -9,7 +10,7 @@ import { getUserProgress } from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -22,7 +23,7 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
-  const { user } = useAuth();
+  const { user, hasPremiumAccess, appUser } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFilesExpanded, setIsFilesExpanded] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -32,6 +33,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const [completedExerciseIds, setCompletedExerciseIds] = useState<Set<string>>(
     new Set()
   );
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+  // Admins have free access to downloads
+  const canDownload = hasPremiumAccess || appUser?.isAdmin;
 
   useEffect(() => {
     const loadExercises = async () => {
@@ -107,6 +112,22 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   };
 
   const handleDownloadFile = async (file: DownloadableFile) => {
+    // Check platform - web doesn't support downloads
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        'Not Available',
+        'Downloads are only available on mobile devices.'
+      );
+      return;
+    }
+
+    // Check premium access (admins bypass paywall)
+    if (!canDownload) {
+      setShowPremiumModal(true);
+      return;
+    }
+
+    // Proceed with download
     try {
       await downloadFile(file);
     } catch (error) {
@@ -244,6 +265,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                           <ThemedText style={styles.fileItemText}>
                             {file.name}
                           </ThemedText>
+                          {!canDownload && (
+                            <IconSymbol
+                              name='lock.fill'
+                              size={14}
+                              color={themeColors.warning}
+                              style={styles.lockIcon}
+                            />
+                          )}
                           <IconSymbol
                             name='arrow.down.circle'
                             size={16}
@@ -259,6 +288,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           </Animated.View>
         </Animated.View>
       )}
+
+      <PremiumPurchaseModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        onPurchaseSuccess={() => {
+          Alert.alert('Success', 'You can now download files!');
+        }}
+      />
     </ThemedView>
   );
 };
@@ -408,5 +445,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     fontSize: 14,
+  },
+  lockIcon: {
+    marginRight: 8,
   },
 });

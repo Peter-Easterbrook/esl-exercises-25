@@ -64,6 +64,14 @@ export interface User {
   isAdmin: boolean;
   progress: UserProgress[];
   preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de', 'it'
+
+  // Premium access fields
+  hasPremiumAccess?: boolean;
+  premiumPurchaseDate?: Date;
+  premiumPurchaseToken?: string;
+  premiumPurchaseOrderId?: string;
+  premiumPurchaseReceipt?: string;
+  premiumPlatform?: 'android' | 'ios' | 'web';
 }
 
 export interface UserProgress {

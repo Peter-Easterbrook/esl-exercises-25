@@ -54,7 +54,8 @@
       "Bash(eas build:list:*)",
       "Bash(eas update:list:*)",
       "Bash(eas update:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(claude update:*)"
     ],
     "deny": [],
     "ask": []

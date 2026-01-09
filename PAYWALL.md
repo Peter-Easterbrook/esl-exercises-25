@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the complete implementation plan for adding a paywall to downloadable files using Google Play Billing. The app will remain free on Google Play, but users must pay €1 (one-time purchase) to access all downloadable exercise files.
+This document outlines the complete implementation plan for adding a paywall to downloadable files using Google Play Billing. The app will remain free on Google Play, but users must pay €1.99 (one-time purchase) to access all downloadable exercise files.
 
 ---
 
@@ -10,7 +10,7 @@ This document outlines the complete implementation plan for adding a paywall to 
 
 ### Payment Model
 - **Type:** One-time purchase (not subscription)
-- **Price:** €1.00
+- **Price:** €1.99
 - **Unlocks:** ALL downloadable files permanently
 - **Platform:** Google Play Billing (Android initially, iOS future)
 - **UX:** Show download buttons to all users, prompt payment on tap
@@ -90,7 +90,7 @@ npx expo run:android --variant debug
    - **Type:** One-time purchase (NOT subscription)
    - **Name:** "Premium File Access"
    - **Description:** "Unlock all downloadable exercise files permanently"
-   - **Price:** €1.00 (set for all countries)
+   - **Price:** €1.99 (set for all countries)
    - **Status:** Active
 
 3. **Testing Setup**
@@ -909,17 +909,17 @@ npx expo run:android --variant debug
 
 ## Security Considerations
 
-### Client-Side Verification (Recommended for €1 Product)
+### Client-Side Verification (Recommended for €1.99 Product)
 
 **Current Approach:**
 - Purchase verification in app via react-native-iap
 - Purchase token stored in Firestore for audit trail
 - Firestore rules limit who can update premium status
-- Low risk for €1 product
+- Low risk for €1.99 product
 
 ### Optional: Server-Side Verification
 
-For higher security, implement Firebase Cloud Functions to verify purchases with Google Play Developer API. However, for a €1 product, client-side verification is acceptable.
+For higher security, implement Firebase Cloud Functions to verify purchases with Google Play Developer API. However, for a €1.99 product, client-side verification is acceptable.
 
 ---
 
@@ -953,10 +953,10 @@ Same code works for iOS with minimal changes:
 ### Google Play Fees
 
 - **Service Fee:** 15% for first $1M revenue/year, 30% after
-- **For €1 purchase:**
-  - User pays: €1.00
-  - Google takes: €0.15 (15%)
-  - You receive: ~€0.85
+- **For €1.99 purchase:**
+  - User pays: €1.99
+  - Google takes: ~€0.30 (15%)
+  - You receive: ~€1.69
 
 ### Tax
 
@@ -1033,5 +1033,5 @@ Same code works for iOS with minimal changes:
 
 ---
 
-**Last Updated:** December 7, 2025
-**Status:** Ready for implementation after language feature testing complete
+**Last Updated:** January 9, 2026
+**Status:** Implemented - Ready for Google Play Console product setup and testing

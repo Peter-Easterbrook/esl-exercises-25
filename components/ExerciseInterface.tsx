@@ -1,3 +1,4 @@
+import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
@@ -33,7 +34,7 @@ const getResponsiveFontSize = (screenWidth: number): number => {
 export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   exercise,
 }) => {
-  const { user } = useAuth();
+  const { user, hasPremiumAccess, appUser } = useAuth();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -41,7 +42,11 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const scoreTextSize = getResponsiveFontSize(width);
+
+  // Admins have free access to downloads
+  const canDownload = hasPremiumAccess || appUser?.isAdmin;
 
   // Stop confetti after animation completes
   useEffect(() => {
@@ -196,6 +201,21 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   };
 
   const handleDownloadFile = async () => {
+    // Check platform - web doesn't support downloads
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        'Not Available',
+        'Downloads are only available on mobile devices.'
+      );
+      return;
+    }
+
+    // Check premium access (admins bypass paywall)
+    if (!canDownload) {
+      setShowPremiumModal(true);
+      return;
+    }
+
     try {
       const { getFilesByExercise, downloadFile } = await import(
         '@/services/fileService'
@@ -435,6 +455,14 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
             </TouchableOpacity>
           </View>
         </ScrollView>
+
+        <PremiumPurchaseModal
+          visible={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          onPurchaseSuccess={() => {
+            Alert.alert('Success', 'You can now download files!');
+          }}
+        />
       </View>
     );
   }

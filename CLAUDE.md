@@ -28,6 +28,7 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
   - `firebaseService.ts` - Firestore CRUD operations
   - `fileService.ts` - Firebase Storage operations
   - `exportService.ts` - User data export functionality
+  - `premiumService.ts` - In-app purchase operations (native-only, uses dynamic imports)
 
 - `types/` - TypeScript definitions
 - `config/` - Firebase configuration
@@ -44,6 +45,7 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 - react-native-chart-kit (analytics visualizations)
 - expo-auth-session (Google OAuth integration)
 - @react-native-async-storage/async-storage (Firebase auth persistence)
+- react-native-iap (In-app purchases - native only, see Native-Only Modules section)
 
 ## Code Style
 
@@ -110,6 +112,37 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 - Expo File System uses legacy API (SDK 54 compatibility)
 - Animations may vary on low-end devices and web
 
+## Native-Only Modules
+
+Some modules only work on native platforms (iOS/Android) and will break web builds if imported directly:
+
+**react-native-iap:**
+- Must use dynamic imports: `await import('react-native-iap')`
+- Always check `Platform.OS === 'web'` before importing
+- **Requires development build** - won't work in Expo Go
+- See `services/premiumService.ts` for implementation pattern
+- Web and Expo Go gracefully degrade (IAP silently unavailable)
+
+**Pattern for native-only code:**
+```typescript
+// WRONG - breaks web build
+import * as RNIap from 'react-native-iap';
+
+// CORRECT - dynamic import with availability check
+const getRNIap = async () => {
+  if (Platform.OS === 'web') return null;
+  try {
+    const module = await import('react-native-iap');
+    if (!module.initConnection) return null; // Not available in Expo Go
+    return module;
+  } catch { return null; }
+};
+```
+
+**Testing IAP:**
+- Expo Go: IAP silently disabled, app works normally
+- Development build: Run `npx eas build --profile development --platform android`
+
 ## Environment Variables
 
 Required `.env` file:
@@ -162,12 +195,32 @@ Exercise instructions now available in 4 languages: English 🇬🇧, Spanish �
 - `app/account-settings.tsx` - Language preference selector
 - `app/exercise/[id].tsx` - Per-exercise language switcher
 
-## Planned Features
+### Download Paywall ✅
+**See `PAYWALL.md` for complete documentation**
 
-### Download Paywall
-**See `PAYWALL.md` for complete implementation plan**
+One-time €1.99 purchase to unlock all downloadable files via Google Play Billing
+- Status: Implemented, ready for Google Play Console product setup
+- Platform: Android (Google Play Billing), iOS (App Store) supported
+- Admins bypass paywall for free access
 
-One-time €1 purchase to unlock all downloadable files via Google Play Billing
-- Status: Fully planned, ready for implementation
-- Platform: Android initially (iOS future)
-- Implementation guide with code samples in PAYWALL.md
+**User Features:**
+- Lock icon shown on files for non-premium users
+- Premium purchase modal with feature list
+- Restore purchases for device reinstalls
+- Web shows "not available" message (purchases mobile-only)
+
+**Technical:**
+- Uses `react-native-iap` with dynamic imports (web-safe)
+- Premium status stored in Firestore user document
+- AuthContext provides `hasPremiumAccess` and `refreshPremiumStatus`
+
+**Files:**
+- `services/premiumService.ts` - IAP operations (initialize, purchase, verify, restore)
+- `components/PremiumPurchaseModal.tsx` - Purchase UI modal
+- `components/CategoryCard.tsx` - Paywall check on download
+- `components/ExerciseInterface.tsx` - Paywall check on download
+
+**Next Steps:**
+1. Create `premium_file_access` product in Google Play Console at €1.99
+2. Add test accounts in License Testing
+3. Build with `eas build` and test purchase flow

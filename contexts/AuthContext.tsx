@@ -1,5 +1,10 @@
 import { auth, db } from '@/config/firebase';
 import { deleteUserAccount, updateUserDisplayName, updateUserLanguagePreference } from '@/services/firebaseService';
+import {
+  checkPremiumAccess,
+  endIAPConnection,
+  initializeIAP,
+} from '@/services/premiumService';
 import { User as AppUser } from '@/types';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
@@ -26,6 +31,7 @@ interface AuthContextType {
   user: User | null;
   appUser: AppUser | null;
   loading: boolean;
+  hasPremiumAccess: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -35,6 +41,7 @@ interface AuthContextType {
   updateLanguagePreference: (language: string) => Promise<void>;
   deleteAccount: (password: string) => Promise<void>;
   refreshUserData: () => Promise<void>;
+  refreshPremiumStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,6 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
 
   const [_request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -87,6 +95,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('❌ Google auth error:', response.error);
     }
   }, [response]);
+
+  // Initialize IAP connection on mount
+  useEffect(() => {
+    initializeIAP();
+
+    return () => {
+      endIAPConnection();
+    };
+  }, []);
+
+  // Sync premium status from appUser when it changes
+  useEffect(() => {
+    if (appUser) {
+      setHasPremiumAccess(appUser.hasPremiumAccess || false);
+    } else {
+      setHasPremiumAccess(false);
+    }
+  }, [appUser]);
 
   useEffect(() => {
     console.log('Setting up auth state listener...');
@@ -258,10 +284,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const refreshPremiumStatus = async () => {
+    if (!user) return;
+
+    try {
+      const isPremium = await checkPremiumAccess(user.uid);
+      setHasPremiumAccess(isPremium);
+      await refreshUserData(); // Refresh full user data
+    } catch (error) {
+      console.error('Error refreshing premium status:', error);
+    }
+  };
+
   const value = {
     user,
     appUser,
     loading,
+    hasPremiumAccess,
     signIn,
     signUp,
     signInWithGoogle,
@@ -271,6 +310,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateLanguagePreference,
     deleteAccount,
     refreshUserData,
+    refreshPremiumStatus,
   };
 
   return (
