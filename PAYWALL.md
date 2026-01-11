@@ -9,6 +9,7 @@ This document outlines the complete implementation plan for adding a paywall to 
 ## System Design
 
 ### Payment Model
+
 - **Type:** One-time purchase (not subscription)
 - **Price:** €1.99
 - **Unlocks:** ALL downloadable files permanently
@@ -16,6 +17,7 @@ This document outlines the complete implementation plan for adding a paywall to 
 - **UX:** Show download buttons to all users, prompt payment on tap
 
 ### Technology Stack
+
 - **Library:** `react-native-iap` (NOT `expo-in-app-purchases`)
 - **Rationale:**
   - Better maintained with 3.5k+ stars
@@ -60,10 +62,7 @@ Add to `app.json`:
       ]
     ],
     "android": {
-      "permissions": [
-        "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
     }
   }
 }
@@ -80,28 +79,41 @@ npx expo run:android --variant debug
 
 ### Phase 2: Google Play Console Setup
 
+#### Testing Setup (DO THIS FIRST!)
+
+1. **Add License Testers** (before creating product!)
+   - **CRITICAL:** This is at the **account level**, NOT app level
+   - Exit any selected app to see the global sidebar
+   - Go to: Google Play Console → **Setup** (global sidebar) → **License testing**
+   - Add Gmail accounts you want to use for testing
+   - **License Response:** Set dropdown to **RESPOND_NORMALLY** (required - makes Google behave as if purchase is real without charging)
+   - These accounts can make test purchases without being charged
+   - **IMPORTANT:** Set this up BEFORE uploading your APK/AAB with IAP code
+
 #### Product Configuration
 
 1. **Navigate to Google Play Console**
+
    - Go to "Monetize" → "Products" → "In-app products"
 
 2. **Create In-App Product**
+
    - **Product ID:** `premium_file_access`
+   - **Purchase option ID** `premium_file_access` (same as product ID)
    - **Type:** One-time purchase (NOT subscription)
    - **Name:** "Premium File Access"
    - **Description:** "Unlock all downloadable exercise files permanently"
-   - **Price:** €1.99 (set for all countries)
+   - **Base Price:** €1.66 (displays as ~€1.99 with EU VAT)
+   - **Tax Category:** Digital app sales
+   - **Tags:** Leave empty
    - **Status:** Active
 
-3. **Testing Setup**
-   - Add test accounts in "License Testing" section
-   - Use test Gmail accounts (not production accounts)
-   - Test purchases won't be charged
-
 #### Important Notes
+
 - Product visible only after first APK/AAB upload
 - Test purchases require Internal Testing track minimum
 - Keep product ID consistent (no dev/prod split)
+- Closed testing users ≠ License testers (different systems)
 
 ---
 
@@ -126,7 +138,7 @@ export interface User {
   premiumPurchaseToken?: string;
   premiumPurchaseOrderId?: string;
   premiumPurchaseReceipt?: string;
-  premiumPlatform?: 'android' | 'ios' | 'web';
+  premiumPlatform?: "android" | "ios" | "web";
 }
 ```
 
@@ -151,23 +163,23 @@ users/{userId}
 **New file:** `services/premiumService.ts`
 
 ```typescript
-import * as RNIap from 'react-native-iap';
-import { Platform, Alert } from 'react-native';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/config/firebase';
+import * as RNIap from "react-native-iap";
+import { Platform, Alert } from "react-native";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "@/config/firebase";
 
 // Product IDs
-const ANDROID_PRODUCT_ID = 'premium_file_access';
-const IOS_PRODUCT_ID = 'premium_file_access'; // Same ID for consistency
+const ANDROID_PRODUCT_ID = "premium_file_access";
+const IOS_PRODUCT_ID = "premium_file_access"; // Same ID for consistency
 
 // Initialize IAP connection
 export const initializeIAP = async (): Promise<boolean> => {
   try {
     const connection = await RNIap.initConnection();
-    console.log('IAP connection initialized:', connection);
+    console.log("IAP connection initialized:", connection);
     return true;
   } catch (error) {
-    console.error('Error initializing IAP:', error);
+    console.error("Error initializing IAP:", error);
     return false;
   }
 };
@@ -184,7 +196,7 @@ export const getProducts = async () => {
     const products = await RNIap.getProducts({ skus: productIds });
     return products;
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 };
@@ -198,22 +210,22 @@ export const purchasePremium = async () => {
     });
 
     if (!productId) {
-      throw new Error('Platform not supported');
+      throw new Error("Platform not supported");
     }
 
     const purchase = await RNIap.requestPurchase({
       sku: productId,
-      andDangerouslyFinishTransactionAutomatically: false // Manual acknowledgment
+      andDangerouslyFinishTransactionAutomatically: false, // Manual acknowledgment
     });
 
     return purchase;
   } catch (error) {
     // Handle user cancellation gracefully
-    if (error.code === 'E_USER_CANCELLED') {
-      console.log('User cancelled purchase');
+    if (error.code === "E_USER_CANCELLED") {
+      console.log("User cancelled purchase");
       return null;
     }
-    console.error('Error purchasing premium:', error);
+    console.error("Error purchasing premium:", error);
     throw error;
   }
 };
@@ -228,25 +240,25 @@ export const verifyAndSavePurchase = async (
     const purchaseData = {
       hasPremiumAccess: true,
       premiumPurchaseDate: new Date(purchase.transactionDate),
-      premiumPurchaseToken: purchase.purchaseToken || '',
-      premiumPurchaseOrderId: purchase.transactionId || '',
+      premiumPurchaseToken: purchase.purchaseToken || "",
+      premiumPurchaseOrderId: purchase.transactionId || "",
       premiumPurchaseReceipt: JSON.stringify(purchase),
-      premiumPlatform: Platform.OS as 'android' | 'ios',
+      premiumPlatform: Platform.OS as "android" | "ios",
     };
 
     // Save to Firestore
-    await updateDoc(doc(db, 'users', userId), purchaseData);
+    await updateDoc(doc(db, "users", userId), purchaseData);
 
     // Acknowledge/finish purchase with Google/Apple
     await RNIap.finishTransaction({
       purchase,
-      isConsumable: false // One-time purchase, not consumable
+      isConsumable: false, // One-time purchase, not consumable
     });
 
-    console.log('Purchase verified and saved');
+    console.log("Purchase verified and saved");
     return true;
   } catch (error) {
-    console.error('Error verifying purchase:', error);
+    console.error("Error verifying purchase:", error);
     throw error;
   }
 };
@@ -261,8 +273,9 @@ export const restorePurchases = async (userId: string) => {
     }
 
     // Find premium access purchase
-    const premiumPurchase = purchases.find(p =>
-      p.productId === ANDROID_PRODUCT_ID || p.productId === IOS_PRODUCT_ID
+    const premiumPurchase = purchases.find(
+      (p) =>
+        p.productId === ANDROID_PRODUCT_ID || p.productId === IOS_PRODUCT_ID
     );
 
     if (premiumPurchase) {
@@ -273,7 +286,7 @@ export const restorePurchases = async (userId: string) => {
 
     return false;
   } catch (error) {
-    console.error('Error restoring purchases:', error);
+    console.error("Error restoring purchases:", error);
     throw error;
   }
 };
@@ -281,13 +294,13 @@ export const restorePurchases = async (userId: string) => {
 // Check if user has premium access (from Firestore)
 export const checkPremiumAccess = async (userId: string): Promise<boolean> => {
   try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
+    const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
       return userDoc.data()?.hasPremiumAccess || false;
     }
     return false;
   } catch (error) {
-    console.error('Error checking premium access:', error);
+    console.error("Error checking premium access:", error);
     return false;
   }
 };
@@ -297,7 +310,7 @@ export const endIAPConnection = async () => {
   try {
     await RNIap.endConnection();
   } catch (error) {
-    console.error('Error ending IAP connection:', error);
+    console.error("Error ending IAP connection:", error);
   }
 };
 ```
@@ -316,13 +329,13 @@ export const updateUserPremiumStatus = async (
     premiumPurchaseToken: string;
     premiumPurchaseOrderId: string;
     premiumPurchaseReceipt: string;
-    premiumPlatform: 'android' | 'ios' | 'web';
+    premiumPlatform: "android" | "ios" | "web";
   }
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'users', userId), premiumData);
+    await updateDoc(doc(db, "users", userId), premiumData);
   } catch (error) {
-    console.error('Error updating user premium status:', error);
+    console.error("Error updating user premium status:", error);
     throw error;
   }
 };
@@ -385,7 +398,7 @@ const refreshPremiumStatus = async () => {
     setHasPremiumAccess(isPremium);
     await refreshUserData(); // Refresh full user data
   } catch (error) {
-    console.error('Error refreshing premium status:', error);
+    console.error("Error refreshing premium status:", error);
   }
 };
 ```
@@ -407,7 +420,7 @@ const value = {
 **New file:** `components/PremiumPurchaseModal.tsx`
 
 ```typescript
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -415,18 +428,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-} from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useAuth } from '@/contexts/AuthContext';
+} from "react-native";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   getProducts,
   purchasePremium,
   verifyAndSavePurchase,
   restorePurchases,
-} from '@/services/premiumService';
-import * as RNIap from 'react-native-iap';
+} from "@/services/premiumService";
+import * as RNIap from "react-native-iap";
 
 interface PremiumPurchaseModalProps {
   visible: boolean;
@@ -441,7 +454,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 }) => {
   const { user, refreshPremiumStatus } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [productPrice, setProductPrice] = useState<string>('€1.00');
+  const [productPrice, setProductPrice] = useState<string>("€1.00");
   const [purchasing, setPurchasing] = useState(false);
 
   useEffect(() => {
@@ -458,7 +471,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
         setProductPrice(products[0].localizedPrice);
       }
     } catch (error) {
-      console.error('Error loading products:', error);
+      console.error("Error loading products:", error);
     }
   };
 
@@ -475,16 +488,24 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
             await refreshPremiumStatus();
 
             Alert.alert(
-              'Success!',
-              'You now have premium access to all downloadable files!',
-              [{ text: 'OK', onPress: () => {
-                onPurchaseSuccess();
-                onClose();
-              }}]
+              "Success!",
+              "You now have premium access to all downloadable files!",
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    onPurchaseSuccess();
+                    onClose();
+                  },
+                },
+              ]
             );
           } catch (error) {
-            console.error('Error processing purchase:', error);
-            Alert.alert('Error', 'Failed to verify purchase. Please contact support.');
+            console.error("Error processing purchase:", error);
+            Alert.alert(
+              "Error",
+              "Failed to verify purchase. Please contact support."
+            );
           } finally {
             setPurchasing(false);
           }
@@ -494,9 +515,9 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
     const purchaseErrorSubscription = RNIap.purchaseErrorListener(
       (error: RNIap.PurchaseError) => {
-        if (error.code !== 'E_USER_CANCELLED') {
-          console.error('Purchase error:', error);
-          Alert.alert('Purchase Error', error.message);
+        if (error.code !== "E_USER_CANCELLED") {
+          console.error("Purchase error:", error);
+          Alert.alert("Purchase Error", error.message);
         }
         setPurchasing(false);
       }
@@ -510,7 +531,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
   const handlePurchase = async () => {
     if (!user) {
-      Alert.alert('Error', 'Please sign in to make a purchase');
+      Alert.alert("Error", "Please sign in to make a purchase");
       return;
     }
 
@@ -525,15 +546,15 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
       }
       // Purchase listener will handle success
     } catch (error) {
-      console.error('Purchase error:', error);
-      Alert.alert('Error', 'Failed to initiate purchase. Please try again.');
+      console.error("Purchase error:", error);
+      Alert.alert("Error", "Failed to initiate purchase. Please try again.");
       setPurchasing(false);
     }
   };
 
   const handleRestore = async () => {
     if (!user) {
-      Alert.alert('Error', 'Please sign in to restore purchases');
+      Alert.alert("Error", "Please sign in to restore purchases");
       return;
     }
 
@@ -544,23 +565,24 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
       if (restored) {
         await refreshPremiumStatus();
-        Alert.alert(
-          'Success',
-          'Your purchase has been restored!',
-          [{ text: 'OK', onPress: () => {
-            onPurchaseSuccess();
-            onClose();
-          }}]
-        );
+        Alert.alert("Success", "Your purchase has been restored!", [
+          {
+            text: "OK",
+            onPress: () => {
+              onPurchaseSuccess();
+              onClose();
+            },
+          },
+        ]);
       } else {
         Alert.alert(
-          'No Purchases Found',
-          'No previous purchases were found for this account.'
+          "No Purchases Found",
+          "No previous purchases were found for this account."
         );
       }
     } catch (error) {
-      console.error('Restore error:', error);
-      Alert.alert('Error', 'Failed to restore purchases. Please try again.');
+      console.error("Restore error:", error);
+      Alert.alert("Error", "Failed to restore purchases. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -588,30 +610,47 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
           <View style={styles.content}>
             <ThemedText style={styles.description}>
-              Unlock all downloadable exercise files permanently for just {productPrice}
+              Unlock all downloadable exercise files permanently for just{" "}
+              {productPrice}
             </ThemedText>
 
             <View style={styles.features}>
               <View style={styles.featureItem}>
-                <IconSymbol name="checkmark.circle.fill" size={24} color="#07b524" />
+                <IconSymbol
+                  name="checkmark.circle.fill"
+                  size={24}
+                  color="#07b524"
+                />
                 <ThemedText style={styles.featureText}>
                   Access to all PDF and DOC files
                 </ThemedText>
               </View>
               <View style={styles.featureItem}>
-                <IconSymbol name="checkmark.circle.fill" size={24} color="#07b524" />
+                <IconSymbol
+                  name="checkmark.circle.fill"
+                  size={24}
+                  color="#07b524"
+                />
                 <ThemedText style={styles.featureText}>
                   One-time payment, lifetime access
                 </ThemedText>
               </View>
               <View style={styles.featureItem}>
-                <IconSymbol name="checkmark.circle.fill" size={24} color="#07b524" />
+                <IconSymbol
+                  name="checkmark.circle.fill"
+                  size={24}
+                  color="#07b524"
+                />
                 <ThemedText style={styles.featureText}>
                   Download files from all categories
                 </ThemedText>
               </View>
               <View style={styles.featureItem}>
-                <IconSymbol name="checkmark.circle.fill" size={24} color="#07b524" />
+                <IconSymbol
+                  name="checkmark.circle.fill"
+                  size={24}
+                  color="#07b524"
+                />
                 <ThemedText style={styles.featureText}>
                   Works across all your devices
                 </ThemedText>
@@ -621,7 +660,10 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
           <View style={styles.footer}>
             <TouchableOpacity
-              style={[styles.purchaseButton, purchasing && styles.disabledButton]}
+              style={[
+                styles.purchaseButton,
+                purchasing && styles.disabledButton,
+              ]}
               onPress={handlePurchase}
               disabled={purchasing}
             >
@@ -657,48 +699,48 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
-    width: '90%',
+    width: "90%",
     maxWidth: 400,
     borderRadius: 16,
     padding: 24,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 12,
     right: 12,
     padding: 8,
     zIndex: 10,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 24,
   },
   title: {
     fontSize: 24,
     marginTop: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   content: {
     marginBottom: 24,
   },
   description: {
     fontSize: 16,
-    textAlign: 'center',
-    color: '#444',
+    textAlign: "center",
+    color: "#444",
     marginBottom: 24,
   },
   features: {
     gap: 16,
   },
   featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   featureText: {
@@ -709,25 +751,25 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   purchaseButton: {
-    backgroundColor: '#6996b3',
+    backgroundColor: "#6996b3",
     paddingVertical: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   disabledButton: {
     opacity: 0.6,
   },
   purchaseButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   restoreButton: {
     paddingVertical: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   restoreButtonText: {
-    color: '#6996b3',
+    color: "#6996b3",
     fontSize: 16,
   },
 });
@@ -742,25 +784,28 @@ const styles = StyleSheet.create({
 **File:** `components/CategoryCard.tsx` (modify handleDownloadFile, line ~98-104)
 
 **Add imports:**
+
 ```typescript
-import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
-import { Platform } from 'react-native';
-import { useAuth } from '@/contexts/AuthContext';
+import { PremiumPurchaseModal } from "@/components/PremiumPurchaseModal";
+import { Platform } from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
 ```
 
 **Add state:**
+
 ```typescript
 const [showPremiumModal, setShowPremiumModal] = useState(false);
 ```
 
 **Update handleDownloadFile:**
+
 ```typescript
 const handleDownloadFile = async (file: DownloadableFile) => {
   const { hasPremiumAccess } = useAuth();
 
   // Check platform
-  if (Platform.OS === 'web') {
-    Alert.alert('Not Available', 'Downloads only available on mobile');
+  if (Platform.OS === "web") {
+    Alert.alert("Not Available", "Downloads only available on mobile");
     return;
   }
 
@@ -774,18 +819,19 @@ const handleDownloadFile = async (file: DownloadableFile) => {
   try {
     await downloadFile(file);
   } catch (error) {
-    Alert.alert('Error', 'Failed to download file');
+    Alert.alert("Error", "Failed to download file");
   }
 };
 ```
 
 **Add modal JSX before closing component:**
+
 ```typescript
 <PremiumPurchaseModal
   visible={showPremiumModal}
   onClose={() => setShowPremiumModal(false)}
   onPurchaseSuccess={() => {
-    Alert.alert('Success', 'You can now download files!');
+    Alert.alert("Success", "You can now download files!");
   }}
 />
 ```
@@ -795,6 +841,7 @@ const handleDownloadFile = async (file: DownloadableFile) => {
 **File:** `components/ExerciseInterface.tsx` (modify handleDownloadFile, line ~162-209)
 
 Apply same changes as CategoryCard.tsx:
+
 - Import modal and auth
 - Add showPremiumModal state
 - Update handleDownloadFile with paywall check
@@ -803,24 +850,19 @@ Apply same changes as CategoryCard.tsx:
 #### Optional: Add Lock Icon for Non-Premium Users
 
 **In CategoryCard.tsx file item rendering:**
+
 ```typescript
 <TouchableOpacity
   key={file.id}
   style={styles.fileItem}
   onPress={() => handleDownloadFile(file)}
 >
-  <IconSymbol name='doc.text' size={16} color='#6996b3' />
-  <ThemedText style={styles.fileItemText}>
-    {file.name}
-  </ThemedText>
+  <IconSymbol name="doc.text" size={16} color="#6996b3" />
+  <ThemedText style={styles.fileItemText}>{file.name}</ThemedText>
   {!hasPremiumAccess && (
-    <IconSymbol name='lock.fill' size={14} color='#FF9800' />
+    <IconSymbol name="lock.fill" size={14} color="#FF9800" />
   )}
-  <IconSymbol
-    name='arrow.down.circle'
-    size={16}
-    color='#464655'
-  />
+  <IconSymbol name="arrow.down.circle" size={16} color="#464655" />
 </TouchableOpacity>
 ```
 
@@ -862,6 +904,7 @@ npx expo run:android --variant debug
 ### Phase 2: Internal Testing Track
 
 1. **Build:**
+
    ```bash
    eas build --platform android --profile production
    ```
@@ -912,6 +955,7 @@ npx expo run:android --variant debug
 ### Client-Side Verification (Recommended for €1.99 Product)
 
 **Current Approach:**
+
 - Purchase verification in app via react-native-iap
 - Purchase token stored in Firestore for audit trail
 - Firestore rules limit who can update premium status
@@ -932,9 +976,10 @@ For higher security, implement Firebase Cloud Functions to verify purchases with
 - iOS: Future phase (requires App Store Connect setup)
 
 **Platform Check:**
+
 ```typescript
-if (Platform.OS !== 'android') {
-  Alert.alert('Not Available', 'Premium downloads currently Android-only');
+if (Platform.OS !== "android") {
+  Alert.alert("Not Available", "Premium downloads currently Android-only");
   return;
 }
 ```
@@ -942,6 +987,7 @@ if (Platform.OS !== 'android') {
 ### Future: iOS Support
 
 Same code works for iOS with minimal changes:
+
 - Create product in App Store Connect
 - Add iOS product ID
 - Update Platform.select() to include 'ios'
@@ -1000,10 +1046,12 @@ Same code works for iOS with minimal changes:
 ## Critical Files Summary
 
 ### New Files to Create
+
 - `services/premiumService.ts` - Core IAP logic
 - `components/PremiumPurchaseModal.tsx` - Payment UI
 
 ### Files to Modify
+
 - `types/index.ts` (line ~58) - Add premium fields to User
 - `contexts/AuthContext.tsx` (lines 25-37, add state ~49, add effects, add function, update value ~271)
 - `services/firebaseService.ts` (add function after line 630)
@@ -1016,6 +1064,7 @@ Same code works for iOS with minimal changes:
 ## Success Metrics
 
 **Target Metrics:**
+
 - Purchase conversion rate > 5% (paywall shown → purchase)
 - Purchase completion rate > 95% (purchase initiated → completed)
 - Zero IAP-related crashes
@@ -1056,6 +1105,7 @@ The permission has already been added to `app.json`:
 1. **Increment version** (already done: v1.1.0)
 
 2. **Build production APK/AAB:**
+
    ```bash
    npx eas build --profile production --platform android
    ```
@@ -1073,6 +1123,7 @@ The permission has already been added to `app.json`:
 5. Save as draft or publish
 
 **Alternative for faster testing:**
+
 - Upload to **Closed testing** track instead of Production
 - Faster processing and immediate testing capability
 - BILLING permission will still be recognized
@@ -1090,6 +1141,7 @@ The permission has already been added to `app.json`:
 3. If you still see "add BILLING permission" message, wait longer for processing
 
 **Troubleshooting:**
+
 - If button doesn't appear after 30 minutes, check APK was successfully uploaded
 - Verify the BILLING permission is in the AndroidManifest.xml (auto-generated by Expo)
 - Check "Release" section to ensure the build was rolled out
