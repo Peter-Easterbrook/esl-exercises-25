@@ -78,7 +78,36 @@ const MAPPING = {
   'folder.circle': 'folder',
   eye: 'visibility',
   'eye.slash': 'visibility-off',
-  'camera.fill': 'camera', // Added mapping for camera.fill
+  'camera.fill': 'camera',
+
+  // Language & Grammar icons
+  translate: 'translate',
+  spellcheck: 'spellcheck',
+  'format.quote': 'format-quote',
+  'text.format': 'text-fields',
+  abc: 'abc',
+
+  // Learning & Education icons
+  school: 'school',
+  quiz: 'quiz',
+  assignment: 'assignment',
+  lightbulb: 'lightbulb-outline',
+  star: 'star-outline',
+  'star.fill': 'star',
+
+  // Communication icons
+  message: 'message',
+  chat: 'chat',
+  forum: 'forum',
+  voice: 'record-voice-over',
+
+  // Content icons
+  article: 'article',
+  subject: 'subject',
+  'menu.book': 'menu-book',
+  history: 'history',
+  extension: 'extension',
+  'link.circle': 'link',
 } as IconMapping;
 
 /**

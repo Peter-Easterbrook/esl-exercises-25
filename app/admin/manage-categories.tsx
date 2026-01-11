@@ -201,8 +201,31 @@ export default function ManageCategoriesScreen() {
     'arrow.right.square',
     'arrow.clockwise',
     'chart.pie',
-
-
+    // Language & Grammar icons
+    'translate',
+    'spellcheck',
+    'format.quote',
+    'text.format',
+    'abc',
+    // Learning & Education icons
+    'school',
+    'quiz',
+    'assignment',
+    'lightbulb',
+    'star',
+    'star.fill',
+    // Communication icons
+    'message',
+    'chat',
+    'forum',
+    'voice',
+    // Content icons
+    'article',
+    'subject',
+    'menu.book',
+    'history',
+    'extension',
+    'link.circle',
   ];
 
   if (loading) {

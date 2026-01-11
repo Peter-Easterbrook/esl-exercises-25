@@ -210,6 +210,7 @@ export default function UploadFilesScreen() {
                     <ExerciseChip
                       key={exercise.id}
                       label={exercise.title}
+                      difficulty={exercise.difficulty}
                       isSelected={selectedExercise === exercise.id}
                       onPress={() => setSelectedExercise(exercise.id)}
                     />
@@ -407,10 +408,12 @@ function CategoryButton({
 // Exercise Chip Component with Animation
 function ExerciseChip({
   label,
+  difficulty,
   isSelected,
   onPress,
 }: {
   label: string;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   isSelected: boolean;
   onPress: () => void;
 }) {
@@ -434,6 +437,21 @@ function ExerciseChip({
     }).start();
   };
 
+  // Get difficulty color indicator
+  const getDifficultyColor = () => {
+    if (!difficulty) return null;
+
+    const colors = {
+      beginner: themeColors.beginner,
+      intermediate: themeColors.intermediate,
+      advanced: themeColors.advanced,
+    };
+
+    return colors[difficulty];
+  };
+
+  const difficultyColor = getDifficultyColor();
+
   return (
     <Pressable
       onPress={onPress}
@@ -451,14 +469,24 @@ function ExerciseChip({
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
-        <ThemedText
-          style={[
-            styles.exerciseChipText,
-            isSelected && styles.selectedExerciseChipText,
-          ]}
-        >
-          {label}
-        </ThemedText>
+        <View style={styles.exerciseChipContent}>
+          {difficultyColor && (
+            <View
+              style={[
+                styles.difficultyIndicator,
+                { backgroundColor: difficultyColor },
+              ]}
+            />
+          )}
+          <ThemedText
+            style={[
+              styles.exerciseChipText,
+              isSelected && styles.selectedExerciseChipText,
+            ]}
+          >
+            {label}
+          </ThemedText>
+        </View>
       </Animated.View>
     </Pressable>
   );
@@ -730,6 +758,16 @@ const styles = StyleSheet.create({
   },
   pressedChip: {
     opacity: 0.7,
+  },
+  exerciseChipContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  difficultyIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   exerciseChipText: {
     fontSize: 12,
