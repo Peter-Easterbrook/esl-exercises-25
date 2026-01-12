@@ -5,10 +5,10 @@ import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<
+type IconMapping = Partial<Record<
   SymbolViewProps['name'],
   ComponentProps<typeof MaterialIcons>['name']
->;
+>>;
 type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -75,7 +75,6 @@ const MAPPING = {
   'arrow.right.square': 'exit-to-app',
   'arrow.clockwise': 'refresh',
   'chart.pie': 'pie-chart',
-  'folder.circle': 'folder',
   eye: 'visibility',
   'eye.slash': 'visibility-off',
   'camera.fill': 'camera',
@@ -86,6 +85,9 @@ const MAPPING = {
   'format.quote': 'format-quote',
   'text.format': 'text-fields',
   abc: 'abc',
+  quotemarks: 'format-quote', // Add this if using 'quotemarks'
+  'quote.opening': 'format-quote', // Or add these alternatives
+  'quote.closing': 'format-quote',
 
   // Learning & Education icons
   school: 'school',
@@ -101,13 +103,11 @@ const MAPPING = {
   forum: 'forum',
   voice: 'record-voice-over',
 
-  // Content icons
+  // Miscellaneous icons
   article: 'article',
   subject: 'subject',
-  'menu.book': 'menu-book',
   history: 'history',
   extension: 'extension',
-  'link.circle': 'link',
 } as IconMapping;
 
 /**

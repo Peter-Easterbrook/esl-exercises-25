@@ -152,6 +152,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
+          {(() => {
+            console.log('Category:', category.name, 'Icon:', category.icon);
+            return null;
+          })()}
           <IconSymbol name={category.icon as any} size={24} color='#6996b3' />
           <View style={styles.titleContainer}>
             <ThemedText type='defaultSemiBold' style={styles.title}>
