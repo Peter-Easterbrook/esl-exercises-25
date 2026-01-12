@@ -45,6 +45,7 @@
 ### **✅ Use EAS Update (No Rebuild Needed):**
 
 Push over-the-air (OTA) updates for:
+
 - ✏️ JavaScript/TypeScript code changes
 - 🎨 UI/component updates
 - 🧠 Logic changes and bug fixes
@@ -62,6 +63,7 @@ Users get updates automatically when they reopen the app!
 ### **🏗️ New Build Required:**
 
 You **must rebuild** when changing:
+
 - 📦 Native dependencies (adding/removing packages with native code)
 - ⚙️ `app.json` configuration (permissions, plugins, scheme, icons)
 - 🖼️ Assets bundled at build time (app icon, splash screen)
@@ -95,6 +97,7 @@ eas credentials -p android
 ```
 
 Look for output like:
+
 ```
 Android Keystore
   SHA1 Fingerprint: A1:B2:C3:D4:E5:F6:...
@@ -316,6 +319,6 @@ git push
 # Build for production
 npx eas build -p android --profile production
 # Or push an update without rebuilding
-eas update --branch production --message "Fixed CategoryCard dropdown issue"
+eas update --branch production --message "Addresses category icon issue"
 eas update:list --branch production
 ```
