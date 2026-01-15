@@ -55,7 +55,12 @@
       "Bash(eas update:list:*)",
       "Bash(eas update:*)",
       "Bash(find:*)",
-      "Bash(claude update:*)"
+      "Bash(claude update:*)",
+      "Skill(skill-creator)",
+      "Bash(python scripts/package_skill.py:*)",
+      "Bash(pip install:*)",
+      "Bash(set:*)",
+      "Bash(move frontend-design.zip frontend-design.skill)"
     ],
     "deny": [],
     "ask": []
