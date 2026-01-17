@@ -1,24 +1,24 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES } from '@/constants/languages';
-import { useAuth } from '@/contexts/AuthContext';
-import { Category, MultiLanguageInstructions, Question } from '@/types';
-import { createEmptyInstructions } from '@/utils/languageHelpers';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES } from "@/constants/languages";
+import { useAuth } from "@/contexts/AuthContext";
+import { Category, MultiLanguageInstructions, Question } from "@/types";
+import { createEmptyInstructions } from "@/utils/languageHelpers";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function AddExerciseScreen() {
   const { id: exerciseId } = useLocalSearchParams();
@@ -30,23 +30,29 @@ export default function AddExerciseScreen() {
     description: string;
     instructions: MultiLanguageInstructions;
     category: string;
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
-    type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay' | 'short-answer';
+    difficulty: "beginner" | "intermediate" | "advanced";
+    type:
+      | "multiple-choice"
+      | "fill-blanks"
+      | "true-false"
+      | "matching"
+      | "essay"
+      | "short-answer";
   }>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     instructions: createEmptyInstructions(),
-    category: '',
-    difficulty: 'beginner',
-    type: 'multiple-choice',
+    category: "",
+    difficulty: "beginner",
+    type: "multiple-choice",
   });
 
   const [questions, setQuestions] = useState<Partial<Question>[]>([
     {
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: '',
-      explanation: '',
+      question: "",
+      options: ["", "", "", ""],
+      correctAnswer: "",
+      explanation: "",
     },
   ]);
 
@@ -55,43 +61,44 @@ export default function AddExerciseScreen() {
 
   useEffect(() => {
     loadCategories();
-    if (isEditMode && typeof exerciseId === 'string') {
+    if (isEditMode && typeof exerciseId === "string") {
       loadExercise(exerciseId);
     }
-  }, [exerciseId,isEditMode]);
+  }, [exerciseId, isEditMode]);
 
   const loadCategories = async () => {
     try {
-      const { getCategories } = await import('@/services/firebaseService');
+      const { getCategories } = await import("@/services/firebaseService");
       const categoriesData = await getCategories();
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error loading categories:', error);
-      Alert.alert('Error', 'Failed to load categories');
+      console.error("Error loading categories:", error);
+      Alert.alert("Error", "Failed to load categories");
     }
   };
 
   const loadExercise = async (id: string) => {
     try {
       setLoading(true);
-      const { getExerciseById } = await import('@/services/firebaseService');
+      const { getExerciseById } = await import("@/services/firebaseService");
       const exercise = await getExerciseById(id);
 
       if (exercise) {
+        const emptyInstructions = createEmptyInstructions();
         // Convert old string format to new multi-language format if needed
         let instructions: MultiLanguageInstructions;
-        if (typeof exercise.instructions === 'string') {
+        if (typeof exercise.instructions === "string") {
           // Legacy format - put in English field, leave others empty
           instructions = {
+            ...emptyInstructions,
             en: exercise.instructions,
-            es: '',
-            fr: '',
-            de: '',
-            it: '',
           };
         } else {
           // Already in multi-language format
-          instructions = exercise.instructions;
+          instructions = {
+            ...emptyInstructions,
+            ...exercise.instructions,
+          };
         }
 
         setExerciseData({
@@ -104,86 +111,86 @@ export default function AddExerciseScreen() {
         });
         setQuestions(exercise.content.questions);
       } else {
-        Alert.alert('Error', 'Exercise not found');
-        router.push('/admin/manage-exercises');
+        Alert.alert("Error", "Exercise not found");
+        router.push("/admin/manage-exercises");
       }
     } catch (error) {
-      console.error('Error loading exercise:', error);
-      Alert.alert('Error', 'Failed to load exercise');
-      router.push('/admin/manage-exercises');
+      console.error("Error loading exercise:", error);
+      Alert.alert("Error", "Failed to load exercise");
+      router.push("/admin/manage-exercises");
     } finally {
       setLoading(false);
     }
   };
 
-  const difficulties = ['beginner', 'intermediate', 'advanced'];
+  const difficulties = ["beginner", "intermediate", "advanced"];
   const exerciseTypes = [
-    'multiple-choice',
-    'fill-blanks',
-    'true-false',
-    'matching',
-    'essay',
-    'short-answer',
+    "multiple-choice",
+    "fill-blanks",
+    "true-false",
+    "matching",
+    "essay",
+    "short-answer",
   ];
 
   const handleAddQuestion = () => {
     let newQuestion: Partial<Question>;
 
     switch (exerciseData.type) {
-      case 'multiple-choice':
+      case "multiple-choice":
         newQuestion = {
-          question: '',
-          options: ['', '', '', ''],
-          correctAnswer: '',
-          explanation: '',
+          question: "",
+          options: ["", "", "", ""],
+          correctAnswer: "",
+          explanation: "",
         };
         break;
-      case 'true-false':
+      case "true-false":
         newQuestion = {
-          question: '', // This will be the statement
-          passageText: '', // Reading passage (only for first question)
-          options: ['True', 'False'],
-          correctAnswer: '',
-          explanation: '',
+          question: "", // This will be the statement
+          passageText: "", // Reading passage (only for first question)
+          options: ["True", "False"],
+          correctAnswer: "",
+          explanation: "",
         };
         break;
-      case 'matching':
+      case "matching":
         newQuestion = {
-          question: 'Match the items from Column A with Column B',
-          leftColumn: ['', '', '', '', '', ''], // Column A (numbered)
-          options: ['', '', '', '', '', ''], // Column B (lettered)
-          correctAnswer: ['', '', '', '', '', ''], // Array of letters matching each number
-          explanation: '',
+          question: "Match the items from Column A with Column B",
+          leftColumn: ["", "", "", "", "", ""], // Column A (numbered)
+          options: ["", "", "", "", "", ""], // Column B (lettered)
+          correctAnswer: ["", "", "", "", "", ""], // Array of letters matching each number
+          explanation: "",
         };
         break;
-      case 'fill-blanks':
+      case "fill-blanks":
         newQuestion = {
-          question: '', // Sentence with ____ for blanks
+          question: "", // Sentence with ____ for blanks
           options: [], // Optional word bank
-          correctAnswer: [''], // Array of correct words for each blank
-          explanation: '',
+          correctAnswer: [""], // Array of correct words for each blank
+          explanation: "",
         };
         break;
-      case 'essay':
+      case "essay":
         newQuestion = {
-          question: '',
-          correctAnswer: '', // Not strictly applicable for essays
-          explanation: 'Essay questions are graded manually',
+          question: "",
+          correctAnswer: "", // Not strictly applicable for essays
+          explanation: "Essay questions are graded manually",
         };
         break;
-      case 'short-answer':
+      case "short-answer":
         newQuestion = {
-          question: '',
-          correctAnswer: '', // The exact answer required
-          explanation: '',
+          question: "",
+          correctAnswer: "", // The exact answer required
+          explanation: "",
         };
         break;
       default:
         newQuestion = {
-          question: '',
-          options: ['', '', '', ''],
-          correctAnswer: '',
-          explanation: '',
+          question: "",
+          options: ["", "", "", ""],
+          correctAnswer: "",
+          explanation: "",
         };
     }
 
@@ -204,7 +211,7 @@ export default function AddExerciseScreen() {
     setQuestions((prev) =>
       prev.map((q, i) => {
         if (i === index) {
-          if (field === 'options' && Array.isArray(q.options)) {
+          if (field === "options" && Array.isArray(q.options)) {
             // This shouldn't happen as options are handled separately
             return q;
           }
@@ -278,43 +285,47 @@ export default function AddExerciseScreen() {
   };
 
   const validateExercise = (): boolean => {
-    console.log('🔍 Starting validation...');
+    console.log("🔍 Starting validation...");
 
     if (!exerciseData.title.trim()) {
-      console.log('❌ Validation failed: No title');
-      Alert.alert('Validation Error', 'Please enter an exercise title.');
+      console.log("❌ Validation failed: No title");
+      Alert.alert("Validation Error", "Please enter an exercise title.");
       return false;
     }
 
     if (!exerciseData.description.trim()) {
-      console.log('❌ Validation failed: No description');
-      Alert.alert('Validation Error', 'Please enter an exercise description.');
+      console.log("❌ Validation failed: No description");
+      Alert.alert("Validation Error", "Please enter an exercise description.");
       return false;
     }
 
     // Validate instructions - at least English must be provided
-    if (!exerciseData.instructions.en.trim()) {
-      console.log('❌ Validation failed: No English instructions');
-      Alert.alert('Validation Error', 'Please enter instructions in English (required).');
+    if (!(exerciseData.instructions?.en ?? "").trim()) {
+      console.log("❌ Validation failed: No English instructions");
+      Alert.alert(
+        "Validation Error",
+        "Please enter instructions in English (required)."
+      );
       return false;
     }
 
     // Optionally warn about missing translations
     const missingLanguages = LANGUAGE_ORDER.filter(
-      (lang) => lang !== 'en' && !exerciseData.instructions[lang].trim()
+      (lang) =>
+        lang !== "en" && !(exerciseData.instructions?.[lang] ?? "").trim()
     );
 
     if (missingLanguages.length > 0) {
       const langNames = missingLanguages
         .map((code) => SUPPORTED_LANGUAGES[code].name)
-        .join(', ');
+        .join(", ");
       console.log(`⚠️ Warning: Missing translations for ${langNames}`);
       // Optional: Show warning but allow saving
     }
 
     if (!exerciseData.category) {
-      console.log('❌ Validation failed: No category selected');
-      Alert.alert('Validation Error', 'Please select a category.');
+      console.log("❌ Validation failed: No category selected");
+      Alert.alert("Validation Error", "Please select a category.");
       return false;
     }
 
@@ -325,14 +336,14 @@ export default function AddExerciseScreen() {
       console.log(`   Checking question ${i + 1}:`, q);
 
       // For true-false, check passage text on first question
-      if (exerciseData.type === 'true-false' && i === 0) {
+      if (exerciseData.type === "true-false" && i === 0) {
         if (!q.passageText?.trim()) {
           console.log(
             `❌ Validation failed: No passage text for true/false question`
           );
           Alert.alert(
-            'Validation Error',
-            'Please enter the reading passage for true/false questions.'
+            "Validation Error",
+            "Please enter the reading passage for true/false questions."
           );
           return false;
         }
@@ -343,9 +354,9 @@ export default function AddExerciseScreen() {
           `❌ Validation failed: No question text for question ${i + 1}`
         );
         Alert.alert(
-          'Validation Error',
+          "Validation Error",
           `Please enter ${
-            exerciseData.type === 'true-false' ? 'statement' : 'question'
+            exerciseData.type === "true-false" ? "statement" : "question"
           } ${i + 1}.`
         );
         return false;
@@ -354,58 +365,58 @@ export default function AddExerciseScreen() {
       // Validate based on question type
       console.log(`   Question type: ${exerciseData.type}`);
       switch (exerciseData.type) {
-        case 'multiple-choice':
-          console.log('   Checking multiple-choice options:', q.options);
+        case "multiple-choice":
+          console.log("   Checking multiple-choice options:", q.options);
           if (!q.options || q.options.some((opt) => !opt.trim())) {
             console.log(
               `❌ Validation failed: Empty options in question ${i + 1}`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please fill all options for question ${i + 1}.`
             );
             return false;
           }
 
           const correctAnswer = q.correctAnswer;
-          console.log('   Checking correct answer:', correctAnswer);
+          console.log("   Checking correct answer:", correctAnswer);
           if (
             !correctAnswer ||
-            (typeof correctAnswer === 'string' && !correctAnswer.trim())
+            (typeof correctAnswer === "string" && !correctAnswer.trim())
           ) {
             console.log(
               `❌ Validation failed: No correct answer for question ${i + 1}`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please select the correct answer for question ${i + 1}.`
             );
             return false;
           }
           break;
 
-        case 'true-false':
+        case "true-false":
           console.log(
-            '   Checking true/false correct answer:',
+            "   Checking true/false correct answer:",
             q.correctAnswer
           );
           if (
             !q.correctAnswer ||
-            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+            (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
               `❌ Validation failed: No True/False answer for question ${i + 1}`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please select True or False for statement ${i + 1}.`
             );
             return false;
           }
           break;
 
-        case 'matching':
-          console.log('   Checking matching left column:', q.leftColumn);
+        case "matching":
+          console.log("   Checking matching left column:", q.leftColumn);
           if (!q.leftColumn || q.leftColumn.some((item) => !item.trim())) {
             console.log(
               `❌ Validation failed: Empty items in Column A for question ${
@@ -413,13 +424,13 @@ export default function AddExerciseScreen() {
               }`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please fill all items in Column A for question ${i + 1}.`
             );
             return false;
           }
 
-          console.log('   Checking matching right column:', q.options);
+          console.log("   Checking matching right column:", q.options);
           if (!q.options || q.options.some((item) => !item.trim())) {
             console.log(
               `❌ Validation failed: Empty items in Column B for question ${
@@ -427,25 +438,25 @@ export default function AddExerciseScreen() {
               }`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please fill all items in Column B for question ${i + 1}.`
             );
             return false;
           }
 
-          console.log('   Checking matching correct answers:', q.correctAnswer);
+          console.log("   Checking matching correct answers:", q.correctAnswer);
           if (
             !Array.isArray(q.correctAnswer) ||
             q.correctAnswer.some(
-              (ans) => !ans || (typeof ans === 'string' && !ans.trim())
+              (ans) => !ans || (typeof ans === "string" && !ans.trim())
             )
           ) {
             console.log(
               `❌ Validation failed: Incomplete matches for question ${i + 1}`
             );
-            console.log('   correctAnswer array:', q.correctAnswer);
+            console.log("   correctAnswer array:", q.correctAnswer);
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please provide correct matches for all items in question ${
                 i + 1
               }.`
@@ -454,77 +465,77 @@ export default function AddExerciseScreen() {
           }
           break;
 
-        case 'fill-blanks':
+        case "fill-blanks":
           console.log(
-            '   Checking fill-blanks correct answer:',
+            "   Checking fill-blanks correct answer:",
             q.correctAnswer
           );
           if (
             !q.correctAnswer ||
             (Array.isArray(q.correctAnswer) &&
               q.correctAnswer.every((ans) => !ans)) ||
-            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+            (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
               `❌ Validation failed: No correct answer(s) for question ${i + 1}`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please provide the correct answer(s) for question ${i + 1}.`
             );
             return false;
           }
           break;
 
-        case 'short-answer':
+        case "short-answer":
           console.log(
-            '   Checking short-answer correct answer:',
+            "   Checking short-answer correct answer:",
             q.correctAnswer
           );
           if (
             !q.correctAnswer ||
-            (typeof q.correctAnswer === 'string' && !q.correctAnswer.trim())
+            (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
               `❌ Validation failed: No correct answer for question ${i + 1}`
             );
             Alert.alert(
-              'Validation Error',
+              "Validation Error",
               `Please provide the correct answer for question ${i + 1}.`
             );
             return false;
           }
           break;
 
-        case 'essay':
-          console.log('   Essay type - no strict validation needed');
+        case "essay":
+          console.log("   Essay type - no strict validation needed");
           // Essay questions don't require strict validation
           break;
       }
     }
 
-    console.log('✅ Validation passed successfully!');
+    console.log("✅ Validation passed successfully!");
     return true;
   };
 
   const handleSaveExercise = async () => {
-    console.log('💾 SAVE BUTTON CLICKED!');
-    console.log('📋 Current exercise data:', exerciseData);
-    console.log('❓ Current questions:', questions);
+    console.log("💾 SAVE BUTTON CLICKED!");
+    console.log("📋 Current exercise data:", exerciseData);
+    console.log("❓ Current questions:", questions);
 
     const isValid = validateExercise();
-    console.log('✅ Validation result:', isValid);
+    console.log("✅ Validation result:", isValid);
 
     if (!isValid) {
-      console.log('❌ Validation failed, not saving');
+      console.log("❌ Validation failed, not saving");
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log('🔄 Starting exercise save operation...');
-      console.log('👤 User authentication state:', {
+      console.log("🔄 Starting exercise save operation...");
+      console.log("👤 User authentication state:", {
         userId: user?.uid,
         email: user?.email,
         isAdmin: appUser?.isAdmin,
@@ -552,71 +563,71 @@ export default function AddExerciseScreen() {
         },
       };
 
-      console.log('📝 Exercise data prepared:', exerciseContent);
+      console.log("📝 Exercise data prepared:", exerciseContent);
 
-      if (isEditMode && typeof exerciseId === 'string') {
+      if (isEditMode && typeof exerciseId === "string") {
         // Update existing exercise
         console.log(`🔄 Updating exercise ${exerciseId}...`);
-        const { updateExercise } = await import('@/services/firebaseService');
+        const { updateExercise } = await import("@/services/firebaseService");
         await updateExercise(exerciseId, exerciseContent);
-        console.log('✅ Exercise updated successfully');
+        console.log("✅ Exercise updated successfully");
 
-        Alert.alert('Success', 'Exercise updated successfully!', [
+        Alert.alert("Success", "Exercise updated successfully!", [
           {
-            text: 'OK',
-            onPress: () => router.push('/admin/manage-exercises'),
+            text: "OK",
+            onPress: () => router.push("/admin/manage-exercises"),
           },
         ]);
       } else {
         // Create new exercise
-        console.log('🔄 Creating new exercise...');
-        const { createExercise } = await import('@/services/firebaseService');
+        console.log("🔄 Creating new exercise...");
+        const { createExercise } = await import("@/services/firebaseService");
         const newExerciseId = await createExercise(exerciseContent);
-        console.log('✅ Exercise created successfully with ID:', newExerciseId);
+        console.log("✅ Exercise created successfully with ID:", newExerciseId);
 
-        Alert.alert('Success', 'Exercise created successfully!', [
+        Alert.alert("Success", "Exercise created successfully!", [
           {
-            text: 'Create Another',
+            text: "Create Another",
             onPress: () => {
               setExerciseData({
-                title: '',
-                description: '',
+                title: "",
+                description: "",
                 instructions: createEmptyInstructions(),
-                category: '',
-                difficulty: 'beginner',
-                type: 'multiple-choice',
+                category: "",
+                difficulty: "beginner",
+                type: "multiple-choice",
               });
               setQuestions([
                 {
-                  question: '',
-                  options: ['', '', '', ''],
-                  correctAnswer: '',
-                  explanation: '',
+                  question: "",
+                  options: ["", "", "", ""],
+                  correctAnswer: "",
+                  explanation: "",
                 },
               ]);
             },
           },
           {
-            text: 'Done',
+            text: "Done",
             onPress: () => router.back(),
           },
         ]);
       }
     } catch (error: any) {
       console.error(
-        `❌ Error ${isEditMode ? 'updating' : 'creating'} exercise:`,
+        `❌ Error ${isEditMode ? "updating" : "creating"} exercise:`,
         error
       );
-      console.error('Error details:', {
+      console.error("Error details:", {
         code: error?.code,
         message: error?.message,
         stack: error?.stack,
       });
 
       Alert.alert(
-        'Error',
-        `Failed to ${isEditMode ? 'update' : 'create'} exercise.\n\nError: ${
-          error?.message || 'Unknown error'
+        "Error",
+        `Failed to ${isEditMode ? "update" : "create"} exercise.\n\nError: ${
+          error?.message || "Unknown error"
         }\n\nCheck browser console for details.`
       );
     } finally {
@@ -627,7 +638,7 @@ export default function AddExerciseScreen() {
   if (loading) {
     return (
       <ThemedView style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size='large' color='#6996b3' />
+        <ActivityIndicator size="large" color="#6996b3" />
         <ThemedText style={styles.loadingText}>Loading exercise...</ThemedText>
       </ThemedView>
     );
@@ -641,31 +652,31 @@ export default function AddExerciseScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
             <ThemedText style={styles.backText}>
-              {isEditMode ? 'Back to Manage' : 'Back to Admin'}
+              {isEditMode ? "Back to Manage" : "Back to Admin"}
             </ThemedText>
           </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
-            {isEditMode ? 'Edit Exercise' : 'Add New Exercise'}
+          <ThemedText type="title" style={styles.title}>
+            {isEditMode ? "Edit Exercise" : "Add New Exercise"}
           </ThemedText>
         </View>
 
         <KeyboardAvoidingView
           style={styles.keyboardAvoid}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={0}
         >
           <ScrollView
             style={styles.content}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps='handled'
+            keyboardShouldPersistTaps="handled"
           >
             {/* Basic Information */}
             <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Basic Information
               </ThemedText>
 
@@ -677,8 +688,8 @@ export default function AddExerciseScreen() {
                   onChangeText={(text) =>
                     setExerciseData((prev) => ({ ...prev, title: text }))
                   }
-                  placeholder='Enter exercise title'
-                  placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                  placeholder="Enter exercise title"
+                  placeholderTextColor="rgba(102, 102, 102, 0.5)"
                 />
               </View>
 
@@ -690,8 +701,8 @@ export default function AddExerciseScreen() {
                   onChangeText={(text) =>
                     setExerciseData((prev) => ({ ...prev, description: text }))
                   }
-                  placeholder='Brief description of the exercise'
-                  placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                  placeholder="Brief description of the exercise"
+                  placeholderTextColor="rgba(102, 102, 102, 0.5)"
                 />
               </View>
 
@@ -701,7 +712,8 @@ export default function AddExerciseScreen() {
                   Instructions (All Languages)
                 </ThemedText>
                 <ThemedText style={[styles.helperText, { marginBottom: 12 }]}>
-                  Provide instructions in all supported languages. English is required.
+                  Provide instructions in all supported languages. English is
+                  required.
                 </ThemedText>
 
                 {LANGUAGE_ORDER.map((langCode) => {
@@ -710,13 +722,11 @@ export default function AddExerciseScreen() {
                     <View key={langCode} style={styles.languageInputContainer}>
                       <View style={styles.languageHeader}>
                         <Text style={styles.flagIcon}>{lang.flag}</Text>
-                        <ThemedText style={styles.languageCode}>
-                          {langCode.toUpperCase()}
-                        </ThemedText>
+
                         <ThemedText style={styles.languageLabel}>
                           ({lang.nativeLabel})
                         </ThemedText>
-                        {langCode === 'en' && (
+                        {langCode === "en" && (
                           <ThemedText style={styles.requiredBadge}>
                             Required
                           </ThemedText>
@@ -737,7 +747,7 @@ export default function AddExerciseScreen() {
                         placeholder={`Instructions in ${lang.name}`}
                         multiline
                         numberOfLines={4}
-                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                        placeholderTextColor="rgba(102, 102, 102, 0.5)"
                       />
                     </View>
                   );
@@ -833,7 +843,7 @@ export default function AddExerciseScreen() {
                           exerciseData.type === type && styles.selectedText,
                         ]}
                       >
-                        {type.replace('-', ' ')}
+                        {type.replace("-", " ")}
                       </ThemedText>
                     </TouchableOpacity>
                   ))}
@@ -844,14 +854,14 @@ export default function AddExerciseScreen() {
             {/* Questions */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Questions
                 </ThemedText>
                 <TouchableOpacity
                   style={styles.addButton}
                   onPress={handleAddQuestion}
                 >
-                  <IconSymbol name='plus' size={16} color='#fff' />
+                  <IconSymbol name="plus" size={16} color="#fff" />
                   <ThemedText style={styles.addButtonText}>
                     Add Question
                   </ThemedText>
@@ -869,13 +879,13 @@ export default function AddExerciseScreen() {
                         style={styles.removeButton}
                         onPress={() => handleRemoveQuestion(qIndex)}
                       >
-                        <IconSymbol name='trash' size={16} color='#6f0202' />
+                        <IconSymbol name="trash" size={16} color="#6f0202" />
                       </TouchableOpacity>
                     )}
                   </View>
 
                   {/* True/False: Show passage text for first question only */}
-                  {exerciseData.type === 'true-false' && qIndex === 0 && (
+                  {exerciseData.type === "true-false" && qIndex === 0 && (
                     <View style={styles.inputGroup}>
                       <ThemedText style={styles.label}>
                         Reading Passage
@@ -886,10 +896,10 @@ export default function AddExerciseScreen() {
                         onChangeText={(text) =>
                           handlePassageTextChange(qIndex, text)
                         }
-                        placeholder='Enter the text passage that students will read...'
+                        placeholder="Enter the text passage that students will read..."
                         multiline
                         numberOfLines={6}
-                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                        placeholderTextColor="rgba(102, 102, 102, 0.5)"
                       />
                     </View>
                   )}
@@ -897,33 +907,33 @@ export default function AddExerciseScreen() {
                   {/* Question/Statement field */}
                   <View style={styles.inputGroup}>
                     <ThemedText style={styles.label}>
-                      {exerciseData.type === 'true-false'
-                        ? 'Statement'
-                        : exerciseData.type === 'matching'
-                        ? 'Instructions'
-                        : 'Question'}
+                      {exerciseData.type === "true-false"
+                        ? "Statement"
+                        : exerciseData.type === "matching"
+                          ? "Instructions"
+                          : "Question"}
                     </ThemedText>
                     <TextInput
                       style={styles.input}
                       value={question.question}
                       onChangeText={(text) =>
-                        handleQuestionChange(qIndex, 'question', text)
+                        handleQuestionChange(qIndex, "question", text)
                       }
                       placeholder={
-                        exerciseData.type === 'true-false'
-                          ? 'Enter a statement about the passage'
-                          : exerciseData.type === 'matching'
-                          ? 'Match the items from Column A with Column B'
-                          : exerciseData.type === 'fill-blanks'
-                          ? 'Enter sentence with ____ for blanks'
-                          : 'Enter the question'
+                        exerciseData.type === "true-false"
+                          ? "Enter a statement about the passage"
+                          : exerciseData.type === "matching"
+                            ? "Match the items from Column A with Column B"
+                            : exerciseData.type === "fill-blanks"
+                              ? "Enter sentence with ____ for blanks"
+                              : "Enter the question"
                       }
-                      placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
                     />
                   </View>
 
                   {/* Multiple Choice Options */}
-                  {exerciseData.type === 'multiple-choice' &&
+                  {exerciseData.type === "multiple-choice" &&
                     question.options && (
                       <>
                         <ThemedText style={styles.label}>Options</ThemedText>
@@ -941,7 +951,7 @@ export default function AddExerciseScreen() {
                               placeholder={`Option ${String.fromCharCode(
                                 65 + oIndex
                               )}`}
-                              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                              placeholderTextColor="rgba(102, 102, 102, 0.5)"
                             />
                           </View>
                         ))}
@@ -962,7 +972,7 @@ export default function AddExerciseScreen() {
                                 onPress={() =>
                                   handleQuestionChange(
                                     qIndex,
-                                    'correctAnswer',
+                                    "correctAnswer",
                                     option
                                   )
                                 }
@@ -976,8 +986,8 @@ export default function AddExerciseScreen() {
                                     !option.trim() && styles.disabledText,
                                   ]}
                                 >
-                                  {String.fromCharCode(65 + oIndex)}:{' '}
-                                  {option || 'Empty'}
+                                  {String.fromCharCode(65 + oIndex)}:{" "}
+                                  {option || "Empty"}
                                 </ThemedText>
                               </TouchableOpacity>
                             ))}
@@ -987,13 +997,13 @@ export default function AddExerciseScreen() {
                     )}
 
                   {/* True/False Answer Selection */}
-                  {exerciseData.type === 'true-false' && (
+                  {exerciseData.type === "true-false" && (
                     <View style={styles.inputGroup}>
                       <ThemedText style={styles.label}>
                         Correct Answer
                       </ThemedText>
                       <View style={styles.pickerContainer}>
-                        {['True', 'False'].map((option) => (
+                        {["True", "False"].map((option) => (
                           <TouchableOpacity
                             key={option}
                             style={[
@@ -1004,7 +1014,7 @@ export default function AddExerciseScreen() {
                             onPress={() =>
                               handleQuestionChange(
                                 qIndex,
-                                'correctAnswer',
+                                "correctAnswer",
                                 option
                               )
                             }
@@ -1025,7 +1035,7 @@ export default function AddExerciseScreen() {
                   )}
 
                   {/* Matching: Left and Right Columns */}
-                  {exerciseData.type === 'matching' && question.leftColumn && (
+                  {exerciseData.type === "matching" && question.leftColumn && (
                     <>
                       <View style={styles.inputGroup}>
                         <ThemedText style={styles.label}>
@@ -1043,7 +1053,7 @@ export default function AddExerciseScreen() {
                                 handleLeftColumnChange(qIndex, itemIndex, text)
                               }
                               placeholder={`Item ${itemIndex + 1}`}
-                              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                              placeholderTextColor="rgba(102, 102, 102, 0.5)"
                             />
                           </View>
                         ))}
@@ -1067,7 +1077,7 @@ export default function AddExerciseScreen() {
                               placeholder={`Item ${String.fromCharCode(
                                 65 + itemIndex
                               )}`}
-                              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                              placeholderTextColor="rgba(102, 102, 102, 0.5)"
                             />
                           </View>
                         ))}
@@ -1093,9 +1103,9 @@ export default function AddExerciseScreen() {
                                     text.toUpperCase()
                                   )
                                 }
-                                placeholder='A, B, C, or D'
+                                placeholder="A, B, C, or D"
                                 maxLength={1}
-                                placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                                placeholderTextColor="rgba(102, 102, 102, 0.5)"
                               />
                             </View>
                           ))}
@@ -1104,13 +1114,13 @@ export default function AddExerciseScreen() {
                   )}
 
                   {/* Fill Blanks: Correct Answers */}
-                  {exerciseData.type === 'fill-blanks' && (
+                  {exerciseData.type === "fill-blanks" && (
                     <View style={styles.inputGroup}>
                       <ThemedText style={styles.label}>
                         Correct Answer(s)
                       </ThemedText>
                       <ThemedText
-                        style={[styles.label, { fontSize: 12, color: '#666' }]}
+                        style={[styles.label, { fontSize: 12, color: "#666" }]}
                       >
                         Enter answers separated by commas for multiple blanks
                       </ThemedText>
@@ -1118,39 +1128,40 @@ export default function AddExerciseScreen() {
                         style={styles.input}
                         value={
                           Array.isArray(question.correctAnswer)
-                            ? question.correctAnswer.join(', ')
-                            : question.correctAnswer || ''
+                            ? question.correctAnswer.join(", ")
+                            : question.correctAnswer || ""
                         }
                         onChangeText={(text) => {
                           // Store the raw text during typing
-                          handleQuestionChange(
-                            qIndex,
-                            'correctAnswer',
-                            text
-                          );
+                          handleQuestionChange(qIndex, "correctAnswer", text);
                         }}
                         onBlur={() => {
                           // Trim and format when user leaves the field
-                          const currentValue = Array.isArray(question.correctAnswer)
-                            ? question.correctAnswer.join(', ')
-                            : question.correctAnswer || '';
-                          const answers = currentValue.split(',').map((a) => a.trim()).filter((a) => a);
+                          const currentValue = Array.isArray(
+                            question.correctAnswer
+                          )
+                            ? question.correctAnswer.join(", ")
+                            : question.correctAnswer || "";
+                          const answers = currentValue
+                            .split(",")
+                            .map((a) => a.trim())
+                            .filter((a) => a);
                           handleQuestionChange(
                             qIndex,
-                            'correctAnswer',
+                            "correctAnswer",
                             answers as any
                           );
                         }}
-                        placeholder='e.g., answer1, answer2'
-                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                        placeholder="e.g., answer1, answer2"
+                        placeholderTextColor="rgba(102, 102, 102, 0.5)"
                       />
                     </View>
                   )}
 
                   {/* Essay: Info message */}
-                  {exerciseData.type === 'essay' && (
+                  {exerciseData.type === "essay" && (
                     <View style={styles.inputGroup}>
-                      <ThemedText style={[styles.label, { color: '#6996b3' }]}>
+                      <ThemedText style={[styles.label, { color: "#6996b3" }]}>
                         ℹ️ Essay questions are open-ended and require manual
                         grading
                       </ThemedText>
@@ -1158,30 +1169,30 @@ export default function AddExerciseScreen() {
                   )}
 
                   {/* Short Answer: Correct Answer */}
-                  {exerciseData.type === 'short-answer' && (
+                  {exerciseData.type === "short-answer" && (
                     <View style={styles.inputGroup}>
                       <ThemedText style={styles.label}>
                         Correct Answer
                       </ThemedText>
                       <ThemedText
-                        style={[styles.label, { fontSize: 12, color: '#666' }]}
+                        style={[styles.label, { fontSize: 12, color: "#666" }]}
                       >
                         Enter the exact answer the user must provide
                       </ThemedText>
                       <TextInput
                         style={[styles.input, styles.textArea]}
                         value={
-                          typeof question.correctAnswer === 'string'
+                          typeof question.correctAnswer === "string"
                             ? question.correctAnswer
-                            : ''
+                            : ""
                         }
                         onChangeText={(text) =>
-                          handleQuestionChange(qIndex, 'correctAnswer', text)
+                          handleQuestionChange(qIndex, "correctAnswer", text)
                         }
-                        placeholder='e.g., The sky is blue.'
+                        placeholder="e.g., The sky is blue."
                         multiline
                         numberOfLines={2}
-                        placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                        placeholderTextColor="rgba(102, 102, 102, 0.5)"
                       />
                     </View>
                   )}
@@ -1194,12 +1205,12 @@ export default function AddExerciseScreen() {
                       style={[styles.input, styles.textArea]}
                       value={question.explanation}
                       onChangeText={(text) =>
-                        handleQuestionChange(qIndex, 'explanation', text)
+                        handleQuestionChange(qIndex, "explanation", text)
                       }
-                      placeholder='Explain the correct answer'
+                      placeholder="Explain the correct answer"
                       multiline
                       numberOfLines={2}
-                      placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
                     />
                   </View>
                 </View>
@@ -1214,10 +1225,10 @@ export default function AddExerciseScreen() {
               >
                 <ThemedText style={styles.saveButtonText}>
                   {loading
-                    ? 'Loading...'
+                    ? "Loading..."
                     : isEditMode
-                    ? 'Update Exercise'
-                    : 'Save Exercise'}
+                      ? "Update Exercise"
+                      : "Save Exercise"}
                 </ThemedText>
               </TouchableOpacity>
             </View>
@@ -1231,12 +1242,12 @@ export default function AddExerciseScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   contentWrapper: {
-    width: '100%',
+    width: "100%",
     maxWidth: 600,
-    alignSelf: 'center',
+    alignSelf: "center",
     flex: 1,
   },
   keyboardAvoid: {
@@ -1246,21 +1257,21 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   scrollContent: {
     flexGrow: 1,
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   backText: {
     marginLeft: 8,
-    color: '#6996b3',
+    color: "#6996b3",
     fontSize: 16,
   },
   title: {
@@ -1273,15 +1284,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginVertical: 12,
     borderRadius: 12,
     padding: 10,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   sectionTitle: {
@@ -1295,22 +1306,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
 
     marginBottom: 8,
-    color: '#333',
+    color: "#333",
   },
   input: {
     borderWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   textArea: {
     height: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   halfInput: {
@@ -1323,63 +1334,63 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   selectedOption: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: "#e3f2fd",
   },
   pickerText: {
     fontSize: 14,
   },
   selectedText: {
-    color: '#6996b3',
+    color: "#6996b3",
   },
   disabledText: {
-    color: '#ccc',
+    color: "#ccc",
   },
   addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#07b524',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#07b524",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
     gap: 4,
   },
   addButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
   },
   questionCard: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
   },
   questionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   questionNumber: {
     fontSize: 16,
 
-    color: '#6996b3',
+    color: "#6996b3",
   },
   removeButton: {
     padding: 4,
   },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   optionLabel: {
     fontSize: 14,
 
     width: 24,
-    color: '#444',
+    color: "#444",
   },
   optionInput: {
     flex: 1,
@@ -1390,44 +1401,44 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingBottom: 40,
     marginVertical: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   saveButton: {
-    backgroundColor: '#6996b3',
+    backgroundColor: "#6996b3",
     paddingVertical: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
   loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#202029',
-    fontWeight: 'normal',
+    color: "#202029",
+    fontWeight: "normal",
   },
   helperText: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     lineHeight: 16,
   },
   languageInputContainer: {
     marginBottom: 16,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderRadius: 8,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
   },
   languageHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
     gap: 6,
   },
@@ -1436,23 +1447,24 @@ const styles = StyleSheet.create({
   },
   languageCode: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#999',
-    textTransform: 'uppercase',
+    fontWeight: "500",
+    color: "#999",
+    textTransform: "uppercase",
   },
   languageLabel: {
     fontSize: 12,
-    color: '#666',
-    fontStyle: 'italic',
+    color: "#666",
+    fontStyle: "italic",
+    paddingTop: 8,
   },
   requiredBadge: {
     fontSize: 10,
-    color: '#fff',
-    backgroundColor: '#07b524',
+    color: "#fff",
+    backgroundColor: "#07b524",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    marginLeft: 'auto',
-    overflow: 'hidden',
+    marginLeft: "auto",
+    overflow: "hidden",
   },
 });
