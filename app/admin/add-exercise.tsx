@@ -66,6 +66,77 @@ export default function AddExerciseScreen() {
     }
   }, [exerciseId, isEditMode]);
 
+  // Update questions structure when exercise type changes
+  useEffect(() => {
+    if (!isEditMode) {
+      setQuestions((prevQuestions) => {
+        return prevQuestions.map(() => {
+          let newQuestion: Partial<Question>;
+
+          switch (exerciseData.type) {
+            case "multiple-choice":
+              newQuestion = {
+                question: "",
+                options: ["", "", "", ""],
+                correctAnswer: "",
+                explanation: "",
+              };
+              break;
+            case "true-false":
+              newQuestion = {
+                question: "",
+                passageText: "",
+                options: ["True", "False"],
+                correctAnswer: "",
+                explanation: "",
+              };
+              break;
+            case "matching":
+              newQuestion = {
+                question: "Match the items from Column A with Column B",
+                leftColumn: ["", "", "", "", "", ""],
+                options: ["", "", "", "", "", ""],
+                correctAnswer: ["", "", "", "", "", ""],
+                explanation: "",
+              };
+              break;
+            case "fill-blanks":
+              newQuestion = {
+                question: "",
+                options: [],
+                correctAnswer: [""],
+                explanation: "",
+              };
+              break;
+            case "essay":
+              newQuestion = {
+                question: "",
+                correctAnswer: "",
+                explanation: "Essay questions are graded manually",
+              };
+              break;
+            case "short-answer":
+              newQuestion = {
+                question: "",
+                correctAnswer: "",
+                explanation: "",
+              };
+              break;
+            default:
+              newQuestion = {
+                question: "",
+                options: ["", "", "", ""],
+                correctAnswer: "",
+                explanation: "",
+              };
+          }
+
+          return newQuestion;
+        });
+      });
+    }
+  }, [exerciseData.type, isEditMode]);
+
   const loadCategories = async () => {
     try {
       const { getCategories } = await import("@/services/firebaseService");
@@ -206,7 +277,7 @@ export default function AddExerciseScreen() {
   const handleQuestionChange = (
     index: number,
     field: keyof Question,
-    value: string
+    value: string,
   ) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
@@ -218,14 +289,14 @@ export default function AddExerciseScreen() {
           return { ...q, [field]: value };
         }
         return q;
-      })
+      }),
     );
   };
 
   const handleOptionChange = (
     questionIndex: number,
     optionIndex: number,
-    value: string
+    value: string,
   ) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
@@ -235,14 +306,14 @@ export default function AddExerciseScreen() {
           return { ...q, options: newOptions };
         }
         return q;
-      })
+      }),
     );
   };
 
   const handleLeftColumnChange = (
     questionIndex: number,
     itemIndex: number,
-    value: string
+    value: string,
   ) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
@@ -252,14 +323,14 @@ export default function AddExerciseScreen() {
           return { ...q, leftColumn: newLeftColumn };
         }
         return q;
-      })
+      }),
     );
   };
 
   const handleCorrectAnswerArrayChange = (
     questionIndex: number,
     itemIndex: number,
-    value: string
+    value: string,
   ) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
@@ -269,7 +340,7 @@ export default function AddExerciseScreen() {
           return { ...q, correctAnswer: newCorrectAnswer };
         }
         return q;
-      })
+      }),
     );
   };
 
@@ -280,7 +351,7 @@ export default function AddExerciseScreen() {
           return { ...q, passageText: value };
         }
         return q;
-      })
+      }),
     );
   };
 
@@ -304,7 +375,7 @@ export default function AddExerciseScreen() {
       console.log("❌ Validation failed: No English instructions");
       Alert.alert(
         "Validation Error",
-        "Please enter instructions in English (required)."
+        "Please enter instructions in English (required).",
       );
       return false;
     }
@@ -312,7 +383,7 @@ export default function AddExerciseScreen() {
     // Optionally warn about missing translations
     const missingLanguages = LANGUAGE_ORDER.filter(
       (lang) =>
-        lang !== "en" && !(exerciseData.instructions?.[lang] ?? "").trim()
+        lang !== "en" && !(exerciseData.instructions?.[lang] ?? "").trim(),
     );
 
     if (missingLanguages.length > 0) {
@@ -339,11 +410,11 @@ export default function AddExerciseScreen() {
       if (exerciseData.type === "true-false" && i === 0) {
         if (!q.passageText?.trim()) {
           console.log(
-            `❌ Validation failed: No passage text for true/false question`
+            `❌ Validation failed: No passage text for true/false question`,
           );
           Alert.alert(
             "Validation Error",
-            "Please enter the reading passage for true/false questions."
+            "Please enter the reading passage for true/false questions.",
           );
           return false;
         }
@@ -351,13 +422,13 @@ export default function AddExerciseScreen() {
 
       if (!q.question?.trim()) {
         console.log(
-          `❌ Validation failed: No question text for question ${i + 1}`
+          `❌ Validation failed: No question text for question ${i + 1}`,
         );
         Alert.alert(
           "Validation Error",
           `Please enter ${
             exerciseData.type === "true-false" ? "statement" : "question"
-          } ${i + 1}.`
+          } ${i + 1}.`,
         );
         return false;
       }
@@ -369,11 +440,11 @@ export default function AddExerciseScreen() {
           console.log("   Checking multiple-choice options:", q.options);
           if (!q.options || q.options.some((opt) => !opt.trim())) {
             console.log(
-              `❌ Validation failed: Empty options in question ${i + 1}`
+              `❌ Validation failed: Empty options in question ${i + 1}`,
             );
             Alert.alert(
               "Validation Error",
-              `Please fill all options for question ${i + 1}.`
+              `Please fill all options for question ${i + 1}.`,
             );
             return false;
           }
@@ -385,11 +456,11 @@ export default function AddExerciseScreen() {
             (typeof correctAnswer === "string" && !correctAnswer.trim())
           ) {
             console.log(
-              `❌ Validation failed: No correct answer for question ${i + 1}`
+              `❌ Validation failed: No correct answer for question ${i + 1}`,
             );
             Alert.alert(
               "Validation Error",
-              `Please select the correct answer for question ${i + 1}.`
+              `Please select the correct answer for question ${i + 1}.`,
             );
             return false;
           }
@@ -398,18 +469,18 @@ export default function AddExerciseScreen() {
         case "true-false":
           console.log(
             "   Checking true/false correct answer:",
-            q.correctAnswer
+            q.correctAnswer,
           );
           if (
             !q.correctAnswer ||
             (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
-              `❌ Validation failed: No True/False answer for question ${i + 1}`
+              `❌ Validation failed: No True/False answer for question ${i + 1}`,
             );
             Alert.alert(
               "Validation Error",
-              `Please select True or False for statement ${i + 1}.`
+              `Please select True or False for statement ${i + 1}.`,
             );
             return false;
           }
@@ -421,11 +492,11 @@ export default function AddExerciseScreen() {
             console.log(
               `❌ Validation failed: Empty items in Column A for question ${
                 i + 1
-              }`
+              }`,
             );
             Alert.alert(
               "Validation Error",
-              `Please fill all items in Column A for question ${i + 1}.`
+              `Please fill all items in Column A for question ${i + 1}.`,
             );
             return false;
           }
@@ -435,11 +506,11 @@ export default function AddExerciseScreen() {
             console.log(
               `❌ Validation failed: Empty items in Column B for question ${
                 i + 1
-              }`
+              }`,
             );
             Alert.alert(
               "Validation Error",
-              `Please fill all items in Column B for question ${i + 1}.`
+              `Please fill all items in Column B for question ${i + 1}.`,
             );
             return false;
           }
@@ -448,18 +519,18 @@ export default function AddExerciseScreen() {
           if (
             !Array.isArray(q.correctAnswer) ||
             q.correctAnswer.some(
-              (ans) => !ans || (typeof ans === "string" && !ans.trim())
+              (ans) => !ans || (typeof ans === "string" && !ans.trim()),
             )
           ) {
             console.log(
-              `❌ Validation failed: Incomplete matches for question ${i + 1}`
+              `❌ Validation failed: Incomplete matches for question ${i + 1}`,
             );
             console.log("   correctAnswer array:", q.correctAnswer);
             Alert.alert(
               "Validation Error",
               `Please provide correct matches for all items in question ${
                 i + 1
-              }.`
+              }.`,
             );
             return false;
           }
@@ -468,7 +539,7 @@ export default function AddExerciseScreen() {
         case "fill-blanks":
           console.log(
             "   Checking fill-blanks correct answer:",
-            q.correctAnswer
+            q.correctAnswer,
           );
           if (
             !q.correctAnswer ||
@@ -477,11 +548,11 @@ export default function AddExerciseScreen() {
             (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
-              `❌ Validation failed: No correct answer(s) for question ${i + 1}`
+              `❌ Validation failed: No correct answer(s) for question ${i + 1}`,
             );
             Alert.alert(
               "Validation Error",
-              `Please provide the correct answer(s) for question ${i + 1}.`
+              `Please provide the correct answer(s) for question ${i + 1}.`,
             );
             return false;
           }
@@ -490,18 +561,18 @@ export default function AddExerciseScreen() {
         case "short-answer":
           console.log(
             "   Checking short-answer correct answer:",
-            q.correctAnswer
+            q.correctAnswer,
           );
           if (
             !q.correctAnswer ||
             (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
           ) {
             console.log(
-              `❌ Validation failed: No correct answer for question ${i + 1}`
+              `❌ Validation failed: No correct answer for question ${i + 1}`,
             );
             Alert.alert(
               "Validation Error",
-              `Please provide the correct answer for question ${i + 1}.`
+              `Please provide the correct answer for question ${i + 1}.`,
             );
             return false;
           }
@@ -616,7 +687,7 @@ export default function AddExerciseScreen() {
     } catch (error: any) {
       console.error(
         `❌ Error ${isEditMode ? "updating" : "creating"} exercise:`,
-        error
+        error,
       );
       console.error("Error details:", {
         code: error?.code,
@@ -628,7 +699,7 @@ export default function AddExerciseScreen() {
         "Error",
         `Failed to ${isEditMode ? "update" : "create"} exercise.\n\nError: ${
           error?.message || "Unknown error"
-        }\n\nCheck browser console for details.`
+        }\n\nCheck browser console for details.`,
       );
     } finally {
       setLoading(false);
@@ -949,7 +1020,7 @@ export default function AddExerciseScreen() {
                                 handleOptionChange(qIndex, oIndex, text)
                               }
                               placeholder={`Option ${String.fromCharCode(
-                                65 + oIndex
+                                65 + oIndex,
                               )}`}
                               placeholderTextColor="rgba(102, 102, 102, 0.5)"
                             />
@@ -973,7 +1044,7 @@ export default function AddExerciseScreen() {
                                   handleQuestionChange(
                                     qIndex,
                                     "correctAnswer",
-                                    option
+                                    option,
                                   )
                                 }
                                 disabled={!option.trim()}
@@ -1015,7 +1086,7 @@ export default function AddExerciseScreen() {
                               handleQuestionChange(
                                 qIndex,
                                 "correctAnswer",
-                                option
+                                option,
                               )
                             }
                           >
@@ -1075,7 +1146,7 @@ export default function AddExerciseScreen() {
                                 handleOptionChange(qIndex, itemIndex, text)
                               }
                               placeholder={`Item ${String.fromCharCode(
-                                65 + itemIndex
+                                65 + itemIndex,
                               )}`}
                               placeholderTextColor="rgba(102, 102, 102, 0.5)"
                             />
@@ -1100,7 +1171,7 @@ export default function AddExerciseScreen() {
                                   handleCorrectAnswerArrayChange(
                                     qIndex,
                                     itemIndex,
-                                    text.toUpperCase()
+                                    text.toUpperCase(),
                                   )
                                 }
                                 placeholder="A, B, C, or D"
@@ -1138,7 +1209,7 @@ export default function AddExerciseScreen() {
                         onBlur={() => {
                           // Trim and format when user leaves the field
                           const currentValue = Array.isArray(
-                            question.correctAnswer
+                            question.correctAnswer,
                           )
                             ? question.correctAnswer.join(", ")
                             : question.correctAnswer || "";
@@ -1149,7 +1220,7 @@ export default function AddExerciseScreen() {
                           handleQuestionChange(
                             qIndex,
                             "correctAnswer",
-                            answers as any
+                            answers as any,
                           );
                         }}
                         placeholder="e.g., answer1, answer2"
