@@ -16,6 +16,7 @@ import {
   deleteUser,
   onAuthStateChanged,
   reauthenticateWithCredential,
+  sendPasswordResetEmail,
   signInWithCredential,
   signInWithEmailAndPassword,
   signOut,
@@ -36,6 +37,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
   updateUserPassword: (currentPassword: string, newPassword: string) => Promise<void>;
   updateDisplayName: (newDisplayName: string) => Promise<void>;
   updateLanguagePreference: (language: string) => Promise<void>;
@@ -213,6 +215,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signOut(auth);
   };
 
+  const sendPasswordReset = async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
+  };
+
   const updateUserPassword = async (currentPassword: string, newPassword: string) => {
     if (!user || !user.email) {
       throw new Error('No user logged in');
@@ -305,6 +311,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signInWithGoogle,
     logout,
+    sendPasswordReset,
     updateUserPassword,
     updateDisplayName,
     updateLanguagePreference,

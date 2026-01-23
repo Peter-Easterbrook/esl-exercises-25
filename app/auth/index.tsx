@@ -22,8 +22,11 @@ export default function AuthScreen() {
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
 
-  const { signIn, signUp, signInWithGoogle, user } = useAuth();
+  const { signIn, signUp, signInWithGoogle, sendPasswordReset, user } = useAuth();
 
   // Auto-navigate when user becomes authenticated
   useEffect(() => {
@@ -93,6 +96,50 @@ export default function AuthScreen() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const emailToUse = resetEmail.trim() || email.trim();
+
+    if (!emailToUse) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailToUse)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
+    setResetLoading(true);
+    try {
+      await sendPasswordReset(emailToUse);
+      Alert.alert(
+        'Success',
+        'Password reset email sent! Check your inbox (and spam folder) for instructions.'
+      );
+      setShowForgotPassword(false);
+      setResetEmail('');
+    } catch (error: any) {
+      console.error('❌ Password reset error:', error);
+
+      let errorMessage = error.message;
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account exists with this email address.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many reset attempts. Please wait a few minutes and try again.';
+      } else {
+        errorMessage = 'Unable to send reset email. Please try again.';
+      }
+
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior='height'>
       <View style={styles.contentWrapper}>
@@ -153,6 +200,55 @@ export default function AuthScreen() {
               />
             </TouchableOpacity>
           </View>
+
+          {isLogin && (
+            <TouchableOpacity
+              style={styles.forgotPasswordLink}
+              onPress={() => setShowForgotPassword(!showForgotPassword)}
+            >
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          )}
+
+          {isLogin && showForgotPassword && (
+            <View style={styles.forgotPasswordForm}>
+              <Text style={styles.forgotPasswordInfo}>
+                Enter your email and we'll send you a password reset link
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder='Email'
+                placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                value={resetEmail}
+                onChangeText={setResetEmail}
+                keyboardType='email-address'
+                autoCapitalize='none'
+                autoComplete='email'
+                textContentType='emailAddress'
+              />
+              <View style={styles.forgotPasswordButtons}>
+                <TouchableOpacity
+                  style={styles.resetButton}
+                  onPress={handleForgotPassword}
+                  disabled={resetLoading}
+                >
+                  <Text style={styles.resetButtonText}>
+                    {resetLoading ? 'Sending...' : 'Send Reset Link'}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    setShowForgotPassword(false);
+                    setResetEmail('');
+                  }}
+                  disabled={resetLoading}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
 
           {!isLogin && (
             <TextInput
@@ -346,5 +442,60 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#6996b3',
     fontSize: 16,
+  },
+  forgotPasswordLink: {
+    alignSelf: 'flex-end',
+    padding: 12,
+    marginTop: -8,
+  },
+  forgotPasswordText: {
+    color: '#6996b3',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  forgotPasswordForm: {
+    backgroundColor: '#f0f8ff',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(105, 150, 179, 0.2)',
+  },
+  forgotPasswordInfo: {
+    fontSize: 14,
+    color: '#464655',
+    lineHeight: 20,
+  },
+  forgotPasswordButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 4,
+  },
+  resetButton: {
+    flex: 1,
+    backgroundColor: '#6996b3',
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.3)',
+  },
+  resetButtonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(105, 150, 179, 0.3)',
+  },
+  cancelButtonText: {
+    color: '#6996b3',
+    fontSize: 15,
+    fontWeight: '500',
   },
 });
