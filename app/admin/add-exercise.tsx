@@ -1518,7 +1518,7 @@ const styles = StyleSheet.create({
   },
   languageCode: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "400",
     color: "#999",
     textTransform: "uppercase",
   },

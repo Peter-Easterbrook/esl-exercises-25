@@ -215,7 +215,7 @@ export default function AuthScreen() {
             {isLogin && showForgotPassword && (
               <View style={styles.forgotPasswordForm}>
                 <Text style={styles.forgotPasswordInfo}>
-                  Enter your email and we'll send you a password reset link
+                  Enter your email and we&apos;ll send you a password reset link
                 </Text>
                 <TextInput
                   style={styles.input}
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "400",
   },
   dividerContainer: {
     flexDirection: "row",
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
   googleButtonText: {
     color: "#000",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "400",
   },
   linkButton: {
     alignItems: "center",
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   resetButtonText: {
     color: "white",
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: "400",
   },
   cancelButton: {
     flex: 1,
@@ -499,6 +499,6 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: "#6996b3",
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: "400",
   },
 });
