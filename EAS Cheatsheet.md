@@ -313,12 +313,12 @@ npx expo install --fix
 
 # Commit and push
 git add .
-git commit -m "Bump version and prep for build"
+git commit -m "Bump version and prep for update"
 git push
 
 # Build for production
 npx eas build -p android --profile production
 # Or push an update without rebuilding
-eas update --branch production --message "Addresses category icon issue"
+eas update --branch production --message "Adds forgotten password function"
 eas update:list --branch production
 ```
