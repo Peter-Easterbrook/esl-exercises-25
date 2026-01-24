@@ -612,29 +612,76 @@ export default function AddExerciseScreen() {
         isAdmin: appUser?.isAdmin,
       });
 
+      // Sanitize instructions - ensure no undefined values and proper type
+      const sanitizedInstructions: MultiLanguageInstructions = {
+        en: exerciseData.instructions.en || "",
+        es: exerciseData.instructions.es || "",
+        fr: exerciseData.instructions.fr || "",
+        de: exerciseData.instructions.de || "",
+        it: exerciseData.instructions.it || "",
+      };
+
       const exerciseContent = {
-        title: exerciseData.title,
-        description: exerciseData.description,
-        instructions: exerciseData.instructions,
-        category: exerciseData.category,
-        difficulty: exerciseData.difficulty,
+        title: exerciseData.title || "",
+        description: exerciseData.description || "",
+        instructions: sanitizedInstructions,
+        category: exerciseData.category || "",
+        difficulty: exerciseData.difficulty || "beginner",
         content: {
           type: exerciseData.type,
-          questions: questions.map((q, index) => ({
-            id: `q${index + 1}`,
-            question: q.question!,
-            options: q.options,
-            correctAnswer: q.correctAnswer!,
-            explanation: q.explanation,
+          questions: questions.map((q, index) => {
+            const questionData: Record<string, any> = {
+              id: `q${index + 1}`,
+              question: q.question || "",
+              correctAnswer: Array.isArray(q.correctAnswer)
+                ? q.correctAnswer.map((a) => a || "")
+                : q.correctAnswer || "",
+              explanation: q.explanation || "",
+            };
+
+            // Only include options if they exist and are not empty
+            if (q.options && q.options.length > 0) {
+              questionData.options = q.options.map((opt) => opt || "");
+            }
+
             // Include optional fields for different question types
-            ...(q.leftColumn && { leftColumn: q.leftColumn }), // For matching
-            ...(q.passageText && { passageText: q.passageText }), // For true-false
-            ...(q.blanksCount && { blanksCount: q.blanksCount }), // For fill-blanks
-          })),
+            if (q.leftColumn && q.leftColumn.length > 0) {
+              questionData.leftColumn = q.leftColumn.map((item) => item || "");
+            }
+            if (q.passageText) {
+              questionData.passageText = q.passageText;
+            }
+            if (q.blanksCount) {
+              questionData.blanksCount = q.blanksCount;
+            }
+
+            return questionData;
+          }),
         },
       };
 
       console.log("📝 Exercise data prepared:", exerciseContent);
+
+      // Debug: Find any undefined values
+      const findUndefined = (obj: any, path = ""): string[] => {
+        const undefinedPaths: string[] = [];
+        for (const key in obj) {
+          const currentPath = path ? `${path}.${key}` : key;
+          if (obj[key] === undefined) {
+            undefinedPaths.push(currentPath);
+          } else if (typeof obj[key] === "object" && obj[key] !== null) {
+            undefinedPaths.push(...findUndefined(obj[key], currentPath));
+          }
+        }
+        return undefinedPaths;
+      };
+      const undefinedFields = findUndefined(exerciseContent);
+      if (undefinedFields.length > 0) {
+        console.error("🚨 UNDEFINED FIELDS FOUND:", undefinedFields);
+      } else {
+        console.log("✅ No undefined fields detected");
+      }
+      // console.log("📋 Full JSON:", JSON.stringify(exerciseContent, null, 2));
 
       if (isEditMode && typeof exerciseId === "string") {
         // Update existing exercise

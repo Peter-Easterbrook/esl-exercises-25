@@ -1,8 +1,14 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { backgrounds, blues, borders, colors, elevation } from '@/constants/theme';
-import { useAuth } from '@/contexts/AuthContext';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import {
+  backgrounds,
+  blues,
+  borders,
+  colors,
+  elevation,
+} from "@/constants/theme";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   AppSettings,
   auditOrphanedRecords,
@@ -10,9 +16,9 @@ import {
   getAppSettings,
   resetAppSettings,
   updateAppSettings,
-} from '@/services/firebaseService';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+} from "@/services/firebaseService";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -23,7 +29,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 
 export default function AppSettingsScreen() {
   const { appUser } = useAuth();
@@ -44,11 +50,11 @@ export default function AppSettingsScreen() {
     },
     notifications: {
       enablePushNotifications: true,
-      dailyReminderTime: '09:00',
+      dailyReminderTime: "09:00",
     },
     admin: {
       maintenanceMode: false,
-      announcementBanner: '',
+      announcementBanner: "",
     },
   });
 
@@ -62,8 +68,8 @@ export default function AppSettingsScreen() {
       const appSettings = await getAppSettings();
       setSettings(appSettings);
     } catch (error) {
-      console.error('Error loading settings:', error);
-      Alert.alert('Error', 'Failed to load app settings');
+      console.error("Error loading settings:", error);
+      Alert.alert("Error", "Failed to load app settings");
     } finally {
       setLoading(false);
     }
@@ -73,10 +79,10 @@ export default function AppSettingsScreen() {
     try {
       setSaving(true);
       await updateAppSettings(settings);
-      Alert.alert('Success', 'Settings saved successfully');
+      Alert.alert("Success", "Settings saved successfully");
     } catch (error) {
-      console.error('Error saving settings:', error);
-      Alert.alert('Error', 'Failed to save settings');
+      console.error("Error saving settings:", error);
+      Alert.alert("Error", "Failed to save settings");
     } finally {
       setSaving(false);
     }
@@ -84,28 +90,28 @@ export default function AppSettingsScreen() {
 
   const handleResetSettings = () => {
     Alert.alert(
-      'Reset Settings',
-      'Are you sure you want to reset all settings to default values?',
+      "Reset Settings",
+      "Are you sure you want to reset all settings to default values?",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: "Cancel", style: "cancel" },
         {
-          text: 'Reset',
-          style: 'destructive',
+          text: "Reset",
+          style: "destructive",
           onPress: async () => {
             try {
               setSaving(true);
               await resetAppSettings();
               await loadSettings();
-              Alert.alert('Success', 'Settings reset to defaults');
+              Alert.alert("Success", "Settings reset to defaults");
             } catch (error) {
-              console.error('Error resetting settings:', error);
-              Alert.alert('Error', 'Failed to reset settings');
+              console.error("Error resetting settings:", error);
+              Alert.alert("Error", "Failed to reset settings");
             } finally {
               setSaving(false);
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -116,8 +122,8 @@ export default function AppSettingsScreen() {
       setAuditResults(report);
       setAuditModalVisible(true);
     } catch (error) {
-      console.error('Error auditing data:', error);
-      alert('Error: Failed to audit data integrity');
+      console.error("Error auditing data:", error);
+      alert("Error: Failed to audit data integrity");
     } finally {
       setSaving(false);
     }
@@ -140,8 +146,8 @@ export default function AppSettingsScreen() {
       });
       setAuditModalVisible(true);
     } catch (error) {
-      console.error('Error cleaning up data:', error);
-      alert('Error: Failed to cleanup orphaned records');
+      console.error("Error cleaning up data:", error);
+      alert("Error: Failed to cleanup orphaned records");
     } finally {
       setSaving(false);
     }
@@ -149,7 +155,7 @@ export default function AppSettingsScreen() {
 
   // Redirect if not admin
   if (!appUser?.isAdmin) {
-    router.replace('/(tabs)');
+    router.replace("/(tabs)");
     return null;
   }
 
@@ -157,7 +163,7 @@ export default function AppSettingsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#6996b3' />
+          <ActivityIndicator size="large" color="#6996b3" />
           <ThemedText style={styles.loadingText}>
             Loading settings...
           </ThemedText>
@@ -170,15 +176,15 @@ export default function AppSettingsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
-          <ThemedText style={styles.backText}>Back</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <IconSymbol name="chevron.left" size={24} color={blues.blue5} />
+            <ThemedText style={styles.backText}>Back</ThemedText>
+          </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
+          <ThemedText type="title" style={styles.title}>
             App Settings
           </ThemedText>
         </View>
@@ -187,8 +193,8 @@ export default function AppSettingsScreen() {
           {/* Exercise Settings */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name='doc.text' size={20} color={colors.success} />
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <IconSymbol name="doc.text" size={20} color={colors.success} />
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Exercise Settings
               </ThemedText>
             </View>
@@ -216,8 +222,8 @@ export default function AppSettingsScreen() {
                       },
                     });
                   }}
-                  keyboardType='numeric'
-                  placeholder='30'
+                  keyboardType="numeric"
+                  placeholder="30"
                 />
               </View>
 
@@ -243,8 +249,9 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: colors.success }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: colors.success }}
+                  thumbColor="#fff"
+                  thumbTintColor="#fff"
                 />
               </View>
 
@@ -270,18 +277,17 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: colors.success }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: colors.success }}
+                  thumbColor="#fff"
                 />
               </View>
             </View>
           </View>
-
           {/* User Management */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name='person.2' size={20} color={blues.blue5} />
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <IconSymbol name="person.2" size={20} color={blues.blue5} />
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 User Management
               </ThemedText>
             </View>
@@ -307,8 +313,8 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: blues.blue5 }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: blues.blue5 }}
+                  thumbColor="#fff"
                 />
               </View>
 
@@ -334,8 +340,8 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: blues.blue5 }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: blues.blue5 }}
+                  thumbColor="#fff"
                 />
               </View>
             </View>
@@ -344,8 +350,8 @@ export default function AppSettingsScreen() {
           {/* Notifications */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name='bell' size={20} color={colors.warning} />
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <IconSymbol name="bell" size={20} color={colors.warning} />
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Notifications
               </ThemedText>
             </View>
@@ -371,8 +377,8 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: colors.warning }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: colors.warning }}
+                  thumbColor="#fff"
                 />
               </View>
 
@@ -399,7 +405,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  placeholder='09:00'
+                  placeholder="09:00"
                   maxLength={5}
                 />
               </View>
@@ -409,8 +415,8 @@ export default function AppSettingsScreen() {
           {/* Admin Settings */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name='gear' size={20} color={blues.blue5} />
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <IconSymbol name="gear" size={20} color={blues.blue5} />
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Admin
               </ThemedText>
             </View>
@@ -436,8 +442,8 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: '#ddd', true: colors.danger }}
-                  thumbColor='#fff'
+                  trackColor={{ false: "#ddd", true: colors.danger }}
+                  thumbColor="#fff"
                 />
               </View>
 
@@ -464,10 +470,10 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  placeholder='Enter announcement message...'
+                  placeholder="Enter announcement message..."
                   multiline
                   numberOfLines={3}
-                  textAlignVertical='top'
+                  textAlignVertical="top"
                 />
               </View>
             </View>
@@ -476,8 +482,12 @@ export default function AppSettingsScreen() {
           {/* Data Integrity */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name='doc.text.magnifyingglass' size={20} color={blues.blue5} />
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <IconSymbol
+                name="doc.text.magnifyingglass"
+                size={20}
+                color={blues.blue5}
+              />
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Data Integrity
               </ThemedText>
             </View>
@@ -489,7 +499,8 @@ export default function AppSettingsScreen() {
                     Audit Database
                   </ThemedText>
                   <ThemedText style={styles.settingDescription}>
-                    Check for orphaned progress records (records referencing deleted users or exercises)
+                    Check for orphaned progress records (records referencing
+                    deleted users or exercises)
                   </ThemedText>
                 </View>
                 <TouchableOpacity
@@ -498,11 +509,11 @@ export default function AppSettingsScreen() {
                   disabled={saving}
                 >
                   {saving ? (
-                    <ActivityIndicator size='small' color={blues.blue5} />
+                    <ActivityIndicator size="small" color={blues.blue5} />
                   ) : (
                     <>
                       <IconSymbol
-                        name='magnifyingglass'
+                        name="magnifyingglass"
                         size={18}
                         color={blues.blue5}
                       />
@@ -522,7 +533,8 @@ export default function AppSettingsScreen() {
                     Cleanup Orphaned Records
                   </ThemedText>
                   <ThemedText style={styles.settingDescription}>
-                    Remove progress records that reference deleted users or exercises. Run audit first to see what will be deleted.
+                    Remove progress records that reference deleted users or
+                    exercises. Run audit first to see what will be deleted.
                   </ThemedText>
                 </View>
                 <TouchableOpacity
@@ -531,14 +543,10 @@ export default function AppSettingsScreen() {
                   disabled={saving}
                 >
                   {saving ? (
-                    <ActivityIndicator size='small' color='#fff' />
+                    <ActivityIndicator size="small" color="#fff" />
                   ) : (
                     <>
-                      <IconSymbol
-                        name='trash'
-                        size={18}
-                        color='#fff'
-                      />
+                      <IconSymbol name="trash" size={18} color="#fff" />
                       <ThemedText style={styles.cleanupButtonText}>
                         Cleanup Now
                       </ThemedText>
@@ -557,13 +565,13 @@ export default function AppSettingsScreen() {
               disabled={saving}
             >
               {saving ? (
-                <ActivityIndicator size='small' color='#fff' />
+                <ActivityIndicator size="small" color="#fff" />
               ) : (
                 <>
                   <IconSymbol
-                    name='checkmark.circle.fill'
+                    name="checkmark.circle.fill"
                     size={20}
-                    color='#fff'
+                    color="#fff"
                   />
                   <ThemedText style={styles.buttonText}>
                     Save Settings
@@ -578,7 +586,7 @@ export default function AppSettingsScreen() {
               disabled={saving}
             >
               <IconSymbol
-                name='arrow.counterclockwise'
+                name="arrow.counterclockwise"
                 size={20}
                 color={colors.danger}
               />
@@ -603,12 +611,20 @@ export default function AppSettingsScreen() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <IconSymbol
-                name={auditResults?.isCleanupResult ? 'checkmark.circle.fill' : 'doc.text.magnifyingglass'}
+                name={
+                  auditResults?.isCleanupResult
+                    ? "checkmark.circle.fill"
+                    : "doc.text.magnifyingglass"
+                }
                 size={24}
-                color={auditResults?.isCleanupResult ? colors.success : blues.blue5}
+                color={
+                  auditResults?.isCleanupResult ? colors.success : blues.blue5
+                }
               />
               <ThemedText style={styles.modalTitle}>
-                {auditResults?.isCleanupResult ? 'Cleanup Complete' : 'Data Integrity Audit'}
+                {auditResults?.isCleanupResult
+                  ? "Cleanup Complete"
+                  : "Data Integrity Audit"}
               </ThemedText>
             </View>
 
@@ -620,42 +636,72 @@ export default function AppSettingsScreen() {
               ) : (
                 <>
                   <View style={styles.statRow}>
-                    <ThemedText style={styles.statLabel}>Total Progress Records:</ThemedText>
-                    <ThemedText style={styles.statValue}>{auditResults?.totalProgressRecords || 0}</ThemedText>
+                    <ThemedText style={styles.statLabel}>
+                      Total Progress Records:
+                    </ThemedText>
+                    <ThemedText style={styles.statValue}>
+                      {auditResults?.totalProgressRecords || 0}
+                    </ThemedText>
                   </View>
                   <View style={styles.statRow}>
-                    <ThemedText style={styles.statLabel}>Total Users:</ThemedText>
-                    <ThemedText style={styles.statValue}>{auditResults?.totalUsers || 0}</ThemedText>
+                    <ThemedText style={styles.statLabel}>
+                      Total Users:
+                    </ThemedText>
+                    <ThemedText style={styles.statValue}>
+                      {auditResults?.totalUsers || 0}
+                    </ThemedText>
                   </View>
                   <View style={styles.statRow}>
-                    <ThemedText style={styles.statLabel}>Total Exercises:</ThemedText>
-                    <ThemedText style={styles.statValue}>{auditResults?.totalExercises || 0}</ThemedText>
+                    <ThemedText style={styles.statLabel}>
+                      Total Exercises:
+                    </ThemedText>
+                    <ThemedText style={styles.statValue}>
+                      {auditResults?.totalExercises || 0}
+                    </ThemedText>
                   </View>
 
                   <View style={styles.divider} />
 
                   <View style={styles.statRow}>
-                    <ThemedText style={styles.statLabelBold}>Orphaned Records Found:</ThemedText>
-                    <ThemedText style={[
-                      styles.statValueBold,
-                      { color: auditResults?.orphanedRecords > 0 ? colors.warning : colors.success }
-                    ]}>
+                    <ThemedText style={styles.statLabelBold}>
+                      Orphaned Records Found:
+                    </ThemedText>
+                    <ThemedText
+                      style={[
+                        styles.statValueBold,
+                        {
+                          color:
+                            auditResults?.orphanedRecords > 0
+                              ? colors.warning
+                              : colors.success,
+                        },
+                      ]}
+                    >
                       {auditResults?.orphanedRecords || 0}
                     </ThemedText>
                   </View>
 
                   {auditResults?.orphanedRecords > 0 && (
                     <View style={styles.warningBox}>
-                      <IconSymbol name='exclamationmark.triangle.fill' size={16} color={colors.warning} />
+                      <IconSymbol
+                        name="exclamationmark.triangle.fill"
+                        size={16}
+                        color={colors.warning}
+                      />
                       <ThemedText style={styles.warningText}>
-                        These records reference deleted users or exercises and should be cleaned up.
+                        These records reference deleted users or exercises and
+                        should be cleaned up.
                       </ThemedText>
                     </View>
                   )}
 
                   {auditResults?.orphanedRecords === 0 && (
                     <View style={styles.successBox}>
-                      <IconSymbol name='checkmark.circle.fill' size={16} color={colors.success} />
+                      <IconSymbol
+                        name="checkmark.circle.fill"
+                        size={16}
+                        color={colors.success}
+                      />
                       <ThemedText style={styles.successText}>
                         Database is clean! No orphaned records found.
                       </ThemedText>
@@ -685,15 +731,22 @@ export default function AppSettingsScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <IconSymbol name='exclamationmark.triangle.fill' size={24} color={colors.danger} />
+              <IconSymbol
+                name="exclamationmark.triangle.fill"
+                size={24}
+                color={colors.danger}
+              />
               <ThemedText style={styles.modalTitle}>Confirm Cleanup</ThemedText>
             </View>
 
             <View style={styles.modalBody}>
               <ThemedText style={styles.modalText}>
-                This will permanently delete all progress records that reference deleted users or exercises.
+                This will permanently delete all progress records that reference
+                deleted users or exercises.
               </ThemedText>
-              <ThemedText style={[styles.modalText, { marginTop: 12, fontWeight: '600' }]}>
+              <ThemedText
+                style={[styles.modalText, { marginTop: 12, fontWeight: "600" }]}
+              >
                 This action cannot be undone.
               </ThemedText>
             </View>
@@ -709,7 +762,9 @@ export default function AppSettingsScreen() {
                 style={[styles.modalActionButton, styles.confirmButton]}
                 onPress={confirmCleanup}
               >
-                <ThemedText style={styles.confirmButtonText}>Cleanup</ThemedText>
+                <ThemedText style={styles.confirmButtonText}>
+                  Cleanup
+                </ThemedText>
               </TouchableOpacity>
             </View>
           </View>
@@ -725,22 +780,22 @@ const styles = StyleSheet.create({
     backgroundColor: backgrounds.subtle,
   },
   contentWrapper: {
-    width: '100%',
+    width: "100%",
     maxWidth: 600,
-    alignSelf: 'center',
+    alignSelf: "center",
     flex: 1,
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   backText: {
@@ -754,13 +809,13 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#444',
+    color: "#444",
   },
   content: {
     flex: 1,
@@ -770,8 +825,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
     gap: 8,
   },
@@ -785,9 +840,9 @@ const styles = StyleSheet.create({
     ...elevation.level1,
   },
   settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 12,
   },
   settingRowColumn: {
@@ -799,13 +854,13 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   settingDescription: {
     fontSize: 13,
-    color: '#202029',
-    fontWeight: 'normal',
+    color: "#202029",
+    fontWeight: "normal",
     lineHeight: 18,
   },
   divider: {
@@ -821,7 +876,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     backgroundColor: backgrounds.primary,
   },
   timeInput: {
@@ -832,7 +887,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     backgroundColor: backgrounds.primary,
   },
   textAreaInput: {
@@ -850,9 +905,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 12,
     gap: 8,
@@ -867,17 +922,17 @@ const styles = StyleSheet.create({
     borderColor: colors.danger,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   resetButtonText: {
     color: colors.danger,
   },
   dataButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -892,34 +947,34 @@ const styles = StyleSheet.create({
   auditButtonText: {
     color: blues.blue5,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   cleanupButton: {
     backgroundColor: colors.danger,
   },
   cleanupButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   // Modal styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContent: {
     backgroundColor: backgrounds.primary,
     borderRadius: 16,
-    width: '100%',
+    width: "100%",
     maxWidth: 500,
     ...elevation.level3,
   },
   modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     padding: 20,
     paddingBottom: 16,
@@ -928,48 +983,48 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '500',
-    color: '#202029',
+    fontWeight: "500",
+    color: "#202029",
   },
   modalBody: {
     padding: 20,
   },
   modalText: {
     fontSize: 15,
-    color: '#444',
+    color: "#444",
     lineHeight: 22,
   },
   statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 8,
   },
   statLabel: {
     fontSize: 15,
-    color: '#444',
+    color: "#444",
   },
   statValue: {
     fontSize: 15,
-    color: '#202029',
-    fontWeight: '500',
+    color: "#202029",
+    fontWeight: "500",
   },
   statLabelBold: {
     fontSize: 16,
-    color: '#202029',
-    fontWeight: '500',
+    color: "#202029",
+    fontWeight: "500",
   },
   statValueBold: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   warningBox: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: 10,
     marginTop: 16,
     padding: 12,
-    backgroundColor: '#fff3e0',
+    backgroundColor: "#fff3e0",
     borderRadius: 8,
     borderLeftWidth: 3,
     borderLeftColor: colors.warning,
@@ -977,16 +1032,16 @@ const styles = StyleSheet.create({
   warningText: {
     flex: 1,
     fontSize: 14,
-    color: '#e65100',
+    color: "#e65100",
     lineHeight: 20,
   },
   successBox: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: 10,
     marginTop: 16,
     padding: 12,
-    backgroundColor: '#e8f5e9',
+    backgroundColor: "#e8f5e9",
     borderRadius: 8,
     borderLeftWidth: 3,
     borderLeftColor: colors.success,
@@ -994,7 +1049,7 @@ const styles = StyleSheet.create({
   successText: {
     flex: 1,
     fontSize: 14,
-    color: '#1b5e20',
+    color: "#1b5e20",
     lineHeight: 20,
   },
   modalButton: {
@@ -1003,15 +1058,15 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   modalActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     padding: 20,
     paddingTop: 0,
@@ -1020,7 +1075,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelButton: {
     backgroundColor: backgrounds.primary,
@@ -1028,16 +1083,16 @@ const styles = StyleSheet.create({
     borderColor: borders.medium,
   },
   cancelButtonText: {
-    color: '#444',
+    color: "#444",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   confirmButton: {
     backgroundColor: colors.danger,
   },
   confirmButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

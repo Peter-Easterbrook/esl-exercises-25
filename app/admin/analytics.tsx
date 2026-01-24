@@ -1,11 +1,17 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { backgrounds, blues, borders, colors, elevation } from '@/constants/theme';
-import { useAuth } from '@/contexts/AuthContext';
-import { getAnalyticsData } from '@/services/firebaseService';
-import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import {
+  backgrounds,
+  blues,
+  borders,
+  colors,
+  elevation,
+} from "@/constants/theme";
+import { useAuth } from "@/contexts/AuthContext";
+import { getAnalyticsData } from "@/services/firebaseService";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,16 +20,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { BarChart, LineChart, PieChart } from 'react-native-chart-kit';
+} from "react-native";
+import { BarChart, LineChart, PieChart } from "react-native-chart-kit";
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
 // Calculate proper chart width accounting for all padding
 const contentMaxWidth = 600;
 const contentPadding = 20; // content paddingHorizontal: 10 * 2
 const chartContainerPadding = 24; // chartContainer padding: 12 * 2
-const chartWidth = Math.min(screenWidth, contentMaxWidth) - contentPadding - chartContainerPadding;
+const chartWidth =
+  Math.min(screenWidth, contentMaxWidth) -
+  contentPadding -
+  chartContainerPadding;
 
 interface AnalyticsData {
   totalCompletions: number;
@@ -45,8 +54,8 @@ export default function AnalyticsScreen() {
   const { appUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<
-    'overview' | 'users' | 'exercises'
-  >('overview');
+    "overview" | "users" | "exercises"
+  >("overview");
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     totalCompletions: 0,
     averageScore: 0,
@@ -69,8 +78,8 @@ export default function AnalyticsScreen() {
       const data = await getAnalyticsData();
       setAnalyticsData(data);
     } catch (error) {
-      console.error('Error loading analytics:', error);
-      Alert.alert('Error', 'Failed to load analytics data');
+      console.error("Error loading analytics:", error);
+      Alert.alert("Error", "Failed to load analytics data");
     } finally {
       setLoading(false);
     }
@@ -78,7 +87,7 @@ export default function AnalyticsScreen() {
 
   // Redirect if not admin
   if (!appUser?.isAdmin) {
-    router.replace('/(tabs)');
+    router.replace("/(tabs)");
     return null;
   }
 
@@ -86,7 +95,7 @@ export default function AnalyticsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color={blues.blue5} />
+          <ActivityIndicator size="large" color={blues.blue5} />
           <ThemedText style={styles.loadingText}>
             Loading analytics...
           </ThemedText>
@@ -109,7 +118,7 @@ export default function AnalyticsScreen() {
     name: item.name,
     population: item.count,
     color: item.color,
-    legendFontColor: '#202029',
+    legendFontColor: "#202029",
     legendFontSize: 12,
   }));
 
@@ -117,15 +126,15 @@ export default function AnalyticsScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <IconSymbol name='chevron.left' size={24} color={blues.blue5} />
-          <ThemedText style={styles.backText}>Back</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <IconSymbol name="chevron.left" size={24} color={blues.blue5} />
+            <ThemedText style={styles.backText}>Back</ThemedText>
+          </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
+          <ThemedText type="title" style={styles.title}>
             Analytics Dashboard
           </ThemedText>
         </View>
@@ -133,13 +142,13 @@ export default function AnalyticsScreen() {
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[styles.tab, selectedTab === 'overview' && styles.activeTab]}
-            onPress={() => setSelectedTab('overview')}
+            style={[styles.tab, selectedTab === "overview" && styles.activeTab]}
+            onPress={() => setSelectedTab("overview")}
           >
             <ThemedText
               style={[
                 styles.tabText,
-                selectedTab === 'overview' && styles.activeTabText,
+                selectedTab === "overview" && styles.activeTabText,
               ]}
             >
               Overview
@@ -147,13 +156,13 @@ export default function AnalyticsScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tab, selectedTab === 'users' && styles.activeTab]}
-            onPress={() => setSelectedTab('users')}
+            style={[styles.tab, selectedTab === "users" && styles.activeTab]}
+            onPress={() => setSelectedTab("users")}
           >
             <ThemedText
               style={[
                 styles.tabText,
-                selectedTab === 'users' && styles.activeTabText,
+                selectedTab === "users" && styles.activeTabText,
               ]}
             >
               Users
@@ -163,14 +172,14 @@ export default function AnalyticsScreen() {
           <TouchableOpacity
             style={[
               styles.tab,
-              selectedTab === 'exercises' && styles.activeTab,
+              selectedTab === "exercises" && styles.activeTab,
             ]}
-            onPress={() => setSelectedTab('exercises')}
+            onPress={() => setSelectedTab("exercises")}
           >
             <ThemedText
               style={[
                 styles.tabText,
-                selectedTab === 'exercises' && styles.activeTabText,
+                selectedTab === "exercises" && styles.activeTabText,
               ]}
             >
               Exercises
@@ -181,14 +190,14 @@ export default function AnalyticsScreen() {
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Key Metrics */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Key Metrics
             </ThemedText>
 
             <View style={styles.metricsGrid}>
               <View style={styles.metricCard}>
                 <IconSymbol
-                  name='checkmark.circle.fill'
+                  name="checkmark.circle.fill"
                   size={32}
                   color={colors.success}
                 />
@@ -201,7 +210,7 @@ export default function AnalyticsScreen() {
               </View>
 
               <View style={styles.metricCard}>
-                <IconSymbol name='star.fill' size={32} color={colors.warning} />
+                <IconSymbol name="star.fill" size={32} color={colors.warning} />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.averageScore}%
                 </ThemedText>
@@ -210,7 +219,7 @@ export default function AnalyticsScreen() {
 
               <View style={styles.metricCard}>
                 <IconSymbol
-                  name='chart.line.uptrend.xyaxis'
+                  name="chart.line.uptrend.xyaxis"
                   size={32}
                   color={blues.blue5}
                 />
@@ -224,11 +233,11 @@ export default function AnalyticsScreen() {
             </View>
           </View>
 
-          {selectedTab === 'overview' && (
+          {selectedTab === "overview" && (
             <>
               {/* User Activity Trend */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   User Activity (Last 7 Days)
                 </ThemedText>
                 <View style={styles.chartContainer}>
@@ -238,7 +247,7 @@ export default function AnalyticsScreen() {
                       datasets: [
                         {
                           data: analyticsData.userActivityTrend.map(
-                            (d) => d.users
+                            (d) => d.users,
                           ),
                         },
                       ],
@@ -255,27 +264,27 @@ export default function AnalyticsScreen() {
 
               {/* Category Performance */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Category Performance
                 </ThemedText>
                 <View style={styles.chartContainer}>
                   <BarChart
                     data={{
                       labels: analyticsData.categoryPerformance.map((c) =>
-                        c.name.length > 4 ? c.name.slice(0, 4) : c.name
+                        c.name.length > 4 ? c.name.slice(0, 4) : c.name,
                       ),
                       datasets: [
                         {
                           data: analyticsData.categoryPerformance.map(
-                            (c) => c.count
+                            (c) => c.count,
                           ),
                         },
                       ],
                     }}
                     width={chartWidth}
                     height={220}
-                    yAxisLabel=''
-                    yAxisSuffix=''
+                    yAxisLabel=""
+                    yAxisSuffix=""
                     chartConfig={{
                       ...chartConfig,
                       color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
@@ -308,7 +317,7 @@ export default function AnalyticsScreen() {
 
               {/* Difficulty Distribution */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Difficulty Distribution
                 </ThemedText>
                 <View style={styles.chartContainer}>
@@ -317,9 +326,9 @@ export default function AnalyticsScreen() {
                     width={chartWidth}
                     height={220}
                     chartConfig={chartConfig}
-                    accessor='population'
-                    backgroundColor='transparent'
-                    paddingLeft='15'
+                    accessor="population"
+                    backgroundColor="transparent"
+                    paddingLeft="15"
                     absolute
                   />
                 </View>
@@ -327,11 +336,11 @@ export default function AnalyticsScreen() {
             </>
           )}
 
-          {selectedTab === 'users' && (
+          {selectedTab === "users" && (
             <>
               {/* User Activity Trend */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Daily Active Users
                 </ThemedText>
                 <View style={styles.chartContainer}>
@@ -341,7 +350,7 @@ export default function AnalyticsScreen() {
                       datasets: [
                         {
                           data: analyticsData.userActivityTrend.map(
-                            (d) => d.users
+                            (d) => d.users,
                           ),
                         },
                       ],
@@ -361,7 +370,7 @@ export default function AnalyticsScreen() {
 
               {/* Recent Activity */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Recent Activity
                 </ThemedText>
                 <View style={styles.activityList}>
@@ -369,7 +378,7 @@ export default function AnalyticsScreen() {
                     <View key={index} style={styles.activityItem}>
                       <View style={styles.activityIcon}>
                         <IconSymbol
-                          name='person.circle.fill'
+                          name="person.circle.fill"
                           size={24}
                           color={blues.blue5}
                         />
@@ -397,31 +406,31 @@ export default function AnalyticsScreen() {
             </>
           )}
 
-          {selectedTab === 'exercises' && (
+          {selectedTab === "exercises" && (
             <>
               {/* Top Exercises */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Most Completed Exercises
                 </ThemedText>
                 <View style={styles.chartContainer}>
                   <BarChart
                     data={{
                       labels: analyticsData.topExercises.map(
-                        (_, i) => `#${i + 1}`
+                        (_, i) => `#${i + 1}`,
                       ),
                       datasets: [
                         {
                           data: analyticsData.topExercises.map(
-                            (e) => e.completions
+                            (e) => e.completions,
                           ),
                         },
                       ],
                     }}
                     width={chartWidth}
                     height={220}
-                    yAxisLabel=''
-                    yAxisSuffix=''
+                    yAxisLabel=""
+                    yAxisSuffix=""
                     chartConfig={{
                       ...chartConfig,
                       color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
@@ -449,9 +458,9 @@ export default function AnalyticsScreen() {
                         </ThemedText>
                       </View>
                       <IconSymbol
-                        name='chevron.right'
+                        name="trophy"
                         size={20}
-                        color='#464655'
+                        color={colors.warning}
                       />
                     </View>
                   ))}
@@ -460,7 +469,7 @@ export default function AnalyticsScreen() {
 
               {/* Difficulty Distribution */}
               <View style={styles.section}>
-                <ThemedText type='subtitle' style={styles.sectionTitle}>
+                <ThemedText type="subtitle" style={styles.sectionTitle}>
                   Exercise Difficulty Distribution
                 </ThemedText>
                 <View style={styles.chartContainer}>
@@ -469,9 +478,9 @@ export default function AnalyticsScreen() {
                     width={chartWidth}
                     height={220}
                     chartConfig={chartConfig}
-                    accessor='population'
-                    backgroundColor='transparent'
-                    paddingLeft='15'
+                    accessor="population"
+                    backgroundColor="transparent"
+                    paddingLeft="15"
                     absolute
                   />
                 </View>
@@ -492,22 +501,22 @@ const styles = StyleSheet.create({
     backgroundColor: backgrounds.subtle,
   },
   contentWrapper: {
-    width: '100%',
+    width: "100%",
     maxWidth: 600,
-    alignSelf: 'center',
+    alignSelf: "center",
     flex: 1,
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   backText: {
@@ -521,16 +530,16 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#444',
+    color: "#444",
   },
   tabContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: backgrounds.primary,
     borderBottomWidth: 1,
     borderBottomColor: borders.light,
@@ -538,21 +547,21 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
     borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
+    borderBottomColor: "transparent",
   },
   activeTab: {
     borderBottomColor: blues.blue5,
   },
   tabText: {
     fontSize: 14,
-    color: '#202029',
-    fontWeight: 'normal',
+    color: "#202029",
+    fontWeight: "normal",
   },
   activeTabText: {
     color: blues.blue5,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   content: {
     flex: 1,
@@ -566,7 +575,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   metricsGrid: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   metricCard: {
@@ -574,19 +583,19 @@ const styles = StyleSheet.create({
     backgroundColor: backgrounds.primary,
     padding: 20,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     ...elevation.level1,
   },
   metricValue: {
     fontSize: 24,
-    fontWeight: '500',
+    fontWeight: "500",
     marginVertical: 8,
-    color: '#333',
+    color: "#333",
   },
   metricLabel: {
     fontSize: 12,
-    color: '#444',
-    textAlign: 'center',
+    color: "#444",
+    textAlign: "center",
   },
   chartContainer: {
     backgroundColor: backgrounds.primary,
@@ -603,9 +612,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   categoryItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
@@ -616,24 +625,24 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   categoryCount: {
     fontSize: 14,
-    color: '#444',
+    color: "#444",
   },
   categoryPercentage: {
     fontSize: 18,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     color: colors.success,
   },
   activityList: {
     gap: 12,
   },
   activityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
@@ -645,41 +654,41 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: backgrounds.tinted,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   activityInfo: {
     flex: 1,
   },
   activityUser: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   activityExercise: {
     fontSize: 14,
-    color: '#444',
+    color: "#444",
   },
   activityMeta: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   activityScore: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.success,
     marginBottom: 4,
   },
   activityDate: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
   exerciseList: {
     marginTop: 16,
     gap: 12,
   },
   exerciseItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: backgrounds.primary,
     padding: 12,
     borderRadius: 12,
@@ -691,12 +700,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: backgrounds.tinted,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   rankNumber: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.success,
   },
   exerciseInfo: {
@@ -704,11 +713,11 @@ const styles = StyleSheet.create({
   },
   exerciseTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   exerciseCount: {
     fontSize: 14,
-    color: '#444',
+    color: "#444",
   },
 });

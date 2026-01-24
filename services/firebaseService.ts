@@ -1,6 +1,6 @@
-import { db } from '@/config/firebase';
-import { colors } from '@/constants/theme';
-import { Category, Exercise, UserProgress } from '@/types';
+import { db } from "@/config/firebase";
+import { colors } from "@/constants/theme";
+import { Category, Exercise, UserProgress } from "@/types";
 import {
   addDoc,
   collection,
@@ -14,26 +14,26 @@ import {
   Timestamp,
   updateDoc,
   where,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 // Category Operations
 export const getCategories = async (): Promise<Category[]> => {
   try {
-    const categoriesRef = collection(db, 'categories');
-    const snapshot = await getDocs(query(categoriesRef, orderBy('name')));
+    const categoriesRef = collection(db, "categories");
+    const snapshot = await getDocs(query(categoriesRef, orderBy("name")));
 
     // First, let's see ALL exercises in the database
-    console.log('🔍 Fetching ALL exercises from database...');
-    const allExercisesRef = collection(db, 'exercises');
+    console.log("🔍 Fetching ALL exercises from database...");
+    const allExercisesRef = collection(db, "exercises");
     const allExercisesSnapshot = await getDocs(allExercisesRef);
     console.log(
-      `📊 Total exercises in database: ${allExercisesSnapshot.docs.length}`
+      `📊 Total exercises in database: ${allExercisesSnapshot.docs.length}`,
     );
     allExercisesSnapshot.docs.forEach((doc) => {
       console.log(
         `   - ID: ${doc.id}, Title: "${doc.data().title}", category field: "${
           doc.data().category
-        }"`
+        }"`,
       );
     });
 
@@ -42,21 +42,21 @@ export const getCategories = async (): Promise<Category[]> => {
       const categoryData = categoryDoc.data();
 
       console.log(
-        `\n📁 Loading category: ${categoryData.name} (ID: ${categoryDoc.id})`
+        `\n📁 Loading category: ${categoryData.name} (ID: ${categoryDoc.id})`,
       );
 
       // Get exercises for this category
-      const exercisesRef = collection(db, 'exercises');
+      const exercisesRef = collection(db, "exercises");
       const exercisesSnapshot = await getDocs(
-        query(exercisesRef, where('category', '==', categoryDoc.id))
+        query(exercisesRef, where("category", "==", categoryDoc.id)),
       );
 
       console.log(
-        `   Found ${exercisesSnapshot.docs.length} exercises matching this category ID`
+        `   Found ${exercisesSnapshot.docs.length} exercises matching this category ID`,
       );
       exercisesSnapshot.docs.forEach((doc) => {
         console.log(
-          `   - ${doc.data().title} (category field: ${doc.data().category})`
+          `   - ${doc.data().title} (category field: ${doc.data().category})`,
         );
       });
 
@@ -66,7 +66,7 @@ export const getCategories = async (): Promise<Category[]> => {
           ...exerciseDoc.data(),
           createdAt: exerciseDoc.data().createdAt?.toDate() || new Date(),
           updatedAt: exerciseDoc.data().updatedAt?.toDate() || new Date(),
-        })
+        }),
       ) as Exercise[];
 
       categories.push({
@@ -78,29 +78,29 @@ export const getCategories = async (): Promise<Category[]> => {
 
     return categories;
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error("Error fetching categories:", error);
     throw error;
   }
 };
 
 export const createCategory = async (
-  category: Omit<Category, 'id' | 'exercises'>
+  category: Omit<Category, "id" | "exercises">,
 ): Promise<string> => {
   try {
-    const docRef = await addDoc(collection(db, 'categories'), category);
+    const docRef = await addDoc(collection(db, "categories"), category);
     return docRef.id;
   } catch (error) {
-    console.error('Error creating category:', error);
+    console.error("Error creating category:", error);
     throw error;
   }
 };
 
 // Exercise Operations
 export const getExerciseById = async (
-  exerciseId: string
+  exerciseId: string,
 ): Promise<Exercise | null> => {
   try {
-    const exerciseDoc = await getDoc(doc(db, 'exercises', exerciseId));
+    const exerciseDoc = await getDoc(doc(db, "exercises", exerciseId));
     if (!exerciseDoc.exists()) {
       return null;
     }
@@ -113,18 +113,22 @@ export const getExerciseById = async (
       updatedAt: data.updatedAt?.toDate() || new Date(),
     } as Exercise;
   } catch (error) {
-    console.error('Error fetching exercise:', error);
+    console.error("Error fetching exercise:", error);
     throw error;
   }
 };
 
 export const getExercisesByCategory = async (
-  categoryId: string
+  categoryId: string,
 ): Promise<Exercise[]> => {
   try {
-    const exercisesRef = collection(db, 'exercises');
+    const exercisesRef = collection(db, "exercises");
     const snapshot = await getDocs(
-      query(exercisesRef, where('category', '==', categoryId), orderBy('title'))
+      query(
+        exercisesRef,
+        where("category", "==", categoryId),
+        orderBy("title"),
+      ),
     );
 
     return snapshot.docs.map((doc) => ({
@@ -134,15 +138,15 @@ export const getExercisesByCategory = async (
       updatedAt: doc.data().updatedAt?.toDate() || new Date(),
     })) as Exercise[];
   } catch (error) {
-    console.error('Error fetching exercises by category:', error);
+    console.error("Error fetching exercises by category:", error);
     throw error;
   }
 };
 
 export const getAllExercises = async (): Promise<Exercise[]> => {
   try {
-    const exercisesRef = collection(db, 'exercises');
-    const snapshot = await getDocs(query(exercisesRef, orderBy('title')));
+    const exercisesRef = collection(db, "exercises");
+    const snapshot = await getDocs(query(exercisesRef, orderBy("title")));
 
     return snapshot.docs.map((doc) => ({
       id: doc.id,
@@ -151,49 +155,53 @@ export const getAllExercises = async (): Promise<Exercise[]> => {
       updatedAt: doc.data().updatedAt?.toDate() || new Date(),
     })) as Exercise[];
   } catch (error) {
-    console.error('Error fetching all exercises:', error);
+    console.error("Error fetching all exercises:", error);
     throw error;
   }
 };
 
 export const createExercise = async (
-  exercise: Omit<Exercise, 'id' | 'createdAt' | 'updatedAt'>
+  exercise: Omit<Exercise, "id" | "createdAt" | "updatedAt">,
 ): Promise<string> => {
   try {
-    console.log('🔥 Firebase: Attempting to create exercise...');
-    console.log('🔥 Firebase: Exercise data:', exercise);
+    console.log("🔥 Firebase: Attempting to create exercise...");
+    console.log("🔥 Firebase: Exercise data:", exercise);
 
     const now = Timestamp.now();
+
+    // Remove undefined values to prevent Firestore errors
+    const cleanExercise = JSON.parse(JSON.stringify(exercise));
+
     const exerciseData = {
-      ...exercise,
+      ...cleanExercise,
       createdAt: now,
       updatedAt: now,
     };
 
-    console.log('🔥 Firebase: Adding document to collection...');
-    const docRef = await addDoc(collection(db, 'exercises'), exerciseData);
+    console.log("🔥 Firebase: Adding document to collection...");
+    const docRef = await addDoc(collection(db, "exercises"), exerciseData);
 
-    console.log('🔥 Firebase: Document created with ID:', docRef.id);
+    console.log("🔥 Firebase: Document created with ID:", docRef.id);
     return docRef.id;
   } catch (error: any) {
-    console.error('🔥 Firebase: Error creating exercise:', error);
-    console.error('🔥 Firebase: Error code:', error?.code);
-    console.error('🔥 Firebase: Error message:', error?.message);
+    console.error("🔥 Firebase: Error creating exercise:", error);
+    console.error("🔥 Firebase: Error code:", error?.code);
+    console.error("🔥 Firebase: Error message:", error?.message);
     throw error;
   }
 };
 
 export const updateExercise = async (
   exerciseId: string,
-  updates: Partial<Exercise>
+  updates: Partial<Exercise>,
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'exercises', exerciseId), {
+    await updateDoc(doc(db, "exercises", exerciseId), {
       ...updates,
       updatedAt: Timestamp.now(),
     });
   } catch (error) {
-    console.error('Error updating exercise:', error);
+    console.error("Error updating exercise:", error);
     throw error;
   }
 };
@@ -201,34 +209,43 @@ export const updateExercise = async (
 export const deleteExercise = async (exerciseId: string): Promise<void> => {
   try {
     // First, delete all userProgress records associated with this exercise
-    const progressRef = collection(db, 'userProgress');
-    const progressQuery = query(progressRef, where('exerciseId', '==', exerciseId));
+    const progressRef = collection(db, "userProgress");
+    const progressQuery = query(
+      progressRef,
+      where("exerciseId", "==", exerciseId),
+    );
     const progressSnapshot = await getDocs(progressQuery);
 
-    console.log(`🗑️ Deleting ${progressSnapshot.docs.length} progress records for exercise ${exerciseId}`);
+    console.log(
+      `🗑️ Deleting ${progressSnapshot.docs.length} progress records for exercise ${exerciseId}`,
+    );
 
     // Delete all progress documents for this exercise
-    const deleteProgressPromises = progressSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    const deleteProgressPromises = progressSnapshot.docs.map((doc) =>
+      deleteDoc(doc.ref),
+    );
     await Promise.all(deleteProgressPromises);
 
     // Then delete the exercise itself
-    await deleteDoc(doc(db, 'exercises', exerciseId));
+    await deleteDoc(doc(db, "exercises", exerciseId));
 
-    console.log(`✅ Exercise ${exerciseId} and all associated data deleted successfully`);
+    console.log(
+      `✅ Exercise ${exerciseId} and all associated data deleted successfully`,
+    );
   } catch (error) {
-    console.error('Error deleting exercise:', error);
+    console.error("Error deleting exercise:", error);
     throw error;
   }
 };
 
 // User Progress Operations
 export const getUserProgress = async (
-  userId: string
+  userId: string,
 ): Promise<UserProgress[]> => {
   try {
-    const progressRef = collection(db, 'userProgress');
+    const progressRef = collection(db, "userProgress");
     const snapshot = await getDocs(
-      query(progressRef, where('userId', '==', userId))
+      query(progressRef, where("userId", "==", userId)),
     );
 
     return snapshot.docs.map((doc) => {
@@ -243,7 +260,7 @@ export const getUserProgress = async (
       } as UserProgress;
     });
   } catch (error) {
-    console.error('Error fetching user progress:', error);
+    console.error("Error fetching user progress:", error);
     throw error;
   }
 };
@@ -251,14 +268,14 @@ export const getUserProgress = async (
 export const updateUserProgress = async (
   userId: string,
   exerciseId: string,
-  progress: { completed: boolean; score?: number }
+  progress: { completed: boolean; score?: number },
 ): Promise<void> => {
   try {
-    const progressRef = collection(db, 'userProgress');
+    const progressRef = collection(db, "userProgress");
     const existingQuery = query(
       progressRef,
-      where('userId', '==', userId),
-      where('exerciseId', '==', exerciseId)
+      where("userId", "==", userId),
+      where("exerciseId", "==", exerciseId),
     );
     const existingSnapshot = await getDocs(existingQuery);
 
@@ -278,7 +295,7 @@ export const updateUserProgress = async (
       await updateDoc(existingDoc.ref, progressData);
     }
   } catch (error) {
-    console.error('Error updating user progress:', error);
+    console.error("Error updating user progress:", error);
     throw error;
   }
 };
@@ -288,9 +305,9 @@ export const getAdminStats = async () => {
   try {
     const [exercisesSnapshot, usersSnapshot, categoriesSnapshot] =
       await Promise.all([
-        getDocs(collection(db, 'exercises')),
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'categories')),
+        getDocs(collection(db, "exercises")),
+        getDocs(collection(db, "users")),
+        getDocs(collection(db, "categories")),
       ]);
 
     const totalExercises = exercisesSnapshot.size;
@@ -311,13 +328,13 @@ export const getAdminStats = async () => {
 
     const progressSnapshot = await getDocs(
       query(
-        collection(db, 'userProgress'),
-        where('completedAt', '>=', Timestamp.fromDate(thirtyDaysAgo))
-      )
+        collection(db, "userProgress"),
+        where("completedAt", ">=", Timestamp.fromDate(thirtyDaysAgo)),
+      ),
     );
 
     const activeUserIds = new Set(
-      progressSnapshot.docs.map((doc) => doc.data().userId)
+      progressSnapshot.docs.map((doc) => doc.data().userId),
     );
 
     return {
@@ -328,7 +345,7 @@ export const getAdminStats = async () => {
       activeUsers: activeUserIds.size,
     };
   } catch (error) {
-    console.error('Error fetching admin stats:', error);
+    console.error("Error fetching admin stats:", error);
     throw error;
   }
 };
@@ -341,7 +358,7 @@ export const getUserProgressStats = async (userId: string) => {
 
     // Get all exercises and categories
     const [exercisesSnapshot, categoriesData] = await Promise.all([
-      getDocs(collection(db, 'exercises')),
+      getDocs(collection(db, "exercises")),
       getCategories(),
     ]);
 
@@ -352,7 +369,7 @@ export const getUserProgressStats = async (userId: string) => {
 
     // Calculate overall stats
     const completedExercises = userProgressData.filter(
-      (p) => p.completed
+      (p) => p.completed,
     ).length;
     const totalExercises = allExercises.length;
 
@@ -362,7 +379,7 @@ export const getUserProgressStats = async (userId: string) => {
     const averageScore =
       scores.length > 0
         ? Math.round(
-            scores.reduce((sum, score) => sum + score, 0) / scores.length
+            scores.reduce((sum, score) => sum + score, 0) / scores.length,
           )
         : 0;
 
@@ -374,7 +391,7 @@ export const getUserProgressStats = async (userId: string) => {
         return new Date(
           date.getFullYear(),
           date.getMonth(),
-          date.getDate()
+          date.getDate(),
         ).getTime();
       })
       .sort((a, b) => b - a); // Sort descending (most recent first)
@@ -385,7 +402,7 @@ export const getUserProgressStats = async (userId: string) => {
       const todayTimestamp = new Date(
         today.getFullYear(),
         today.getMonth(),
-        today.getDate()
+        today.getDate(),
       ).getTime();
       const yesterday = todayTimestamp - 86400000;
 
@@ -406,7 +423,7 @@ export const getUserProgressStats = async (userId: string) => {
     // Calculate category-specific stats
     const categoryStats = categoriesData.map((category) => {
       const categoryExercises = allExercises.filter(
-        (ex: any) => ex.category === category.id
+        (ex: any) => ex.category === category.id,
       );
       const categoryProgress = userProgressData.filter((p) => {
         const exercise = allExercises.find((ex: any) => ex.id === p.exerciseId);
@@ -421,7 +438,7 @@ export const getUserProgressStats = async (userId: string) => {
         categoryScores.length > 0
           ? Math.round(
               categoryScores.reduce((sum, score) => sum + score, 0) /
-                categoryScores.length
+                categoryScores.length,
             )
           : 0;
 
@@ -444,10 +461,10 @@ export const getUserProgressStats = async (userId: string) => {
       .slice(0, 10)
       .map((progress) => {
         const exercise = allExercises.find(
-          (ex: any) => ex.id === progress.exerciseId
+          (ex: any) => ex.id === progress.exerciseId,
         );
         return {
-          exerciseTitle: (exercise as any)?.title || 'Unknown Exercise',
+          exerciseTitle: (exercise as any)?.title || "Unknown Exercise",
           score: progress.score || 0,
           completedAt: progress.completedAt!,
           success: (progress.score || 0) >= 60,
@@ -463,7 +480,7 @@ export const getUserProgressStats = async (userId: string) => {
       recentActivity,
     };
   } catch (error) {
-    console.error('Error fetching user progress stats:', error);
+    console.error("Error fetching user progress stats:", error);
     throw error;
   }
 };
@@ -472,18 +489,18 @@ export const getUserProgressStats = async (userId: string) => {
 export const initializeDefaultData = async (): Promise<void> => {
   try {
     // Check if categories already exist
-    const categoriesSnapshot = await getDocs(collection(db, 'categories'));
+    const categoriesSnapshot = await getDocs(collection(db, "categories"));
     if (!categoriesSnapshot.empty) {
-      console.log('Default data already exists');
+      console.log("Default data already exists");
       return;
     }
 
     // Create default categories
     const defaultCategories = [
       {
-        name: 'Tenses',
-        description: 'Learn and practice different English tenses',
-        icon: 'clock',
+        name: "Tenses",
+        description: "Learn and practice different English tenses",
+        icon: "clock",
       },
       // {
       //   name: 'Grammar',
@@ -491,24 +508,24 @@ export const initializeDefaultData = async (): Promise<void> => {
       //   icon: 'textformat',
       // },
       {
-        name: 'Language Skills',
-        description: 'Develop comprehensive English language abilities',
-        icon: 'person.2.wave',
+        name: "Language Skills",
+        description: "Develop comprehensive English language abilities",
+        icon: "person.2.wave",
       },
       {
-        name: 'Vocabulary',
-        description: 'Expand your English vocabulary',
-        icon: 'text.bubble',
+        name: "Vocabulary",
+        description: "Expand your English vocabulary",
+        icon: "text.bubble",
       },
       {
-        name: 'Reading Comprehension',
-        description: 'Improve reading skills and understanding',
-        icon: 'doc.text',
+        name: "Reading Comprehension",
+        description: "Improve reading skills and understanding",
+        icon: "doc.text",
       },
       {
-        name: 'Find the Mistake',
-        description: 'Identify and correct common English errors',
-        icon: 'exclamationmark.circle',
+        name: "Find the Mistake",
+        description: "Identify and correct common English errors",
+        icon: "exclamationmark.circle",
       },
       // {
       //   name: 'Listening Skills',
@@ -519,15 +536,15 @@ export const initializeDefaultData = async (): Promise<void> => {
 
     const categoryIds: string[] = [];
     for (const category of defaultCategories) {
-      const docRef = await addDoc(collection(db, 'categories'), category);
+      const docRef = await addDoc(collection(db, "categories"), category);
       categoryIds.push(docRef.id);
     }
 
     // Create sample exercises for the first category (Tenses)
     const sampleExercises = [
       {
-        title: 'Present Simple Tense',
-        description: 'Learn the basics of present simple tense',
+        title: "Present Simple Tense",
+        description: "Learn the basics of present simple tense",
         instructions: `Welcome to the Present Simple Tense exercise!
 
 **Instructions:**
@@ -547,62 +564,62 @@ export const initializeDefaultData = async (): Promise<void> => {
 
 Ready to begin? Tap "Start Exercise" below!`,
         content: {
-          type: 'multiple-choice' as const,
+          type: "multiple-choice" as const,
           questions: [
             {
-              id: '1',
-              question: 'She ___ to work every day.',
-              options: ['go', 'goes', 'going', 'gone'],
-              correctAnswer: 'goes',
+              id: "1",
+              question: "She ___ to work every day.",
+              options: ["go", "goes", "going", "gone"],
+              correctAnswer: "goes",
               explanation:
-                'For third person singular (she/he/it), we add -s to the verb.',
+                "For third person singular (she/he/it), we add -s to the verb.",
             },
             {
-              id: '2',
-              question: 'They ___ in London.',
-              options: ['live', 'lives', 'living', 'lived'],
-              correctAnswer: 'live',
+              id: "2",
+              question: "They ___ in London.",
+              options: ["live", "lives", "living", "lived"],
+              correctAnswer: "live",
               explanation:
-                'For plural subjects (they), we use the base form of the verb.',
+                "For plural subjects (they), we use the base form of the verb.",
             },
             {
-              id: '3',
-              question: 'He ___ coffee every morning.',
-              options: ['drink', 'drinks', 'drinking', 'drank'],
-              correctAnswer: 'drinks',
+              id: "3",
+              question: "He ___ coffee every morning.",
+              options: ["drink", "drinks", "drinking", "drank"],
+              correctAnswer: "drinks",
               explanation:
-                'For third person singular (he), we add -s to the verb.',
+                "For third person singular (he), we add -s to the verb.",
             },
           ],
         },
         category: categoryIds[0], // Tenses category
-        difficulty: 'beginner' as const,
+        difficulty: "beginner" as const,
       },
       {
-        title: 'Past Simple Tense',
-        description: 'Practice past simple tense forms',
-        instructions: 'Choose the correct past simple form of the verb.',
+        title: "Past Simple Tense",
+        description: "Practice past simple tense forms",
+        instructions: "Choose the correct past simple form of the verb.",
         content: {
-          type: 'multiple-choice' as const,
+          type: "multiple-choice" as const,
           questions: [
             {
-              id: '1',
-              question: 'They ___ to the party yesterday.',
-              options: ['go', 'went', 'goes', 'going'],
-              correctAnswer: 'went',
+              id: "1",
+              question: "They ___ to the party yesterday.",
+              options: ["go", "went", "goes", "going"],
+              correctAnswer: "went",
               explanation: 'Past simple of "go" is "went".',
             },
             {
-              id: '2',
-              question: 'I ___ my homework last night.',
-              options: ['do', 'did', 'done', 'doing'],
-              correctAnswer: 'did',
+              id: "2",
+              question: "I ___ my homework last night.",
+              options: ["do", "did", "done", "doing"],
+              correctAnswer: "did",
               explanation: 'Past simple of "do" is "did".',
             },
           ],
         },
         category: categoryIds[0], // Tenses category
-        difficulty: 'beginner' as const,
+        difficulty: "beginner" as const,
       },
     ];
 
@@ -610,9 +627,9 @@ Ready to begin? Tap "Start Exercise" below!`,
       await createExercise(exercise);
     }
 
-    console.log('Default data initialized successfully');
+    console.log("Default data initialized successfully");
   } catch (error) {
-    console.error('Error initializing default data:', error);
+    console.error("Error initializing default data:", error);
     throw error;
   }
 };
@@ -622,14 +639,14 @@ Ready to begin? Tap "Start Exercise" below!`,
 // Update user display name
 export const updateUserDisplayName = async (
   userId: string,
-  displayName: string
+  displayName: string,
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'users', userId), {
+    await updateDoc(doc(db, "users", userId), {
       displayName,
     });
   } catch (error) {
-    console.error('Error updating user display name:', error);
+    console.error("Error updating user display name:", error);
     throw error;
   }
 };
@@ -637,14 +654,14 @@ export const updateUserDisplayName = async (
 // Update user language preference
 export const updateUserLanguagePreference = async (
   userId: string,
-  preferredLanguage: string
+  preferredLanguage: string,
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'users', userId), {
+    await updateDoc(doc(db, "users", userId), {
       preferredLanguage,
     });
   } catch (error) {
-    console.error('Error updating user language preference:', error);
+    console.error("Error updating user language preference:", error);
     throw error;
   }
 };
@@ -652,8 +669,8 @@ export const updateUserLanguagePreference = async (
 // Delete all user progress data
 export const deleteAllUserProgress = async (userId: string): Promise<void> => {
   try {
-    const progressRef = collection(db, 'userProgress');
-    const userProgressQuery = query(progressRef, where('userId', '==', userId));
+    const progressRef = collection(db, "userProgress");
+    const userProgressQuery = query(progressRef, where("userId", "==", userId));
     const snapshot = await getDocs(userProgressQuery);
 
     // Delete all progress documents for this user
@@ -661,10 +678,10 @@ export const deleteAllUserProgress = async (userId: string): Promise<void> => {
     await Promise.all(deletePromises);
 
     console.log(
-      `Deleted ${snapshot.docs.length} progress records for user ${userId}`
+      `Deleted ${snapshot.docs.length} progress records for user ${userId}`,
     );
   } catch (error) {
-    console.error('Error deleting user progress:', error);
+    console.error("Error deleting user progress:", error);
     throw error;
   }
 };
@@ -676,11 +693,11 @@ export const deleteUserAccount = async (userId: string): Promise<void> => {
     await deleteAllUserProgress(userId);
 
     // Delete user document
-    await deleteDoc(doc(db, 'users', userId));
+    await deleteDoc(doc(db, "users", userId));
 
     console.log(`Deleted user account and all data for user ${userId}`);
   } catch (error) {
-    console.error('Error deleting user account:', error);
+    console.error("Error deleting user account:", error);
     throw error;
   }
 };
@@ -689,21 +706,21 @@ export const deleteUserAccount = async (userId: string): Promise<void> => {
 // For small user bases, load all and filter client-side
 export const getAllUsers = async () => {
   try {
-    const usersRef = collection(db, 'users');
-    const snapshot = await getDocs(query(usersRef, orderBy('email')));
+    const usersRef = collection(db, "users");
+    const snapshot = await getDocs(query(usersRef, orderBy("email")));
 
     return snapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
-        email: data.email || '',
+        email: data.email || "",
         displayName: data.displayName,
         isAdmin: data.isAdmin || false,
         createdAt: data.createdAt?.toDate(),
       };
     });
   } catch (error) {
-    console.error('Error fetching all users:', error);
+    console.error("Error fetching all users:", error);
     throw error;
   }
 };
@@ -711,7 +728,7 @@ export const getAllUsers = async () => {
 // Get user by ID with full details
 export const getUserById = async (userId: string) => {
   try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
+    const userDoc = await getDoc(doc(db, "users", userId));
 
     if (!userDoc.exists()) {
       return null;
@@ -720,13 +737,13 @@ export const getUserById = async (userId: string) => {
     const data = userDoc.data();
     return {
       id: userDoc.id,
-      email: data.email || '',
+      email: data.email || "",
       displayName: data.displayName,
       isAdmin: data.isAdmin || false,
       createdAt: data.createdAt?.toDate(),
     };
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error("Error fetching user:", error);
     throw error;
   }
 };
@@ -746,10 +763,10 @@ export const searchUsers = async (searchQuery: string) => {
     return allUsers.filter(
       (user) =>
         user.email.toLowerCase().includes(searchLower) ||
-        (user.displayName?.toLowerCase() || '').includes(searchLower)
+        (user.displayName?.toLowerCase() || "").includes(searchLower),
     );
   } catch (error) {
-    console.error('Error searching users:', error);
+    console.error("Error searching users:", error);
     throw error;
   }
 };
@@ -758,7 +775,7 @@ export const searchUsers = async (searchQuery: string) => {
 export const getAnalyticsData = async () => {
   try {
     // Get all exercises
-    const exercisesSnapshot = await getDocs(collection(db, 'exercises'));
+    const exercisesSnapshot = await getDocs(collection(db, "exercises"));
     const exercises = exercisesSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
@@ -772,14 +789,14 @@ export const getAnalyticsData = async () => {
     }) as Exercise[];
 
     // Get all users
-    const usersSnapshot = await getDocs(collection(db, 'users'));
+    const usersSnapshot = await getDocs(collection(db, "users"));
     const users = usersSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
     // Get all progress records from the userProgress collection
-    const progressSnapshot = await getDocs(collection(db, 'userProgress'));
+    const progressSnapshot = await getDocs(collection(db, "userProgress"));
     const progressData = progressSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
@@ -843,7 +860,7 @@ export const getAnalyticsData = async () => {
       .map(([exerciseId, count]) => {
         const exercise = exercises.find((e) => e.id === exerciseId);
         return {
-          title: exercise?.title || 'Unknown Exercise',
+          title: exercise?.title || "Unknown Exercise",
           completions: count,
         };
       })
@@ -856,7 +873,7 @@ export const getAnalyticsData = async () => {
     sevenDaysAgo.setDate(today.getDate() - 6);
 
     const dailyActivity: { [key: string]: Set<string> } = {};
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     // Initialize all 7 days
     for (let i = 0; i < 7; i++) {
@@ -909,26 +926,31 @@ export const getAnalyticsData = async () => {
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         const diffDays = Math.floor(diffHours / 24);
 
-        let timeAgo = '';
+        let timeAgo = "";
         if (diffDays > 0) {
           timeAgo = `${diffDays}d ago`;
         } else if (diffHours > 0) {
           timeAgo = `${diffHours}h ago`;
         } else {
           const diffMins = Math.floor(diffMs / (1000 * 60));
-          timeAgo = diffMins > 0 ? `${diffMins}m ago` : 'Just now';
+          timeAgo = diffMins > 0 ? `${diffMins}m ago` : "Just now";
         }
 
         // Show email for existing users, or indicate deleted user
         let userDisplay: string;
         if (user) {
-          userDisplay = (user as any)?.email || (user as any)?.displayName || `User ID: ${progress.userId}`;
+          userDisplay =
+            (user as any)?.email ||
+            (user as any)?.displayName ||
+            `User ID: ${progress.userId}`;
         } else {
           userDisplay = `Deleted User (${progress.userId.substring(0, 8)}...)`;
         }
 
         // Show exercise title or indicate deleted exercise
-        const exerciseDisplay = exercise?.title || `Deleted Exercise (${progress.exerciseId.substring(0, 8)}...)`;
+        const exerciseDisplay =
+          exercise?.title ||
+          `Deleted Exercise (${progress.exerciseId.substring(0, 8)}...)`;
 
         return {
           user: userDisplay,
@@ -944,7 +966,7 @@ export const getAnalyticsData = async () => {
       completionRate:
         exercises.length > 0 && users.length > 0
           ? Math.round(
-              (totalCompletions / (exercises.length * users.length)) * 100
+              (totalCompletions / (exercises.length * users.length)) * 100,
             )
           : 0,
       categoryPerformance: Object.values(categoryStats)
@@ -962,19 +984,19 @@ export const getAnalyticsData = async () => {
           name: name.charAt(0).toUpperCase() + name.slice(1),
           count,
           color:
-            name === 'beginner'
+            name === "beginner"
               ? colors.success
-              : name === 'intermediate'
-              ? colors.warning
-              : colors.danger,
-        })
+              : name === "intermediate"
+                ? colors.warning
+                : colors.danger,
+        }),
       ),
       userActivityTrend,
       topExercises,
       recentActivity,
     };
   } catch (error) {
-    console.error('Error getting analytics data:', error);
+    console.error("Error getting analytics data:", error);
     throw error;
   }
 };
@@ -1003,7 +1025,7 @@ export interface AppSettings {
 // Get app settings
 export const getAppSettings = async (): Promise<AppSettings> => {
   try {
-    const settingsDoc = await getDoc(doc(db, 'appSettings', 'config'));
+    const settingsDoc = await getDoc(doc(db, "appSettings", "config"));
 
     if (settingsDoc.exists()) {
       return settingsDoc.data() as AppSettings;
@@ -1021,32 +1043,32 @@ export const getAppSettings = async (): Promise<AppSettings> => {
         },
         notifications: {
           enablePushNotifications: true,
-          dailyReminderTime: '09:00',
+          dailyReminderTime: "09:00",
         },
         admin: {
           maintenanceMode: false,
-          announcementBanner: '',
+          announcementBanner: "",
         },
       };
 
       // Create default settings
-      await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
+      await setDoc(doc(db, "appSettings", "config"), defaultSettings);
       return defaultSettings;
     }
   } catch (error) {
-    console.error('Error getting app settings:', error);
+    console.error("Error getting app settings:", error);
     throw error;
   }
 };
 
 // Update app settings
 export const updateAppSettings = async (
-  settings: Partial<AppSettings>
+  settings: Partial<AppSettings>,
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'appSettings', 'config'), settings);
+    await updateDoc(doc(db, "appSettings", "config"), settings);
   } catch (error) {
-    console.error('Error updating app settings:', error);
+    console.error("Error updating app settings:", error);
     throw error;
   }
 };
@@ -1066,17 +1088,17 @@ export const resetAppSettings = async (): Promise<void> => {
       },
       notifications: {
         enablePushNotifications: true,
-        dailyReminderTime: '09:00',
+        dailyReminderTime: "09:00",
       },
       admin: {
         maintenanceMode: false,
-        announcementBanner: '',
+        announcementBanner: "",
       },
     };
 
-    await setDoc(doc(db, 'appSettings', 'config'), defaultSettings);
+    await setDoc(doc(db, "appSettings", "config"), defaultSettings);
   } catch (error) {
-    console.error('Error resetting app settings:', error);
+    console.error("Error resetting app settings:", error);
     throw error;
   }
 };
@@ -1086,20 +1108,20 @@ export const resetAppSettings = async (): Promise<void> => {
 // Audit orphaned userProgress records
 export const auditOrphanedRecords = async () => {
   try {
-    console.log('🔍 Starting data integrity audit...');
+    console.log("🔍 Starting data integrity audit...");
 
     // Get all collections
     const [progressSnapshot, usersSnapshot, exercisesSnapshot] =
       await Promise.all([
-        getDocs(collection(db, 'userProgress')),
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'exercises')),
+        getDocs(collection(db, "userProgress")),
+        getDocs(collection(db, "users")),
+        getDocs(collection(db, "exercises")),
       ]);
 
     // Create sets of valid IDs
     const validUserIds = new Set(usersSnapshot.docs.map((doc) => doc.id));
     const validExerciseIds = new Set(
-      exercisesSnapshot.docs.map((doc) => doc.id)
+      exercisesSnapshot.docs.map((doc) => doc.id),
     );
 
     // Find orphaned records
@@ -1115,11 +1137,11 @@ export const auditOrphanedRecords = async () => {
       const reasons: string[] = [];
 
       if (!validUserIds.has(data.userId)) {
-        reasons.push('User not found');
+        reasons.push("User not found");
       }
 
       if (!validExerciseIds.has(data.exerciseId)) {
-        reasons.push('Exercise not found');
+        reasons.push("Exercise not found");
       }
 
       if (reasons.length > 0) {
@@ -1127,7 +1149,7 @@ export const auditOrphanedRecords = async () => {
           id: doc.id,
           userId: data.userId,
           exerciseId: data.exerciseId,
-          reason: reasons.join(', '),
+          reason: reasons.join(", "),
         });
       }
     });
@@ -1140,10 +1162,10 @@ export const auditOrphanedRecords = async () => {
       details: orphanedUserProgress,
     };
 
-    console.log('📊 Audit Report:', report);
+    console.log("📊 Audit Report:", report);
     return report;
   } catch (error) {
-    console.error('Error auditing orphaned records:', error);
+    console.error("Error auditing orphaned records:", error);
     throw error;
   }
 };
@@ -1151,24 +1173,24 @@ export const auditOrphanedRecords = async () => {
 // Clean up orphaned userProgress records
 export const cleanupOrphanedRecords = async () => {
   try {
-    console.log('🧹 Starting cleanup of orphaned records...');
+    console.log("🧹 Starting cleanup of orphaned records...");
 
     const auditReport = await auditOrphanedRecords();
 
     if (auditReport.orphanedRecords === 0) {
-      console.log('✅ No orphaned records found. Database is clean!');
-      return { deleted: 0, message: 'No orphaned records found' };
+      console.log("✅ No orphaned records found. Database is clean!");
+      return { deleted: 0, message: "No orphaned records found" };
     }
 
     // Delete orphaned records
     const deletePromises = auditReport.details.map((record) =>
-      deleteDoc(doc(db, 'userProgress', record.id))
+      deleteDoc(doc(db, "userProgress", record.id)),
     );
 
     await Promise.all(deletePromises);
 
     console.log(
-      `✅ Cleaned up ${auditReport.orphanedRecords} orphaned records`
+      `✅ Cleaned up ${auditReport.orphanedRecords} orphaned records`,
     );
 
     return {
@@ -1176,7 +1198,7 @@ export const cleanupOrphanedRecords = async () => {
       message: `Successfully deleted ${auditReport.orphanedRecords} orphaned records`,
     };
   } catch (error) {
-    console.error('Error cleaning up orphaned records:', error);
+    console.error("Error cleaning up orphaned records:", error);
     throw error;
   }
 };
@@ -1187,16 +1209,16 @@ export const cleanupOrphanedRecords = async () => {
 export const addGrammarCategory = async (): Promise<string> => {
   try {
     const grammarCategory = {
-      name: 'Grammar',
-      description: 'Master English grammar rules and structures',
-      icon: 'textformat',
+      name: "Grammar",
+      description: "Master English grammar rules and structures",
+      icon: "textformat",
     };
 
-    const docRef = await addDoc(collection(db, 'categories'), grammarCategory);
-    console.log('Grammar category created with ID:', docRef.id);
+    const docRef = await addDoc(collection(db, "categories"), grammarCategory);
+    console.log("Grammar category created with ID:", docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error('Error creating Grammar category:', error);
+    console.error("Error creating Grammar category:", error);
     throw error;
   }
 };
@@ -1204,15 +1226,15 @@ export const addGrammarCategory = async (): Promise<string> => {
 // Update an existing category's icon
 export const updateCategoryIcon = async (
   categoryId: string,
-  newIcon: string
+  newIcon: string,
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'categories', categoryId), {
+    await updateDoc(doc(db, "categories", categoryId), {
       icon: newIcon,
     });
     console.log(`Category ${categoryId} icon updated to ${newIcon}`);
   } catch (error) {
-    console.error('Error updating category icon:', error);
+    console.error("Error updating category icon:", error);
     throw error;
   }
 };
@@ -1220,13 +1242,13 @@ export const updateCategoryIcon = async (
 // Update an existing category's details
 export const updateCategory = async (
   categoryId: string,
-  updates: { name?: string; description?: string; icon?: string }
+  updates: { name?: string; description?: string; icon?: string },
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'categories', categoryId), updates);
+    await updateDoc(doc(db, "categories", categoryId), updates);
     console.log(`Category ${categoryId} updated successfully`);
   } catch (error) {
-    console.error('Error updating category:', error);
+    console.error("Error updating category:", error);
     throw error;
   }
 };
@@ -1242,14 +1264,14 @@ export const updateUserPremiumStatus = async (
     premiumPurchaseToken: string;
     premiumPurchaseOrderId: string;
     premiumPurchaseReceipt: string;
-    premiumPlatform: 'android' | 'ios' | 'web';
-  }
+    premiumPlatform: "android" | "ios" | "web";
+  },
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'users', userId), premiumData);
+    await updateDoc(doc(db, "users", userId), premiumData);
     console.log(`User ${userId} premium status updated successfully`);
   } catch (error) {
-    console.error('Error updating user premium status:', error);
+    console.error("Error updating user premium status:", error);
     throw error;
   }
 };

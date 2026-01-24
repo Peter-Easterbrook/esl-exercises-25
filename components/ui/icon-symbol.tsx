@@ -66,6 +66,7 @@ const MAPPING = {
   "info.circle": "info-outline",
   bell: "notifications",
   "person.circle": "account-circle",
+  "person.circle.fill": "account-circle",
   "person.2": "group",
   "person.2.circle": "supervisor-account",
   calendar: "event",
@@ -97,6 +98,7 @@ const MAPPING = {
   lightbulb: "lightbulb-outline",
   star: "star-outline",
   "star.fill": "star",
+  "chart.line.uptrend.xyaxis": "trending-up",
 
   // Communication icons
   message: "message",
@@ -109,6 +111,7 @@ const MAPPING = {
   subject: "subject",
   history: "history",
   extension: "extension",
+  trophy: "emoji-events",
 } as IconMapping;
 
 /**
