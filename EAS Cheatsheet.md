@@ -311,6 +311,10 @@ npm install
 npx expo-doctor
 npx expo install --fix
 
+# If the NPM packages are installed but the imports are throwing errors:
+
+npm ci
+
 # Commit and push
 git add .
 git commit -m "Bump version and prep for update"
@@ -319,6 +323,6 @@ git push
 # Build for production
 npx eas build -p android --profile production
 # Or push an update without rebuilding
-eas update --branch production --message "Adds forgotten password function"
+eas update --branch production --message "Tidies up backend admin UI function"
 eas update:list --branch production
 ```
