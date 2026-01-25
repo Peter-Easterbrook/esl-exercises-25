@@ -630,7 +630,7 @@ export default function AddExerciseScreen() {
         content: {
           type: exerciseData.type,
           questions: questions.map((q, index) => {
-            const questionData: Record<string, any> = {
+            const questionData: Partial<Question> = {
               id: `q${index + 1}`,
               question: q.question || "",
               correctAnswer: Array.isArray(q.correctAnswer)
@@ -655,7 +655,7 @@ export default function AddExerciseScreen() {
               questionData.blanksCount = q.blanksCount;
             }
 
-            return questionData;
+            return questionData as Question;
           }),
         },
       };
