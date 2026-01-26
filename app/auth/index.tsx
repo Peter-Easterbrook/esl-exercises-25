@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -269,9 +270,13 @@ export default function AuthScreen() {
               onPress={handleSubmit}
               disabled={loading}
             >
-              <Text style={styles.buttonText}>
-                {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
-              </Text>
+              {loading ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                <Text style={styles.buttonText}>
+                  {isLogin ? "Sign In" : "Sign Up"}
+                </Text>
+              )}
             </TouchableOpacity>
 
             <View style={styles.dividerContainer}>
