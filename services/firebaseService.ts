@@ -22,43 +22,15 @@ export const getCategories = async (): Promise<Category[]> => {
     const categoriesRef = collection(db, "categories");
     const snapshot = await getDocs(query(categoriesRef, orderBy("name")));
 
-    // First, let's see ALL exercises in the database
-    console.log("🔍 Fetching ALL exercises from database...");
-    const allExercisesRef = collection(db, "exercises");
-    const allExercisesSnapshot = await getDocs(allExercisesRef);
-    console.log(
-      `📊 Total exercises in database: ${allExercisesSnapshot.docs.length}`,
-    );
-    allExercisesSnapshot.docs.forEach((doc) => {
-      console.log(
-        `   - ID: ${doc.id}, Title: "${doc.data().title}", category field: "${
-          doc.data().category
-        }"`,
-      );
-    });
-
     const categories: Category[] = [];
     for (const categoryDoc of snapshot.docs) {
       const categoryData = categoryDoc.data();
-
-      console.log(
-        `\n📁 Loading category: ${categoryData.name} (ID: ${categoryDoc.id})`,
-      );
 
       // Get exercises for this category
       const exercisesRef = collection(db, "exercises");
       const exercisesSnapshot = await getDocs(
         query(exercisesRef, where("category", "==", categoryDoc.id)),
       );
-
-      console.log(
-        `   Found ${exercisesSnapshot.docs.length} exercises matching this category ID`,
-      );
-      exercisesSnapshot.docs.forEach((doc) => {
-        console.log(
-          `   - ${doc.data().title} (category field: ${doc.data().category})`,
-        );
-      });
 
       const exercises: Exercise[] = exercisesSnapshot.docs.map(
         (exerciseDoc) => ({
@@ -76,7 +48,25 @@ export const getCategories = async (): Promise<Category[]> => {
       } as Category);
     }
 
-    return categories;
+    // Deduplicate by name: keep the entry with the most exercises,
+    // or if equal, prefer the one with a valid icon
+    const seen = new Map<string, Category>();
+    for (const category of categories) {
+      const key = category.name.toLowerCase();
+      const existing = seen.get(key);
+      if (!existing) {
+        seen.set(key, category);
+      } else {
+        const currentExercises = category.exercises?.length ?? 0;
+        const existingExercises = existing.exercises?.length ?? 0;
+        const currentHasIcon = !!category.icon;
+        const existingHasIcon = !!existing.icon;
+        if (currentExercises > existingExercises || (!existingHasIcon && currentHasIcon)) {
+          seen.set(key, category);
+        }
+      }
+    }
+    return Array.from(seen.values());
   } catch (error) {
     console.error("Error fetching categories:", error);
     throw error;
