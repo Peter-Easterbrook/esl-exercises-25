@@ -318,7 +318,7 @@ npm ci
 
 # Commit and push
 git add .
-git commit -m "Bump version and prep for update"
+git commit -m "Bump version and prep for new build"
 git push
 
 # Build for production
