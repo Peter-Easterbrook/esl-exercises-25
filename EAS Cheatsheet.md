@@ -323,7 +323,7 @@ git push
 
 # Build for production or If any updated package has native code (e.g., react-native-iap, Expo SDK, anything with an android/ or ios/ folder in its package):
 npx eas build -p android --profile production
-# If you only updated pure JS/TS packages (e.g., Firebase, UI libraries, utility packages):
+# If you only updated pure JS/TS packages (e.g., Firebase, UI libraries, utility packages) and select the same env as for the branch, i.e. production:
 eas update --branch production --message "Updated dependencies"
 eas update:list --branch production
 ```
