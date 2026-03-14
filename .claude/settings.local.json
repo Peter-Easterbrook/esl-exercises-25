@@ -60,7 +60,10 @@
       "Bash(python scripts/package_skill.py:*)",
       "Bash(pip install:*)",
       "Bash(set:*)",
-      "Bash(move frontend-design.zip frontend-design.skill)"
+      "Bash(move frontend-design.zip frontend-design.skill)",
+      "WebFetch(domain:expo.dev)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.expo.dev)"
     ],
     "deny": [],
     "ask": []

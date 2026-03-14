@@ -318,12 +318,12 @@ npm ci
 
 # Commit and push
 git add .
-git commit -m "Bump version and prep for new build"
+git commit -m "Update npm packages"
 git push
 
-# Build for production
+# Build for production or If any updated package has native code (e.g., react-native-iap, Expo SDK, anything with an android/ or ios/ folder in its package):
 npx eas build -p android --profile production
-# Or push an update without rebuilding
-eas update --branch production --message "Fixes category issue"
+# If you only updated pure JS/TS packages (e.g., Firebase, UI libraries, utility packages):
+eas update --branch production --message "Updated dependencies"
 eas update:list --branch production
 ```
