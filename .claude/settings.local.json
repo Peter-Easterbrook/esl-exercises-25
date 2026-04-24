@@ -63,7 +63,9 @@
       "Bash(move frontend-design.zip frontend-design.skill)",
       "WebFetch(domain:expo.dev)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:docs.expo.dev)"
+      "WebFetch(domain:docs.expo.dev)",
+      "Bash(eas --version)",
+      "Bash(npx eas *)"
     ],
     "deny": [],
     "ask": []
