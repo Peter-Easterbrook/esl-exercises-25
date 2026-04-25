@@ -4,43 +4,44 @@
 
 ## Expo CLI Basics
 
-| Command | Description |
-| ------- | ----------- |
-| `npx expo start` | Start the Expo development server |
-| `npx expo start -c` | Clear Metro Bundler cache and start the server |
-| `npx expo start --web` | Start the app in a web browser (dev mode, hot reload) |
-| `npx expo start --android` | Open the app on a connected Android device/emulator |
-| `npx expo start --web --no-dev --minify` | Start web app in production-like mode |
-| `npx expo start --dev-client` | Start server for custom development client builds |
-| `npx expo-doctor` | Check project health before building |
-| `npx expo install --fix` | Fix incorrect dependencies for your Expo SDK version |
-| `npx expo install --check` | Review and list outdated/incompatible dependencies |
+| Command                                  | Description                                           |
+| ---------------------------------------- | ----------------------------------------------------- |
+| `npx expo start`                         | Start the Expo development server                     |
+| `npx expo start -c`                      | Clear Metro Bundler cache and start the server        |
+| `npx expo start --web`                   | Start the app in a web browser (dev mode, hot reload) |
+| `npx expo start --android`               | Open the app on a connected Android device/emulator   |
+| `npx expo start --web --no-dev --minify` | Start web app in production-like mode                 |
+| `npx expo start --dev-client`            | Start server for custom development client builds     |
+| `npx expo-doctor`                        | Check project health before building                  |
+| `npx expo install --fix`                 | Fix incorrect dependencies for your Expo SDK version  |
+| `npx expo install --check`               | Review and list outdated/incompatible dependencies    |
 
 ## EAS Build Commands
 
-| Command | Description |
-| ------- | ----------- |
-| `eas login` | Log in to your Expo/EAS account |
-| `eas build:configure` | Configure EAS build without starting a build |
-| `npx eas build --profile development --platform android` | Build a development client APK for Android |
-| `npx eas build -p android --profile preview` | Build a preview APK for Android testing |
-| `npx eas build -p android --profile production` | Build production AAB for Google Play Store |
-| `eas build:list` | List all EAS builds |
-| `eas submit -p android` | Submit Android AAB to Google Play Store |
+| Command                                              | Description                                  |
+| ---------------------------------------------------- | -------------------------------------------- |
+| `eas login`                                          | Log in to your Expo/EAS account              |
+| `eas build:configure`                                | Configure EAS build without starting a build |
+| `eas build --profile development --platform android` | Build a development client APK for Android   |
+| `eas build -p android --profile preview`             | Build a preview APK for Android testing      |
+| `eas build -p android --profile production`          | Build production AAB for Google Play Store   |
+| `eas build:list`                                     | List all EAS builds                          |
+| `eas submit -p android`                              | Submit Android AAB to Google Play Store      |
 
 ## EAS Update Commands
 
-| Command | Description |
-| ------- | ----------- |
-| `eas update --branch production --message "..."` | Push OTA update to production |
-| `eas update --branch preview --message "..."` | Push OTA update to preview channel |
-| `eas update:list --branch production` | List recent updates on the production branch |
+| Command                                          | Description                                  |
+| ------------------------------------------------ | -------------------------------------------- |
+| `eas update --branch production --message "..."` | Push OTA update to production                |
+| `eas update --branch preview --message "..."`    | Push OTA update to preview channel           |
+| `eas update:list --branch production`            | List recent updates on the production branch |
 
 ## EAS Update vs New Build: When Do You Need to Rebuild?
 
 ### Use EAS Update (No Rebuild Needed):
 
 Push over-the-air (OTA) updates for:
+
 - JavaScript/TypeScript code changes
 - UI/component updates and bug fixes
 - New screens/features in pure JS/TS
@@ -51,11 +52,12 @@ Push over-the-air (OTA) updates for:
 eas update --branch production --message "Fixed validation logic"
 ```
 
-Users get updates automatically when they reopen the app.
+Users receive the update on the next app relaunch after it downloads in the background.
 
 ### New Build Required:
 
 You **must rebuild** when changing:
+
 - Native dependencies (adding/removing packages with native code)
 - `app.json` configuration (permissions, plugins, scheme, icons)
 - Assets bundled at build time (app icon, splash screen)
@@ -63,7 +65,7 @@ You **must rebuild** when changing:
 - OAuth/authentication configuration in native modules
 
 ```bash
-npx eas build -p android --profile production
+eas build -p android --profile production
 eas submit -p android
 ```
 
@@ -98,22 +100,24 @@ Look for the `SHA1 Fingerprint` in the Android Keystore section.
 5. Save changes
 
 **Notes:**
+
 - No redirect URI field for Android clients — Google constructs it automatically from your package name
 - The redirect URI is: `com.petereasterbro1.eslexercises25:/oauth2redirect`
 - Each build profile (development/preview/production) may have different SHA-1 fingerprints
 
 ## Environment & Configuration
 
-| Command | Description |
-| ------- | ----------- |
-| `eas env:create --name "VAR" --value "VALUE"` | Push an environment variable to EAS |
-| `eas env:list` | List all environment variables |
-| `eas secret:create` | Create a new secret for your project |
-| `eas secret:list` | List all secrets for your project |
+| Command                                       | Description                          |
+| --------------------------------------------- | ------------------------------------ |
+| `eas env:create --name "VAR" --value "VALUE"` | Push an environment variable to EAS  |
+| `eas env:list`                                | List all environment variables       |
+| `eas secret:create`                           | Create a new secret for your project |
+| `eas secret:list`                             | List all secrets for your project    |
 
 ## Running Your App on a Device
 
 ### Expo Go (no custom native code):
+
 1. Start dev server: `npx expo start`
 2. Scan QR code with Expo Go app
 3. Watch for real-time updates as you code
@@ -121,13 +125,15 @@ Look for the `SHA1 Fingerprint` in the Android Keystore section.
 > **Note:** IAP (react-native-iap) is silently disabled in Expo Go — the app works normally without it.
 
 ### Development Build (custom native code / IAP testing):
-1. Build dev client: `npx eas build --profile development --platform android`
+
+1. Build dev client: `eas build --profile development --platform android`
 2. Install APK on device
 3. Start dev server: `npx expo start --dev-client`
 4. Open app on device
 
 ### Direct install (Android only):
-1. Connect device via USB or same WiFi
+
+1. Connect device via USB cable (or enable ADB over WiFi separately)
 2. Run: `npx expo run:android`
 
 ## Troubleshooting
@@ -135,7 +141,7 @@ Look for the `SHA1 Fingerprint` in the Android Keystore section.
 - **Metro bundler stuck?** Run `npx expo start -c` to clear cache
 - **Dependency issues?** Try `npx expo install --fix`
 - **Build failing?** Check EAS build logs with `eas build:list`
-- **App crashing?** Test with `--no-dev --minify` flags to simulate production
+- **App crashing on web?** Test with `npx expo start --web --no-dev --minify` to simulate production web (Android: check logcat via `adb logcat`)
 
 ## Production Build Workflow (Google Play Store AAB)
 
@@ -147,7 +153,7 @@ npx expo-doctor
 npx expo install --check
 
 # 3. Build production AAB
-npx eas build -p android --profile production
+eas build -p android --profile production
 
 # 4. Check build status
 eas build:list
@@ -189,6 +195,7 @@ eas submit -p android
 ```
 
 **Build types:**
+
 - **APK** (`buildType: "apk"`): Development and preview — for testing and sideloading
 - **AAB** (`buildType: "app-bundle"`): Production — required for Google Play Store
 
@@ -198,9 +205,10 @@ EAS Build uses `npm ci` which requires exact sync between `package.json` and `pa
 
 ### Quick Fix:
 
-```bash
-# 1. Delete lock file and node_modules
-rm -rf node_modules package-lock.json
+```powershell
+# 1. Delete lock file and node_modules (PowerShell)
+Remove-Item -Recurse -Force node_modules, package-lock.json
+# Git Bash / macOS / Linux: rm -rf node_modules package-lock.json
 
 # 2. Clear npm cache
 npm cache clean --force
@@ -221,6 +229,7 @@ eas build --clear-cache -p android --profile production
 ```
 
 **Best practices:**
+
 - Always commit `package-lock.json` to version control
 - Use `npm install` (not manual edits) to update dependencies
 - Use `npx expo install <package>` for Expo-specific packages
@@ -228,25 +237,75 @@ eas build --clear-cache -p android --profile production
 
 ## Full Update / Rebuild Workflow
 
-```bash
-# Bump version (managed automatically via appVersionSource: remote)
-# Manual bump if needed: edit version in app.json
+```powershell
+# 1. Bump version if submitting a new build (not needed for OTA updates)
+npm run bump-version          # patch (default)
+npm run bump-version minor    # or minor/major as appropriate
 
-# Clean and reinstall
-rm -rf node_modules package-lock.json
+# 2. Install/update dependencies
+#    - Use npx expo install for Expo-specific packages
+#    - Use npm install for everything else (never edit package.json manually)
+npm install
+
+# 3. Clean reinstall to sync package-lock.json (run if dependencies changed)
+Remove-Item -Recurse -Force node_modules, package-lock.json
+# Git Bash / macOS / Linux: rm -rf node_modules package-lock.json
 npm cache clean --force
 npm install
+
+# 4. Validate locally — catches npm ci sync issues before EAS sees them
+npm ci
 npx expo-doctor
 
-# Commit
+# 5. Commit everything including package-lock.json (required for EAS npm ci)
 git add .
 git commit -m "Update npm packages"
 git push
 
-# If native packages changed (react-native-iap, Expo SDK, anything with android/ folder):
-npx eas build -p android --profile production
+# 6. Build or update — choose based on what changed:
 
-# If only pure JS/TS packages changed (Firebase, UI libraries, utilities):
+# Native packages changed (react-native-iap, Expo SDK, anything with android/ folder)?
+eas build -p android --profile production
+# Then submit:
+eas submit -p android
+
+# Pure JS/TS changes only (Firebase, UI libraries, bug fixes, content)?
 eas update --branch production --message "Updated dependencies"
 eas update:list --branch production
 ```
+
+## Version Number Management
+
+There are two version numbers to understand:
+
+- **`version`** (human-readable, e.g. `1.2.3`) — set in `app.json` and `package.json`. This is the version users see in the Play Store.
+- **`versionCode`** (Android build number, e.g. `42`) — managed automatically by EAS via `"appVersionSource": "remote"`. Do not set this manually.
+
+### When to bump the version:
+
+- **Patch** (`1.2.3 → 1.2.4`) — bug fixes, minor improvements, OTA updates
+- **Minor** (`1.2.3 → 1.3.0`) — new features, backwards-compatible changes
+- **Major** (`1.2.3 → 2.0.0`) — breaking changes, major redesigns
+
+### Option 1 — Bump script (recommended):
+
+Uses `scripts/bump-version.js` to update both `app.json` and `package.json` in sync.
+
+```powershell
+npm run bump-version          # patch: 1.2.3 → 1.2.4
+npm run bump-version minor    # minor: 1.2.3 → 1.3.0
+npm run bump-version major    # major: 1.2.3 → 2.0.0
+```
+
+### Option 2 — Manual edit:
+
+Edit the `version` field in both files to keep them in sync:
+
+- `app.json` → `expo.version`
+- `package.json` → `version`
+
+### Notes:
+
+- `versionCode` is auto-incremented by EAS on every production build (`autoIncrement: true` in `eas.json`) — no manual action needed
+- Always commit the version bump before building: `git commit -m "Bump version to x.x.x"`
+- An OTA update (`eas update`) does **not** require a version bump — bump only when submitting a new build to the Play Store
