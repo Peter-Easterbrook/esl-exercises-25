@@ -1,11 +1,11 @@
-import { ThemedLoader } from "@/components/themed-loader";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { UserAvatar } from "@/components/UserAvatar";
-import { loadProfilePhoto } from "@/services/profilePhotoService";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { ThemedLoader } from '@/components/themed-loader';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { UserAvatar } from '@/components/UserAvatar';
+import { loadProfilePhoto } from '@/services/profilePhotoService';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Modal,
@@ -15,7 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 interface UserData {
   id: string;
@@ -47,7 +47,7 @@ interface UserStats {
 export default function ManageUsersScreen() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [userPhotos, setUserPhotos] = useState<Record<string, string | null>>(
     {},
   );
@@ -60,8 +60,14 @@ export default function ManageUsersScreen() {
   const [loadingStats, setLoadingStats] = useState(false);
 
   // Edit form states
-  const [editDisplayName, setEditDisplayName] = useState("");
+  const [editDisplayName, setEditDisplayName] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
+
+  // Delete confirmation modal states
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
+  const [deleteEmailInput, setDeleteEmailInput] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -70,7 +76,7 @@ export default function ManageUsersScreen() {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const { getAllUsers } = await import("@/services/firebaseService");
+      const { getAllUsers } = await import('@/services/firebaseService');
       const allUsers = await getAllUsers();
       setUsers(allUsers);
 
@@ -84,8 +90,8 @@ export default function ManageUsersScreen() {
       );
       setUserPhotos(photos);
     } catch (error) {
-      console.error("Error loading users:", error);
-      Alert.alert("Error", "Failed to load users");
+      console.error('Error loading users:', error);
+      Alert.alert('Error', 'Failed to load users');
     } finally {
       setLoading(false);
     }
@@ -99,12 +105,12 @@ export default function ManageUsersScreen() {
     }
 
     try {
-      const { searchUsers } = await import("@/services/firebaseService");
+      const { searchUsers } = await import('@/services/firebaseService');
       const results = await searchUsers(query);
       setUsers(results);
     } catch (error) {
-      console.error("Error searching users:", error);
-      Alert.alert("Error", "Failed to search users");
+      console.error('Error searching users:', error);
+      Alert.alert('Error', 'Failed to search users');
     }
   };
 
@@ -115,12 +121,12 @@ export default function ManageUsersScreen() {
 
     try {
       const { getUserProgressStats } =
-        await import("@/services/firebaseService");
+        await import('@/services/firebaseService');
       const stats = await getUserProgressStats(user.id);
       setUserStats(stats);
     } catch (error) {
-      console.error("Error loading user stats:", error);
-      Alert.alert("Error", "Failed to load user statistics");
+      console.error('Error loading user stats:', error);
+      Alert.alert('Error', 'Failed to load user statistics');
     } finally {
       setLoadingStats(false);
     }
@@ -128,7 +134,7 @@ export default function ManageUsersScreen() {
 
   const handleEditUser = (user: UserData) => {
     setSelectedUser(user);
-    setEditDisplayName(user.displayName || "");
+    setEditDisplayName(user.displayName || '');
     setEditModalVisible(true);
   };
 
@@ -138,14 +144,14 @@ export default function ManageUsersScreen() {
     try {
       setSavingEdit(true);
       const { updateUserDisplayName } =
-        await import("@/services/firebaseService");
+        await import('@/services/firebaseService');
       await updateUserDisplayName(selectedUser.id, editDisplayName.trim());
-      Alert.alert("Success", "User updated successfully");
+      Alert.alert('Success', 'User updated successfully');
       setEditModalVisible(false);
       loadUsers();
     } catch (error) {
-      console.error("Error updating user:", error);
-      Alert.alert("Error", "Failed to update user");
+      console.error('Error updating user:', error);
+      Alert.alert('Error', 'Failed to update user');
     } finally {
       setSavingEdit(false);
     }
@@ -153,25 +159,25 @@ export default function ManageUsersScreen() {
 
   const handleResetProgress = (user: UserData) => {
     Alert.alert(
-      "Reset Progress",
+      'Reset Progress',
       `Are you sure you want to reset all progress for ${
         user.displayName || user.email
       }?\n\nThis will delete:\n• All completed exercises\n• All scores and achievements\n• All activity history\n\nThis action cannot be undone.`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Reset Progress",
-          style: "destructive",
+          text: 'Reset Progress',
+          style: 'destructive',
           onPress: async () => {
             try {
               const { deleteAllUserProgress } =
-                await import("@/services/firebaseService");
+                await import('@/services/firebaseService');
               await deleteAllUserProgress(user.id);
-              Alert.alert("Success", "User progress reset successfully");
+              Alert.alert('Success', 'User progress reset successfully');
               loadUsers();
             } catch (error) {
-              console.error("Error resetting progress:", error);
-              Alert.alert("Error", "Failed to reset user progress");
+              console.error('Error resetting progress:', error);
+              Alert.alert('Error', 'Failed to reset user progress');
             }
           },
         },
@@ -180,69 +186,45 @@ export default function ManageUsersScreen() {
   };
 
   const handleDeleteAccount = (user: UserData) => {
-    Alert.alert(
-      "Delete Account",
-      `Are you sure you want to permanently delete this account?\n\nUser: ${user.email}\n\nThis will:\n• Delete the user account permanently\n• Delete all progress and achievements\n• Delete all activity history\n\nThis action CANNOT be undone!`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm Deletion",
-          style: "destructive",
-          onPress: () => {
-            // Second confirmation with email verification
-            Alert.prompt(
-              "Confirm Deletion",
-              `Type the user's email to confirm: ${user.email}`,
-              [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Delete",
-                  style: "destructive",
-                  onPress: async (inputEmail?: string) => {
-                    if (
-                      inputEmail?.toLowerCase() === user.email.toLowerCase()
-                    ) {
-                      try {
-                        const { deleteUserAccount } =
-                          await import("@/services/firebaseService");
-                        await deleteUserAccount(user.id);
-                        Alert.alert(
-                          "Success",
-                          "User account deleted successfully",
-                        );
-                        loadUsers();
-                      } catch (error) {
-                        console.error("Error deleting account:", error);
-                        Alert.alert("Error", "Failed to delete user account");
-                      }
-                    } else {
-                      Alert.alert(
-                        "Error",
-                        "Email does not match. Deletion cancelled.",
-                      );
-                    }
-                  },
-                },
-              ],
-              "plain-text",
-            );
-          },
-        },
-      ],
-    );
+    setUserToDelete(user);
+    setDeleteEmailInput('');
+    setDeleteModalVisible(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!userToDelete) return;
+    if (
+      deleteEmailInput.trim().toLowerCase() !== userToDelete.email.toLowerCase()
+    ) {
+      Alert.alert('Error', 'Email does not match. Deletion cancelled.');
+      return;
+    }
+    try {
+      setDeleting(true);
+      const { deleteUserAccount } = await import('@/services/firebaseService');
+      await deleteUserAccount(userToDelete.id);
+      setDeleteModalVisible(false);
+      Alert.alert('Success', 'User account deleted successfully');
+      loadUsers();
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      Alert.alert('Error', 'Failed to delete user account');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const formatDate = (date?: Date | { toDate: () => Date }) => {
-    if (!date) return "Unknown";
+    if (!date) return 'Unknown';
     // Handle Firestore Timestamp objects which have a toDate() method
     const jsDate =
-      typeof (date as any).toDate === "function"
+      typeof (date as any).toDate === 'function'
         ? (date as any).toDate()
         : new Date(date as Date);
-    return jsDate.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return jsDate.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -303,8 +285,8 @@ export default function ManageUsersScreen() {
                 <IconSymbol name="person.2" size={48} color="#ccc" />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
-                    ? "No users match your search"
-                    : "No users found"}
+                    ? 'No users match your search'
+                    : 'No users found'}
                 </ThemedText>
               </View>
             ) : (
@@ -320,7 +302,7 @@ export default function ManageUsersScreen() {
                     <View style={styles.userInfo}>
                       <View style={styles.userNameRow}>
                         <ThemedText style={styles.userName}>
-                          {user.displayName || "No Name"}
+                          {user.displayName || 'No Name'}
                         </ThemedText>
                         {user.isAdmin && (
                           <View style={styles.adminBadge}>
@@ -435,7 +417,7 @@ export default function ManageUsersScreen() {
                       />
                     </View>
                     <ThemedText style={styles.detailName}>
-                      {selectedUser.displayName || "No Name"}
+                      {selectedUser.displayName || 'No Name'}
                     </ThemedText>
                     <ThemedText style={styles.detailEmail}>
                       {selectedUser.email}
@@ -565,6 +547,86 @@ export default function ManageUsersScreen() {
         </View>
       </Modal>
 
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={deleteModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText type="subtitle" style={styles.modalTitle}>
+                Delete Account
+              </ThemedText>
+              <TouchableOpacity
+                onPress={() => setDeleteModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <IconSymbol name="xmark" size={24} color="#464655" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              {userToDelete && (
+                <>
+                  <ThemedText style={styles.deleteWarning}>
+                    This will permanently delete the account for:
+                  </ThemedText>
+                  <ThemedText style={styles.deleteEmail}>
+                    {userToDelete.email}
+                  </ThemedText>
+                  <ThemedText style={styles.deleteWarning}>
+                    All progress, achievements, and activity history will be
+                    deleted. This action cannot be undone.
+                  </ThemedText>
+
+                  <View style={styles.formGroup}>
+                    <ThemedText style={styles.formLabel}>
+                      Type the user&apos;s email to confirm
+                    </ThemedText>
+                    <TextInput
+                      style={styles.formInput}
+                      value={deleteEmailInput}
+                      onChangeText={setDeleteEmailInput}
+                      placeholder={userToDelete.email}
+                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                    />
+                  </View>
+
+                  <View style={styles.modalActions}>
+                    <Pressable
+                      style={[styles.modalButton, styles.cancelButton]}
+                      onPress={() => setDeleteModalVisible(false)}
+                    >
+                      <ThemedText style={styles.cancelButtonText}>
+                        Cancel
+                      </ThemedText>
+                    </Pressable>
+                    <Pressable
+                      style={[
+                        styles.modalButton,
+                        styles.confirmDeleteButton,
+                        deleting && styles.disabledButton,
+                      ]}
+                      onPress={handleConfirmDelete}
+                      disabled={deleting}
+                    >
+                      <ThemedText style={styles.confirmDeleteButtonText}>
+                        {deleting ? 'Deleting...' : 'Delete Account'}
+                      </ThemedText>
+                    </Pressable>
+                  </View>
+                </>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Edit User Modal */}
       <Modal
         visible={editModalVisible}
@@ -630,7 +692,7 @@ export default function ManageUsersScreen() {
                       disabled={savingEdit}
                     >
                       <ThemedText style={styles.saveButtonText}>
-                        {savingEdit ? "Saving..." : "Save Changes"}
+                        {savingEdit ? 'Saving...' : 'Save Changes'}
                       </ThemedText>
                     </Pressable>
                   </View>
@@ -647,30 +709,30 @@ export default function ManageUsersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   contentWrapper: {
-    width: "100%",
+    width: '100%',
     maxWidth: 600,
-    alignSelf: "center",
+    alignSelf: 'center',
     flex: 1,
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: '#eee',
   },
   backButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
   },
   backText: {
     marginLeft: 8,
-    color: "#6996b3",
+    color: '#6996b3',
     fontSize: 16,
   },
   title: {
@@ -682,44 +744,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginTop: 16,
     marginBottom: 16,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   searchInput: {
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
-    color: "#000",
+    color: '#000',
   },
   usersList: {
     flex: 1,
   },
   emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 60,
   },
   emptyText: {
     marginTop: 16,
     fontSize: 16,
-    color: "#444",
+    color: '#444',
   },
   userCard: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   userHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 12,
   },
   userInfo: {
@@ -727,17 +789,17 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   userNameRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 4,
   },
   userName: {
     fontSize: 18,
-    fontWeight: "500",
-    color: "#333",
+    fontWeight: '500',
+    color: '#333',
   },
   adminBadge: {
-    backgroundColor: "#9C27B0",
+    backgroundColor: '#9C27B0',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
@@ -745,81 +807,81 @@ const styles = StyleSheet.create({
   },
   adminBadgeLarge: {
     marginTop: 8,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   adminBadgeText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   userEmail: {
     fontSize: 14,
-    color: "#202029",
-    fontWeight: "normal",
+    color: '#202029',
+    fontWeight: 'normal',
     marginBottom: 4,
   },
   userMeta: {
     fontSize: 12,
-    color: "#999",
+    color: '#999',
   },
   actionButtons: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 8,
   },
   actionButton: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 8,
     borderRadius: 8,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
     gap: 4,
   },
   infoButton: {
-    backgroundColor: "#E3F2FD",
+    backgroundColor: '#E3F2FD',
   },
   editButton: {
-    backgroundColor: "#E3F2FD",
+    backgroundColor: '#E3F2FD',
   },
   resetButton: {
-    backgroundColor: "#FFF3E0",
+    backgroundColor: '#FFF3E0',
   },
   deleteButton: {
-    backgroundColor: "#FFEBEE",
+    backgroundColor: '#FFEBEE',
   },
   actionButtonText: {
     fontSize: 12,
-    fontWeight: "500",
-    color: "#6996b3",
+    fontWeight: '500',
+    color: '#6996b3',
   },
   resetText: {
-    color: "#FF9800",
+    color: '#FF9800',
   },
   deleteText: {
-    color: "#6f0202",
+    color: '#6f0202',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 16,
-    width: "90%",
-    maxHeight: "80%",
-    overflow: "hidden",
+    width: '90%',
+    maxHeight: '80%',
+    overflow: 'hidden',
   },
   modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: '#eee',
   },
   modalTitle: {
     fontSize: 20,
@@ -834,97 +896,97 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatarCenter: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 12,
   },
   detailName: {
     fontSize: 22,
-    fontWeight: "500",
-    textAlign: "center",
+    fontWeight: '500',
+    textAlign: 'center',
     marginBottom: 4,
   },
   detailEmail: {
     fontSize: 14,
-    color: "#202029",
-    fontWeight: "normal",
-    textAlign: "center",
+    color: '#202029',
+    fontWeight: 'normal',
+    textAlign: 'center',
     marginBottom: 8,
   },
   loadingContainer: {
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   statsGrid: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 12,
     marginBottom: 24,
   },
   statCard: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
     padding: 12,
     borderRadius: 12,
-    alignItems: "center",
+    alignItems: 'center',
   },
   statNumber: {
     fontSize: 24,
-    fontWeight: "700",
-    color: "#6996b3",
+    fontWeight: '700',
+    color: '#6996b3',
   },
   statLabel: {
     fontSize: 12,
-    color: "#202029",
-    fontWeight: "normal",
+    color: '#202029',
+    fontWeight: 'normal',
     marginTop: 4,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 12,
-    color: "#333",
+    color: '#333',
   },
   categoryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: '#f0f0f0',
   },
   categoryName: {
     fontSize: 14,
-    color: "#333",
+    color: '#333',
   },
   categoryProgress: {
     fontSize: 14,
-    color: "#202029",
-    fontWeight: "normal",
+    color: '#202029',
+    fontWeight: 'normal',
   },
   noActivity: {
     fontSize: 14,
-    color: "#999",
-    textAlign: "center",
+    color: '#999',
+    textAlign: 'center',
     paddingVertical: 20,
   },
   activityRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: '#f0f0f0',
   },
   activityInfo: {
     flex: 1,
   },
   activityTitle: {
     fontSize: 14,
-    color: "#333",
+    color: '#333',
     marginBottom: 4,
   },
   activityDate: {
     fontSize: 12,
-    color: "#999",
+    color: '#999',
   },
   scoreChip: {
     paddingHorizontal: 12,
@@ -933,41 +995,41 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   scoreSuccess: {
-    backgroundColor: "#E8F5E9",
+    backgroundColor: '#E8F5E9',
   },
   scoreFail: {
-    backgroundColor: "#FFEBEE",
+    backgroundColor: '#FFEBEE',
   },
   scoreText: {
     fontSize: 14,
-    fontWeight: "500",
-    color: "#333",
+    fontWeight: '500',
+    color: '#333',
   },
   formGroup: {
     marginBottom: 20,
   },
   formLabel: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 8,
-    color: "#333",
+    color: '#333',
   },
   formInput: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 16,
-    color: "#000",
+    color: '#000',
     borderWidth: 0.5,
-    borderColor: "#e0e0e0",
+    borderColor: '#e0e0e0',
   },
   formInputDisabled: {
-    backgroundColor: "#f0f0f0",
-    color: "#999",
+    backgroundColor: '#f0f0f0',
+    color: '#999',
   },
   modalActions: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 12,
     marginTop: 24,
   },
@@ -975,25 +1037,44 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
   },
   cancelButtonText: {
-    color: "#202029",
+    color: '#202029',
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   saveButton: {
-    backgroundColor: "#6996b3",
+    backgroundColor: '#6996b3',
   },
   saveButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   disabledButton: {
     opacity: 0.5,
+  },
+  deleteWarning: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+  },
+  deleteEmail: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6f0202',
+    marginBottom: 12,
+  },
+  confirmDeleteButton: {
+    backgroundColor: '#6f0202',
+  },
+  confirmDeleteButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
