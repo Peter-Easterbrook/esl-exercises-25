@@ -83,7 +83,7 @@ Start your English learning journey today! 🎯
 
 ---
 
-Developed by Easterbrook Language Services
+Developed by OneStepWeb in collaboration with Easterbrook Language Services
 Visit us: https://easterbrook.at
 
 ---
