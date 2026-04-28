@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
 import { Exercise } from '@/types';
+import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -162,11 +163,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       // Trigger confetti and haptic feedback for perfect score
       if (percentage === 100) {
         setShowConfetti(true);
-        // Trigger haptic feedback on non-web platforms
-        if (Platform.OS !== 'web') {
-          Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success
-          );
+        if (Constants.appOwnership === 'expo') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } else {
+          Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Confirm).catch(() => {});
         }
       }
 

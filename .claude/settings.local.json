@@ -65,7 +65,9 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.expo.dev)",
       "Bash(eas --version)",
-      "Bash(npx eas *)"
+      "Bash(npx eas *)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ],
     "deny": [],
     "ask": []
