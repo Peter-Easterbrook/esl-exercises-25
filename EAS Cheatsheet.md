@@ -209,7 +209,7 @@ EAS Build uses `npm ci` which requires exact sync between `package.json` and `pa
 # 1. Delete lock file and node_modules (PowerShell)
 Remove-Item -Recurse -Force node_modules, package-lock.json
 # Git Bash / macOS / Linux: rm -rf node_modules package-lock.json
-
+rm -rf node_modules package-lock.json
 # 2. Clear npm cache
 npm cache clean --force
 
