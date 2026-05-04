@@ -537,25 +537,7 @@ export default function AddExerciseScreen() {
           break;
 
         case "fill-blanks":
-          console.log(
-            "   Checking fill-blanks correct answer:",
-            q.correctAnswer,
-          );
-          if (
-            !q.correctAnswer ||
-            (Array.isArray(q.correctAnswer) &&
-              q.correctAnswer.every((ans) => !ans)) ||
-            (typeof q.correctAnswer === "string" && !q.correctAnswer.trim())
-          ) {
-            console.log(
-              `❌ Validation failed: No correct answer(s) for question ${i + 1}`,
-            );
-            Alert.alert(
-              "Validation Error",
-              `Please provide the correct answer(s) for question ${i + 1}.`,
-            );
-            return false;
-          }
+          console.log("   Fill-blanks type - answers are optional");
           break;
 
         case "short-answer":
@@ -1262,8 +1244,7 @@ export default function AddExerciseScreen() {
                             : question.correctAnswer || "";
                           const answers = currentValue
                             .split(",")
-                            .map((a) => a.trim())
-                            .filter((a) => a);
+                            .map((a) => a.trim());
                           handleQuestionChange(
                             qIndex,
                             "correctAnswer",

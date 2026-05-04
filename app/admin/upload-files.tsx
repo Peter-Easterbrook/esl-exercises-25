@@ -34,7 +34,9 @@ export default function UploadFilesScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<string>('');
-  const [selectedLevel, setSelectedLevel] = useState<'beginner' | 'intermediate' | 'advanced' | ''>('');
+  const [selectedLevel, setSelectedLevel] = useState<
+    'beginner' | 'intermediate' | 'advanced' | ''
+  >('');
   const [files, setFiles] = useState<DownloadableFile[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -115,7 +117,7 @@ export default function UploadFilesScreen() {
         selectedCategory,
         selectedExercise || null,
         user!.uid,
-        selectedLevel || undefined
+        selectedLevel || undefined,
       );
 
       Alert.alert('Success', 'File uploaded successfully');
@@ -148,7 +150,7 @@ export default function UploadFilesScreen() {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -166,11 +168,11 @@ export default function UploadFilesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
+          <ThemedText type="title" style={styles.title}>
             Upload Files
           </ThemedText>
         </View>
@@ -178,7 +180,7 @@ export default function UploadFilesScreen() {
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Category Selection */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Select Category
             </ThemedText>
             <View style={styles.categoryGrid}>
@@ -194,15 +196,15 @@ export default function UploadFilesScreen() {
           </View>
 
           {/* Exercise Selection */}
-          {selectedCategory && exercises.length > 0 && (
+          {!!selectedCategory && exercises.length > 0 && (
             <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Link to Exercise (Optional)
               </ThemedText>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.exerciseList}>
                   <ExerciseChip
-                    label='None'
+                    label="None"
                     isSelected={!selectedExercise}
                     onPress={() => setSelectedExercise('')}
                   />
@@ -226,32 +228,32 @@ export default function UploadFilesScreen() {
           )}
 
           {/* Level Selection */}
-          {selectedCategory && (
+          {!!selectedCategory && (
             <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Select Level (Optional)
               </ThemedText>
               <View style={styles.levelList}>
                 <LevelChip
-                  label='None'
+                  label="None"
                   isSelected={!selectedLevel}
                   onPress={() => setSelectedLevel('')}
                 />
                 <LevelChip
-                  label='Beginner'
-                  level='beginner'
+                  label="Beginner"
+                  level="beginner"
                   isSelected={selectedLevel === 'beginner'}
                   onPress={() => setSelectedLevel('beginner')}
                 />
                 <LevelChip
-                  label='Intermediate'
-                  level='intermediate'
+                  label="Intermediate"
+                  level="intermediate"
                   isSelected={selectedLevel === 'intermediate'}
                   onPress={() => setSelectedLevel('intermediate')}
                 />
                 <LevelChip
-                  label='Advanced'
-                  level='advanced'
+                  label="Advanced"
+                  level="advanced"
                   isSelected={selectedLevel === 'advanced'}
                   onPress={() => setSelectedLevel('advanced')}
                 />
@@ -265,7 +267,7 @@ export default function UploadFilesScreen() {
           )}
 
           {/* Upload Button */}
-          {selectedCategory && (
+          {!!selectedCategory && (
             <View style={styles.section}>
               <TouchableOpacity
                 style={[
@@ -276,10 +278,10 @@ export default function UploadFilesScreen() {
                 disabled={uploading}
               >
                 {uploading ? (
-                  <ActivityIndicator color='#fff' />
+                  <ActivityIndicator color="#fff" />
                 ) : (
                   <View style={styles.uploadButtonContent}>
-                    <IconSymbol name='doc.badge.plus' size={24} color='#fff' />
+                    <IconSymbol name="doc.badge.plus" size={24} color="#fff" />
                     <ThemedText style={styles.uploadButtonText}>
                       Upload Document
                     </ThemedText>
@@ -293,22 +295,23 @@ export default function UploadFilesScreen() {
           )}
 
           {/* Files List */}
-          {selectedCategory && files.length > 0 && (
+          {!!selectedCategory && files.length > 0 && (
             <View style={styles.section}>
-              <ThemedText type='subtitle' style={styles.sectionTitle}>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Uploaded Files
               </ThemedText>
               {files.map((file) => (
                 <View key={file.id} style={styles.fileCard}>
                   <View style={styles.fileIcon}>
-                    <Ionicons name='document-text' size={28} color='#6996b3' />
+                    <Ionicons name="document-text" size={28} color="#6996b3" />
                   </View>
                   <View style={styles.fileInfo}>
-                    <ThemedText type='defaultSemiBold' style={styles.fileName}>
+                    <ThemedText type="defaultSemiBold" style={styles.fileName}>
                       {file.name}
                     </ThemedText>
                     <ThemedText style={styles.fileDetails}>
-                      {formatFileSize(file.size)} • {file.fileType.toUpperCase()}
+                      {formatFileSize(file.size)} •{' '}
+                      {file.fileType.toUpperCase()}
                     </ThemedText>
                     {file.exerciseId && (
                       <ThemedText style={styles.linkedExercise}>
@@ -333,7 +336,7 @@ export default function UploadFilesScreen() {
                     onPress={() => handleDeleteFile(file)}
                     activeOpacity={0.7}
                   >
-                    <IconSymbol name='trash' size={20} color='#6f0202' />
+                    <IconSymbol name="trash" size={20} color="#6f0202" />
                   </TouchableOpacity>
                 </View>
               ))}
