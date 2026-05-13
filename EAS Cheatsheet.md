@@ -30,11 +30,11 @@
 
 ## EAS Update Commands
 
-| Command                                          | Description                                  |
-| ------------------------------------------------ | -------------------------------------------- |
-| `eas update --branch production --message "..."` | Push OTA update to production                |
-| `eas update --branch preview --message "..."`    | Push OTA update to preview channel           |
-| `eas update:list --branch production`            | List recent updates on the production branch |
+| Command                                                     | Description                                  |
+| ----------------------------------------------------------- | -------------------------------------------- |
+| `eas update -p android --branch production --message "..."` | Push OTA update to production                |
+| `eas update -p android --branch preview --message "..."`    | Push OTA update to preview channel           |
+| `eas update:list --branch production`                       | List recent updates on the production branch |
 
 ## EAS Update vs New Build: When Do You Need to Rebuild?
 
@@ -49,7 +49,7 @@ Push over-the-air (OTA) updates for:
 - Content updates
 
 ```bash
-eas update --branch production --message "Fixed validation logic"
+eas update -p android --branch production --message "Fixed validation logic"
 ```
 
 Users receive the update on the next app relaunch after it downloads in the background.
@@ -270,7 +270,7 @@ eas build -p android --profile production
 eas submit -p android
 
 # Pure JS/TS changes only (Firebase, UI libraries, bug fixes, content)?
-eas update --branch production --message "Updated dependencies"
+eas update -p android --branch production --message "Updated dependencies"
 eas update:list --branch production
 ```
 

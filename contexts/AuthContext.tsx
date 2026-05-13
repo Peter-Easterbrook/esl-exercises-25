@@ -1,17 +1,17 @@
-import { auth, db } from "@/config/firebase";
+import { auth, db } from '@/config/firebase';
 import {
   deleteUserAccount,
   updateUserDisplayName,
   updateUserLanguagePreference,
-} from "@/services/firebaseService";
+} from '@/services/firebaseService';
 import {
   checkPremiumAccess,
   endIAPConnection,
   initializeIAP,
-} from "@/services/premiumService";
-import { User as AppUser } from "@/types";
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
+} from '@/services/premiumService';
+import { User as AppUser } from '@/types';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
 import {
   EmailAuthProvider,
   GoogleAuthProvider,
@@ -26,9 +26,9 @@ import {
   signOut,
   updatePassword,
   updateProfile,
-} from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import React, { createContext, useContext, useEffect, useState } from "react";
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -62,7 +62,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -83,38 +83,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     iosClientId:
       process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ||
       process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    scopes: ["openid", "profile", "email"],
-    responseType: "id_token",
+    scopes: ['openid', 'profile', 'email'],
+    responseType: 'id_token',
   });
 
   // Handle Google sign-in response
   useEffect(() => {
-    if (response?.type === "success") {
-      console.log("📱 Google auth response:", response);
+    if (response?.type === 'success') {
+      console.log('📱 Google auth response:', response);
 
       const { id_token, idToken } = response.params;
       const tokenToUse = id_token || idToken;
 
       if (!tokenToUse) {
         console.error(
-          "❌ No id_token found in response. Available params:",
+          '❌ No id_token found in response. Available params:',
           Object.keys(response.params),
         );
         return;
       }
 
-      console.log("🔑 Using id_token to create credential");
+      console.log('🔑 Using id_token to create credential');
       const credential = GoogleAuthProvider.credential(tokenToUse);
 
       signInWithCredential(auth, credential)
         .then(() => {
-          console.log("✅ Google sign-in successful");
+          console.log('✅ Google sign-in successful');
         })
         .catch((error) => {
-          console.error("❌ Google sign-in error:", error);
+          console.error('❌ Google sign-in error:', error);
         });
-    } else if (response?.type === "error") {
-      console.error("❌ Google auth error:", response.error);
+    } else if (response?.type === 'error') {
+      console.error('❌ Google auth error:', response.error);
     }
   }, [response]);
 
@@ -137,47 +137,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [appUser]);
 
   useEffect(() => {
-    console.log("Setting up auth state listener...");
+    console.log('Setting up auth state listener...');
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log(
-        "🔥 Auth state changed:",
-        firebaseUser ? `User: ${firebaseUser.email}` : "No user",
+        '🔥 Auth state changed:',
+        firebaseUser ? `User: ${firebaseUser.email}` : 'No user',
       );
       setUser(firebaseUser);
 
       if (firebaseUser) {
-        console.log("📄 Attempting to fetch/create user document...");
+        console.log('📄 Attempting to fetch/create user document...');
         try {
           // Get user data from Firestore
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
           if (userDoc.exists()) {
-            console.log("✅ User document found in Firestore");
+            console.log('✅ User document found in Firestore');
             setAppUser(userDoc.data() as AppUser);
           } else {
-            console.log("📝 Creating new user document...");
+            console.log('📝 Creating new user document...');
             // Create new user document
             const newUser: AppUser = {
               id: firebaseUser.uid,
               email: firebaseUser.email!,
               displayName: firebaseUser.displayName || undefined,
               isAdmin: false,
+              createdAt: new Date(),
               progress: [],
             };
 
             try {
-              await setDoc(doc(db, "users", firebaseUser.uid), newUser);
-              console.log("✅ User document created successfully");
+              await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+              console.log('✅ User document created successfully');
               setAppUser(newUser);
             } catch (firestoreError) {
-              console.error("❌ Error creating user document:", firestoreError);
+              console.error('❌ Error creating user document:', firestoreError);
               // Still set the user data even if Firestore fails
-              console.log("🔄 Using fallback user data");
+              console.log('🔄 Using fallback user data');
               setAppUser(newUser);
             }
           }
         } catch (error) {
-          console.error("❌ Error fetching user data:", error);
+          console.error('❌ Error fetching user data:', error);
           // Create a minimal user object if Firestore fails completely
           const fallbackUser: AppUser = {
             id: firebaseUser.uid,
@@ -186,15 +187,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             isAdmin: false,
             progress: [],
           };
-          console.log("🔄 Using complete fallback user data");
+          console.log('🔄 Using complete fallback user data');
           setAppUser(fallbackUser);
         }
       } else {
-        console.log("🚪 User signed out");
+        console.log('🚪 User signed out');
         setAppUser(null);
       }
 
-      console.log("⚡ Setting loading to false");
+      console.log('⚡ Setting loading to false');
       setLoading(false);
     });
 
@@ -218,14 +219,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       email: result.user.email!,
       displayName,
       isAdmin: false,
+      createdAt: new Date(),
       progress: [],
     };
 
     try {
-      await setDoc(doc(db, "users", result.user.uid), newUser);
+      await setDoc(doc(db, 'users', result.user.uid), newUser);
     } catch (firestoreError) {
       console.error(
-        "Error creating user document during signup:",
+        'Error creating user document during signup:',
         firestoreError,
       );
       // Don't throw the error - the auth state change listener will handle creating the user document
@@ -236,7 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await promptAsync();
     } catch (error) {
-      console.error("❌ Error initiating Google sign-in:", error);
+      console.error('❌ Error initiating Google sign-in:', error);
       throw error;
     }
   };
@@ -248,7 +250,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const sendPasswordReset = async (email: string) => {
     // Ensuring the email link points to the correct domain avoids ambiguity
     const actionCodeSettings = {
-      url: "https://esl-exercises.firebaseapp.com",
+      url: 'https://esl-exercises.firebaseapp.com',
       handleCodeInApp: false,
     };
     await sendPasswordResetEmail(auth, email, actionCodeSettings);
@@ -259,7 +261,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     newPassword: string,
   ) => {
     if (!user || !user.email) {
-      throw new Error("No user logged in");
+      throw new Error('No user logged in');
     }
 
     // Re-authenticate user before password change
@@ -275,7 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateDisplayName = async (newDisplayName: string) => {
     if (!user) {
-      throw new Error("No user logged in");
+      throw new Error('No user logged in');
     }
 
     // Update in Firebase Auth
@@ -290,7 +292,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateLanguagePreference = async (language: string) => {
     if (!user) {
-      throw new Error("No user logged in");
+      throw new Error('No user logged in');
     }
 
     // Update in Firestore
@@ -302,7 +304,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteAccount = async (password: string) => {
     if (!user || !user.email) {
-      throw new Error("No user logged in");
+      throw new Error('No user logged in');
     }
 
     // Re-authenticate user before account deletion
@@ -322,12 +324,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     try {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
         setAppUser(userDoc.data() as AppUser);
       }
     } catch (error) {
-      console.error("Error refreshing user data:", error);
+      console.error('Error refreshing user data:', error);
     }
   };
 
@@ -339,7 +341,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setHasPremiumAccess(isPremium);
       await refreshUserData(); // Refresh full user data
     } catch (error) {
-      console.error("Error refreshing premium status:", error);
+      console.error('Error refreshing premium status:', error);
     }
   };
 

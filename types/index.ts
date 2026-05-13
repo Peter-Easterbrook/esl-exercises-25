@@ -33,7 +33,13 @@ export interface Exercise {
 }
 
 export interface ExerciseContent {
-  type: 'multiple-choice' | 'fill-blanks' | 'true-false' | 'matching' | 'essay' | 'short-answer';
+  type:
+    | 'multiple-choice'
+    | 'fill-blanks'
+    | 'true-false'
+    | 'matching'
+    | 'essay'
+    | 'short-answer';
   questions: Question[];
 }
 
@@ -62,6 +68,7 @@ export interface User {
   email: string;
   displayName?: string;
   isAdmin: boolean;
+  createdAt?: Date;
   progress: UserProgress[];
   preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de', 'it'
 
