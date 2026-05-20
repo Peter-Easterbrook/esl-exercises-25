@@ -199,113 +199,72 @@ eas submit -p android
 - **APK** (`buildType: "apk"`): Development and preview — for testing and sideloading
 - **AAB** (`buildType: "app-bundle"`): Production — required for Google Play Store
 
-## Fixing npm ci Errors in EAS Build
+## Update / Build Workflow
 
-EAS Build uses `npm ci` which requires exact sync between `package.json` and `package-lock.json`. If they're out of sync, builds fail.
+> EAS Build runs `npm ci`, which requires `package.json` and `package-lock.json` to be in exact sync. This workflow ensures they always are, and catches issues locally before the build fails remotely.
 
-### Quick Fix:
+### Step 1 — Bump the version _(new Play Store builds only)_
+
+Skip for OTA updates. Bump when submitting a new build to the Play Store:
 
 ```powershell
-# 1. Delete lock file and node_modules (PowerShell)
-Remove-Item -Recurse -Force node_modules, package-lock.json
-# Git Bash / macOS / Linux: rm -rf node_modules package-lock.json
-rm -rf node_modules package-lock.json
-# 2. Clear npm cache
-npm cache clean --force
-
-# 3. Reinstall dependencies (generates fresh package-lock.json)
-npm install
-
-# 4. Verify no issues
-npx expo-doctor
-
-# 5. Commit the synchronized files
-git add package.json package-lock.json
-git commit -m "Sync package-lock.json with package.json"
-git push
-
-# 6. Clear EAS cache and rebuild
-eas build --clear-cache -p android --profile production
+npm run bump-version          # patch: 1.2.3 → 1.2.4  (bug fixes, minor improvements)
+npm run bump-version minor    # minor: 1.2.3 → 1.3.0  (new features)
+npm run bump-version major    # major: 1.2.3 → 2.0.0  (breaking changes, major redesigns)
 ```
 
-**Best practices:**
+The bump script keeps `app.json` (`expo.version`) and `package.json` (`version`) in sync automatically. `versionCode` is managed by EAS — never set it manually.
 
-- Always commit `package-lock.json` to version control
-- Use `npm install` (not manual edits) to update dependencies
-- Use `npx expo install <package>` for Expo-specific packages
-- Run `npm ci` locally before pushing to catch sync issues early
-
-## Full Update / Rebuild Workflow
+### Step 2 — Install or update dependencies
 
 ```powershell
-# 1. Bump version if submitting a new build (not needed for OTA updates)
-npm run bump-version          # patch (default)
-npm run bump-version minor    # or minor/major as appropriate
+npx expo install <package>   # Expo-specific packages (ensures SDK compatibility)
+npm install <package>        # Everything else — never edit package.json manually
+```
 
-# 2. Install/update dependencies
-#    - Use npx expo install for Expo-specific packages
-#    - Use npm install for everything else (never edit package.json manually)
-npm install
+### Step 3 — Clean reinstall to sync package-lock.json
 
-# 3. Clean reinstall to sync package-lock.json (run if dependencies changed)
+Always run this after any dependency change:
+
+```powershell
 Remove-Item -Recurse -Force node_modules, package-lock.json
-# Git Bash / macOS / Linux: rm -rf node_modules package-lock.json
 npm cache clean --force
 npm install
+```
 
-# 4. Validate locally — catches npm ci sync issues before EAS sees them
+### Step 4 — Validate locally
+
+Catches `npm ci` sync issues before EAS sees them:
+
+```powershell
 npm ci
 npx expo-doctor
+```
 
-# 5. Commit everything including package-lock.json (required for EAS npm ci)
+### Step 5 — Commit
+
+```powershell
 git add .
-git commit -m "Update npm packages"
+git commit -m "..."   # e.g. "Bump version to 1.3.0" / "Add theme picker feature"
 git push
+```
 
-# 6. Build or update — choose based on what changed:
+### Step 6 — Deploy
 
-# Native packages changed (react-native-iap, Expo SDK, anything with android/ folder)?
-eas build -p android --profile production
-# Then submit:
-eas submit -p android
+**Did you change native code or `app.json`?**
 
-# Pure JS/TS changes only (Firebase, UI libraries, bug fixes, content)?
-eas update -p android --branch production --message "Updated dependencies"
+**No → OTA update** (JS/TS changes, UI updates, Firebase logic, content):
+
+```powershell
+eas update -p android --branch production --message "..."
 eas update:list --branch production
 ```
 
-## Version Number Management
-
-There are two version numbers to understand:
-
-- **`version`** (human-readable, e.g. `1.2.3`) — set in `app.json` and `package.json`. This is the version users see in the Play Store.
-- **`versionCode`** (Android build number, e.g. `42`) — managed automatically by EAS via `"appVersionSource": "remote"`. Do not set this manually.
-
-### When to bump the version:
-
-- **Patch** (`1.2.3 → 1.2.4`) — bug fixes, minor improvements, OTA updates
-- **Minor** (`1.2.3 → 1.3.0`) — new features, backwards-compatible changes
-- **Major** (`1.2.3 → 2.0.0`) — breaking changes, major redesigns
-
-### Option 1 — Bump script (recommended):
-
-Uses `scripts/bump-version.js` to update both `app.json` and `package.json` in sync.
+**Yes → New build** (native dependencies, `app.json`, Expo SDK upgrade, icons/splash):
 
 ```powershell
-npm run bump-version          # patch: 1.2.3 → 1.2.4
-npm run bump-version minor    # minor: 1.2.3 → 1.3.0
-npm run bump-version major    # major: 1.2.3 → 2.0.0
+eas build -p android --profile production
+eas submit -p android
 ```
 
-### Option 2 — Manual edit:
-
-Edit the `version` field in both files to keep them in sync:
-
-- `app.json` → `expo.version`
-- `package.json` → `version`
-
-### Notes:
-
-- `versionCode` is auto-incremented by EAS on every production build (`autoIncrement: true` in `eas.json`) — no manual action needed
-- Always commit the version bump before building: `git commit -m "Bump version to x.x.x"`
-- An OTA update (`eas update`) does **not** require a version bump — bump only when submitting a new build to the Play Store
+> If a build fails with a dependency sync error, add `--clear-cache` to the `eas build` command.
