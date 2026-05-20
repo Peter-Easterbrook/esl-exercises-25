@@ -1,3 +1,4 @@
+import { MilestoneRatingModal } from '@/components/MilestoneRatingModal';
 import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -5,6 +6,7 @@ import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { Exercise } from '@/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
@@ -48,6 +50,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [score, setScore] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
   const scoreTextSize = getResponsiveFontSize(width);
 
   // Admins have free access to downloads
@@ -193,6 +196,24 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         } catch (error) {
           console.error('Error saving progress:', error);
         }
+
+        // Check milestone: show rating prompt once after 5 completions
+        try {
+          const shown = await AsyncStorage.getItem('@eslApp/ratingPromptShown');
+          if (!shown) {
+            const { getUserProgress } =
+              await import('@/services/firebaseService');
+            const allProgress = await getUserProgress(user.uid);
+            const completedCount = allProgress.filter(
+              (p) => p.completed,
+            ).length;
+            if (completedCount >= 5) {
+              setShowRatingModal(true);
+            }
+          }
+        } catch (milestoneError) {
+          console.error('Milestone check error:', milestoneError);
+        }
       }
     } catch (error) {
       console.error('Error calculating score:', error);
@@ -208,6 +229,21 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     setShowResults(false);
     setScore(0);
     setShowConfetti(false);
+  };
+
+  const handleRatingModalClose = async () => {
+    try {
+      await AsyncStorage.setItem('@eslApp/ratingPromptShown', 'true');
+    } catch (error) {
+      console.error('Error persisting rating prompt state:', error);
+    }
+    setShowRatingModal(false);
+  };
+
+  const handleFeedbackSubmit = async (message: string) => {
+    if (!user) return;
+    const { saveFeedback } = await import('@/services/firebaseService');
+    await saveFeedback(user.uid, user.email ?? '', message, Platform.OS);
   };
 
   const handleDownloadFile = async () => {
@@ -476,6 +512,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           onPurchaseSuccess={() => {
             Alert.alert('Success', 'You can now download files!');
           }}
+        />
+
+        <MilestoneRatingModal
+          visible={showRatingModal}
+          onClose={handleRatingModalClose}
+          onFeedbackSubmit={handleFeedbackSubmit}
         />
       </View>
     );

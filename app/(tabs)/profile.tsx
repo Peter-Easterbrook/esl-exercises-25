@@ -12,6 +12,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   Image,
+  Linking,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -101,7 +102,8 @@ Your UID: ${user?.uid}`,
     | 'questionmark.circle'
     | 'info.circle'
     | 'doc.text'
-    | 'gear';
+    | 'gear'
+    | 'star';
 
   const menuItems: {
     icon: MenuItemIcon;
@@ -120,6 +122,15 @@ Your UID: ${user?.uid}`,
       title: 'Help & Support',
       subtitle: 'Get help and contact support',
       onPress: () => router.push('/help-support'),
+    },
+    {
+      icon: 'star',
+      title: 'Rate this App',
+      subtitle: 'Enjoying the app? Leave us a review!',
+      onPress: () =>
+        Linking.openURL(
+          'https://play.google.com/store/apps/details?id=com.petereasterbro1.eslexercises25',
+        ),
     },
     {
       icon: 'info.circle',
