@@ -1,12 +1,14 @@
 import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import { Exercise } from '@/types';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Platform,
@@ -36,6 +38,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   exercise,
 }) => {
   const { user, hasPremiumAccess, appUser } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -75,7 +79,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     if (!hasAnswered) {
       Alert.alert(
         'Please select an answer',
-        'Choose one of the options before proceeding.'
+        'Choose one of the options before proceeding.',
       );
       return;
     }
@@ -117,7 +121,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               userAnswerArray.length === correctAnswer.length &&
               userAnswerArray.every(
                 (ans, idx) =>
-                  ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+                  ans.toUpperCase() === correctAnswer[idx].toUpperCase(),
               );
           } else {
             isCorrect = userAnswer === correctAnswer;
@@ -135,15 +139,20 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               userAnswerArray.length === correctAnswer.length &&
               userAnswerArray.every(
                 (ans, idx) =>
-                  ans.toLowerCase() === correctAnswer[idx].toLowerCase()
+                  ans.toLowerCase() === correctAnswer[idx].toLowerCase(),
               );
           } else {
             isCorrect = userAnswer === correctAnswer;
           }
         } else if (exercise.content.type === 'short-answer') {
           // For short-answer: case-insensitive comparison with trimmed whitespace
-          if (typeof correctAnswer === 'string' && typeof userAnswer === 'string') {
-            isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+          if (
+            typeof correctAnswer === 'string' &&
+            typeof userAnswer === 'string'
+          ) {
+            isCorrect =
+              userAnswer.trim().toLowerCase() ===
+              correctAnswer.trim().toLowerCase();
           }
         } else {
           // For multiple-choice and true-false: simple string comparison
@@ -156,7 +165,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       });
 
       percentage = Math.round(
-        (correctAnswers / exercise.content.questions.length) * 100
+        (correctAnswers / exercise.content.questions.length) * 100,
       );
       setScore(percentage);
 
@@ -166,16 +175,17 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         if (Constants.appOwnership === 'expo') {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         } else {
-          Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Confirm).catch(() => {});
+          Haptics.performAndroidHapticsAsync(
+            Haptics.AndroidHaptics.Confirm,
+          ).catch(() => {});
         }
       }
 
       // Save progress to Firebase
       if (user) {
         try {
-          const { updateUserProgress } = await import(
-            '@/services/firebaseService'
-          );
+          const { updateUserProgress } =
+            await import('@/services/firebaseService');
           await updateUserProgress(user.uid, exercise.id, {
             completed: true,
             score: percentage,
@@ -205,7 +215,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     if (Platform.OS === 'web') {
       Alert.alert(
         'Not Available',
-        'Downloads are only available on mobile devices.'
+        'Downloads are only available on mobile devices.',
       );
       return;
     }
@@ -217,9 +227,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     }
 
     try {
-      const { getFilesByExercise, downloadFile } = await import(
-        '@/services/fileService'
-      );
+      const { getFilesByExercise, downloadFile } =
+        await import('@/services/fileService');
 
       // Get files linked to this exercise
       const files = await getFilesByExercise(exercise.id);
@@ -227,7 +236,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       if (files.length === 0) {
         Alert.alert(
           'No Files',
-          'No downloadable files are available for this exercise.'
+          'No downloadable files are available for this exercise.',
         );
         return;
       }
@@ -251,7 +260,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               await downloadFile(files[0]);
             },
           },
-        ]
+        ],
       );
     } catch (error) {
       console.error('Error in handleDownloadFile:', error);
@@ -259,7 +268,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         error instanceof Error ? error.message : 'Unknown error';
       Alert.alert(
         'Error',
-        `Failed to download file: ${errorMessage}\n\nPlease check the console for details.`
+        `Failed to download file: ${errorMessage}\n\nPlease check the console for details.`,
       );
     }
   };
@@ -287,7 +296,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.resultsHeader}>
-            <ThemedText type='title' style={styles.resultsTitle}>
+            <ThemedText type="title" style={styles.resultsTitle}>
               Exercise Complete!
             </ThemedText>
             <ThemedText style={[styles.scoreText, { fontSize: scoreTextSize }]}>
@@ -303,8 +312,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                       score >= 70
                         ? '#07b524'
                         : score >= 50
-                        ? '#FF9800'
-                        : '#6f0202',
+                          ? '#FF9800'
+                          : '#6f0202',
                   },
                 ]}
               />
@@ -314,15 +323,15 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               {score === 100
                 ? '🎉 Perfect score! Outstanding work!'
                 : score >= 80
-                ? 'Excellent work!'
-                : score >= 60
-                ? 'Good job! Keep practicing.'
-                : 'Keep studying and try again!'}
+                  ? 'Excellent work!'
+                  : score >= 60
+                    ? 'Good job! Keep practicing.'
+                    : 'Keep studying and try again!'}
             </ThemedText>
           </View>
 
           <View style={styles.reviewSection}>
-            <ThemedText type='subtitle' style={styles.reviewTitle}>
+            <ThemedText type="subtitle" style={styles.reviewTitle}>
               Review Your Answers
             </ThemedText>
 
@@ -342,7 +351,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                     userAnswerArray.length === correctAnswer.length &&
                     userAnswerArray.every(
                       (ans, idx) =>
-                        ans.toUpperCase() === correctAnswer[idx].toUpperCase()
+                        ans.toUpperCase() === correctAnswer[idx].toUpperCase(),
                     );
                 } else {
                   isCorrect = userAnswer === correctAnswer;
@@ -357,14 +366,19 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                     userAnswerArray.length === correctAnswer.length &&
                     userAnswerArray.every(
                       (ans, idx) =>
-                        ans.toLowerCase() === correctAnswer[idx].toLowerCase()
+                        ans.toLowerCase() === correctAnswer[idx].toLowerCase(),
                     );
                 } else {
                   isCorrect = userAnswer === correctAnswer;
                 }
               } else if (exercise.content.type === 'short-answer') {
-                if (typeof correctAnswer === 'string' && typeof userAnswer === 'string') {
-                  isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+                if (
+                  typeof correctAnswer === 'string' &&
+                  typeof userAnswer === 'string'
+                ) {
+                  isCorrect =
+                    userAnswer.trim().toLowerCase() ===
+                    correctAnswer.trim().toLowerCase();
                 }
               } else {
                 isCorrect = userAnswer === correctAnswer;
@@ -428,9 +442,9 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               onPress={handleDownloadFile}
             >
               <IconSymbol
-                name='square.and.arrow.down'
+                name="square.and.arrow.down"
                 size={20}
-                color='#6996b3'
+                color="#6996b3"
               />
               <ThemedText style={styles.secondaryButtonText}>
                 Download Exercise
@@ -441,7 +455,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={styles.secondaryButton}
               onPress={handleRestart}
             >
-              <IconSymbol name='arrow.clockwise' size={20} color='#6996b3' />
+              <IconSymbol name="arrow.clockwise" size={20} color="#6996b3" />
               <ThemedText style={styles.secondaryButtonText}>
                 Try Again
               </ThemedText>
@@ -504,7 +518,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
             </View>
           )}
 
-        <ThemedText type='subtitle' style={styles.question}>
+        <ThemedText type="subtitle" style={styles.question}>
           {exercise.content.type === 'true-false'
             ? `Statement ${currentQuestionIndex + 1}`
             : currentQuestion.question}
@@ -646,10 +660,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                         answersArray[index] = text.toUpperCase();
                         handleAnswerSelect(answersArray.join(''));
                       }}
-                      placeholder='A-F'
+                      placeholder="A-F"
                       maxLength={1}
-                      autoCapitalize='characters'
-                      placeholderTextColor='rgba(102, 102, 102, 0.5)'
+                      autoCapitalize="characters"
+                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
                     />
                   </View>
                 ))}
@@ -667,10 +681,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={[styles.input, styles.fillBlanksInput]}
               value={(answers[currentQuestion.id] as string) || ''}
               onChangeText={(text) => handleAnswerSelect(text)}
-              placeholder='Type your answer here...'
+              placeholder="Type your answer here..."
               multiline
               numberOfLines={3}
-              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              placeholderTextColor="rgba(102, 102, 102, 0.5)"
             />
           </View>
         )}
@@ -685,10 +699,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={[styles.input, styles.essayInput]}
               value={(answers[currentQuestion.id] as string) || ''}
               onChangeText={(text) => handleAnswerSelect(text)}
-              placeholder='Type your essay here...'
+              placeholder="Type your essay here..."
               multiline
               numberOfLines={10}
-              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              placeholderTextColor="rgba(102, 102, 102, 0.5)"
             />
           </View>
         )}
@@ -703,10 +717,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               style={[styles.input, styles.shortAnswerInput]}
               value={(answers[currentQuestion.id] as string) || ''}
               onChangeText={(text) => handleAnswerSelect(text)}
-              placeholder='Type your answer here...'
+              placeholder="Type your answer here..."
               multiline
               numberOfLines={3}
-              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              placeholderTextColor="rgba(102, 102, 102, 0.5)"
             />
           </View>
         )}
@@ -727,9 +741,13 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           disabled={currentQuestionIndex === 0}
         >
           <IconSymbol
-            name='chevron.left'
+            name="chevron.left"
             size={20}
-            color={currentQuestionIndex === 0 ? '#ccc' : '#6996b3'}
+            color={
+              currentQuestionIndex === 0
+                ? theme.icons.placeholder
+                : theme.accent.mid
+            }
           />
           <ThemedText
             style={[
@@ -756,9 +774,9 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           </ThemedText>
           {!isLastQuestion && (
             <IconSymbol
-              name='chevron.right'
+              name="chevron.right"
               size={20}
-              color={hasAnswered ? '#fff' : '#ccc'}
+              color={hasAnswered ? '#fff' : theme.icons.placeholder}
             />
           )}
         </TouchableOpacity>
@@ -767,406 +785,399 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fafbfc',
-  },
-  confettiContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1000,
-    pointerEvents: 'none',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
-  },
-  progressSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 8,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: 'rgba(105, 150, 179, 0.15)',
-    borderRadius: 4,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#6996b3',
-    borderRadius: 4,
-    boxShadow: '0px 1px 4px rgba(83, 131, 161, 0.4)',
-  },
-  questionSection: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    paddingBottom: 40,
-  },
-  question: {
-    fontSize: 20,
-    marginBottom: 24,
-    lineHeight: 28,
-  },
-  optionsContainer: {
-    gap: 12,
-    paddingBottom: 20,
-  },
-  optionButton: {
-    borderWidth: 1.5,
-    borderColor: 'rgba(105, 150, 179, 0.15)',
-    borderRadius: 12,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  selectedOption: {
-    borderWidth: 1,
-    borderColor: '#6996b3',
-    backgroundColor: 'rgba(105, 150, 179, 0.08)',
-    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.2)',
-  },
-  optionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  optionIndicator: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: '#ccc',
-    marginRight: 12,
-  },
-  selectedIndicator: {
-    borderColor: '#6996b3',
-    backgroundColor: '#6996b3',
-  },
-  optionText: {
-    fontSize: 16,
-    flex: 1,
-  },
-  selectedOptionText: {
-    color: '#6996b3',
-  },
-  navigationFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  navButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  navButtonText: {
-    fontSize: 16,
-    color: '#6996b3',
-    marginLeft: 4,
-  },
-  primaryButton: {
-    backgroundColor: '#6996b3',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 28,
-    paddingVertical: 16,
-    borderRadius: 12,
-    boxShadow: '0px 2px 8px rgba(83, 131, 161, 0.3), 0px 8px 16px rgba(83, 131, 161, 0.15)',
-  },
-  primaryButtonText: {
-    color: 'white',
-    fontSize: 16,
-
-    marginRight: 4,
-    textAlign: 'center',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  disabledText: {
-    color: '#ccc',
-  },
-  // Results styles
-  resultsHeader: {
-    paddingHorizontal: 20,
-    paddingVertical: 32,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  resultsTitle: {
-    fontSize: 28,
-    marginBottom: 16,
-    lineHeight: 40,
-  },
-  scoreText: {
-    fontWeight: '500',
-    color: '#6996b3',
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-  scoreIndicator: {
-    width: 120,
-    height: 12,
-    backgroundColor: 'rgba(105, 150, 179, 0.15)',
-    borderRadius: 6,
-    marginBottom: 16,
-    boxShadow: 'inset 0px 2px 4px rgba(0, 76, 109, 0.1)',
-  },
-  scoreBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  scoreDescription: {
-    fontSize: 16,
-    color: '#444',
-    textAlign: 'center',
-  },
-  reviewSection: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
-  },
-  reviewTitle: {
-    marginBottom: 20,
-  },
-  reviewItem: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 16,
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
-    borderLeftWidth: 4,
-    borderLeftColor: '#6996b3',
-  },
-  questionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  questionNumber: {
-    fontSize: 14,
-
-    color: '#444',
-  },
-  reviewQuestion: {
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  answerReview: {
-    marginBottom: 12,
-  },
-  answerText: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  userAnswer: {
-    color: '#333',
-  },
-  correctAnswer: {
-    color: '#07b524',
-  },
-  explanation: {
-    backgroundColor: 'rgba(105, 150, 179, 0.05)',
-    padding: 10,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#6996b3',
-    borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.1)',
-  },
-  explanationText: {
-    fontSize: 14,
-    color: '#444',
-    fontStyle: 'italic',
-  },
-  resultsFooter: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 12,
-    gap: 12,
-  },
-  secondaryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: '#6996b3',
-    backgroundColor: 'rgba(105, 150, 179, 0.03)',
-    borderRadius: 12,
-    gap: 8,
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.04)',
-  },
-  secondaryButtonText: {
-    color: '#6996b3',
-    fontSize: 16,
-  },
-  // True/False styles
-  passageContainer: {
-    backgroundColor: 'rgba(105, 150, 179, 0.05)',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.1)',
-  },
-  passageLabel: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: '#6996b3',
-  },
-  passageTextContent: {
-    fontSize: 15,
-    lineHeight: 24,
-    color: '#333',
-  },
-  statementText: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 20,
-    color: '#444',
-    fontStyle: 'italic',
-  },
-  // Matching styles
-  matchingContainer: {
-    paddingBottom: 20,
-  },
-  matchingColumns: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 20,
-  },
-  matchingColumn: {
-    flex: 1,
-    backgroundColor: 'rgba(105, 150, 179, 0.03)',
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.08)',
-  },
-  columnHeader: {
-    fontSize: 14,
-    marginBottom: 12,
-    textAlign: 'center',
-    color: '#6996b3',
-  },
-  matchingItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  matchingNumber: {
-    fontSize: 16,
-    width: 24,
-    color: '#333',
-  },
-  matchingLetter: {
-    fontSize: 16,
-    width: 24,
-    color: '#333',
-  },
-  matchingText: {
-    fontSize: 15,
-    flex: 1,
-    color: '#444',
-  },
-  matchingInputContainer: {
-    backgroundColor: '#fff',
-    padding: 18,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: 'rgba(105, 150, 179, 0.15)',
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.04)',
-  },
-  matchingInstructions: {
-    fontSize: 14,
-    marginBottom: 12,
-    color: '#666',
-  },
-  matchingInputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  matchingInputLabel: {
-    fontSize: 16,
-    width: 50,
-    color: '#333',
-  },
-  matchingInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    padding: 10,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    textAlign: 'center',
-  },
-  // Common input style
-  input: {
-    borderWidth: 1.5,
-    borderColor: 'rgba(105, 150, 179, 0.2)',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    boxShadow: 'inset 0px 1px 3px rgba(0, 76, 109, 0.04)',
-  },
-  // Fill Blanks styles
-  fillBlanksContainer: {
-    paddingBottom: 20,
-  },
-  fillBlanksInstruction: {
-    fontSize: 14,
-    marginBottom: 12,
-    color: '#666',
-  },
-  fillBlanksInput: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  // Essay styles
-  essayContainer: {
-    paddingBottom: 20,
-  },
-  essayInstruction: {
-    fontSize: 14,
-    marginBottom: 12,
-    color: '#666',
-  },
-  essayInput: {
-    height: 200,
-    textAlignVertical: 'top',
-  },
-  // Short Answer styles
-  shortAnswerContainer: {
-    paddingBottom: 20,
-  },
-  shortAnswerInstruction: {
-    fontSize: 14,
-    marginBottom: 12,
-    color: '#666',
-  },
-  shortAnswerInput: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.app,
+    },
+    confettiContainer: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 1000,
+      pointerEvents: 'none',
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingBottom: 20,
+    },
+    progressSection: {
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    progressText: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      marginBottom: 8,
+    },
+    progressBar: {
+      height: 6,
+      backgroundColor: theme.borders.light,
+      borderRadius: 4,
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: theme.accent.mid,
+      borderRadius: 4,
+    },
+    questionSection: {
+      flex: 1,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      paddingBottom: 40,
+    },
+    question: {
+      fontSize: 20,
+      marginBottom: 24,
+      lineHeight: 28,
+    },
+    optionsContainer: {
+      gap: 12,
+      paddingBottom: 20,
+    },
+    optionButton: {
+      borderWidth: 1.5,
+      borderColor: theme.borders.light,
+      borderRadius: 12,
+      padding: 16,
+      backgroundColor: theme.backgrounds.card,
+    },
+    selectedOption: {
+      borderWidth: 1,
+      borderColor: theme.accent.mid,
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    optionContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    optionIndicator: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 0.5,
+      borderColor: theme.icons.placeholder,
+      marginRight: 12,
+    },
+    selectedIndicator: {
+      borderColor: theme.accent.mid,
+      backgroundColor: theme.accent.mid,
+    },
+    optionText: {
+      fontSize: 16,
+      flex: 1,
+    },
+    selectedOptionText: {
+      color: theme.accent.mid,
+    },
+    navigationFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+      borderTopWidth: 1,
+      borderTopColor: theme.borders.divider,
+    },
+    navButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    navButtonText: {
+      fontSize: 16,
+      color: theme.accent.mid,
+      marginLeft: 4,
+    },
+    primaryButton: {
+      backgroundColor: theme.accent.mid,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 28,
+      paddingVertical: 16,
+      borderRadius: 12,
+    },
+    primaryButtonText: {
+      color: 'white',
+      fontSize: 16,
+      marginRight: 4,
+      textAlign: 'center',
+    },
+    disabledButton: {
+      opacity: 0.5,
+    },
+    disabledText: {
+      color: theme.icons.placeholder,
+    },
+    // Results styles
+    resultsHeader: {
+      paddingHorizontal: 20,
+      paddingVertical: 32,
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    resultsTitle: {
+      fontSize: 28,
+      marginBottom: 16,
+      lineHeight: 40,
+    },
+    scoreText: {
+      fontWeight: '500',
+      color: theme.text.accent,
+      paddingVertical: 8,
+      marginBottom: 16,
+    },
+    scoreIndicator: {
+      width: 120,
+      height: 12,
+      backgroundColor: theme.borders.light,
+      borderRadius: 6,
+      marginBottom: 16,
+    },
+    scoreBar: {
+      height: '100%',
+      borderRadius: 4,
+    },
+    scoreDescription: {
+      fontSize: 16,
+      color: theme.text.secondary,
+      textAlign: 'center',
+    },
+    reviewSection: {
+      paddingHorizontal: 16,
+      paddingTop: 24,
+    },
+    reviewTitle: {
+      marginBottom: 20,
+    },
+    reviewItem: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 16,
+      padding: 12,
+      marginBottom: 16,
+      boxShadow: theme.shadow.level1,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.accent.mid,
+    },
+    questionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    questionNumber: {
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+    reviewQuestion: {
+      fontSize: 16,
+      marginBottom: 12,
+    },
+    answerReview: {
+      marginBottom: 12,
+    },
+    answerText: {
+      fontSize: 14,
+      marginBottom: 4,
+    },
+    userAnswer: {
+      color: theme.text.primary,
+    },
+    correctAnswer: {
+      color: theme.status.success,
+    },
+    explanation: {
+      backgroundColor: theme.backgrounds.tinted,
+      padding: 10,
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.accent.mid,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    explanationText: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      fontStyle: 'italic',
+    },
+    resultsFooter: {
+      paddingHorizontal: 16,
+      paddingTop: 12,
+      paddingBottom: 12,
+      gap: 12,
+    },
+    secondaryButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 14,
+      borderWidth: 1,
+      borderColor: theme.accent.mid,
+      backgroundColor: theme.backgrounds.tinted,
+      borderRadius: 12,
+      gap: 8,
+    },
+    secondaryButtonText: {
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    // True/False styles
+    passageContainer: {
+      backgroundColor: theme.backgrounds.tinted,
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 20,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    passageLabel: {
+      fontSize: 14,
+      marginBottom: 8,
+      color: theme.accent.mid,
+    },
+    passageTextContent: {
+      fontSize: 15,
+      lineHeight: 24,
+      color: theme.text.primary,
+    },
+    statementText: {
+      fontSize: 16,
+      lineHeight: 24,
+      marginBottom: 20,
+      color: theme.text.secondary,
+      fontStyle: 'italic',
+    },
+    // Matching styles
+    matchingContainer: {
+      paddingBottom: 20,
+    },
+    matchingColumns: {
+      flexDirection: 'row',
+      gap: 12,
+      marginBottom: 20,
+    },
+    matchingColumn: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.tinted,
+      padding: 14,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    columnHeader: {
+      fontSize: 14,
+      marginBottom: 12,
+      textAlign: 'center',
+      color: theme.accent.mid,
+    },
+    matchingItem: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      marginBottom: 8,
+    },
+    matchingNumber: {
+      fontSize: 16,
+      width: 24,
+      color: theme.text.primary,
+    },
+    matchingLetter: {
+      fontSize: 16,
+      width: 24,
+      color: theme.text.primary,
+    },
+    matchingText: {
+      fontSize: 15,
+      flex: 1,
+      color: theme.text.secondary,
+    },
+    matchingInputContainer: {
+      backgroundColor: theme.backgrounds.card,
+      padding: 18,
+      borderRadius: 12,
+      borderWidth: 1.5,
+      borderColor: theme.borders.light,
+    },
+    matchingInstructions: {
+      fontSize: 14,
+      marginBottom: 12,
+      color: theme.text.secondary,
+    },
+    matchingInputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    matchingInputLabel: {
+      fontSize: 16,
+      width: 50,
+      color: theme.text.primary,
+    },
+    matchingInput: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: theme.borders.divider,
+      borderRadius: 6,
+      padding: 10,
+      fontSize: 16,
+      backgroundColor: theme.backgrounds.card,
+      textAlign: 'center',
+    },
+    // Common input style
+    input: {
+      borderWidth: 1.5,
+      borderColor: theme.borders.medium,
+      borderRadius: 12,
+      padding: 16,
+      fontSize: 16,
+      backgroundColor: theme.backgrounds.card,
+    },
+    // Fill Blanks styles
+    fillBlanksContainer: {
+      paddingBottom: 20,
+    },
+    fillBlanksInstruction: {
+      fontSize: 14,
+      marginBottom: 12,
+      color: theme.text.secondary,
+    },
+    fillBlanksInput: {
+      height: 100,
+      textAlignVertical: 'top',
+    },
+    // Essay styles
+    essayContainer: {
+      paddingBottom: 20,
+    },
+    essayInstruction: {
+      fontSize: 14,
+      marginBottom: 12,
+      color: theme.text.secondary,
+    },
+    essayInput: {
+      height: 200,
+      textAlignVertical: 'top',
+    },
+    // Short Answer styles
+    shortAnswerContainer: {
+      paddingBottom: 20,
+    },
+    shortAnswerInstruction: {
+      fontSize: 14,
+      marginBottom: 12,
+      color: theme.text.secondary,
+    },
+    shortAnswerInput: {
+      height: 100,
+      textAlignVertical: 'top',
+    },
+  });
+}

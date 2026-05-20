@@ -1,30 +1,31 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { UserAvatar } from "@/components/UserAvatar";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { UserAvatar } from '@/components/UserAvatar';
 import {
   LANGUAGE_ORDER,
   SUPPORTED_LANGUAGES,
   type LanguageCode,
-} from "@/constants/languages";
-import { useAuth } from "@/contexts/AuthContext";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { exportAllUserData } from "@/services/exportService";
+} from '@/constants/languages';
+import { AppTheme, themeList, themeSwatches } from '@/constants/themes';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
+import { exportAllUserData } from '@/services/exportService';
 import {
   deleteAllUserProgress,
   getUserProgress,
-} from "@/services/firebaseService";
+} from '@/services/firebaseService';
 import {
   deleteProfilePhoto,
   loadProfilePhoto,
   pickPhoto,
   saveProfilePhoto,
   takePhoto,
-} from "@/services/profilePhotoService";
-import { getDeviceDefaultLanguage } from "@/utils/languageHelpers";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+} from '@/services/profilePhotoService';
+import { getDeviceDefaultLanguage } from '@/utils/languageHelpers';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -34,7 +35,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 export default function AccountSettingsScreen() {
   const {
@@ -45,25 +46,25 @@ export default function AccountSettingsScreen() {
     updateLanguagePreference,
     deleteAccount,
   } = useAuth();
+  const { theme, themeId, setTheme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const [displayName, setDisplayName] = useState(appUser?.displayName || "");
+  const [displayName, setDisplayName] = useState(appUser?.displayName || '');
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     (appUser?.preferredLanguage as LanguageCode) || getDeviceDefaultLanguage(),
   );
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [deleteConfirmPassword, setDeleteConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [deleteConfirmPassword, setDeleteConfirmPassword] = useState('');
   const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
-
-  const colorScheme = useColorScheme();
 
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     totalExercises: 0,
     completedExercises: 0,
     averageScore: 0,
-    memberSince: "",
+    memberSince: '',
   });
 
   const loadUserPhoto = useCallback(async () => {
@@ -90,7 +91,7 @@ export default function AccountSettingsScreen() {
 
       const memberSince = user.metadata.creationTime
         ? new Date(user.metadata.creationTime).toLocaleDateString()
-        : "Unknown";
+        : 'Unknown';
 
       setStats({
         totalExercises: progress.length,
@@ -99,7 +100,7 @@ export default function AccountSettingsScreen() {
         memberSince,
       });
     } catch (error) {
-      console.error("Error loading user stats:", error);
+      console.error('Error loading user stats:', error);
     }
   }, [user]);
 
@@ -110,31 +111,31 @@ export default function AccountSettingsScreen() {
 
   const handleUpdateDisplayName = async () => {
     if (!displayName.trim()) {
-      Alert.alert("Error", "Display name cannot be empty");
+      Alert.alert('Error', 'Display name cannot be empty');
       return;
     }
 
     if (displayName === appUser?.displayName) {
-      Alert.alert("Info", "Display name is the same as current name");
+      Alert.alert('Info', 'Display name is the same as current name');
       return;
     }
 
     Alert.alert(
-      "Update Display Name",
+      'Update Display Name',
       `Change your display name to "${displayName}"?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Update",
+          text: 'Update',
           onPress: async () => {
             setLoading(true);
             try {
               await updateDisplayName(displayName);
-              Alert.alert("Success", "Display name updated successfully");
+              Alert.alert('Success', 'Display name updated successfully');
             } catch (error: any) {
               Alert.alert(
-                "Error",
-                error.message || "Failed to update display name",
+                'Error',
+                error.message || 'Failed to update display name',
               );
             } finally {
               setLoading(false);
@@ -147,41 +148,41 @@ export default function AccountSettingsScreen() {
 
   const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all password fields");
+      Alert.alert('Error', 'Please fill in all password fields');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert("Error", "New passwords do not match");
+      Alert.alert('Error', 'New passwords do not match');
       return;
     }
 
     if (newPassword.length < 6) {
-      Alert.alert("Error", "New password must be at least 6 characters");
+      Alert.alert('Error', 'New password must be at least 6 characters');
       return;
     }
 
     Alert.alert(
-      "Update Password",
-      "Are you sure you want to change your password?",
+      'Update Password',
+      'Are you sure you want to change your password?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Update",
+          text: 'Update',
           onPress: async () => {
             setLoading(true);
             try {
               await updateUserPassword(currentPassword, newPassword);
-              Alert.alert("Success", "Password updated successfully");
-              setCurrentPassword("");
-              setNewPassword("");
-              setConfirmPassword("");
+              Alert.alert('Success', 'Password updated successfully');
+              setCurrentPassword('');
+              setNewPassword('');
+              setConfirmPassword('');
             } catch (error: any) {
               const errorMessage =
-                error.code === "auth/wrong-password"
-                  ? "Current password is incorrect"
-                  : error.message || "Failed to update password";
-              Alert.alert("Error", errorMessage);
+                error.code === 'auth/wrong-password'
+                  ? 'Current password is incorrect'
+                  : error.message || 'Failed to update password';
+              Alert.alert('Error', errorMessage);
             } finally {
               setLoading(false);
             }
@@ -193,34 +194,34 @@ export default function AccountSettingsScreen() {
 
   const handleUpdateLanguage = async () => {
     if (!selectedLanguage) {
-      Alert.alert("Error", "Please select a language");
+      Alert.alert('Error', 'Please select a language');
       return;
     }
 
     if (selectedLanguage === appUser?.preferredLanguage) {
-      Alert.alert("Info", "This is already your preferred language");
+      Alert.alert('Info', 'This is already your preferred language');
       return;
     }
 
     Alert.alert(
-      "Update Language Preference",
+      'Update Language Preference',
       `Change your preferred language to ${SUPPORTED_LANGUAGES[selectedLanguage].name}?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Update",
+          text: 'Update',
           onPress: async () => {
             setLoading(true);
             try {
               await updateLanguagePreference(selectedLanguage);
               Alert.alert(
-                "Success",
-                "Language preference updated successfully",
+                'Success',
+                'Language preference updated successfully',
               );
             } catch (error: any) {
               Alert.alert(
-                "Error",
-                error.message || "Failed to update language preference",
+                'Error',
+                error.message || 'Failed to update language preference',
               );
             } finally {
               setLoading(false);
@@ -235,23 +236,23 @@ export default function AccountSettingsScreen() {
     if (!user || !appUser) return;
 
     Alert.alert(
-      "Export My Data",
-      "This will export all your personal data and progress in JSON format. You can use this to backup your data or transfer it to another platform.",
+      'Export My Data',
+      'This will export all your personal data and progress in JSON format. You can use this to backup your data or transfer it to another platform.',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Export",
+          text: 'Export',
           onPress: async () => {
             setLoading(true);
             try {
               const progress = await getUserProgress(user.uid);
               await exportAllUserData(appUser, progress);
               Alert.alert(
-                "Success",
-                "Your data has been exported successfully",
+                'Success',
+                'Your data has been exported successfully',
               );
             } catch (error: any) {
-              Alert.alert("Error", error.message || "Failed to export data");
+              Alert.alert('Error', error.message || 'Failed to export data');
             } finally {
               setLoading(false);
             }
@@ -265,23 +266,23 @@ export default function AccountSettingsScreen() {
     if (!user) return;
 
     Alert.alert(
-      "Delete Progress Data",
-      "This will permanently delete all your exercise progress and scores. Your account will remain active but all progress will be lost. This action cannot be undone.",
+      'Delete Progress Data',
+      'This will permanently delete all your exercise progress and scores. Your account will remain active but all progress will be lost. This action cannot be undone.',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Delete",
-          style: "destructive",
+          text: 'Delete',
+          style: 'destructive',
           onPress: async () => {
             setLoading(true);
             try {
               await deleteAllUserProgress(user.uid);
-              Alert.alert("Success", "All progress data has been deleted");
+              Alert.alert('Success', 'All progress data has been deleted');
               await loadUserStats(); // Refresh stats
             } catch (error: any) {
               Alert.alert(
-                "Error",
-                error.message || "Failed to delete progress data",
+                'Error',
+                error.message || 'Failed to delete progress data',
               );
             } finally {
               setLoading(false);
@@ -295,35 +296,35 @@ export default function AccountSettingsScreen() {
   const handleDeleteAccount = async () => {
     if (!deleteConfirmPassword) {
       Alert.alert(
-        "Error",
-        "Please enter your password to confirm account deletion",
+        'Error',
+        'Please enter your password to confirm account deletion',
       );
       return;
     }
 
     Alert.alert(
-      "Delete Account",
-      "This will PERMANENTLY delete your account and ALL associated data. This action CANNOT be undone. Are you absolutely sure?",
+      'Delete Account',
+      'This will PERMANENTLY delete your account and ALL associated data. This action CANNOT be undone. Are you absolutely sure?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Delete Forever",
-          style: "destructive",
+          text: 'Delete Forever',
+          style: 'destructive',
           onPress: async () => {
             setLoading(true);
             try {
               await deleteAccount(deleteConfirmPassword);
               Alert.alert(
-                "Account Deleted",
-                "Your account has been permanently deleted",
+                'Account Deleted',
+                'Your account has been permanently deleted',
               );
-              router.replace("/auth");
+              router.replace('/auth');
             } catch (error: any) {
               const errorMessage =
-                error.code === "auth/wrong-password"
-                  ? "Password is incorrect"
-                  : error.message || "Failed to delete account";
-              Alert.alert("Error", errorMessage);
+                error.code === 'auth/wrong-password'
+                  ? 'Password is incorrect'
+                  : error.message || 'Failed to delete account';
+              Alert.alert('Error', errorMessage);
               setLoading(false);
             }
           },
@@ -334,29 +335,29 @@ export default function AccountSettingsScreen() {
 
   const handleChangePhoto = () => {
     Alert.alert(
-      "Change Profile Photo",
-      "Choose how you want to update your profile photo",
+      'Change Profile Photo',
+      'Choose how you want to update your profile photo',
       [
         {
-          text: "Take Photo",
+          text: 'Take Photo',
           onPress: handleTakePhoto,
         },
         {
-          text: "Choose from Library",
+          text: 'Choose from Library',
           onPress: handlePickPhoto,
         },
         ...(profilePhotoUri
           ? [
               {
-                text: "Remove Photo",
-                style: "destructive" as const,
+                text: 'Remove Photo',
+                style: 'destructive' as const,
                 onPress: handleRemovePhoto,
               },
             ]
           : []),
         {
-          text: "Cancel",
-          style: "cancel" as const,
+          text: 'Cancel',
+          style: 'cancel' as const,
         },
       ],
     );
@@ -370,10 +371,10 @@ export default function AccountSettingsScreen() {
       try {
         await saveProfilePhoto(user.uid, photoUri);
         setProfilePhotoUri(photoUri);
-        Alert.alert("Success", "Profile photo updated successfully");
+        Alert.alert('Success', 'Profile photo updated successfully');
       } catch (error) {
-        console.error("Failed to save profile photo:", error);
-        Alert.alert("Error", "Failed to save profile photo");
+        console.error('Failed to save profile photo:', error);
+        Alert.alert('Error', 'Failed to save profile photo');
       }
     }
   };
@@ -386,10 +387,10 @@ export default function AccountSettingsScreen() {
       try {
         await saveProfilePhoto(user.uid, photoUri);
         setProfilePhotoUri(photoUri);
-        Alert.alert("Success", "Profile photo updated successfully");
+        Alert.alert('Success', 'Profile photo updated successfully');
       } catch (error) {
-        console.error("Failed to save profile photo:", error);
-        Alert.alert("Error", "Failed to save profile photo");
+        console.error('Failed to save profile photo:', error);
+        Alert.alert('Error', 'Failed to save profile photo');
       }
     }
   };
@@ -398,21 +399,21 @@ export default function AccountSettingsScreen() {
     if (!user) return;
 
     Alert.alert(
-      "Remove Photo",
-      "Are you sure you want to remove your profile photo?",
+      'Remove Photo',
+      'Are you sure you want to remove your profile photo?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Remove",
-          style: "destructive",
+          text: 'Remove',
+          style: 'destructive',
           onPress: async () => {
             try {
               await deleteProfilePhoto(user.uid);
               setProfilePhotoUri(null);
-              Alert.alert("Success", "Profile photo removed");
+              Alert.alert('Success', 'Profile photo removed');
             } catch (error) {
-              console.error("Failed to remove profile photo:", error);
-              Alert.alert("Error", "Failed to remove profile photo");
+              console.error('Failed to remove profile photo:', error);
+              Alert.alert('Error', 'Failed to remove profile photo');
             }
           },
         },
@@ -434,7 +435,7 @@ export default function AccountSettingsScreen() {
             <Ionicons
               name="arrow-back-circle-outline"
               size={24}
-              color={colorScheme === "dark" ? "#687076" : "#9BA1A6"}
+              color={theme.icons.secondary}
             />
           </TouchableOpacity>
           <ThemedText type="title">Account Settings</ThemedText>
@@ -455,7 +456,7 @@ export default function AccountSettingsScreen() {
             >
               <UserAvatar
                 displayName={appUser?.displayName}
-                email={user?.email || ""}
+                email={user?.email || ''}
                 size={80}
                 photoUri={profilePhotoUri}
               />
@@ -544,6 +545,54 @@ export default function AccountSettingsScreen() {
             </View>
           </View>
 
+          {/* Appearance / Theme Picker */}
+          <View style={styles.section}>
+            <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+              Appearance
+            </ThemedText>
+            <View style={styles.card}>
+              <ThemedText style={styles.helperText}>
+                Choose a colour theme for the app
+              </ThemedText>
+              <View style={styles.languageSelectorContainer}>
+                {themeList.map((t) => {
+                  const isSelected = themeId === t.id;
+                  return (
+                    <TouchableOpacity
+                      key={t.id}
+                      style={[
+                        styles.languageOption,
+                        isSelected && styles.languageOptionSelected,
+                      ]}
+                      onPress={() => setTheme(t.id as any)}
+                    >
+                      <Text style={styles.languageFlag}>
+                        {themeSwatches[t.id as keyof typeof themeSwatches]}
+                      </Text>
+                      <View style={styles.languageInfo}>
+                        <ThemedText
+                          style={[
+                            styles.languageName,
+                            isSelected && styles.languageNameSelected,
+                          ]}
+                        >
+                          {t.name}
+                        </ThemedText>
+                      </View>
+                      {isSelected && (
+                        <IconSymbol
+                          name="checkmark.circle.fill"
+                          size={24}
+                          color={theme.accent.mid}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+
           {/* Language Preference */}
           <View style={styles.section}>
             <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
@@ -586,7 +635,7 @@ export default function AccountSettingsScreen() {
                         <IconSymbol
                           name="checkmark.circle.fill"
                           size={24}
-                          color="#6996b3"
+                          color={theme.accent.mid}
                         />
                       )}
                     </TouchableOpacity>
@@ -676,7 +725,7 @@ export default function AccountSettingsScreen() {
                 <IconSymbol
                   name="square.and.arrow.up"
                   size={18}
-                  color="#6996b3"
+                  color={theme.accent.mid}
                 />
                 <ThemedText style={styles.secondaryButtonText}>
                   Export My Data
@@ -754,241 +803,243 @@ export default function AccountSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-  },
-  contentWrapper: {
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    marginBottom: 20,
-  },
-  backButton: {
-    padding: 4,
-  },
-  content: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
-  },
-  avatarSection: {
-    alignItems: "center",
-    marginBottom: 32,
-  },
-  avatarTouchable: {
-    position: "relative",
-  },
-  cameraIconBadge: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    backgroundColor: "#6996b3",
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#fff",
-  },
-  emailText: {
-    marginTop: 12,
-    color: "#202029",
-  },
-  tapToChangeText: {
-    marginTop: 4,
-    fontSize: 12,
-    color: "#6996b3",
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    marginBottom: 12,
-    color: "#000",
-  },
-  dangerTitle: {
-    fontSize: 18,
-    marginBottom: 12,
-    color: "#ff3b30",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  dangerCard: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 0.5,
-    borderColor: "#fea382",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  statsCard: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  statRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 16,
-  },
-  statItem: {
-    alignItems: "center",
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 24,
-    color: "#6996b3",
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#202029",
-    fontWeight: "normal",
-    textAlign: "center",
-  },
-  input: {
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    fontSize: 16,
-    color: "#000",
-  },
-  primaryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#6996b3",
-    borderRadius: 8,
-    padding: 14,
-    gap: 8,
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  secondaryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f0f8ff",
-    borderRadius: 8,
-    padding: 14,
-    gap: 8,
-    marginBottom: 8,
-    borderWidth: 0.5,
-    borderColor: "#6996b3",
-  },
-  secondaryButtonText: {
-    color: "#6996b3",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  warningButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#feded2",
-    borderRadius: 8,
-    padding: 14,
-    gap: 8,
-    marginBottom: 8,
-    borderWidth: 0.5,
-    borderColor: "#fea382",
-  },
-  warningButtonText: {
-    color: "#f54707",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  dangerButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ff3b30",
-    borderRadius: 8,
-    padding: 14,
-    gap: 8,
-    marginBottom: 8,
-  },
-  dangerButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  helperText: {
-    fontSize: 12,
-    color: "#202029",
-    fontWeight: "normal",
-    lineHeight: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#eee",
-    marginVertical: 16,
-  },
-  deleteAccountLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#ff3b30",
-    marginBottom: 8,
-  },
-  languageSelectorContainer: {
-    marginVertical: 12,
-    gap: 8,
-  },
-  languageOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "transparent",
-    gap: 12,
-  },
-  languageOptionSelected: {
-    backgroundColor: "#e3f2fd",
-    borderColor: "#6996b3",
-  },
-  languageFlag: {
-    fontSize: 32,
-  },
-  languageInfo: {
-    flex: 1,
-  },
-  languageName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#333",
-    paddingTop: 10,
-  },
-  languageNameSelected: {
-    color: "#6996b3",
-    fontWeight: "500",
-  },
-  languageCodeText: {
-    fontSize: 12,
-    color: "#999",
-    marginTop: 2,
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 60,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      marginBottom: 20,
+    },
+    backButton: {
+      padding: 4,
+    },
+    content: {
+      flex: 1,
+    },
+    contentContainer: {
+      paddingHorizontal: 16,
+      paddingBottom: 40,
+    },
+    avatarSection: {
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    avatarTouchable: {
+      position: 'relative',
+    },
+    cameraIconBadge: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      backgroundColor: theme.accent.mid,
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#fff',
+    },
+    emailText: {
+      marginTop: 12,
+      color: theme.text.primary,
+    },
+    tapToChangeText: {
+      marginTop: 4,
+      fontSize: 12,
+      color: theme.accent.mid,
+    },
+    section: {
+      marginBottom: 24,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      marginBottom: 12,
+      color: theme.text.title,
+    },
+    dangerTitle: {
+      fontSize: 18,
+      marginBottom: 12,
+      color: theme.status.danger,
+    },
+    card: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    dangerCard: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      borderWidth: 0.5,
+      borderColor: theme.destructive.border,
+      boxShadow: theme.shadow.level1,
+    },
+    statsCard: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    statRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginBottom: 16,
+    },
+    statItem: {
+      alignItems: 'center',
+      flex: 1,
+    },
+    statValue: {
+      fontSize: 24,
+      color: theme.text.accent,
+      marginBottom: 4,
+    },
+    statLabel: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      fontWeight: 'normal',
+      textAlign: 'center',
+    },
+    input: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 12,
+      fontSize: 16,
+      color: theme.text.primary,
+    },
+    primaryButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.accent.mid,
+      borderRadius: 8,
+      padding: 14,
+      gap: 8,
+    },
+    primaryButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    secondaryButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.backgrounds.progressCircle,
+      borderRadius: 8,
+      padding: 14,
+      gap: 8,
+      marginBottom: 8,
+      borderWidth: 0.5,
+      borderColor: theme.accent.mid,
+    },
+    secondaryButtonText: {
+      color: theme.accent.mid,
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    warningButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.destructive.background,
+      borderRadius: 8,
+      padding: 14,
+      gap: 8,
+      marginBottom: 8,
+      borderWidth: 0.5,
+      borderColor: theme.destructive.border,
+    },
+    warningButtonText: {
+      color: theme.destructive.text,
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    dangerButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.status.danger,
+      borderRadius: 8,
+      padding: 14,
+      gap: 8,
+      marginBottom: 8,
+    },
+    dangerButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    helperText: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      fontWeight: 'normal',
+      lineHeight: 16,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: theme.borders.divider,
+      marginVertical: 16,
+    },
+    deleteAccountLabel: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.status.danger,
+      marginBottom: 8,
+    },
+    languageSelectorContainer: {
+      marginVertical: 12,
+      gap: 8,
+    },
+    languageOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 12,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: 'transparent',
+      gap: 12,
+    },
+    languageOptionSelected: {
+      backgroundColor: theme.backgrounds.progressCircle,
+      borderColor: theme.accent.mid,
+    },
+    languageFlag: {
+      fontSize: 32,
+    },
+    languageInfo: {
+      flex: 1,
+    },
+    languageName: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: theme.text.primary,
+      paddingTop: 10,
+    },
+    languageNameSelected: {
+      color: theme.accent.mid,
+      fontWeight: '500',
+    },
+    languageCodeText: {
+      fontSize: 12,
+      color: theme.icons.placeholder,
+      marginTop: 2,
+    },
+  });
+}

@@ -1,14 +1,9 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import {
-  backgrounds,
-  blues,
-  borders,
-  colors,
-  elevation,
-} from "@/constants/theme";
+import { AppTheme } from "@/constants/themes";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import {
   AppSettings,
   auditOrphanedRecords,
@@ -18,7 +13,7 @@ import {
   updateAppSettings,
 } from "@/services/firebaseService";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -33,6 +28,8 @@ import {
 
 export default function AppSettingsScreen() {
   const { appUser } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [auditModalVisible, setAuditModalVisible] = useState(false);
@@ -139,7 +136,6 @@ export default function AppSettingsScreen() {
       setCleanupModalVisible(false);
       const result = await cleanupOrphanedRecords();
 
-      // Show success in audit modal
       setAuditResults({
         ...result,
         isCleanupResult: true,
@@ -153,7 +149,6 @@ export default function AppSettingsScreen() {
     }
   };
 
-  // Redirect if not admin
   if (!appUser?.isAdmin) {
     router.replace("/(tabs)");
     return null;
@@ -163,7 +158,7 @@ export default function AppSettingsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6996b3" />
+          <ActivityIndicator size="large" color={theme.accent.mid} />
           <ThemedText style={styles.loadingText}>
             Loading settings...
           </ThemedText>
@@ -171,6 +166,8 @@ export default function AppSettingsScreen() {
       </ThemedView>
     );
   }
+
+  const trackOff = theme.borders.divider;
 
   return (
     <ThemedView style={styles.container}>
@@ -180,7 +177,7 @@ export default function AppSettingsScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={blues.blue5} />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back</ThemedText>
           </TouchableOpacity>
 
@@ -193,7 +190,7 @@ export default function AppSettingsScreen() {
           {/* Exercise Settings */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name="doc.text" size={20} color={colors.success} />
+              <IconSymbol name="doc.text" size={20} color={theme.status.success} />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Exercise Settings
               </ThemedText>
@@ -224,6 +221,7 @@ export default function AppSettingsScreen() {
                   }}
                   keyboardType="numeric"
                   placeholder="30"
+                  placeholderTextColor={theme.icons.placeholder}
                 />
               </View>
 
@@ -249,9 +247,8 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: colors.success }}
+                  trackColor={{ false: trackOff, true: theme.status.success }}
                   thumbColor="#fff"
-                  thumbTintColor="#fff"
                 />
               </View>
 
@@ -277,7 +274,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: colors.success }}
+                  trackColor={{ false: trackOff, true: theme.status.success }}
                   thumbColor="#fff"
                 />
               </View>
@@ -286,7 +283,7 @@ export default function AppSettingsScreen() {
           {/* User Management */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name="person.2" size={20} color={blues.blue5} />
+              <IconSymbol name="person.2" size={20} color={theme.accent.mid} />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 User Management
               </ThemedText>
@@ -313,7 +310,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: blues.blue5 }}
+                  trackColor={{ false: trackOff, true: theme.accent.mid }}
                   thumbColor="#fff"
                 />
               </View>
@@ -340,7 +337,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: blues.blue5 }}
+                  trackColor={{ false: trackOff, true: theme.accent.mid }}
                   thumbColor="#fff"
                 />
               </View>
@@ -350,7 +347,7 @@ export default function AppSettingsScreen() {
           {/* Notifications */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name="bell" size={20} color={colors.warning} />
+              <IconSymbol name="bell" size={20} color={theme.status.warning} />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Notifications
               </ThemedText>
@@ -377,7 +374,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: colors.warning }}
+                  trackColor={{ false: trackOff, true: theme.status.warning }}
                   thumbColor="#fff"
                 />
               </View>
@@ -406,6 +403,7 @@ export default function AppSettingsScreen() {
                     })
                   }
                   placeholder="09:00"
+                  placeholderTextColor={theme.icons.placeholder}
                   maxLength={5}
                 />
               </View>
@@ -415,7 +413,7 @@ export default function AppSettingsScreen() {
           {/* Admin Settings */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name="gear" size={20} color={blues.blue5} />
+              <IconSymbol name="gear" size={20} color={theme.accent.mid} />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Admin
               </ThemedText>
@@ -442,7 +440,7 @@ export default function AppSettingsScreen() {
                       },
                     })
                   }
-                  trackColor={{ false: "#ddd", true: colors.danger }}
+                  trackColor={{ false: trackOff, true: theme.status.danger }}
                   thumbColor="#fff"
                 />
               </View>
@@ -471,6 +469,7 @@ export default function AppSettingsScreen() {
                     })
                   }
                   placeholder="Enter announcement message..."
+                  placeholderTextColor={theme.icons.placeholder}
                   multiline
                   numberOfLines={3}
                   textAlignVertical="top"
@@ -485,7 +484,7 @@ export default function AppSettingsScreen() {
               <IconSymbol
                 name="doc.text.magnifyingglass"
                 size={20}
-                color={blues.blue5}
+                color={theme.accent.mid}
               />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Data Integrity
@@ -509,13 +508,13 @@ export default function AppSettingsScreen() {
                   disabled={saving}
                 >
                   {saving ? (
-                    <ActivityIndicator size="small" color={blues.blue5} />
+                    <ActivityIndicator size="small" color={theme.accent.mid} />
                   ) : (
                     <>
                       <IconSymbol
                         name="magnifyingglass"
                         size={18}
-                        color={blues.blue5}
+                        color={theme.accent.mid}
                       />
                       <ThemedText style={styles.auditButtonText}>
                         Run Audit
@@ -588,7 +587,7 @@ export default function AppSettingsScreen() {
               <IconSymbol
                 name="arrow.counterclockwise"
                 size={20}
-                color={colors.danger}
+                color={theme.status.danger}
               />
               <ThemedText style={[styles.buttonText, styles.resetButtonText]}>
                 Reset to Defaults
@@ -618,7 +617,7 @@ export default function AppSettingsScreen() {
                 }
                 size={24}
                 color={
-                  auditResults?.isCleanupResult ? colors.success : blues.blue5
+                  auditResults?.isCleanupResult ? theme.status.success : theme.accent.mid
                 }
               />
               <ThemedText style={styles.modalTitle}>
@@ -672,8 +671,8 @@ export default function AppSettingsScreen() {
                         {
                           color:
                             auditResults?.orphanedRecords > 0
-                              ? colors.warning
-                              : colors.success,
+                              ? theme.status.warning
+                              : theme.status.success,
                         },
                       ]}
                     >
@@ -686,7 +685,7 @@ export default function AppSettingsScreen() {
                       <IconSymbol
                         name="exclamationmark.triangle.fill"
                         size={16}
-                        color={colors.warning}
+                        color={theme.status.warning}
                       />
                       <ThemedText style={styles.warningText}>
                         These records reference deleted users or exercises and
@@ -700,7 +699,7 @@ export default function AppSettingsScreen() {
                       <IconSymbol
                         name="checkmark.circle.fill"
                         size={16}
-                        color={colors.success}
+                        color={theme.status.success}
                       />
                       <ThemedText style={styles.successText}>
                         Database is clean! No orphaned records found.
@@ -734,7 +733,7 @@ export default function AppSettingsScreen() {
               <IconSymbol
                 name="exclamationmark.triangle.fill"
                 size={24}
-                color={colors.danger}
+                color={theme.status.danger}
               />
               <ThemedText style={styles.modalTitle}>Confirm Cleanup</ThemedText>
             </View>
@@ -774,325 +773,329 @@ export default function AppSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: backgrounds.subtle,
-  },
-  contentWrapper: {
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: blues.blue5,
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: "#444",
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 18,
-  },
-  settingCard: {
-    backgroundColor: backgrounds.primary,
-    borderRadius: 12,
-    padding: 12,
-    ...elevation.level1,
-  },
-  settingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-  },
-  settingRowColumn: {
-    paddingVertical: 12,
-  },
-  settingInfo: {
-    flex: 1,
-    marginRight: 16,
-  },
-  settingLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: "#202029",
-    fontWeight: "normal",
-    lineHeight: 18,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: borders.light,
-    marginVertical: 4,
-  },
-  numberInput: {
-    width: 80,
-    height: 40,
-    borderWidth: 0.5,
-    borderColor: borders.medium,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    textAlign: "center",
-    backgroundColor: backgrounds.primary,
-  },
-  timeInput: {
-    width: 100,
-    height: 40,
-    borderWidth: 0.5,
-    borderColor: borders.medium,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    textAlign: "center",
-    backgroundColor: backgrounds.primary,
-  },
-  textAreaInput: {
-    marginTop: 12,
-    borderWidth: 0.5,
-    borderColor: borders.medium,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    backgroundColor: backgrounds.primary,
-    minHeight: 80,
-  },
-  actionButtons: {
-    marginTop: 32,
-    gap: 12,
-  },
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
-    borderRadius: 12,
-    gap: 8,
-  },
-  saveButton: {
-    backgroundColor: colors.success,
-    ...elevation.level1,
-  },
-  resetButton: {
-    backgroundColor: backgrounds.primary,
-    borderWidth: 0.5,
-    borderColor: colors.danger,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  resetButtonText: {
-    color: colors.danger,
-  },
-  dataButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    gap: 8,
-    marginTop: 12,
-  },
-  auditButton: {
-    backgroundColor: backgrounds.primary,
-    borderWidth: 0.5,
-    borderColor: blues.blue5,
-  },
-  auditButtonText: {
-    color: blues.blue5,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  cleanupButton: {
-    backgroundColor: colors.danger,
-  },
-  cleanupButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: backgrounds.primary,
-    borderRadius: 16,
-    width: "100%",
-    maxWidth: 500,
-    ...elevation.level3,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    padding: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: borders.light,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "500",
-    color: "#202029",
-  },
-  modalBody: {
-    padding: 20,
-  },
-  modalText: {
-    fontSize: 15,
-    color: "#444",
-    lineHeight: 22,
-  },
-  statRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 8,
-  },
-  statLabel: {
-    fontSize: 15,
-    color: "#444",
-  },
-  statValue: {
-    fontSize: 15,
-    color: "#202029",
-    fontWeight: "500",
-  },
-  statLabelBold: {
-    fontSize: 16,
-    color: "#202029",
-    fontWeight: "500",
-  },
-  statValueBold: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  warningBox: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 10,
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: "#fff3e0",
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.warning,
-  },
-  warningText: {
-    flex: 1,
-    fontSize: 14,
-    color: "#e65100",
-    lineHeight: 20,
-  },
-  successBox: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 10,
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: "#e8f5e9",
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.success,
-  },
-  successText: {
-    flex: 1,
-    fontSize: 14,
-    color: "#1b5e20",
-    lineHeight: 20,
-  },
-  modalButton: {
-    backgroundColor: blues.blue5,
-    margin: 20,
-    marginTop: 0,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  modalActions: {
-    flexDirection: "row",
-    gap: 12,
-    padding: 20,
-    paddingTop: 0,
-  },
-  modalActionButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  cancelButton: {
-    backgroundColor: backgrounds.primary,
-    borderWidth: 0.5,
-    borderColor: borders.medium,
-  },
-  cancelButtonText: {
-    color: "#444",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  confirmButton: {
-    backgroundColor: colors.danger,
-  },
-  confirmButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.subtle,
+    },
+    contentWrapper: {
+      width: "100%",
+      maxWidth: 600,
+      alignSelf: "center",
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    loadingText: {
+      marginTop: 12,
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+    },
+    section: {
+      marginTop: 24,
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 12,
+      gap: 8,
+    },
+    sectionTitle: {
+      fontSize: 18,
+    },
+    settingCard: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    settingRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingVertical: 12,
+    },
+    settingRowColumn: {
+      paddingVertical: 12,
+    },
+    settingInfo: {
+      flex: 1,
+      marginRight: 16,
+    },
+    settingLabel: {
+      fontSize: 16,
+      fontWeight: "500",
+      marginBottom: 4,
+    },
+    settingDescription: {
+      fontSize: 13,
+      color: theme.text.primary,
+      fontWeight: "normal",
+      lineHeight: 18,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: theme.borders.light,
+      marginVertical: 4,
+    },
+    numberInput: {
+      width: 80,
+      height: 40,
+      borderWidth: 0.5,
+      borderColor: theme.borders.medium,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      fontSize: 16,
+      textAlign: "center",
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+    },
+    timeInput: {
+      width: 100,
+      height: 40,
+      borderWidth: 0.5,
+      borderColor: theme.borders.medium,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      fontSize: 16,
+      textAlign: "center",
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+    },
+    textAreaInput: {
+      marginTop: 12,
+      borderWidth: 0.5,
+      borderColor: theme.borders.medium,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 14,
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+      minHeight: 80,
+    },
+    actionButtons: {
+      marginTop: 32,
+      gap: 12,
+    },
+    button: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 16,
+      borderRadius: 12,
+      gap: 8,
+    },
+    saveButton: {
+      backgroundColor: theme.status.success,
+      boxShadow: theme.shadow.level1,
+    },
+    resetButton: {
+      backgroundColor: theme.backgrounds.card,
+      borderWidth: 0.5,
+      borderColor: theme.status.danger,
+    },
+    buttonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "500",
+    },
+    resetButtonText: {
+      color: theme.status.danger,
+    },
+    dataButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      gap: 8,
+      marginTop: 12,
+    },
+    auditButton: {
+      backgroundColor: theme.backgrounds.card,
+      borderWidth: 0.5,
+      borderColor: theme.accent.mid,
+    },
+    auditButtonText: {
+      color: theme.accent.mid,
+      fontSize: 14,
+      fontWeight: "500",
+    },
+    cleanupButton: {
+      backgroundColor: theme.status.danger,
+    },
+    cleanupButtonText: {
+      color: "#fff",
+      fontSize: 14,
+      fontWeight: "500",
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 20,
+    },
+    modalContent: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 16,
+      width: "100%",
+      maxWidth: 500,
+      boxShadow: theme.shadow.level3,
+    },
+    modalHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      padding: 20,
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.light,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "500",
+      color: theme.text.primary,
+    },
+    modalBody: {
+      padding: 20,
+    },
+    modalText: {
+      fontSize: 15,
+      color: theme.text.secondary,
+      lineHeight: 22,
+    },
+    statRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: 8,
+    },
+    statLabel: {
+      fontSize: 15,
+      color: theme.text.secondary,
+    },
+    statValue: {
+      fontSize: 15,
+      color: theme.text.primary,
+      fontWeight: "500",
+    },
+    statLabelBold: {
+      fontSize: 16,
+      color: theme.text.primary,
+      fontWeight: "500",
+    },
+    statValueBold: {
+      fontSize: 18,
+      fontWeight: "700",
+    },
+    warningBox: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 10,
+      marginTop: 16,
+      padding: 12,
+      backgroundColor: theme.difficulty.intermediate.background,
+      borderRadius: 8,
+      borderLeftWidth: 3,
+      borderLeftColor: theme.status.warning,
+    },
+    warningText: {
+      flex: 1,
+      fontSize: 14,
+      color: theme.difficulty.intermediate.text,
+      lineHeight: 20,
+    },
+    successBox: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 10,
+      marginTop: 16,
+      padding: 12,
+      backgroundColor: theme.difficulty.beginner.background,
+      borderRadius: 8,
+      borderLeftWidth: 3,
+      borderLeftColor: theme.status.success,
+    },
+    successText: {
+      flex: 1,
+      fontSize: 14,
+      color: theme.difficulty.beginner.text,
+      lineHeight: 20,
+    },
+    modalButton: {
+      backgroundColor: theme.accent.mid,
+      margin: 20,
+      marginTop: 0,
+      paddingVertical: 14,
+      borderRadius: 10,
+      alignItems: "center",
+    },
+    modalButtonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "500",
+    },
+    modalActions: {
+      flexDirection: "row",
+      gap: 12,
+      padding: 20,
+      paddingTop: 0,
+    },
+    modalActionButton: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 10,
+      alignItems: "center",
+    },
+    cancelButton: {
+      backgroundColor: theme.backgrounds.card,
+      borderWidth: 0.5,
+      borderColor: theme.borders.medium,
+    },
+    cancelButtonText: {
+      color: theme.text.secondary,
+      fontSize: 16,
+      fontWeight: "500",
+    },
+    confirmButton: {
+      backgroundColor: theme.status.danger,
+    },
+    confirmButtonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "500",
+    },
+  });
+}

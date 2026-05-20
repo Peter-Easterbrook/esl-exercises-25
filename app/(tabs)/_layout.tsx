@@ -1,8 +1,8 @@
-
 import { HapticTab } from '@/components/haptic-tab';
 import { ThemedLoader } from '@/components/themed-loader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 // import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
@@ -10,6 +10,7 @@ import React from 'react';
 export default function TabLayout() {
   // const colorScheme = useColorScheme();
   const { user, loading } = useAuth();
+  const { theme } = useAppTheme();
 
   console.log('TabLayout - user:', !!user, 'loading:', loading);
 
@@ -19,7 +20,7 @@ export default function TabLayout() {
 
   if (!user) {
     console.log('No user found, redirecting to auth...');
-    return <Redirect href='/auth' />;
+    return <Redirect href="/auth" />;
   }
 
   console.log('User authenticated, showing tabs');
@@ -27,11 +28,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#004c6d',
-        tabBarInactiveTintColor: '#abd2ec',
+        tabBarActiveTintColor: theme.tabBar.activeTint,
+        tabBarInactiveTintColor: theme.tabBar.inactiveTint,
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopColor: '#e0e0e0',
+          backgroundColor: theme.tabBar.background,
+          borderTopColor: theme.tabBar.border,
           borderTopWidth: 1,
         },
         headerShown: false,
@@ -39,29 +40,29 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name="index"
         options={{
           title: 'Categories',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='list.bullet' color={color} />
+            <IconSymbol size={28} name="list.bullet" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name='progress'
+        name="progress"
         options={{
           title: 'Progress',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='chart.bar.fill' color={color} />
+            <IconSymbol size={28} name="chart.bar.fill" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name='profile'
+        name="profile"
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='person.fill' color={color} />
+            <IconSymbol size={28} name="person.fill" color={color} />
           ),
         }}
       />

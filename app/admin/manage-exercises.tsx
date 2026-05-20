@@ -2,10 +2,11 @@ import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { colors as themeColors } from '@/constants/theme';
+import { AppTheme } from '@/constants/themes';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import { Exercise } from '@/types';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Alert,
     Pressable,
@@ -17,6 +18,8 @@ import {
 } from 'react-native';
 
 export default function ManageExercisesScreen() {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,7 +73,7 @@ export default function ManageExercisesScreen() {
               );
               await deleteExercise(exercise.id);
               Alert.alert('Success', 'Exercise deleted successfully');
-              loadExercises(); // Reload the list
+              loadExercises();
             } catch (error) {
               console.error('Error deleting exercise:', error);
               Alert.alert('Error', 'Failed to delete exercise');
@@ -99,6 +102,13 @@ export default function ManageExercisesScreen() {
     return <ThemedLoader />;
   }
 
+  const difficultyStyle = (d: Exercise['difficulty']) =>
+    d === 'beginner'
+      ? styles.beginner
+      : d === 'intermediate'
+        ? styles.intermediate
+        : styles.advanced;
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
@@ -107,7 +117,7 @@ export default function ManageExercisesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color='#6996b3' />
+            <IconSymbol name='chevron.left' size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -119,11 +129,11 @@ export default function ManageExercisesScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name='magnifyingglass' size={20} color='#464655' />
+            <IconSymbol name='magnifyingglass' size={20} color={theme.icons.tertiary} />
             <TextInput
               style={styles.searchInput}
               placeholder='Search exercises...'
-              placeholderTextColor='rgba(102, 102, 102, 0.5)'
+              placeholderTextColor={theme.icons.placeholder}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -151,7 +161,7 @@ export default function ManageExercisesScreen() {
           >
             {filteredExercises.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name='doc.text' size={48} color='#ccc' />
+                <IconSymbol name='doc.text' size={48} color={theme.icons.placeholder} />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
                     ? 'No exercises match your search'
@@ -174,7 +184,7 @@ export default function ManageExercisesScreen() {
 
                     <View style={styles.exerciseMetadata}>
                       <View style={styles.metadataItem}>
-                        <IconSymbol name='folder' size={14} color='#464655' />
+                        <IconSymbol name='folder' size={14} color={theme.icons.tertiary} />
                         <ThemedText style={styles.metadataText}>
                           {getCategoryName(exercise.category)}
                         </ThemedText>
@@ -184,12 +194,12 @@ export default function ManageExercisesScreen() {
                         <IconSymbol
                           name='chart.bar'
                           size={14}
-                          color='#464655'
+                          color={theme.icons.tertiary}
                         />
                         <ThemedText
                           style={[
                             styles.metadataText,
-                            styles[exercise.difficulty],
+                            difficultyStyle(exercise.difficulty),
                           ]}
                         >
                           {exercise.difficulty}
@@ -200,7 +210,7 @@ export default function ManageExercisesScreen() {
                         <IconSymbol
                           name='questionmark.circle'
                           size={14}
-                          color='#464655'
+                          color={theme.icons.tertiary}
                         />
                         <ThemedText style={styles.metadataText}>
                           {exercise.content.questions.length} questions
@@ -208,7 +218,7 @@ export default function ManageExercisesScreen() {
                       </View>
 
                       <View style={styles.metadataItem}>
-                        <IconSymbol name='doc.text' size={14} color='#464655' />
+                        <IconSymbol name='doc.text' size={14} color={theme.icons.tertiary} />
                         <ThemedText style={styles.metadataText}>
                           {exercise.id}
                         </ThemedText>
@@ -221,14 +231,14 @@ export default function ManageExercisesScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditExercise(exercise)}
                     >
-                      <IconSymbol name='pencil' size={16} color='#6996b3' />
+                      <IconSymbol name='pencil' size={16} color={theme.accent.mid} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteExercise(exercise)}
                     >
-                      <IconSymbol name='trash' size={16} color={themeColors.danger} />
+                      <IconSymbol name='trash' size={16} color={theme.status.danger} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -241,157 +251,157 @@ export default function ManageExercisesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: 600,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: '#6996b3',
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-
-    lineHeight: 34,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    padding: 6,
-    borderRadius: 8,
-    outlineWidth: 0,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: themeColors.success,
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-    gap: 8,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  exerciseList: {
-    flex: 1,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontSize: 18,
-
-    color: '#444',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#999',
-  },
-  exerciseCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  exerciseInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  exerciseTitle: {
-    fontSize: 16,
-
-    marginBottom: 4,
-  },
-  exerciseDescription: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 12,
-  },
-  exerciseMetadata: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  metadataItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  metadataText: {
-    fontSize: 12,
-    color: '#444',
-  },
-  beginner: {
-    color: themeColors.beginner,
-  },
-  intermediate: {
-    color: themeColors.intermediate,
-  },
-  advanced: {
-    color: themeColors.advanced,
-  },
-  exerciseActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editButton: {
-    backgroundColor: '#e3f2fd',
-  },
-  deleteButton: {
-    backgroundColor: '#ffebee',
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+      paddingTop: 20,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginBottom: 16,
+      boxShadow: theme.shadow.level1,
+    },
+    searchInput: {
+      flex: 1,
+      marginLeft: 12,
+      fontSize: 16,
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+      padding: 6,
+      borderRadius: 8,
+      outlineWidth: 0,
+    },
+    addButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.status.success,
+      paddingVertical: 16,
+      borderRadius: 12,
+      marginBottom: 20,
+      gap: 8,
+      boxShadow: theme.shadow.level1,
+    },
+    addButtonText: {
+      color: '#fff',
+      fontSize: 16,
+    },
+    exerciseList: {
+      flex: 1,
+    },
+    emptyState: {
+      alignItems: 'center',
+      paddingVertical: 60,
+    },
+    emptyText: {
+      fontSize: 18,
+      color: theme.text.secondary,
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    emptySubtext: {
+      fontSize: 14,
+      color: theme.icons.placeholder,
+    },
+    exerciseCard: {
+      flexDirection: 'row',
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    exerciseInfo: {
+      flex: 1,
+      marginRight: 12,
+    },
+    exerciseTitle: {
+      fontSize: 16,
+      marginBottom: 4,
+    },
+    exerciseDescription: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      marginBottom: 12,
+    },
+    exerciseMetadata: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+    },
+    metadataItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    metadataText: {
+      fontSize: 12,
+      color: theme.text.secondary,
+    },
+    beginner: {
+      color: theme.difficulty.beginner.text,
+    },
+    intermediate: {
+      color: theme.difficulty.intermediate.text,
+    },
+    advanced: {
+      color: theme.difficulty.advanced.text,
+    },
+    exerciseActions: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    actionButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    editButton: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    deleteButton: {
+      backgroundColor: theme.destructive.background,
+    },
+  });
+}

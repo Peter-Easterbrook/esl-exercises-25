@@ -3,9 +3,11 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
+import { AppTheme } from '@/constants/themes';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Modal,
@@ -45,6 +47,8 @@ interface UserStats {
 }
 
 export default function ManageUsersScreen() {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,18 +56,15 @@ export default function ManageUsersScreen() {
     {},
   );
 
-  // Modal states
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
 
-  // Edit form states
   const [editDisplayName, setEditDisplayName] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
 
-  // Delete confirmation modal states
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
   const [deleteEmailInput, setDeleteEmailInput] = useState('');
@@ -80,7 +81,6 @@ export default function ManageUsersScreen() {
       const allUsers = await getAllUsers();
       setUsers(allUsers);
 
-      // Load profile photos for all users
       const photos: Record<string, string | null> = {};
       await Promise.all(
         allUsers.map(async (user: UserData) => {
@@ -216,7 +216,6 @@ export default function ManageUsersScreen() {
 
   const formatDate = (date?: Date | { toDate: () => Date }) => {
     if (!date) return 'Unknown';
-    // Handle Firestore Timestamp objects which have a toDate() method
     const jsDate =
       typeof (date as any).toDate === 'function'
         ? (date as any).toDate()
@@ -253,7 +252,7 @@ export default function ManageUsersScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -265,11 +264,11 @@ export default function ManageUsersScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name="magnifyingglass" size={20} color="#464655" />
+            <IconSymbol name="magnifyingglass" size={20} color={theme.icons.tertiary} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search by name or email..."
-              placeholderTextColor="rgba(102, 102, 102, 0.5)"
+              placeholderTextColor={theme.icons.placeholder}
               value={searchQuery}
               onChangeText={handleSearch}
             />
@@ -282,7 +281,7 @@ export default function ManageUsersScreen() {
           >
             {users.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name="person.2" size={48} color="#ccc" />
+                <IconSymbol name="person.2" size={48} color={theme.icons.placeholder} />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
                     ? 'No users match your search'
@@ -330,7 +329,7 @@ export default function ManageUsersScreen() {
                       <IconSymbol
                         name="info.circle"
                         size={20}
-                        color="#6996b3"
+                        color={theme.accent.mid}
                       />
                       <ThemedText style={styles.actionButtonText}>
                         Info
@@ -341,7 +340,7 @@ export default function ManageUsersScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditUser(user)}
                     >
-                      <IconSymbol name="pencil" size={20} color="#6996b3" />
+                      <IconSymbol name="pencil" size={20} color={theme.accent.mid} />
                       <ThemedText style={styles.actionButtonText}>
                         Edit
                       </ThemedText>
@@ -354,7 +353,7 @@ export default function ManageUsersScreen() {
                       <IconSymbol
                         name="arrow.clockwise"
                         size={20}
-                        color="#FF9800"
+                        color={theme.status.warning}
                       />
                       <ThemedText
                         style={[styles.actionButtonText, styles.resetText]}
@@ -367,7 +366,7 @@ export default function ManageUsersScreen() {
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteAccount(user)}
                     >
-                      <IconSymbol name="trash" size={20} color="#6f0202" />
+                      <IconSymbol name="trash" size={20} color={theme.status.error} />
                       <ThemedText
                         style={[styles.actionButtonText, styles.deleteText]}
                       >
@@ -399,7 +398,7 @@ export default function ManageUsersScreen() {
                 onPress={() => setDetailsModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color="#464655" />
+                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
               </TouchableOpacity>
             </View>
 
@@ -564,7 +563,7 @@ export default function ManageUsersScreen() {
                 onPress={() => setDeleteModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color="#464655" />
+                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
               </TouchableOpacity>
             </View>
 
@@ -591,7 +590,7 @@ export default function ManageUsersScreen() {
                       value={deleteEmailInput}
                       onChangeText={setDeleteEmailInput}
                       placeholder={userToDelete.email}
-                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                      placeholderTextColor={theme.icons.placeholder}
                       autoCapitalize="none"
                       keyboardType="email-address"
                     />
@@ -644,7 +643,7 @@ export default function ManageUsersScreen() {
                 onPress={() => setEditModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color="#464655" />
+                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
               </TouchableOpacity>
             </View>
 
@@ -669,7 +668,7 @@ export default function ManageUsersScreen() {
                       value={editDisplayName}
                       onChangeText={setEditDisplayName}
                       placeholder="Enter display name"
-                      placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                      placeholderTextColor={theme.icons.placeholder}
                     />
                   </View>
 
@@ -706,375 +705,377 @@ export default function ManageUsersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: 600,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: '#6996b3',
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginTop: 16,
-    marginBottom: 16,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#000',
-  },
-  usersList: {
-    flex: 1,
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 60,
-  },
-  emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#444',
-  },
-  userCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  userHeader: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  userInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  userNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
-  },
-  adminBadge: {
-    backgroundColor: '#9C27B0',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
-  adminBadgeLarge: {
-    marginTop: 8,
-    alignSelf: 'center',
-  },
-  adminBadgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#202029',
-    fontWeight: 'normal',
-    marginBottom: 4,
-  },
-  userMeta: {
-    fontSize: 12,
-    color: '#999',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    gap: 4,
-  },
-  infoButton: {
-    backgroundColor: '#E3F2FD',
-  },
-  editButton: {
-    backgroundColor: '#E3F2FD',
-  },
-  resetButton: {
-    backgroundColor: '#FFF3E0',
-  },
-  deleteButton: {
-    backgroundColor: '#FFEBEE',
-  },
-  actionButtonText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#6996b3',
-  },
-  resetText: {
-    color: '#FF9800',
-  },
-  deleteText: {
-    color: '#6f0202',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    width: '90%',
-    maxHeight: '80%',
-    overflow: 'hidden',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  modalTitle: {
-    fontSize: 20,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  modalBody: {
-    padding: 20,
-  },
-  detailSection: {
-    marginBottom: 24,
-  },
-  avatarCenter: {
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  detailName: {
-    fontSize: 22,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  detailEmail: {
-    fontSize: 14,
-    color: '#202029',
-    fontWeight: 'normal',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  loadingContainer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#6996b3',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#202029',
-    fontWeight: 'normal',
-    marginTop: 4,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 12,
-    color: '#333',
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  categoryName: {
-    fontSize: 14,
-    color: '#333',
-  },
-  categoryProgress: {
-    fontSize: 14,
-    color: '#202029',
-    fontWeight: 'normal',
-  },
-  noActivity: {
-    fontSize: 14,
-    color: '#999',
-    textAlign: 'center',
-    paddingVertical: 20,
-  },
-  activityRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  activityInfo: {
-    flex: 1,
-  },
-  activityTitle: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 4,
-  },
-  activityDate: {
-    fontSize: 12,
-    color: '#999',
-  },
-  scoreChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginLeft: 8,
-  },
-  scoreSuccess: {
-    backgroundColor: '#E8F5E9',
-  },
-  scoreFail: {
-    backgroundColor: '#FFEBEE',
-  },
-  scoreText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
-  },
-  formGroup: {
-    marginBottom: 20,
-  },
-  formLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 8,
-    color: '#333',
-  },
-  formInput: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#000',
-    borderWidth: 0.5,
-    borderColor: '#e0e0e0',
-  },
-  formInputDisabled: {
-    backgroundColor: '#f0f0f0',
-    color: '#999',
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 24,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#f0f0f0',
-  },
-  cancelButtonText: {
-    color: '#202029',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  saveButton: {
-    backgroundColor: '#6996b3',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  deleteWarning: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 8,
-  },
-  deleteEmail: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6f0202',
-    marginBottom: 12,
-  },
-  confirmDeleteButton: {
-    backgroundColor: '#6f0202',
-  },
-  confirmDeleteButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 16,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginTop: 16,
+      marginBottom: 16,
+      boxShadow: theme.shadow.level1,
+    },
+    searchInput: {
+      flex: 1,
+      marginLeft: 8,
+      fontSize: 16,
+      color: theme.text.title,
+    },
+    usersList: {
+      flex: 1,
+    },
+    emptyState: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 60,
+    },
+    emptyText: {
+      marginTop: 16,
+      fontSize: 16,
+      color: theme.text.secondary,
+    },
+    userCard: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    userHeader: {
+      flexDirection: 'row',
+      marginBottom: 12,
+    },
+    userInfo: {
+      flex: 1,
+      marginLeft: 12,
+    },
+    userNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+    },
+    userName: {
+      fontSize: 18,
+      fontWeight: '500',
+      color: theme.text.primary,
+    },
+    adminBadge: {
+      backgroundColor: theme.accent.darkest,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+      borderRadius: 4,
+      marginLeft: 8,
+    },
+    adminBadgeLarge: {
+      marginTop: 8,
+      alignSelf: 'center',
+    },
+    adminBadgeText: {
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: '500',
+    },
+    userEmail: {
+      fontSize: 14,
+      color: theme.text.primary,
+      fontWeight: 'normal',
+      marginBottom: 4,
+    },
+    userMeta: {
+      fontSize: 12,
+      color: theme.icons.placeholder,
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    actionButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 8,
+      borderRadius: 8,
+      backgroundColor: theme.backgrounds.subtle,
+      gap: 4,
+    },
+    infoButton: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    editButton: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    resetButton: {
+      backgroundColor: theme.difficulty.intermediate.background,
+    },
+    deleteButton: {
+      backgroundColor: theme.destructive.background,
+    },
+    actionButtonText: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: theme.accent.mid,
+    },
+    resetText: {
+      color: theme.status.warning,
+    },
+    deleteText: {
+      color: theme.status.error,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 16,
+      width: '90%',
+      maxHeight: '80%',
+      overflow: 'hidden',
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    modalTitle: {
+      fontSize: 20,
+    },
+    closeButton: {
+      padding: 4,
+    },
+    modalBody: {
+      padding: 20,
+    },
+    detailSection: {
+      marginBottom: 24,
+    },
+    avatarCenter: {
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    detailName: {
+      fontSize: 22,
+      fontWeight: '500',
+      textAlign: 'center',
+      marginBottom: 4,
+    },
+    detailEmail: {
+      fontSize: 14,
+      color: theme.text.primary,
+      fontWeight: 'normal',
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    loadingContainer: {
+      padding: 20,
+      alignItems: 'center',
+    },
+    statsGrid: {
+      flexDirection: 'row',
+      gap: 12,
+      marginBottom: 24,
+    },
+    statCard: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.subtle,
+      padding: 12,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    statNumber: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: theme.accent.mid,
+    },
+    statLabel: {
+      fontSize: 12,
+      color: theme.text.primary,
+      fontWeight: 'normal',
+      marginTop: 4,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: '500',
+      marginBottom: 12,
+      color: theme.text.primary,
+    },
+    categoryRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.dividerLight,
+    },
+    categoryName: {
+      fontSize: 14,
+      color: theme.text.primary,
+    },
+    categoryProgress: {
+      fontSize: 14,
+      color: theme.text.primary,
+      fontWeight: 'normal',
+    },
+    noActivity: {
+      fontSize: 14,
+      color: theme.icons.placeholder,
+      textAlign: 'center',
+      paddingVertical: 20,
+    },
+    activityRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.dividerLight,
+    },
+    activityInfo: {
+      flex: 1,
+    },
+    activityTitle: {
+      fontSize: 14,
+      color: theme.text.primary,
+      marginBottom: 4,
+    },
+    activityDate: {
+      fontSize: 12,
+      color: theme.icons.placeholder,
+    },
+    scoreChip: {
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      borderRadius: 12,
+      marginLeft: 8,
+    },
+    scoreSuccess: {
+      backgroundColor: theme.difficulty.beginner.background,
+    },
+    scoreFail: {
+      backgroundColor: theme.destructive.background,
+    },
+    scoreText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.text.primary,
+    },
+    formGroup: {
+      marginBottom: 20,
+    },
+    formLabel: {
+      fontSize: 14,
+      fontWeight: '500',
+      marginBottom: 8,
+      color: theme.text.primary,
+    },
+    formInput: {
+      backgroundColor: theme.backgrounds.subtle,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      fontSize: 16,
+      color: theme.text.title,
+      borderWidth: 0.5,
+      borderColor: theme.borders.divider,
+    },
+    formInputDisabled: {
+      backgroundColor: theme.backgrounds.subtle,
+      color: theme.icons.placeholder,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      gap: 12,
+      marginTop: 24,
+    },
+    modalButton: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    cancelButton: {
+      backgroundColor: theme.backgrounds.subtle,
+    },
+    cancelButtonText: {
+      color: theme.text.primary,
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    saveButton: {
+      backgroundColor: theme.accent.mid,
+    },
+    saveButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    disabledButton: {
+      opacity: 0.5,
+    },
+    deleteWarning: {
+      fontSize: 14,
+      color: theme.text.primary,
+      marginBottom: 8,
+    },
+    deleteEmail: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: theme.status.error,
+      marginBottom: 12,
+    },
+    confirmDeleteButton: {
+      backgroundColor: theme.status.error,
+    },
+    confirmDeleteButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '500',
+    },
+  });
+}

@@ -2,11 +2,13 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
+import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import { loadProfilePhoto } from '@/services/profilePhotoService';
 import { checkUserDocument, logCurrentUserInfo } from '@/utils/adminSetup';
 import { router, useFocusEffect } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   Image,
@@ -18,6 +20,8 @@ import {
 
 export default function ProfileScreen() {
   const { user, appUser, logout } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
 
   // Load profile photo when screen comes into focus
@@ -30,7 +34,7 @@ export default function ProfileScreen() {
         }
       };
       loadUserPhoto();
-    }, [user])
+    }, [user]),
   );
 
   const handleLogout = async () => {
@@ -87,7 +91,7 @@ Your UID: ${user?.uid}`,
           onPress: () => user && checkUserDocument(user.uid),
         },
         { text: 'OK' },
-      ]
+      ],
     );
   };
 
@@ -145,7 +149,7 @@ Your UID: ${user?.uid}`,
         title: 'Admin Setup Helper',
         subtitle: 'Get info to set up admin access',
         onPress: handleAdminSetup,
-      }
+      },
     );
   }
 
@@ -157,9 +161,9 @@ Your UID: ${user?.uid}`,
             <Image
               source={require('@/assets/images/LL2020.png')}
               style={{ width: 45, height: 45 }}
-              resizeMode='contain'
+              resizeMode="contain"
             />
-            <ThemedText type='title'>Profile</ThemedText>
+            <ThemedText type="title">Profile</ThemedText>
           </View>
         </View>
 
@@ -168,194 +172,208 @@ Your UID: ${user?.uid}`,
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         >
-        {/* User Info Card */}
-        <View style={styles.userCard}>
-          <UserAvatar
-            displayName={appUser?.displayName}
-            email={user?.email || ''}
-            size={64}
-            photoUri={profilePhotoUri}
-          />
+          {/* User Info Card */}
+          <View style={styles.userCard}>
+            <UserAvatar
+              displayName={appUser?.displayName}
+              email={user?.email || ''}
+              size={64}
+              photoUri={profilePhotoUri}
+            />
 
-          <View style={styles.userInfo}>
-            <ThemedText type='defaultSemiBold' style={styles.userName}>
-              {appUser?.displayName || 'Student'}
-            </ThemedText>
-            <ThemedText style={styles.userEmail}>{user?.email}</ThemedText>
-            {appUser?.isAdmin && (
-              <View style={styles.adminBadge}>
-                <ThemedText style={styles.adminText}>Administrator</ThemedText>
-              </View>
-            )}
+            <View style={styles.userInfo}>
+              <ThemedText type="defaultSemiBold" style={styles.userName}>
+                {appUser?.displayName || 'Student'}
+              </ThemedText>
+              <ThemedText style={styles.userEmail}>{user?.email}</ThemedText>
+              {appUser?.isAdmin && (
+                <View style={styles.adminBadge}>
+                  <ThemedText style={styles.adminText}>
+                    Administrator
+                  </ThemedText>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
 
-        {/* Menu Items */}
-        <View style={styles.menuSection}>
-          {menuItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.menuItem}
-              onPress={item.onPress}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={styles.menuIcon}>
-                  <IconSymbol name={item.icon} size={20} color='#6996b3' />
+          {/* Menu Items */}
+          <View style={styles.menuSection}>
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.menuItem}
+                onPress={item.onPress}
+                activeOpacity={0.7}
+              >
+                <View style={styles.menuItemLeft}>
+                  <View style={styles.menuIcon}>
+                    <IconSymbol
+                      name={item.icon}
+                      size={20}
+                      color={theme.accent.mid}
+                    />
+                  </View>
+                  <View style={styles.menuTextContainer}>
+                    <ThemedText type="defaultSemiBold" style={styles.menuTitle}>
+                      {item.title}
+                    </ThemedText>
+                    <ThemedText style={styles.menuSubtitle}>
+                      {item.subtitle}
+                    </ThemedText>
+                  </View>
                 </View>
-                <View style={styles.menuTextContainer}>
-                  <ThemedText type='defaultSemiBold' style={styles.menuTitle}>
-                    {item.title}
-                  </ThemedText>
-                  <ThemedText style={styles.menuSubtitle}>
-                    {item.subtitle}
-                  </ThemedText>
-                </View>
-              </View>
-              <IconSymbol name='chevron.right' size={16} color='#464655' />
-            </TouchableOpacity>
-          ))}
-        </View>
+                <IconSymbol
+                  name="chevron.right"
+                  size={16}
+                  color={theme.icons.tertiary}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        {/* Sign Out Button */}
-        <TouchableOpacity
-          style={styles.signOutButton}
-          onPress={handleLogout}
-          activeOpacity={0.7}
-        >
-          <IconSymbol name='arrow.right.square' size={20} color='#f54707' />
-          <ThemedText style={styles.signOutText}>Sign Out</ThemedText>
-        </TouchableOpacity>
-      </ScrollView>
+          {/* Sign Out Button */}
+          <TouchableOpacity
+            style={styles.signOutButton}
+            onPress={handleLogout}
+            activeOpacity={0.7}
+          >
+            <IconSymbol
+              name="arrow.right.square"
+              size={20}
+              color={theme.destructive.text}
+            />
+            <ThemedText style={styles.signOutText}>Sign Out</ThemedText>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    backgroundColor: '#fafbfc',
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: 600,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    // paddingBottom: 20,
-    marginBottom: 10,
-  },
-  content: {
-    flex: 1,
-    marginTop: 10,
-    paddingTop: 10,
-  },
-  contentContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 20,
-  },
-  userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 24,
-    borderRadius: 16,
-    marginBottom: 24,
-    marginHorizontal: 2,
-    gap: 16,
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.08)',
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 20,
-    marginBottom: 4,
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 8,
-  },
-  adminBadge: {
-    backgroundColor: '#e8f5e8',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  adminText: {
-    fontSize: 12,
-    color: '#07b524',
-  },
-  menuSection: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginBottom: 24,
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(105, 150, 179, 0.08)',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  menuIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(105, 150, 179, 0.08)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  menuTextContainer: {
-    flex: 1,
-  },
-  menuTitle: {
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 2,
-  },
-  menuSubtitle: {
-    fontSize: 12,
-    color: '#444',
-  },
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#feded2',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#fea382',
-    marginBottom: 30,
-    boxShadow: '0px 1px 3px rgba(245, 71, 7, 0.15), 0px 4px 12px rgba(245, 71, 7, 0.1)',
-  },
-  signOutText: {
-    color: '#f54707',
-    fontSize: 16,
-    fontFamily: 'berlin-sans-fb-bold',
-    fontWeight: '500',
-    letterSpacing: 1,
-    marginLeft: 8,
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 60,
+      backgroundColor: theme.backgrounds.app,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      paddingHorizontal: 16,
+      marginBottom: 10,
+    },
+    content: {
+      flex: 1,
+      marginTop: 10,
+      paddingTop: 10,
+    },
+    contentContainer: {
+      paddingHorizontal: 10,
+      paddingBottom: 20,
+    },
+    userCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.backgrounds.card,
+      padding: 24,
+      borderRadius: 16,
+      marginBottom: 24,
+      marginHorizontal: 2,
+      gap: 16,
+      boxShadow: theme.shadow.level1,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    userInfo: {
+      flex: 1,
+    },
+    userName: {
+      fontSize: 20,
+      marginBottom: 4,
+    },
+    userEmail: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      marginBottom: 8,
+    },
+    adminBadge: {
+      backgroundColor: theme.difficulty.beginner.background,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+      alignSelf: 'flex-start',
+    },
+    adminText: {
+      fontSize: 12,
+      color: theme.status.success,
+    },
+    menuSection: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 16,
+      overflow: 'hidden',
+      marginBottom: 24,
+      boxShadow: theme.shadow.level1,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.dividerLight,
+    },
+    menuItemLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    menuIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    menuTextContainer: {
+      flex: 1,
+    },
+    menuTitle: {
+      fontSize: 16,
+      color: theme.text.title,
+      marginBottom: 2,
+    },
+    menuSubtitle: {
+      fontSize: 12,
+      color: theme.text.secondary,
+    },
+    signOutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.destructive.background,
+      padding: 16,
+      borderRadius: 12,
+      borderWidth: 1.5,
+      borderColor: theme.destructive.border,
+      marginBottom: 30,
+    },
+    signOutText: {
+      color: theme.destructive.text,
+      fontSize: 16,
+      fontFamily: 'berlin-sans-fb-bold',
+      fontWeight: '500',
+      letterSpacing: 1,
+      marginLeft: 8,
+    },
+  });
+}

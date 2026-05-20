@@ -1,8 +1,9 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { colors as themeColors } from '@/constants/theme';
+import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import {
   deleteFile,
   getFilesByCategory,
@@ -16,7 +17,7 @@ import { Category, DownloadableFile, Exercise } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -28,8 +29,12 @@ import {
   View,
 } from 'react-native';
 
+type Styles = ReturnType<typeof createStyles>;
+
 export default function UploadFilesScreen() {
   const { user } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -48,7 +53,7 @@ export default function UploadFilesScreen() {
     try {
       const exercisesData = await getExercisesByCategory(selectedCategory);
       setExercises(exercisesData);
-      setSelectedExercise(''); // Reset exercise selection
+      setSelectedExercise('');
     } catch (error) {
       console.error('Error loading exercises:', error);
     }
@@ -103,8 +108,7 @@ export default function UploadFilesScreen() {
 
       const file = result.assets[0];
 
-      // Check file size (limit to 10MB)
-      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      const maxSize = 10 * 1024 * 1024;
       if (file.size && file.size > maxSize) {
         Alert.alert('Error', 'File size must be less than 10MB');
         return;
@@ -168,7 +172,7 @@ export default function UploadFilesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -190,6 +194,7 @@ export default function UploadFilesScreen() {
                   category={category}
                   isSelected={selectedCategory === category.id}
                   onPress={() => setSelectedCategory(category.id)}
+                  styles={styles}
                 />
               ))}
             </View>
@@ -207,6 +212,8 @@ export default function UploadFilesScreen() {
                     label="None"
                     isSelected={!selectedExercise}
                     onPress={() => setSelectedExercise('')}
+                    theme={theme}
+                    styles={styles}
                   />
                   {exercises.map((exercise) => (
                     <ExerciseChip
@@ -215,6 +222,8 @@ export default function UploadFilesScreen() {
                       difficulty={exercise.difficulty}
                       isSelected={selectedExercise === exercise.id}
                       onPress={() => setSelectedExercise(exercise.id)}
+                      theme={theme}
+                      styles={styles}
                     />
                   ))}
                 </View>
@@ -238,24 +247,32 @@ export default function UploadFilesScreen() {
                   label="None"
                   isSelected={!selectedLevel}
                   onPress={() => setSelectedLevel('')}
+                  theme={theme}
+                  styles={styles}
                 />
                 <LevelChip
                   label="Beginner"
                   level="beginner"
                   isSelected={selectedLevel === 'beginner'}
                   onPress={() => setSelectedLevel('beginner')}
+                  theme={theme}
+                  styles={styles}
                 />
                 <LevelChip
                   label="Intermediate"
                   level="intermediate"
                   isSelected={selectedLevel === 'intermediate'}
                   onPress={() => setSelectedLevel('intermediate')}
+                  theme={theme}
+                  styles={styles}
                 />
                 <LevelChip
                   label="Advanced"
                   level="advanced"
                   isSelected={selectedLevel === 'advanced'}
                   onPress={() => setSelectedLevel('advanced')}
+                  theme={theme}
+                  styles={styles}
                 />
               </View>
               <ThemedText style={styles.helpText}>
@@ -303,7 +320,7 @@ export default function UploadFilesScreen() {
               {files.map((file) => (
                 <View key={file.id} style={styles.fileCard}>
                   <View style={styles.fileIcon}>
-                    <Ionicons name="document-text" size={28} color="#6996b3" />
+                    <Ionicons name="document-text" size={28} color={theme.accent.mid} />
                   </View>
                   <View style={styles.fileInfo}>
                     <ThemedText type="defaultSemiBold" style={styles.fileName}>
@@ -336,7 +353,7 @@ export default function UploadFilesScreen() {
                     onPress={() => handleDeleteFile(file)}
                     activeOpacity={0.7}
                   >
-                    <IconSymbol name="trash" size={20} color="#6f0202" />
+                    <IconSymbol name="trash" size={20} color={theme.status.error} />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -348,15 +365,16 @@ export default function UploadFilesScreen() {
   );
 }
 
-// Category Button Component with Animation
 function CategoryButton({
   category,
   isSelected,
   onPress,
+  styles,
 }: {
   category: Category;
   isSelected: boolean;
   onPress: () => void;
+  styles: Styles;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -408,17 +426,20 @@ function CategoryButton({
   );
 }
 
-// Exercise Chip Component with Animation
 function ExerciseChip({
   label,
   difficulty,
   isSelected,
   onPress,
+  theme,
+  styles,
 }: {
   label: string;
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   isSelected: boolean;
   onPress: () => void;
+  theme: AppTheme;
+  styles: Styles;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -440,17 +461,9 @@ function ExerciseChip({
     }).start();
   };
 
-  // Get difficulty color indicator
   const getDifficultyColor = () => {
     if (!difficulty) return null;
-
-    const colors = {
-      beginner: themeColors.beginner,
-      intermediate: themeColors.intermediate,
-      advanced: themeColors.advanced,
-    };
-
-    return colors[difficulty];
+    return theme.difficulty[difficulty].text;
   };
 
   const difficultyColor = getDifficultyColor();
@@ -495,17 +508,20 @@ function ExerciseChip({
   );
 }
 
-// Level Chip Component with Animation
 function LevelChip({
   label,
   level,
   isSelected,
   onPress,
+  theme,
+  styles,
 }: {
   label: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
   isSelected: boolean;
   onPress: () => void;
+  theme: AppTheme;
+  styles: Styles;
 }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -527,45 +543,31 @@ function LevelChip({
     }).start();
   };
 
-  // Color scheme for different levels using theme colors
   const getLevelColors = () => {
     if (!level) {
       return {
-        background: '#f8f9fa',
-        border: '#ddd',
-        text: '#444',
-        selectedBg: '#6996b3',
-        selectedBorder: '#6996b3',
+        background: theme.backgrounds.subtle,
+        border: theme.borders.divider,
+        text: theme.text.secondary,
+        selectedBg: theme.accent.mid,
+        selectedBorder: theme.accent.mid,
         selectedText: '#fff',
       };
     }
 
-    const baseColor = themeColors[level];
-
-    // Create lighter background variants for unselected state
-    const backgroundColors = {
-      beginner: '#e8f5e9',
-      intermediate: '#fff3e0',
-      advanced: '#fce4ec',
-    };
-
-    const borderColors = {
-      beginner: '#a5d6a7',
-      intermediate: '#ffcc80',
-      advanced: '#f48fb1',
-    };
+    const diff = theme.difficulty[level];
 
     return {
-      background: backgroundColors[level],
-      border: borderColors[level],
-      text: baseColor,
-      selectedBg: baseColor,
-      selectedBorder: baseColor,
+      background: diff.background,
+      border: diff.text,
+      text: diff.text,
+      selectedBg: diff.text,
+      selectedBorder: diff.text,
       selectedText: '#fff',
     };
   };
 
-  const colors = getLevelColors();
+  const c = getLevelColors();
 
   return (
     <Pressable
@@ -581,8 +583,8 @@ function LevelChip({
         style={[
           styles.levelChip,
           {
-            backgroundColor: isSelected ? colors.selectedBg : colors.background,
-            borderColor: isSelected ? colors.selectedBorder : colors.border,
+            backgroundColor: isSelected ? c.selectedBg : c.background,
+            borderColor: isSelected ? c.selectedBorder : c.border,
             transform: [{ scale: scaleAnim }],
           },
         ]}
@@ -591,7 +593,7 @@ function LevelChip({
           style={[
             styles.levelChipText,
             {
-              color: isSelected ? colors.selectedText : colors.text,
+              color: isSelected ? c.selectedText : c.text,
             },
           ]}
         >
@@ -602,211 +604,213 @@ function LevelChip({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: 600,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: '#6996b3',
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
-  section: {
-    backgroundColor: '#fff',
-    marginBottom: 20,
-    borderRadius: 12,
-    padding: 12,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    marginBottom: 16,
-  },
-  categoryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  categoryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#e8f4fd',
-    borderWidth: 0.5,
-    borderColor: '#d0e8f7',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  selectedCategory: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#6996b3',
-    boxShadow: '0px 2px 6px rgba(0, 120, 255, 0.3)',
-  },
-  categoryText: {
-    fontSize: 14,
-    color: '#6996b3',
-  },
-  selectedCategoryText: {
-    color: '#6996b3',
-    fontWeight: '500',
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#07b524',
-    paddingVertical: 16,
-    borderRadius: 8,
-    gap: 8,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
-  },
-  uploadButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  uploadingButton: {
-    opacity: 0.6,
-  },
-  uploadButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  helpText: {
-    fontSize: 12,
-    color: '#444',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  fileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  fileIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: '#e3f2fd',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  fileInfo: {
-    flex: 1,
-  },
-  fileName: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  fileDetails: {
-    fontSize: 12,
-    color: '#444',
-    marginBottom: 2,
-  },
-  fileDate: {
-    fontSize: 12,
-    color: '#999',
-  },
-  deleteButton: {
-    padding: 8,
-  },
-  exerciseList: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingVertical: 4,
-  },
-  exerciseChip: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: '#f8f9fa',
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-  },
-  selectedExerciseChip: {
-    backgroundColor: '#07b524',
-    borderColor: '#07b524',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
-  },
-  pressedChip: {
-    opacity: 0.7,
-  },
-  exerciseChipContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  difficultyIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  exerciseChipText: {
-    fontSize: 12,
-    color: '#444',
-  },
-  selectedExerciseChipText: {
-    color: '#fff',
-  },
-  linkedExercise: {
-    fontSize: 11,
-    color: '#07b524',
-    marginTop: 2,
-  },
-  levelBadge: {
-    marginTop: 4,
-    alignSelf: 'flex-start',
-  },
-  levelBadgeText: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  levelList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    paddingVertical: 4,
-  },
-  levelChip: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.15)',
-  },
-  levelChipText: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+      paddingTop: 20,
+    },
+    section: {
+      backgroundColor: theme.backgrounds.card,
+      marginBottom: 20,
+      borderRadius: 12,
+      padding: 12,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      marginBottom: 16,
+    },
+    categoryGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+    },
+    categoryButton: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      borderWidth: 0.5,
+      borderColor: theme.borders.light,
+      boxShadow: theme.shadow.level1,
+    },
+    selectedCategory: {
+      backgroundColor: theme.backgrounds.progressCircle,
+      borderColor: theme.accent.mid,
+      boxShadow: theme.shadow.level2,
+    },
+    categoryText: {
+      fontSize: 14,
+      color: theme.accent.mid,
+    },
+    selectedCategoryText: {
+      color: theme.accent.mid,
+      fontWeight: '500',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.status.success,
+      paddingVertical: 16,
+      borderRadius: 8,
+      gap: 8,
+      boxShadow: theme.shadow.level1,
+    },
+    uploadButtonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    uploadingButton: {
+      opacity: 0.6,
+    },
+    uploadButtonText: {
+      color: '#fff',
+      fontSize: 16,
+    },
+    helpText: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      textAlign: 'center',
+      marginTop: 8,
+    },
+    fileCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 12,
+      backgroundColor: theme.backgrounds.subtle,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    fileIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 8,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    fileInfo: {
+      flex: 1,
+    },
+    fileName: {
+      fontSize: 14,
+      marginBottom: 4,
+    },
+    fileDetails: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      marginBottom: 2,
+    },
+    fileDate: {
+      fontSize: 12,
+      color: theme.icons.placeholder,
+    },
+    deleteButton: {
+      padding: 8,
+    },
+    exerciseList: {
+      flexDirection: 'row',
+      gap: 8,
+      paddingVertical: 4,
+    },
+    exerciseChip: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 16,
+      backgroundColor: theme.backgrounds.subtle,
+      borderWidth: 0.5,
+      borderColor: theme.borders.divider,
+    },
+    selectedExerciseChip: {
+      backgroundColor: theme.status.success,
+      borderColor: theme.status.success,
+      boxShadow: theme.shadow.level1,
+    },
+    pressedChip: {
+      opacity: 0.7,
+    },
+    exerciseChipContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    difficultyIndicator: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+    },
+    exerciseChipText: {
+      fontSize: 12,
+      color: theme.text.secondary,
+    },
+    selectedExerciseChipText: {
+      color: '#fff',
+    },
+    linkedExercise: {
+      fontSize: 11,
+      color: theme.status.success,
+      marginTop: 2,
+    },
+    levelBadge: {
+      marginTop: 4,
+      alignSelf: 'flex-start',
+    },
+    levelBadgeText: {
+      fontSize: 11,
+      fontWeight: '500',
+    },
+    levelList: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+      paddingVertical: 4,
+    },
+    levelChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+      borderRadius: 20,
+      borderWidth: 1.5,
+      boxShadow: theme.shadow.level1,
+    },
+    levelChipText: {
+      fontSize: 13,
+      fontWeight: '500',
+    },
+  });
+}

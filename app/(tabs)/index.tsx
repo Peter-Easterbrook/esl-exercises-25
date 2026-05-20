@@ -2,26 +2,29 @@ import { CategoryCard } from '@/components/CategoryCard';
 import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AppTheme } from '@/constants/themes';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import { Category } from '@/types';
 import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CategoriesScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useFocusEffect(
     useCallback(() => {
       loadCategories();
-    }, [])
+    }, []),
   );
 
   const loadCategories = async () => {
     try {
-      const { getCategories, initializeDefaultData } = await import(
-        '@/services/firebaseService'
-      );
+      const { getCategories, initializeDefaultData } =
+        await import('@/services/firebaseService');
 
       // Try to get categories, if none exist, initialize default data
       let categoriesData = await getCategories();
@@ -30,7 +33,7 @@ export default function CategoriesScreen() {
         await initializeDefaultData();
         categoriesData = await getCategories();
       }
-      
+
       setCategories(categoriesData);
     } catch (error) {
       console.error('Error loading categories:', error);
@@ -95,10 +98,10 @@ export default function CategoriesScreen() {
               source={require('@/assets/images/favicon.png')}
               style={{ width: 40, height: 40 }}
             />
-            <ThemedText type='title'>ESL Exercises</ThemedText>
+            <ThemedText type="title">ESL Exercises</ThemedText>
           </View>
           <View style={{ height: 10 }} />
-          <ThemedText type='subtitle'>
+          <ThemedText type="subtitle">
             Choose a category to start learning
           </ThemedText>
         </View>
@@ -116,24 +119,26 @@ export default function CategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    backgroundColor: '#fafbfc',
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: 600,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-  },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 60,
+      backgroundColor: theme.backgrounds.app,
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: 600,
+      alignSelf: 'center',
+      flex: 1,
+    },
+    header: {
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+    },
+    scrollView: {
+      flex: 1,
+      paddingHorizontal: 10,
+    },
+  });
+}

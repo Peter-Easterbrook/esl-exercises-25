@@ -2,11 +2,13 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES } from "@/constants/languages";
+import { AppTheme } from "@/constants/themes";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import { Category, MultiLanguageInstructions, Question } from "@/types";
 import { createEmptyInstructions } from "@/utils/languageHelpers";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -24,6 +26,8 @@ export default function AddExerciseScreen() {
   const { id: exerciseId } = useLocalSearchParams();
   const isEditMode = !!exerciseId;
   const { appUser, user } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [exerciseData, setExerciseData] = useState<{
     title: string;
@@ -738,7 +742,7 @@ export default function AddExerciseScreen() {
   if (loading) {
     return (
       <ThemedView style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#6996b3" />
+        <ActivityIndicator size="large" color={theme.accent.mid} />
         <ThemedText style={styles.loadingText}>Loading exercise...</ThemedText>
       </ThemedView>
     );
@@ -752,7 +756,7 @@ export default function AddExerciseScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>
               {isEditMode ? "Back to Manage" : "Back to Admin"}
             </ThemedText>
@@ -979,7 +983,7 @@ export default function AddExerciseScreen() {
                         style={styles.removeButton}
                         onPress={() => handleRemoveQuestion(qIndex)}
                       >
-                        <IconSymbol name="trash" size={16} color="#6f0202" />
+                        <IconSymbol name="trash" size={16} color={theme.status.error} />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -1220,7 +1224,7 @@ export default function AddExerciseScreen() {
                         Correct Answer(s)
                       </ThemedText>
                       <ThemedText
-                        style={[styles.label, { fontSize: 12, color: "#666" }]}
+                        style={[styles.label, { fontSize: 12, color: theme.text.secondary }]}
                       >
                         Enter answers separated by commas for multiple blanks
                       </ThemedText>
@@ -1260,7 +1264,7 @@ export default function AddExerciseScreen() {
                   {/* Essay: Info message */}
                   {exerciseData.type === "essay" && (
                     <View style={styles.inputGroup}>
-                      <ThemedText style={[styles.label, { color: "#6996b3" }]}>
+                      <ThemedText style={[styles.label, { color: theme.accent.mid }]}>
                         ℹ️ Essay questions are open-ended and require manual
                         grading
                       </ThemedText>
@@ -1274,7 +1278,7 @@ export default function AddExerciseScreen() {
                         Correct Answer
                       </ThemedText>
                       <ThemedText
-                        style={[styles.label, { fontSize: 12, color: "#666" }]}
+                        style={[styles.label, { fontSize: 12, color: theme.text.secondary }]}
                       >
                         Enter the exact answer the user must provide
                       </ThemedText>
@@ -1338,232 +1342,231 @@ export default function AddExerciseScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  contentWrapper: {
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-    flex: 1,
-  },
-  keyboardAvoid: {
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: "#6996b3",
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-
-    lineHeight: 34,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  section: {
-    backgroundColor: "#fff",
-    marginVertical: 12,
-    borderRadius: 12,
-    padding: 10,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    marginBottom: 16,
-  },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-
-    marginBottom: 8,
-    color: "#333",
-  },
-  input: {
-    borderWidth: 0.5,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: "top",
-  },
-  row: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  halfInput: {
-    flex: 1,
-  },
-  pickerContainer: {
-    gap: 4,
-  },
-  pickerOption: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    backgroundColor: "#f8f9fa",
-  },
-  selectedOption: {
-    backgroundColor: "#e3f2fd",
-  },
-  pickerText: {
-    fontSize: 14,
-  },
-  selectedText: {
-    color: "#6996b3",
-  },
-  disabledText: {
-    color: "#ccc",
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#07b524",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-    gap: 4,
-  },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 12,
-  },
-  questionCard: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-  },
-  questionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  questionNumber: {
-    fontSize: 16,
-
-    color: "#6996b3",
-  },
-  removeButton: {
-    padding: 4,
-  },
-  optionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  optionLabel: {
-    fontSize: 14,
-
-    width: 24,
-    color: "#444",
-  },
-  optionInput: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  footer: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-    paddingBottom: 40,
-    marginVertical: 20,
-    backgroundColor: "#fff",
-  },
-  saveButton: {
-    backgroundColor: "#6996b3",
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  loadingContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: "#202029",
-    fontWeight: "normal",
-  },
-  helperText: {
-    fontSize: 12,
-    color: "#666",
-    lineHeight: 16,
-  },
-  languageInputContainer: {
-    marginBottom: 16,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  languageHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-    gap: 6,
-  },
-  flagIcon: {
-    fontSize: 24,
-  },
-  languageCode: {
-    fontSize: 14,
-    fontWeight: "400",
-    color: "#999",
-    textTransform: "uppercase",
-  },
-  languageLabel: {
-    fontSize: 12,
-    color: "#666",
-    fontStyle: "italic",
-    paddingTop: 8,
-  },
-  requiredBadge: {
-    fontSize: 10,
-    color: "#fff",
-    backgroundColor: "#07b524",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginLeft: "auto",
-    overflow: "hidden",
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+    },
+    contentWrapper: {
+      width: "100%",
+      maxWidth: 600,
+      alignSelf: "center",
+      flex: 1,
+    },
+    keyboardAvoid: {
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    scrollContent: {
+      flexGrow: 1,
+    },
+    backButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+    },
+    section: {
+      backgroundColor: theme.backgrounds.card,
+      marginVertical: 12,
+      borderRadius: 12,
+      padding: 10,
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      marginBottom: 16,
+    },
+    inputGroup: {
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 14,
+      marginBottom: 8,
+      color: theme.text.primary,
+    },
+    input: {
+      borderWidth: 0.5,
+      borderColor: theme.borders.divider,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 16,
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+    },
+    textArea: {
+      height: 80,
+      textAlignVertical: "top",
+    },
+    row: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    halfInput: {
+      flex: 1,
+    },
+    pickerContainer: {
+      gap: 4,
+    },
+    pickerOption: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 6,
+      backgroundColor: theme.backgrounds.subtle,
+    },
+    selectedOption: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    pickerText: {
+      fontSize: 14,
+    },
+    selectedText: {
+      color: theme.accent.mid,
+    },
+    disabledText: {
+      color: theme.icons.placeholder,
+    },
+    addButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.status.success,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 6,
+      gap: 4,
+    },
+    addButtonText: {
+      color: "#fff",
+      fontSize: 12,
+    },
+    questionCard: {
+      backgroundColor: theme.backgrounds.subtle,
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 12,
+    },
+    questionHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    questionNumber: {
+      fontSize: 16,
+      color: theme.accent.mid,
+    },
+    removeButton: {
+      padding: 4,
+    },
+    optionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    optionLabel: {
+      fontSize: 14,
+      width: 24,
+      color: theme.text.secondary,
+    },
+    optionInput: {
+      flex: 1,
+      marginLeft: 8,
+    },
+    footer: {
+      paddingHorizontal: 10,
+      paddingVertical: 20,
+      paddingBottom: 40,
+      marginVertical: 20,
+      backgroundColor: theme.backgrounds.card,
+    },
+    saveButton: {
+      backgroundColor: theme.accent.mid,
+      paddingVertical: 16,
+      borderRadius: 8,
+      alignItems: "center",
+    },
+    saveButtonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+    loadingContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    loadingText: {
+      marginTop: 16,
+      fontSize: 16,
+      color: theme.text.primary,
+      fontWeight: "normal",
+    },
+    helperText: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      lineHeight: 16,
+    },
+    languageInputContainer: {
+      marginBottom: 16,
+      backgroundColor: theme.backgrounds.subtle,
+      borderRadius: 8,
+      padding: 12,
+      borderWidth: 1,
+      borderColor: theme.borders.divider,
+    },
+    languageHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+      gap: 6,
+    },
+    flagIcon: {
+      fontSize: 24,
+    },
+    languageCode: {
+      fontSize: 14,
+      fontWeight: "400",
+      color: theme.icons.placeholder,
+      textTransform: "uppercase",
+    },
+    languageLabel: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      fontStyle: "italic",
+      paddingTop: 8,
+    },
+    requiredBadge: {
+      fontSize: 10,
+      color: "#fff",
+      backgroundColor: theme.status.success,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+      marginLeft: "auto",
+      overflow: "hidden",
+    },
+  });
+}

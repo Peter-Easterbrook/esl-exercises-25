@@ -4,17 +4,17 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppTheme } from '@/contexts/ThemeContext';
 
-type CollapsibleProps = PropsWithChildren & (
-  | { title: string; collapsed?: never }
-  | { collapsed: boolean; title?: never }
-);
+type CollapsibleProps = PropsWithChildren &
+  (
+    | { title: string; collapsed?: never }
+    | { collapsed: boolean; title?: never }
+  );
 
 export function Collapsible({ children, title, collapsed }: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() ?? 'light';
+  const { theme } = useAppTheme();
 
   // If collapsed prop is provided, use it (controlled mode)
   // Otherwise use internal state (uncontrolled mode)
@@ -26,12 +26,13 @@ export function Collapsible({ children, title, collapsed }: CollapsibleProps) {
         <TouchableOpacity
           style={styles.heading}
           onPress={() => setIsOpen((value) => !value)}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+        >
           <IconSymbol
             name="chevron.right"
             size={18}
             weight="medium"
-            color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+            color={theme.icons.primary}
             style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
           />
 

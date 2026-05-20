@@ -2,9 +2,11 @@ import { ThemedLoader } from "@/components/themed-loader";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { AppTheme } from "@/constants/themes";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import { Category } from "@/types";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Modal,
@@ -17,6 +19,8 @@ import {
 } from "react-native";
 
 export default function ManageCategoriesScreen() {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +82,6 @@ export default function ManageCategoriesScreen() {
 
     try {
       if (editingCategory) {
-        // Update existing category
         const { updateDoc, doc } = await import("firebase/firestore");
         const { db } = await import("@/config/firebase");
         await updateDoc(doc(db, "categories", editingCategory.id), {
@@ -88,7 +91,6 @@ export default function ManageCategoriesScreen() {
         });
         Alert.alert("Success", "Category updated successfully");
       } else {
-        // Create new category
         const { createCategory } = await import("@/services/firebaseService");
         await createCategory({
           name: formData.name,
@@ -98,7 +100,7 @@ export default function ManageCategoriesScreen() {
         Alert.alert("Success", "Category created successfully");
       }
       setModalVisible(false);
-      loadCategories(); // Reload the list
+      loadCategories();
     } catch (error) {
       console.error("Error saving category:", error);
       Alert.alert("Error", "Failed to save category");
@@ -108,7 +110,6 @@ export default function ManageCategoriesScreen() {
   const handleDeleteCategory = (category: Category) => {
     console.log("🗑️ Delete button clicked for category:", category.name);
 
-    // Android-compatible confirmation
     Alert.alert(
       "Delete Category",
       `Are you sure you want to delete "${category.name}"?\n\nThis will permanently remove the category. Any exercises in this category will no longer be associated with it.\n\nThis action cannot be undone.`,
@@ -141,7 +142,7 @@ export default function ManageCategoriesScreen() {
       console.log("✅ Category deleted from Firebase successfully");
 
       Alert.alert("Success", "Category deleted successfully");
-      await loadCategories(); // Reload the list
+      await loadCategories();
       console.log("✅ Category list reloaded");
     } catch (error) {
       console.error("❌ Error deleting category:", error);
@@ -201,13 +202,11 @@ export default function ManageCategoriesScreen() {
     "arrow.right.square",
     "arrow.clockwise",
     "chart.pie",
-    // Language & Grammar icons
     "translate",
     "spellcheck",
     "format.quote",
     "text.format",
     "abc",
-    // Learning & Education icons
     "school",
     "quiz",
     "assignment",
@@ -216,12 +215,10 @@ export default function ManageCategoriesScreen() {
     "star.fill",
     "chart.line.uptrend.xyaxis",
     "trophy",
-    // Communication icons
     "message",
     "chat",
     "forum",
     "voice",
-    // Content icons
     "article",
     "subject",
     "menu.book",
@@ -242,7 +239,7 @@ export default function ManageCategoriesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color="#6996b3" />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -254,11 +251,11 @@ export default function ManageCategoriesScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name="magnifyingglass" size={20} color="#464655" />
+            <IconSymbol name="magnifyingglass" size={20} color={theme.icons.tertiary} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search categories..."
-              placeholderTextColor="rgba(102, 102, 102, 0.5)"
+              placeholderTextColor={theme.icons.placeholder}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -286,7 +283,7 @@ export default function ManageCategoriesScreen() {
           >
             {filteredCategories.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name="folder" size={48} color="#ccc" />
+                <IconSymbol name="folder" size={48} color={theme.icons.placeholder} />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
                     ? "No categories match your search"
@@ -303,7 +300,7 @@ export default function ManageCategoriesScreen() {
                     <IconSymbol
                       name={category.icon as any}
                       size={32}
-                      color="#6996b3"
+                      color={theme.accent.mid}
                     />
                   </View>
 
@@ -319,7 +316,7 @@ export default function ManageCategoriesScreen() {
                       <IconSymbol
                         name="questionmark.circle"
                         size={14}
-                        color="#464655"
+                        color={theme.icons.tertiary}
                       />
                       <ThemedText style={styles.metadataText}>
                         {category.exercises?.length || 0} exercises
@@ -332,14 +329,14 @@ export default function ManageCategoriesScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditCategory(category)}
                     >
-                      <IconSymbol name="pencil" size={16} color="#6996b3" />
+                      <IconSymbol name="pencil" size={16} color={theme.accent.mid} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteCategory(category)}
                     >
-                      <IconSymbol name="trash" size={16} color="#6f0202" />
+                      <IconSymbol name="trash" size={16} color={theme.status.error} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -363,7 +360,7 @@ export default function ManageCategoriesScreen() {
                 {editingCategory ? "Edit Category" : "Add New Category"}
               </ThemedText>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <IconSymbol name="xmark" size={24} color="#464655" />
+                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
               </TouchableOpacity>
             </View>
 
@@ -374,7 +371,7 @@ export default function ManageCategoriesScreen() {
                 <TextInput
                   style={styles.textInput}
                   placeholder="Enter category name"
-                  placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                  placeholderTextColor={theme.icons.placeholder}
                   value={formData.name}
                   onChangeText={(text) =>
                     setFormData({ ...formData, name: text })
@@ -388,7 +385,7 @@ export default function ManageCategoriesScreen() {
                 <TextInput
                   style={[styles.textInput, styles.textAreaInput]}
                   placeholder="Enter category description"
-                  placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                  placeholderTextColor={theme.icons.placeholder}
                   value={formData.description}
                   onChangeText={(text) =>
                     setFormData({ ...formData, description: text })
@@ -417,7 +414,7 @@ export default function ManageCategoriesScreen() {
                         name={iconName as any}
                         size={28}
                         color={
-                          formData.icon === iconName ? "#6996b3" : "#464655"
+                          formData.icon === iconName ? theme.accent.mid : theme.icons.tertiary
                         }
                       />
                     </TouchableOpacity>
@@ -453,244 +450,248 @@ export default function ManageCategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  contentWrapper: {
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: "#6996b3",
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 16,
-    backgroundColor: "#fff",
-    padding: 6,
-    borderRadius: 8,
-    outlineWidth: 0,
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#07b524",
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-    gap: 8,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-  },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  categoryList: {
-    flex: 1,
-  },
-  emptyState: {
-    alignItems: "center",
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontSize: 18,
-    color: "#444",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: "#999",
-  },
-  categoryCard: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-    alignItems: "center",
-  },
-  categoryIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "#e3f2fd",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-  },
-  categoryInfo: {
-    flex: 1,
-  },
-  categoryName: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  categoryDescription: {
-    fontSize: 14,
-    color: "#444",
-    marginBottom: 8,
-  },
-  categoryMetadata: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  metadataText: {
-    fontSize: 12,
-    color: "#202029",
-    fontWeight: "normal",
-  },
-  categoryActions: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  editButton: {
-    backgroundColor: "#e3f2fd",
-  },
-  deleteButton: {
-    backgroundColor: "#ffebee",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    maxHeight: "90%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-  },
-  formContainer: {
-    paddingBottom: 30,
-  },
-  formGroup: {
-    marginBottom: 20,
-  },
-  formLabel: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: "#333",
-  },
-  textInput: {
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 14,
-    borderWidth: 0.5,
-    borderColor: "#e0e0e0",
-  },
-  textAreaInput: {
-    textAlignVertical: "top",
-    paddingVertical: 12,
-  },
-  iconGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  iconOption: {
-    width: "22%",
-    height: 80,
-    aspectRatio: 1,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    verticalAlign: "middle",
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  iconOptionSelected: {
-    backgroundColor: "#e3f2fd",
-    borderColor: "#6996b3",
-  },
-  formActions: {
-    flexDirection: "row",
-    gap: 12,
-    marginVertical: 20,
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cancelButton: {
-    backgroundColor: "#f5f5f5",
-  },
-  cancelButtonText: {
-    color: "#202029",
-    fontWeight: "normal",
-    fontSize: 16,
-  },
-  saveButton: {
-    backgroundColor: "#07b524",
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+    },
+    contentWrapper: {
+      width: "100%",
+      maxWidth: 600,
+      alignSelf: "center",
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+      paddingTop: 20,
+    },
+    searchContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginBottom: 16,
+      boxShadow: theme.shadow.level1,
+    },
+    searchInput: {
+      flex: 1,
+      marginLeft: 12,
+      fontSize: 16,
+      backgroundColor: theme.backgrounds.card,
+      color: theme.text.primary,
+      padding: 6,
+      borderRadius: 8,
+      outlineWidth: 0,
+    },
+    addButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.status.success,
+      paddingVertical: 16,
+      borderRadius: 12,
+      marginBottom: 20,
+      gap: 8,
+      boxShadow: theme.shadow.level1,
+    },
+    addButtonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+    categoryList: {
+      flex: 1,
+    },
+    emptyState: {
+      alignItems: "center",
+      paddingVertical: 60,
+    },
+    emptyText: {
+      fontSize: 18,
+      color: theme.text.secondary,
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    emptySubtext: {
+      fontSize: 14,
+      color: theme.icons.placeholder,
+    },
+    categoryCard: {
+      flexDirection: "row",
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 12,
+      boxShadow: theme.shadow.level1,
+      alignItems: "center",
+    },
+    categoryIconContainer: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 16,
+    },
+    categoryInfo: {
+      flex: 1,
+    },
+    categoryName: {
+      fontSize: 16,
+      marginBottom: 4,
+    },
+    categoryDescription: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      marginBottom: 8,
+    },
+    categoryMetadata: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    metadataText: {
+      fontSize: 12,
+      color: theme.text.primary,
+      fontWeight: "normal",
+    },
+    categoryActions: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    actionButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    editButton: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+    },
+    deleteButton: {
+      backgroundColor: theme.destructive.background,
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: "flex-end",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalView: {
+      backgroundColor: theme.backgrounds.card,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      maxHeight: "90%",
+    },
+    modalHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    modalTitle: {
+      fontSize: 20,
+    },
+    formContainer: {
+      paddingBottom: 30,
+    },
+    formGroup: {
+      marginBottom: 20,
+    },
+    formLabel: {
+      fontSize: 14,
+      marginBottom: 8,
+      color: theme.text.primary,
+    },
+    textInput: {
+      backgroundColor: theme.backgrounds.subtle,
+      color: theme.text.primary,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      fontSize: 14,
+      borderWidth: 0.5,
+      borderColor: theme.borders.divider,
+    },
+    textAreaInput: {
+      textAlignVertical: "top",
+      paddingVertical: 12,
+    },
+    iconGrid: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 12,
+    },
+    iconOption: {
+      width: "22%",
+      height: 80,
+      aspectRatio: 1,
+      backgroundColor: theme.backgrounds.subtle,
+      borderRadius: 12,
+      justifyContent: "center",
+      alignItems: "center",
+      verticalAlign: "middle",
+      borderWidth: 1,
+      borderColor: "transparent",
+    },
+    iconOptionSelected: {
+      backgroundColor: theme.backgrounds.tintedStrong,
+      borderColor: theme.accent.mid,
+    },
+    formActions: {
+      flexDirection: "row",
+      gap: 12,
+      marginVertical: 20,
+    },
+    button: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cancelButton: {
+      backgroundColor: theme.backgrounds.subtle,
+    },
+    cancelButtonText: {
+      color: theme.text.primary,
+      fontWeight: "normal",
+      fontSize: 16,
+    },
+    saveButton: {
+      backgroundColor: theme.status.success,
+    },
+    saveButtonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+  });
+}

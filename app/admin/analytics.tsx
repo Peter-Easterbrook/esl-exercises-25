@@ -1,17 +1,12 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import {
-  backgrounds,
-  blues,
-  borders,
-  colors,
-  elevation,
-} from "@/constants/theme";
+import { AppTheme } from "@/constants/themes";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import { getAnalyticsData } from "@/services/firebaseService";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,10 +20,9 @@ import { BarChart, LineChart, PieChart } from "react-native-chart-kit";
 
 const screenWidth = Dimensions.get("window").width;
 
-// Calculate proper chart width accounting for all padding
 const contentMaxWidth = 600;
-const contentPadding = 20; // content paddingHorizontal: 10 * 2
-const chartContainerPadding = 24; // chartContainer padding: 12 * 2
+const contentPadding = 20;
+const chartContainerPadding = 24;
 const chartWidth =
   Math.min(screenWidth, contentMaxWidth) -
   contentPadding -
@@ -50,8 +44,24 @@ interface AnalyticsData {
   }[];
 }
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const cleaned = hex.replace('#', '');
+  const expanded =
+    cleaned.length === 3
+      ? cleaned.split('').map((c) => c + c).join('')
+      : cleaned;
+  const num = parseInt(expanded, 16);
+  return {
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255,
+  };
+}
+
 export default function AnalyticsScreen() {
   const { appUser } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<
     "overview" | "users" | "exercises"
@@ -74,7 +84,6 @@ export default function AnalyticsScreen() {
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      // Fetch real analytics data from Firebase
       const data = await getAnalyticsData();
       setAnalyticsData(data);
     } catch (error) {
@@ -85,7 +94,6 @@ export default function AnalyticsScreen() {
     }
   };
 
-  // Redirect if not admin
   if (!appUser?.isAdmin) {
     router.replace("/(tabs)");
     return null;
@@ -95,7 +103,7 @@ export default function AnalyticsScreen() {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={blues.blue5} />
+          <ActivityIndicator size="large" color={theme.accent.mid} />
           <ThemedText style={styles.loadingText}>
             Loading analytics...
           </ThemedText>
@@ -104,10 +112,17 @@ export default function AnalyticsScreen() {
     );
   }
 
+  const accentRgb = hexToRgb(theme.accent.mid);
+  const successRgb = hexToRgb(theme.status.success);
+  const darkestRgb = hexToRgb(theme.accent.darkest);
+
   const chartConfig = {
-    backgroundGradientFrom: backgrounds.primary,
-    backgroundGradientTo: backgrounds.primary,
-    color: (opacity = 1) => `rgba(105, 150, 179, ${opacity})`,
+    backgroundGradientFrom: theme.backgrounds.card,
+    backgroundGradientTo: theme.backgrounds.card,
+    color: (opacity = 1) =>
+      `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, ${opacity})`,
+    labelColor: (opacity = 1) =>
+      `rgba(${hexToRgb(theme.text.primary).r}, ${hexToRgb(theme.text.primary).g}, ${hexToRgb(theme.text.primary).b}, ${opacity})`,
     strokeWidth: 2,
     barPercentage: 0.85,
     useShadowColorFromDataset: false,
@@ -118,7 +133,7 @@ export default function AnalyticsScreen() {
     name: item.name,
     population: item.count,
     color: item.color,
-    legendFontColor: "#202029",
+    legendFontColor: theme.text.primary,
     legendFontSize: 12,
   }));
 
@@ -130,7 +145,7 @@ export default function AnalyticsScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={blues.blue5} />
+            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
             <ThemedText style={styles.backText}>Back</ThemedText>
           </TouchableOpacity>
 
@@ -199,7 +214,7 @@ export default function AnalyticsScreen() {
                 <IconSymbol
                   name="checkmark.circle.fill"
                   size={32}
-                  color={colors.success}
+                  color={theme.status.success}
                 />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.totalCompletions}
@@ -210,7 +225,7 @@ export default function AnalyticsScreen() {
               </View>
 
               <View style={styles.metricCard}>
-                <IconSymbol name="star.fill" size={32} color={colors.warning} />
+                <IconSymbol name="star.fill" size={32} color={theme.status.warning} />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.averageScore}%
                 </ThemedText>
@@ -221,7 +236,7 @@ export default function AnalyticsScreen() {
                 <IconSymbol
                   name="chart.line.uptrend.xyaxis"
                   size={32}
-                  color={blues.blue5}
+                  color={theme.accent.mid}
                 />
                 <ThemedText style={styles.metricValue}>
                   {analyticsData.completionRate}%
@@ -287,7 +302,8 @@ export default function AnalyticsScreen() {
                     yAxisSuffix=""
                     chartConfig={{
                       ...chartConfig,
-                      color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                      color: (opacity = 1) =>
+                        `rgba(${successRgb.r}, ${successRgb.g}, ${successRgb.b}, ${opacity})`,
                     }}
                     style={styles.chart}
                     showValuesOnTopOfBars
@@ -359,7 +375,8 @@ export default function AnalyticsScreen() {
                     height={220}
                     chartConfig={{
                       ...chartConfig,
-                      color: (opacity = 1) => `rgba(156, 39, 176, ${opacity})`,
+                      color: (opacity = 1) =>
+                        `rgba(${darkestRgb.r}, ${darkestRgb.g}, ${darkestRgb.b}, ${opacity})`,
                     }}
                     bezier
                     style={styles.chart}
@@ -380,7 +397,7 @@ export default function AnalyticsScreen() {
                         <IconSymbol
                           name="person.circle.fill"
                           size={24}
-                          color={blues.blue5}
+                          color={theme.accent.mid}
                         />
                       </View>
                       <View style={styles.activityInfo}>
@@ -433,7 +450,8 @@ export default function AnalyticsScreen() {
                     yAxisSuffix=""
                     chartConfig={{
                       ...chartConfig,
-                      color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                      color: (opacity = 1) =>
+                        `rgba(${successRgb.r}, ${successRgb.g}, ${successRgb.b}, ${opacity})`,
                     }}
                     style={styles.chart}
                     showValuesOnTopOfBars
@@ -460,7 +478,7 @@ export default function AnalyticsScreen() {
                       <IconSymbol
                         name="trophy"
                         size={20}
-                        color={colors.warning}
+                        color={theme.status.warning}
                       />
                     </View>
                   ))}
@@ -495,229 +513,231 @@ export default function AnalyticsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: backgrounds.subtle,
-  },
-  contentWrapper: {
-    width: "100%",
-    maxWidth: 600,
-    alignSelf: "center",
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  backText: {
-    marginLeft: 8,
-    color: blues.blue5,
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: "#444",
-  },
-  tabContainer: {
-    flexDirection: "row",
-    backgroundColor: backgrounds.primary,
-    borderBottomWidth: 1,
-    borderBottomColor: borders.light,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 16,
-    alignItems: "center",
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
-  },
-  activeTab: {
-    borderBottomColor: blues.blue5,
-  },
-  tabText: {
-    fontSize: 14,
-    color: "#202029",
-    fontWeight: "normal",
-  },
-  activeTabText: {
-    color: blues.blue5,
-    fontWeight: "500",
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    marginBottom: 16,
-  },
-  metricsGrid: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  metricCard: {
-    flex: 1,
-    backgroundColor: backgrounds.primary,
-    padding: 20,
-    borderRadius: 12,
-    alignItems: "center",
-    ...elevation.level1,
-  },
-  metricValue: {
-    fontSize: 24,
-    fontWeight: "500",
-    marginVertical: 8,
-    color: "#333",
-  },
-  metricLabel: {
-    fontSize: 12,
-    color: "#444",
-    textAlign: "center",
-  },
-  chartContainer: {
-    backgroundColor: backgrounds.primary,
-    borderRadius: 12,
-    padding: 12,
-    paddingLeft: 0,
-    ...elevation.level1,
-  },
-  chart: {
-    borderRadius: 12,
-  },
-  categoryList: {
-    marginTop: 16,
-    gap: 12,
-  },
-  categoryItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: backgrounds.primary,
-    padding: 12,
-    borderRadius: 12,
-    ...elevation.level1,
-  },
-  categoryInfo: {
-    flex: 1,
-  },
-  categoryName: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  categoryCount: {
-    fontSize: 14,
-    color: "#444",
-  },
-  categoryPercentage: {
-    fontSize: 18,
-    fontWeight: "normal",
-    color: colors.success,
-  },
-  activityList: {
-    gap: 12,
-  },
-  activityItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: backgrounds.primary,
-    padding: 12,
-    borderRadius: 12,
-    gap: 12,
-    ...elevation.level1,
-  },
-  activityIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: backgrounds.tinted,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  activityInfo: {
-    flex: 1,
-  },
-  activityUser: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  activityExercise: {
-    fontSize: 14,
-    color: "#444",
-  },
-  activityMeta: {
-    alignItems: "flex-end",
-  },
-  activityScore: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.success,
-    marginBottom: 4,
-  },
-  activityDate: {
-    fontSize: 12,
-    color: "#999",
-  },
-  exerciseList: {
-    marginTop: 16,
-    gap: 12,
-  },
-  exerciseItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: backgrounds.primary,
-    padding: 12,
-    borderRadius: 12,
-    gap: 12,
-    ...elevation.level1,
-  },
-  exerciseRank: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: backgrounds.tinted,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rankNumber: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.success,
-  },
-  exerciseInfo: {
-    flex: 1,
-  },
-  exerciseTitle: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  exerciseCount: {
-    fontSize: 14,
-    color: "#444",
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.subtle,
+    },
+    contentWrapper: {
+      width: "100%",
+      maxWidth: 600,
+      alignSelf: "center",
+      flex: 1,
+    },
+    header: {
+      paddingTop: 60,
+      paddingHorizontal: 16,
+      paddingBottom: 20,
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+    },
+    backButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    backText: {
+      marginLeft: 8,
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+    title: {
+      fontSize: 28,
+      lineHeight: 34,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    loadingText: {
+      marginTop: 12,
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+    tabContainer: {
+      flexDirection: "row",
+      backgroundColor: theme.backgrounds.card,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.light,
+    },
+    tab: {
+      flex: 1,
+      paddingVertical: 16,
+      alignItems: "center",
+      borderBottomWidth: 2,
+      borderBottomColor: "transparent",
+    },
+    activeTab: {
+      borderBottomColor: theme.accent.mid,
+    },
+    tabText: {
+      fontSize: 14,
+      color: theme.text.primary,
+      fontWeight: "normal",
+    },
+    activeTabText: {
+      color: theme.accent.mid,
+      fontWeight: "500",
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 10,
+    },
+    section: {
+      marginTop: 24,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      marginBottom: 16,
+    },
+    metricsGrid: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    metricCard: {
+      flex: 1,
+      backgroundColor: theme.backgrounds.card,
+      padding: 20,
+      borderRadius: 12,
+      alignItems: "center",
+      boxShadow: theme.shadow.level1,
+    },
+    metricValue: {
+      fontSize: 24,
+      fontWeight: "500",
+      marginVertical: 8,
+      color: theme.text.primary,
+    },
+    metricLabel: {
+      fontSize: 12,
+      color: theme.text.secondary,
+      textAlign: "center",
+    },
+    chartContainer: {
+      backgroundColor: theme.backgrounds.card,
+      borderRadius: 12,
+      padding: 12,
+      paddingLeft: 0,
+      boxShadow: theme.shadow.level1,
+    },
+    chart: {
+      borderRadius: 12,
+    },
+    categoryList: {
+      marginTop: 16,
+      gap: 12,
+    },
+    categoryItem: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: theme.backgrounds.card,
+      padding: 12,
+      borderRadius: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    categoryInfo: {
+      flex: 1,
+    },
+    categoryName: {
+      fontSize: 16,
+      fontWeight: "500",
+      marginBottom: 4,
+    },
+    categoryCount: {
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+    categoryPercentage: {
+      fontSize: 18,
+      fontWeight: "normal",
+      color: theme.status.success,
+    },
+    activityList: {
+      gap: 12,
+    },
+    activityItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.backgrounds.card,
+      padding: 12,
+      borderRadius: 12,
+      gap: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    activityIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: theme.backgrounds.tinted,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    activityInfo: {
+      flex: 1,
+    },
+    activityUser: {
+      fontSize: 16,
+      fontWeight: "500",
+      marginBottom: 4,
+    },
+    activityExercise: {
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+    activityMeta: {
+      alignItems: "flex-end",
+    },
+    activityScore: {
+      fontSize: 16,
+      fontWeight: "500",
+      color: theme.status.success,
+      marginBottom: 4,
+    },
+    activityDate: {
+      fontSize: 12,
+      color: theme.icons.placeholder,
+    },
+    exerciseList: {
+      marginTop: 16,
+      gap: 12,
+    },
+    exerciseItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.backgrounds.card,
+      padding: 12,
+      borderRadius: 12,
+      gap: 12,
+      boxShadow: theme.shadow.level1,
+    },
+    exerciseRank: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: theme.backgrounds.tinted,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    rankNumber: {
+      fontSize: 16,
+      fontWeight: "500",
+      color: theme.status.success,
+    },
+    exerciseInfo: {
+      flex: 1,
+    },
+    exerciseTitle: {
+      fontSize: 16,
+      fontWeight: "500",
+      marginBottom: 4,
+    },
+    exerciseCount: {
+      fontSize: 14,
+      color: theme.text.secondary,
+    },
+  });
+}

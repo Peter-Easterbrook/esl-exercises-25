@@ -1,8 +1,9 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { colors } from '@/constants/theme';
+import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import {
   DEFAULT_PRICE,
   getProducts,
@@ -11,7 +12,7 @@ import {
   setupPurchaseListeners,
   verifyAndSavePurchase,
 } from '@/services/premiumService';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -34,6 +35,8 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
   onPurchaseSuccess,
 }) => {
   const { user, refreshPremiumStatus } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [loading, setLoading] = useState(false);
   const [productPrice, setProductPrice] = useState<string>(DEFAULT_PRICE);
   const [purchasing, setPurchasing] = useState(false);
@@ -49,7 +52,8 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
         cleanup = await setupPurchaseListeners(
           // On purchase update
           async (purchase: any) => {
-            const hasValidPurchase = purchase.purchaseToken || purchase.transactionId;
+            const hasValidPurchase =
+              purchase.purchaseToken || purchase.transactionId;
 
             if (hasValidPurchase && user) {
               try {
@@ -67,11 +71,14 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
                         onClose();
                       },
                     },
-                  ]
+                  ],
                 );
               } catch (error) {
                 console.error('Error processing purchase:', error);
-                Alert.alert('Error', 'Failed to verify purchase. Please contact support.');
+                Alert.alert(
+                  'Error',
+                  'Failed to verify purchase. Please contact support.',
+                );
               } finally {
                 setPurchasing(false);
               }
@@ -85,7 +92,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
               Alert.alert('Purchase Error', error.message);
             }
             setPurchasing(false);
-          }
+          },
         );
       };
 
@@ -117,7 +124,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
     if (Platform.OS === 'web') {
       Alert.alert(
         'Not Available',
-        'Premium purchases are only available on mobile devices. Please use the Android or iOS app to purchase.'
+        'Premium purchases are only available on mobile devices. Please use the Android or iOS app to purchase.',
       );
       return;
     }
@@ -148,7 +155,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
     if (Platform.OS === 'web') {
       Alert.alert(
         'Not Available',
-        'Purchase restoration is only available on mobile devices.'
+        'Purchase restoration is only available on mobile devices.',
       );
       return;
     }
@@ -172,7 +179,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
       } else {
         Alert.alert(
           'No Purchases Found',
-          'No previous purchases were found for this account.'
+          'No previous purchases were found for this account.',
         );
       }
     } catch (error) {
@@ -186,19 +193,19 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
   return (
     <Modal
       visible={visible}
-      animationType='slide'
+      animationType="slide"
       transparent={true}
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <ThemedView style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <IconSymbol name='xmark' size={24} color='#666' />
+            <IconSymbol name="xmark" size={24} color={theme.icons.secondary} />
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <IconSymbol name='lock.shield' size={60} color='#6996b3' />
-            <ThemedText type='title' style={styles.title}>
+            <IconSymbol name="lock.shield" size={60} color={theme.accent.mid} />
+            <ThemedText type="title" style={styles.title}>
               Premium File Access
             </ThemedText>
           </View>
@@ -212,9 +219,9 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
             <View style={styles.features}>
               <View style={styles.featureItem}>
                 <IconSymbol
-                  name='checkmark.circle.fill'
+                  name="checkmark.circle.fill"
                   size={24}
-                  color={colors.success}
+                  color={theme.status.success}
                 />
                 <ThemedText style={styles.featureText}>
                   Access to all PDF and DOC files
@@ -222,9 +229,9 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
               </View>
               <View style={styles.featureItem}>
                 <IconSymbol
-                  name='checkmark.circle.fill'
+                  name="checkmark.circle.fill"
                   size={24}
-                  color={colors.success}
+                  color={theme.status.success}
                 />
                 <ThemedText style={styles.featureText}>
                   One-time payment, lifetime access
@@ -232,9 +239,9 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
               </View>
               <View style={styles.featureItem}>
                 <IconSymbol
-                  name='checkmark.circle.fill'
+                  name="checkmark.circle.fill"
                   size={24}
-                  color={colors.success}
+                  color={theme.status.success}
                 />
                 <ThemedText style={styles.featureText}>
                   Download files from all categories
@@ -242,9 +249,9 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
               </View>
               <View style={styles.featureItem}>
                 <IconSymbol
-                  name='checkmark.circle.fill'
+                  name="checkmark.circle.fill"
                   size={24}
-                  color={colors.success}
+                  color={theme.status.success}
                 />
                 <ThemedText style={styles.featureText}>
                   Works across all your devices
@@ -255,12 +262,15 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
           <View style={styles.footer}>
             <TouchableOpacity
-              style={[styles.purchaseButton, purchasing && styles.disabledButton]}
+              style={[
+                styles.purchaseButton,
+                purchasing && styles.disabledButton,
+              ]}
               onPress={handlePurchase}
               disabled={purchasing}
             >
               {purchasing ? (
-                <ActivityIndicator color='#fff' />
+                <ActivityIndicator color="#fff" />
               ) : (
                 <ThemedText style={styles.purchaseButtonText}>
                   Purchase for {productPrice}
@@ -274,7 +284,7 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
               disabled={loading}
             >
               {loading ? (
-                <ActivityIndicator color='#6996b3' />
+                <ActivityIndicator color="#6996b3" />
               ) : (
                 <ThemedText style={styles.restoreButtonText}>
                   Restore Purchase
@@ -288,80 +298,82 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '90%',
-    maxWidth: 400,
-    borderRadius: 16,
-    padding: 24,
-    backgroundColor: '#fff',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    padding: 8,
-    zIndex: 10,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    marginTop: 16,
-    textAlign: 'center',
-  },
-  content: {
-    marginBottom: 24,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#444',
-    marginBottom: 24,
-  },
-  features: {
-    gap: 16,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  featureText: {
-    fontSize: 15,
-    flex: 1,
-  },
-  footer: {
-    gap: 12,
-  },
-  purchaseButton: {
-    backgroundColor: '#6996b3',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  purchaseButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  restoreButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  restoreButtonText: {
-    color: '#6996b3',
-    fontSize: 16,
-  },
-});
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContainer: {
+      width: '90%',
+      maxWidth: 400,
+      borderRadius: 16,
+      padding: 24,
+      backgroundColor: theme.backgrounds.card,
+    },
+    closeButton: {
+      position: 'absolute',
+      top: 12,
+      right: 12,
+      padding: 8,
+      zIndex: 10,
+    },
+    header: {
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    title: {
+      fontSize: 24,
+      marginTop: 16,
+      textAlign: 'center',
+    },
+    content: {
+      marginBottom: 24,
+    },
+    description: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: theme.text.secondary,
+      marginBottom: 24,
+    },
+    features: {
+      gap: 16,
+    },
+    featureItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    featureText: {
+      fontSize: 15,
+      flex: 1,
+    },
+    footer: {
+      gap: 12,
+    },
+    purchaseButton: {
+      backgroundColor: theme.accent.mid,
+      paddingVertical: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    disabledButton: {
+      opacity: 0.6,
+    },
+    purchaseButtonText: {
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: '500',
+    },
+    restoreButton: {
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    restoreButtonText: {
+      color: theme.accent.mid,
+      fontSize: 16,
+    },
+  });
+}
