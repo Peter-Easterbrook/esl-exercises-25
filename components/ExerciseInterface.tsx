@@ -51,6 +51,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const [showConfetti, setShowConfetti] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
+  const [showCategoryBanner, setShowCategoryBanner] = useState(false);
+  const [categoryBannerName, setCategoryBannerName] = useState<
+    string | undefined
+  >(undefined);
   const scoreTextSize = getResponsiveFontSize(width);
 
   // Admins have free access to downloads
@@ -197,18 +201,43 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           console.error('Error saving progress:', error);
         }
 
-        // Check milestone: show rating prompt once after 5 completions
+        // Check category completion and rating prompt
         try {
-          const shown = await AsyncStorage.getItem('@eslApp/ratingPromptShown');
-          if (!shown) {
-            const { getUserProgress } =
-              await import('@/services/firebaseService');
-            const allProgress = await getUserProgress(user.uid);
+          const [firebaseService, ratingShown] = await Promise.all([
+            import('@/services/firebaseService'),
+            AsyncStorage.getItem('@eslApp/ratingPromptShown'),
+          ]);
+          const { getExercisesByCategory, getUserProgress, getCategories } =
+            firebaseService;
+
+          const [categoryExercises, allProgress, categories] =
+            await Promise.all([
+              getExercisesByCategory(exercise.category),
+              getUserProgress(user.uid),
+              getCategories(),
+            ]);
+
+          // Category completion banner (no storage gate — shows every time)
+          const completedIds = new Set(
+            allProgress.filter((p) => p.completed).map((p) => p.exerciseId),
+          );
+          const allComplete =
+            categoryExercises.length > 0 &&
+            categoryExercises.every((ex) => completedIds.has(ex.id));
+
+          if (allComplete) {
+            const category = categories.find((c) => c.id === exercise.category);
+            setCategoryBannerName(category?.name ?? 'this category');
+            setShowCategoryBanner(true);
+          }
+
+          // Rating modal: one-time trigger after 5+ completions, with 3s delay
+          if (!ratingShown) {
             const completedCount = allProgress.filter(
               (p) => p.completed,
             ).length;
             if (completedCount >= 5) {
-              setShowRatingModal(true);
+              setTimeout(() => setShowRatingModal(true), 3000);
             }
           }
         } catch (milestoneError) {
@@ -229,6 +258,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     setShowResults(false);
     setScore(0);
     setShowConfetti(false);
+    setShowCategoryBanner(false);
   };
 
   const handleRatingModalClose = async () => {
@@ -365,6 +395,23 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                     : 'Keep studying and try again!'}
             </ThemedText>
           </View>
+
+          {showCategoryBanner && categoryBannerName && (
+            <View style={styles.categoryBanner}>
+              <IconSymbol
+                name="trophy.fill"
+                size={28}
+                color={theme.accent.mid}
+              />
+              <ThemedText style={styles.categoryBannerText}>
+                You've completed all exercises in{' '}
+                <ThemedText style={styles.categoryBannerName}>
+                  {categoryBannerName}
+                </ThemedText>
+                !
+              </ThemedText>
+            </View>
+          )}
 
           <View style={styles.reviewSection}>
             <ThemedText type="subtitle" style={styles.reviewTitle}>
@@ -993,6 +1040,29 @@ function createStyles(theme: AppTheme) {
       fontSize: 16,
       color: theme.text.secondary,
       textAlign: 'center',
+    },
+    categoryBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      marginHorizontal: 16,
+      marginTop: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      backgroundColor: theme.backgrounds.tinted,
+      borderRadius: 10,
+      borderLeftWidth: 3,
+      borderLeftColor: theme.accent.mid,
+    },
+    categoryBannerText: {
+      flex: 1,
+      fontSize: 14,
+      color: theme.text.secondary,
+      lineHeight: 20,
+    },
+    categoryBannerName: {
+      fontWeight: '700',
+      color: theme.text.primary,
     },
     reviewSection: {
       paddingHorizontal: 16,

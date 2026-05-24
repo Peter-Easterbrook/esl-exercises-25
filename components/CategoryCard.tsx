@@ -28,9 +28,13 @@ import Animated, {
 
 interface CategoryCardProps {
   category: Category;
+  refreshToken?: number;
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({
+  category,
+  refreshToken,
+}) => {
   const { user, hasPremiumAccess, appUser } = useAuth();
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -118,7 +122,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
       }
     };
     loadUserProgress();
-  }, [isExpanded, user]);
+  }, [isExpanded, user, refreshToken]);
 
   const handleExercisePress = (exercise: Exercise) => {
     router.push(`/exercise/${exercise.id}`);

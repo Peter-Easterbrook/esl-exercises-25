@@ -12,12 +12,14 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 export default function CategoriesScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshToken, setRefreshToken] = useState(0);
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   useFocusEffect(
     useCallback(() => {
       loadCategories();
+      setRefreshToken((t) => t + 1);
     }, []),
   );
 
@@ -111,7 +113,11 @@ export default function CategoriesScreen() {
           showsVerticalScrollIndicator={false}
         >
           {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
+            <CategoryCard
+              key={category.id}
+              category={category}
+              refreshToken={refreshToken}
+            />
           ))}
         </ScrollView>
       </View>
