@@ -58,7 +58,8 @@ export default function AdminPanel() {
     | 'folder.circle'
     | 'person.2.circle'
     | 'chart.pie'
-    | 'gear';
+    | 'gear'
+    | 'school';
 
   const adminActions: {
     icon: AdminActionIcon;
@@ -117,6 +118,14 @@ export default function AdminPanel() {
       animation: 'slide_from_right',
     },
     {
+      icon: 'school',
+      title: 'Level Test Editor',
+      subtitle: 'Create and edit the English level test',
+      color: '#004c6d',
+      onPress: () => router.push('/admin/level-test-editor'),
+      animation: 'slide_from_right',
+    },
+    {
       icon: 'gear',
       title: 'App Settings',
       subtitle: 'Configure app-wide settings',
@@ -134,7 +143,11 @@ export default function AdminPanel() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back to Profile</ThemedText>
           </TouchableOpacity>
 
@@ -142,9 +155,9 @@ export default function AdminPanel() {
             <Image
               source={require('@/assets/images/LL2020.png')}
               style={styles.headerLogo}
-              resizeMode='contain'
+              resizeMode="contain"
             />
-            <ThemedText type='title' style={styles.title}>
+            <ThemedText type="title" style={styles.title}>
               Admin Panel
             </ThemedText>
           </View>
@@ -153,13 +166,13 @@ export default function AdminPanel() {
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Stats Overview */}
           <View style={styles.statsContainer}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Overview
             </ThemedText>
 
             {loading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size='large' color={theme.accent.mid} />
+                <ActivityIndicator size="large" color={theme.accent.mid} />
                 <ThemedText style={styles.loadingText}>
                   Loading statistics...
                 </ThemedText>
@@ -167,7 +180,11 @@ export default function AdminPanel() {
             ) : (
               <View style={styles.statsGrid}>
                 <View style={styles.statCard}>
-                  <IconSymbol name='doc.text' size={24} color={theme.accent.mid} />
+                  <IconSymbol
+                    name="doc.text"
+                    size={24}
+                    color={theme.accent.mid}
+                  />
                   <ThemedText style={styles.statNumber}>
                     {stats.totalExercises}
                   </ThemedText>
@@ -177,7 +194,11 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='person.2' size={24} color={theme.status.success} />
+                  <IconSymbol
+                    name="person.2"
+                    size={24}
+                    color={theme.status.success}
+                  />
                   <ThemedText style={styles.statNumber}>
                     {stats.totalUsers}
                   </ThemedText>
@@ -185,7 +206,11 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='calendar' size={24} color={theme.status.warning} />
+                  <IconSymbol
+                    name="calendar"
+                    size={24}
+                    color={theme.status.warning}
+                  />
                   <ThemedText style={styles.statNumber}>
                     {stats.exercisesAddedThisMonth}
                   </ThemedText>
@@ -195,7 +220,11 @@ export default function AdminPanel() {
                 </View>
 
                 <View style={styles.statCard}>
-                  <IconSymbol name='circle.fill' size={24} color={theme.status.success} />
+                  <IconSymbol
+                    name="circle.fill"
+                    size={24}
+                    color={theme.status.success}
+                  />
                   <ThemedText style={styles.statNumber}>
                     {stats.activeUsers}
                   </ThemedText>
@@ -207,7 +236,7 @@ export default function AdminPanel() {
 
           {/* Admin Actions */}
           <View style={styles.actionsContainer}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Actions
             </ThemedText>
 
@@ -241,7 +270,11 @@ export default function AdminPanel() {
                     </ThemedText>
                   </View>
 
-                  <IconSymbol name='chevron.right' size={20} color={theme.icons.tertiary} />
+                  <IconSymbol
+                    name="chevron.right"
+                    size={20}
+                    color={theme.icons.tertiary}
+                  />
                 </TouchableOpacity>
               ))}
             </View>

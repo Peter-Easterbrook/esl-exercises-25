@@ -2,6 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
+import { LEVEL_COLOURS } from '@/constants/levelTest';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -207,6 +208,69 @@ Your UID: ${user?.uid}`,
             </View>
           </View>
 
+          {/* Level Badge Card */}
+          {appUser?.englishLevel && (
+            <View style={styles.levelBadgeCard}>
+              <View style={styles.levelBadgeLeft}>
+                <View
+                  style={[
+                    styles.levelPill,
+                    {
+                      backgroundColor:
+                        LEVEL_COLOURS[appUser.englishLevel] ?? theme.accent.mid,
+                    },
+                  ]}
+                >
+                  <ThemedText style={styles.levelPillText}>
+                    {appUser.englishLevel}
+                  </ThemedText>
+                </View>
+                <View>
+                  <ThemedText type="defaultSemiBold" style={styles.levelTitle}>
+                    Your English Level
+                  </ThemedText>
+                  <ThemedText style={styles.levelSubtitle}>
+                    Based on your last Level Test
+                  </ThemedText>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.retakeButton}
+                onPress={() => router.push('/(tabs)/')}
+                activeOpacity={0.7}
+              >
+                <ThemedText style={styles.retakeText}>Retake</ThemedText>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {!appUser?.englishLevel && (
+            <TouchableOpacity
+              style={styles.takeLevelTestCard}
+              onPress={() => router.push('/(tabs)/')}
+              activeOpacity={0.7}
+            >
+              <IconSymbol
+                name="graduationcap"
+                size={22}
+                color={theme.accent.mid}
+              />
+              <View style={{ flex: 1 }}>
+                <ThemedText type="defaultSemiBold" style={styles.levelTitle}>
+                  Discover Your Level
+                </ThemedText>
+                <ThemedText style={styles.levelSubtitle}>
+                  Take the free Level Test to find your CEFR level
+                </ThemedText>
+              </View>
+              <IconSymbol
+                name="chevron.right"
+                size={16}
+                color={theme.icons.tertiary}
+              />
+            </TouchableOpacity>
+          )}
+
           {/* Menu Items */}
           <View style={styles.menuSection}>
             {menuItems.map((item, index) => (
@@ -385,6 +449,72 @@ function createStyles(theme: AppTheme) {
       fontWeight: '500',
       letterSpacing: 1,
       marginLeft: 8,
+    },
+    levelBadgeCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: theme.backgrounds.card,
+      padding: 16,
+      borderRadius: 16,
+      marginBottom: 16,
+      marginHorizontal: 2,
+      gap: 12,
+      boxShadow: theme.shadow.level1,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
+    },
+    levelBadgeLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+      flex: 1,
+    },
+    levelPill: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    levelPillText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '700',
+    },
+    levelTitle: {
+      fontSize: 15,
+      marginBottom: 2,
+    },
+    levelSubtitle: {
+      fontSize: 12,
+      color: theme.text.secondary,
+    },
+    retakeButton: {
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      backgroundColor: theme.backgrounds.tintedStrong,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: theme.borders.medium,
+    },
+    retakeText: {
+      fontSize: 13,
+      color: theme.accent.mid,
+      fontWeight: '600',
+    },
+    takeLevelTestCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.backgrounds.card,
+      padding: 16,
+      borderRadius: 16,
+      marginBottom: 16,
+      marginHorizontal: 2,
+      gap: 14,
+      boxShadow: theme.shadow.level1,
+      borderWidth: 1,
+      borderColor: theme.borders.subtle,
     },
   });
 }

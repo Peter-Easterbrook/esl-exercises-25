@@ -36,10 +36,11 @@ export default function CategoriesScreen() {
         categoriesData = await getCategories();
       }
 
+      categoriesData.sort((a, b) =>
+        a.name === 'Level Test' ? -1 : b.name === 'Level Test' ? 1 : 0,
+      );
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error loading categories:', error);
-      // Fallback to mock data if Firebase fails
       const mockCategories: Category[] = [
         {
           id: '1',

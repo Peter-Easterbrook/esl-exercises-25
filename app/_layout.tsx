@@ -202,6 +202,17 @@ export default function RootLayout() {
                 }}
               />
 
+              {/* Level Test Editor - slide from right */}
+              <Stack.Screen
+                name="admin/level-test-editor"
+                options={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                  gestureEnabled: true,
+                  gestureDirection: 'horizontal',
+                }}
+              />
+
               {/* Modal - slide from bottom (traditional modal) */}
               <Stack.Screen
                 name="modal"

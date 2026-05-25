@@ -1,28 +1,36 @@
 import { ExerciseInterface } from '@/components/ExerciseInterface';
+import { LevelTestInterface } from '@/components/LevelTestInterface';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { LANGUAGE_ORDER, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
+import {
+  LANGUAGE_ORDER,
+  SUPPORTED_LANGUAGES,
+  type LanguageCode,
+} from '@/constants/languages';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
-import { Exercise } from '@/types';
-import { getDeviceDefaultLanguage, getInstructionsForLanguage } from '@/utils/languageHelpers';
+import { Exercise, LevelTestContent } from '@/types';
+import {
+  getDeviceDefaultLanguage,
+  getInstructionsForLanguage,
+} from '@/utils/languageHelpers';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Animated, {
-    FadeIn,
-    FadeOut,
-    SlideInRight,
-    SlideOutLeft,
+  FadeIn,
+  FadeOut,
+  SlideInRight,
+  SlideOutLeft,
 } from 'react-native-reanimated';
 
 export default function ExerciseScreen() {
@@ -34,7 +42,7 @@ export default function ExerciseScreen() {
   const [showInstructions, setShowInstructions] = useState(true);
   const [loading, setLoading] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
-    (appUser?.preferredLanguage as LanguageCode) || getDeviceDefaultLanguage()
+    (appUser?.preferredLanguage as LanguageCode) || getDeviceDefaultLanguage(),
   );
 
   useEffect(() => {
@@ -109,92 +117,137 @@ export default function ExerciseScreen() {
         <ThemedView style={styles.container}>
           <View style={styles.contentWrapper}>
             <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-            >
-              <IconSymbol name='chevron.left' size={24} color={theme.accent.mid} />
-              <ThemedText style={styles.backText}>Back</ThemedText>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            style={styles.content}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.titleSection}>
-              <ThemedText type='title' style={styles.title}>
-                {exercise.title}
-              </ThemedText>
-              <ThemedText style={styles.subtitle}>
-                {exercise.description}
-              </ThemedText>
-              <View style={styles.difficultyContainer}>
-                <Text style={[styles.difficulty, difficultyStyle]}>
-                  {exercise.difficulty}
-                </Text>
-                <Text style={styles.exerciseType}>
-                  {exercise.content.type.replace('-', ' ')} •{' '}
-                  {exercise.content.questions.length} questions
-                </Text>
-              </View>
-            </View>
-
-            {/* Language Selector */}
-            <View style={styles.languageSelectorSection}>
-              <ThemedText style={styles.languageSelectorLabel}>
-                Instructions Language:
-              </ThemedText>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.languageButtonsContainer}
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => router.back()}
               >
-                {LANGUAGE_ORDER.map((langCode) => {
-                  const lang = SUPPORTED_LANGUAGES[langCode];
-                  const isSelected = selectedLanguage === langCode;
-
-                  return (
-                    <TouchableOpacity
-                      key={langCode}
-                      style={[
-                        styles.languageButton,
-                        isSelected && styles.languageButtonSelected,
-                      ]}
-                      onPress={() => setSelectedLanguage(langCode)}
-                    >
-                      <Text style={styles.languageButtonFlag}>{lang.flag}</Text>
-                      <Text
-                        style={[
-                          styles.languageButtonCode,
-                          isSelected && styles.languageButtonCodeSelected,
-                        ]}
-                      >
-                        {langCode.toUpperCase()}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
+                <IconSymbol
+                  name="chevron.left"
+                  size={24}
+                  color={theme.accent.mid}
+                />
+                <ThemedText style={styles.backText}>Back</ThemedText>
+              </TouchableOpacity>
             </View>
 
-            <View style={styles.instructionsSection}>
-              <ThemedText style={styles.instructions}>
-                {getInstructionsForLanguage(exercise.instructions, selectedLanguage)}
-              </ThemedText>
-            </View>
-          </ScrollView>
-
-          <View style={styles.footer}>
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleStartExercise}
+            <ScrollView
+              style={styles.content}
+              showsVerticalScrollIndicator={false}
             >
-              <ThemedText style={styles.primaryButtonText}>
-                Start Exercise
-              </ThemedText>
-            </TouchableOpacity>
-          </View>
+              <View style={styles.titleSection}>
+                <ThemedText type="title" style={styles.title}>
+                  {exercise.title}
+                </ThemedText>
+                <ThemedText style={styles.subtitle}>
+                  {exercise.description}
+                </ThemedText>
+                <View style={styles.difficultyContainer}>
+                  <Text style={[styles.difficulty, difficultyStyle]}>
+                    {exercise.difficulty}
+                  </Text>
+                  <Text style={styles.exerciseType}>
+                    {exercise.content.type === 'level-test'
+                      ? 'Level Test'
+                      : `${exercise.content.type.replace('-', ' ')} • ${'questions' in exercise.content ? exercise.content.questions.length : 0} questions`}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Language Selector — hidden for Level Test */}
+              {exercise.content.type !== 'level-test' && (
+                <View style={styles.languageSelectorSection}>
+                  <ThemedText style={styles.languageSelectorLabel}>
+                    Instructions Language:
+                  </ThemedText>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.languageButtonsContainer}
+                  >
+                    {LANGUAGE_ORDER.map((langCode) => {
+                      const lang = SUPPORTED_LANGUAGES[langCode];
+                      const isSelected = selectedLanguage === langCode;
+
+                      return (
+                        <TouchableOpacity
+                          key={langCode}
+                          style={[
+                            styles.languageButton,
+                            isSelected && styles.languageButtonSelected,
+                          ]}
+                          onPress={() => setSelectedLanguage(langCode)}
+                        >
+                          <Text style={styles.languageButtonFlag}>
+                            {lang.flag}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.languageButtonCode,
+                              isSelected && styles.languageButtonCodeSelected,
+                            ]}
+                          >
+                            {langCode.toUpperCase()}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              )}
+
+              {/* Level Test: section overview in place of instructions */}
+              {exercise.content.type === 'level-test' ? (
+                <View style={styles.levelTestSectionsSection}>
+                  <ThemedText
+                    type="defaultSemiBold"
+                    style={styles.levelTestSectionsLabel}
+                  >
+                    This test has{' '}
+                    {(exercise.content as LevelTestContent).sections.length}{' '}
+                    sections:
+                  </ThemedText>
+                  {(exercise.content as LevelTestContent).sections.map(
+                    (section, idx) => (
+                      <ThemedText
+                        key={section.id}
+                        style={styles.levelTestSectionItem}
+                      >
+                        {idx + 1}. {section.title} — {section.questions.length}{' '}
+                        {section.questions.length === 1
+                          ? 'question'
+                          : 'questions'}{' '}
+                        ({section.maxPoints} pts)
+                      </ThemedText>
+                    ),
+                  )}
+                  <ThemedText style={styles.levelTestTotalPts}>
+                    Maximum score:{' '}
+                    {(exercise.content as LevelTestContent).totalMaxPoints}{' '}
+                    points
+                  </ThemedText>
+                </View>
+              ) : (
+                <View style={styles.instructionsSection}>
+                  <ThemedText style={styles.instructions}>
+                    {getInstructionsForLanguage(
+                      exercise.instructions,
+                      selectedLanguage,
+                    )}
+                  </ThemedText>
+                </View>
+              )}
+            </ScrollView>
+
+            <View style={styles.footer}>
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={handleStartExercise}
+              >
+                <ThemedText style={styles.primaryButtonText}>
+                  Start Exercise
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
           </View>
         </ThemedView>
       </Animated.View>
@@ -210,16 +263,24 @@ export default function ExerciseScreen() {
       <ThemedView style={styles.container}>
         <View style={styles.contentWrapper}>
           <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={handleBackToInstructions}
-          >
-            <IconSymbol name='chevron.left' size={24} color={theme.accent.mid} />
-            <ThemedText style={styles.backText}>Instructions</ThemedText>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackToInstructions}
+            >
+              <IconSymbol
+                name="chevron.left"
+                size={24}
+                color={theme.accent.mid}
+              />
+              <ThemedText style={styles.backText}>Instructions</ThemedText>
+            </TouchableOpacity>
+          </View>
 
-        <ExerciseInterface exercise={exercise} />
+          {exercise.content.type === 'level-test' ? (
+            <LevelTestInterface exercise={exercise} />
+          ) : (
+            <ExerciseInterface exercise={exercise} />
+          )}
         </View>
       </ThemedView>
     </Animated.View>
@@ -382,6 +443,29 @@ function createStyles(theme: AppTheme) {
     },
     languageButtonCodeSelected: {
       color: theme.accent.mid,
+    },
+    levelTestSectionsSection: {
+      paddingVertical: 20,
+      paddingHorizontal: 4,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borders.divider,
+      marginBottom: 16,
+      gap: 10,
+    },
+    levelTestSectionsLabel: {
+      fontSize: 15,
+      marginBottom: 4,
+    },
+    levelTestSectionItem: {
+      fontSize: 15,
+      color: theme.text.primary,
+      paddingLeft: 8,
+      lineHeight: 24,
+    },
+    levelTestTotalPts: {
+      fontSize: 14,
+      color: theme.text.secondary,
+      marginTop: 8,
     },
   });
 }

@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { LEVEL_COLOURS } from '@/constants/levelTest';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -38,6 +39,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   const { user, hasPremiumAccess, appUser } = useAuth();
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const isLevelTest = category.name === 'Level Test';
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFilesExpanded, setIsFilesExpanded] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -162,23 +164,40 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   }));
 
   return (
-    <ThemedView style={styles.card}>
+    <ThemedView style={[styles.card, isLevelTest && styles.levelTestCard]}>
       <TouchableOpacity
-        style={styles.header}
+        style={[styles.header, isLevelTest && styles.levelTestHeader]}
         onPress={() => setIsExpanded(!isExpanded)}
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
           <IconSymbol
-            name={category.icon as any}
+            name={isLevelTest ? 'school' : (category.icon as any)}
             size={24}
-            color={theme.accent.mid}
+            color={isLevelTest ? '#fff' : theme.accent.mid}
           />
           <View style={styles.titleContainer}>
-            <ThemedText type="defaultSemiBold" style={styles.title}>
-              {category.name}
-            </ThemedText>
-            <ThemedText style={styles.description}>
+            <View style={styles.levelTestTitleRow}>
+              <ThemedText
+                type="defaultSemiBold"
+                style={[styles.title, isLevelTest && styles.levelTestTitle]}
+              >
+                {category.name}
+              </ThemedText>
+              {isLevelTest && (
+                <View style={styles.levelTestBadge}>
+                  <ThemedText style={styles.levelTestBadgeText}>
+                    FREE
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+            <ThemedText
+              style={[
+                styles.description,
+                isLevelTest && styles.levelTestDescription,
+              ]}
+            >
               {category.description}
             </ThemedText>
           </View>
@@ -186,7 +205,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
         <IconSymbol
           name={isExpanded ? 'chevron.up' : 'chevron.down'}
           size={20}
-          color={theme.icons.tertiary}
+          color={isLevelTest ? 'rgba(255,255,255,0.8)' : theme.icons.tertiary}
         />
       </TouchableOpacity>
 
@@ -473,6 +492,38 @@ function createStyles(theme: AppTheme) {
     },
     lockIcon: {
       marginRight: 8,
+    },
+    levelTestCard: {
+      borderColor: LEVEL_COLOURS.B1,
+      borderWidth: 2,
+    },
+    levelTestHeader: {
+      backgroundColor: LEVEL_COLOURS.B1,
+      borderRadius: 12,
+      margin: 4,
+    },
+    levelTestTitle: {
+      color: '#fff',
+    },
+    levelTestDescription: {
+      color: 'rgba(255,255,255,0.8)',
+    },
+    levelTestTitleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    levelTestBadge: {
+      backgroundColor: 'rgba(255,255,255,0.25)',
+      paddingHorizontal: 7,
+      paddingVertical: 2,
+      borderRadius: 8,
+    },
+    levelTestBadgeText: {
+      color: '#fff',
+      fontSize: 11,
+      fontWeight: '700',
+      letterSpacing: 0.5,
     },
   });
 }

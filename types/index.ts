@@ -24,7 +24,7 @@ export interface Exercise {
   title: string;
   description: string;
   instructions: MultiLanguageInstructions | string; // Support both old and new format
-  content: ExerciseContent;
+  content: ExerciseContent | LevelTestContent;
   category: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   createdAt: Date;
@@ -41,6 +41,48 @@ export interface ExerciseContent {
     | 'essay'
     | 'short-answer';
   questions: Question[];
+}
+
+export interface LevelBand {
+  level: string; // e.g. "A1"
+  label: string; // e.g. "Beginner"
+  minScore: number;
+  maxScore: number;
+  description?: string;
+}
+
+export interface LevelTestSection {
+  id: string;
+  title: string;
+  type:
+    | 'multiple-choice'
+    | 'fill-blanks'
+    | 'true-false'
+    | 'matching'
+    | 'short-answer';
+  questions: Question[];
+  maxPoints: number;
+}
+
+export interface LevelTestContent {
+  type: 'level-test';
+  sections: LevelTestSection[];
+  levelBands: LevelBand[];
+  totalMaxPoints: number;
+}
+
+export interface LevelTestSectionScore {
+  sectionId: string;
+  sectionTitle: string;
+  points: number;
+  maxPoints: number;
+}
+
+export interface LevelTestResult {
+  totalPoints: number;
+  assignedLevel: string;
+  assignedLevelLabel: string;
+  sectionScores: LevelTestSectionScore[];
 }
 
 export interface Question {
@@ -71,6 +113,7 @@ export interface User {
   createdAt?: Date;
   progress: UserProgress[];
   preferredLanguage?: string; // Language code: 'en', 'es', 'fr', 'de', 'it'
+  englishLevel?: string; // CEFR level from Level Test, e.g. 'B1'
 
   // Premium access fields
   hasPremiumAccess?: boolean;
@@ -88,4 +131,5 @@ export interface UserProgress {
   completed: boolean;
   score?: number;
   completedAt?: Date;
+  levelTestResult?: LevelTestResult;
 }

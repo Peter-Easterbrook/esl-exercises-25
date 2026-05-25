@@ -1,6 +1,6 @@
 import { db } from '@/config/firebase';
 import { colors } from '@/constants/theme';
-import { Category, Exercise, UserProgress } from '@/types';
+import { Category, Exercise, LevelTestResult, UserProgress } from '@/types';
 import {
   addDoc,
   collection,
@@ -261,7 +261,11 @@ export const getUserProgress = async (
 export const updateUserProgress = async (
   userId: string,
   exerciseId: string,
-  progress: { completed: boolean; score?: number },
+  progress: {
+    completed: boolean;
+    score?: number;
+    levelTestResult?: LevelTestResult;
+  },
 ): Promise<void> => {
   try {
     const progressRef = collection(db, 'userProgress');
@@ -675,6 +679,18 @@ export const updateUserLanguagePreference = async (
     });
   } catch (error) {
     console.error('Error updating user language preference:', error);
+    throw error;
+  }
+};
+
+export const updateUserEnglishLevel = async (
+  userId: string,
+  level: string,
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'users', userId), { englishLevel: level });
+  } catch (error) {
+    console.error('Error updating user English level:', error);
     throw error;
   }
 };
