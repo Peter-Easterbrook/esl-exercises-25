@@ -1,8 +1,13 @@
-import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeApp } from 'firebase/app';
+import { getReactNativePersistence, initializeAuth } from 'firebase/auth';
+import {
+  initializeFirestore,
+  memoryLocalCache,
+  persistentLocalCache,
+  persistentSingleTabManager,
+} from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { Platform } from 'react-native';
 
 const firebaseConfig = {
@@ -18,13 +23,26 @@ export const app = initializeApp(firebaseConfig);
 
 // Initialize Auth with AsyncStorage persistence for React Native
 // On web, Firebase automatically uses localStorage
-export const auth = Platform.OS === 'web'
-  ? initializeAuth(app, {
-      persistence: [] // Web uses localStorage by default
-    })
-  : initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage)
-    });
+export const auth =
+  Platform.OS === 'web'
+    ? initializeAuth(app, {
+        persistence: [], // Web uses localStorage by default
+      })
+    : initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
 
-export const db = getFirestore(app);
+// Web: IndexedDB-backed persistent cache (survives page refreshes)
+// Native: in-session memory cache (reduces re-fetches within a session)
+export const db =
+  Platform.OS === 'web'
+    ? initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentSingleTabManager(),
+        }),
+      })
+    : initializeFirestore(app, {
+        localCache: memoryLocalCache(),
+      });
+
 export const storage = getStorage(app);
