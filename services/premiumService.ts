@@ -7,7 +7,7 @@ const ANDROID_PRODUCT_ID = 'premium_file_access';
 const IOS_PRODUCT_ID = 'premium_file_access'; // Same ID for consistency
 
 // Default price to display before products load
-export const DEFAULT_PRICE = '€1.99';
+export const DEFAULT_PRICE = '€3.99';
 
 // Dynamically import react-native-iap only on native platforms
 // Returns null if not available (web, Expo Go, or native module not linked)
@@ -50,7 +50,10 @@ export const initializeIAP = async (): Promise<boolean> => {
     return true;
   } catch (error) {
     // Only log as warning since this is expected in Expo Go
-    console.warn('IAP initialization skipped (requires development build):', error);
+    console.warn(
+      'IAP initialization skipped (requires development build):',
+      error,
+    );
     return false;
   }
 };
@@ -127,7 +130,7 @@ export const purchasePremium = async () => {
 // Verify and save purchase to Firestore
 export const verifyAndSavePurchase = async (
   userId: string,
-  purchase: any // Using any to avoid importing types on web
+  purchase: any, // Using any to avoid importing types on web
 ) => {
   if (Platform.OS === 'web') {
     throw new Error('Purchase verification not available on web');
@@ -182,7 +185,8 @@ export const restorePurchases = async (userId: string) => {
 
     // Find premium access purchase
     const premiumPurchase = purchases.find(
-      (p: any) => p.productId === ANDROID_PRODUCT_ID || p.productId === IOS_PRODUCT_ID
+      (p: any) =>
+        p.productId === ANDROID_PRODUCT_ID || p.productId === IOS_PRODUCT_ID,
     );
 
     if (premiumPurchase) {
@@ -231,7 +235,7 @@ export const endIAPConnection = async () => {
 // Setup purchase listeners (native only)
 export const setupPurchaseListeners = async (
   onPurchaseUpdate: (purchase: any) => void,
-  onPurchaseError: (error: any) => void
+  onPurchaseError: (error: any) => void,
 ) => {
   if (Platform.OS === 'web') {
     return () => {}; // No-op cleanup for web
@@ -241,8 +245,10 @@ export const setupPurchaseListeners = async (
     const RNIap = await getRNIap();
     if (!RNIap) return () => {};
 
-    const purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(onPurchaseUpdate);
-    const purchaseErrorSubscription = RNIap.purchaseErrorListener(onPurchaseError);
+    const purchaseUpdateSubscription =
+      RNIap.purchaseUpdatedListener(onPurchaseUpdate);
+    const purchaseErrorSubscription =
+      RNIap.purchaseErrorListener(onPurchaseError);
 
     return () => {
       purchaseUpdateSubscription.remove();
