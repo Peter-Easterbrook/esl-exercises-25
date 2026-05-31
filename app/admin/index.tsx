@@ -301,9 +301,9 @@ function createStyles(theme: AppTheme) {
       paddingTop: 60,
       paddingHorizontal: 16,
       paddingBottom: 20,
-      backgroundColor: theme.backgrounds.card,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.borders.divider,
+      // backgroundColor: theme.backgrounds.card,
+      // borderBottomWidth: 1,
+      // borderBottomColor: theme.borders.divider,
     },
     backButton: {
       flexDirection: 'row',

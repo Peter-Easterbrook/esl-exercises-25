@@ -93,7 +93,9 @@ export interface Question {
   explanation?: string;
   // Additional fields for specific question types
   passageText?: string; // For true-false questions with reading passage
-  leftColumn?: string[]; // For matching questions (left column items)
+  leftColumn?: string[]; // For matching questions (left column items) - add-exercise screen
+  leftItems?: string[]; // For matching questions (left column items) - level-test editor
+  rightItems?: string[]; // For matching questions (right column items) - level-test editor
   blanksCount?: number; // For fill-blanks questions
 }
 

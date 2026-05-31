@@ -5,31 +5,31 @@ export const DEFAULT_LEVEL_BANDS: LevelBand[] = [
     level: 'A1',
     label: 'Beginner',
     minScore: 0,
-    maxScore: 40,
+    maxScore: 25,
     description:
       'Can handle basic isolated phrases. Scores in this range mean the student only managed a few correct answers in basic present tenses or simple prepositions.',
   },
   {
     level: 'A2',
     label: 'Elementary',
-    minScore: 41,
-    maxScore: 80,
+    minScore: 26,
+    maxScore: 50,
     description:
       'Understands sentences of immediate relevance. The student can successfully navigate fundamental tenses (Present Simple, Past Simple), some/any, and simple text negation.',
   },
   {
     level: 'B1',
     label: 'Intermediate',
-    minScore: 81,
-    maxScore: 120,
+    minScore: 51,
+    maxScore: 75,
     description:
       'Understands standard input on familiar matters. At this tier, the student secures a solid grasp of Section A (Tenses), correctly manages Much/Many, basic Comparatives, and First Conditionals.',
   },
   {
     level: 'B2',
     label: 'Upper-Intermediate',
-    minScore: 121,
-    maxScore: 160,
+    minScore: 76,
+    maxScore: 100,
     description:
       'Understands complex text and abstract topics. The student commands advanced tenses (Present Perfect, Past Perfect), modals (Must/Have to), Linkers, and structural Question Tags.',
   },
@@ -43,19 +43,50 @@ export const LEVEL_COLOURS: Record<string, string> = {
 };
 
 export const DEFAULT_LEVEL_TEST_SECTIONS = [
-  { title: 'Grammar', type: 'multiple-choice' as const },
-  { title: 'Vocabulary', type: 'multiple-choice' as const },
-  { title: 'Reading Comprehension', type: 'true-false' as const },
+  { title: 'Pronouns / Verbs', type: 'multiple-choice' as const },
+  { title: 'Plural Nouns', type: 'multiple-choice' as const },
+  { title: 'Articles', type: 'multiple-choice' as const },
+  { title: 'Comparative Adjectives', type: 'multiple-choice' as const },
+  { title: 'Place Prepositions', type: 'multiple-choice' as const },
+  { title: 'Time Prepositions', type: 'multiple-choice' as const },
+  { title: 'Conjunctions', type: 'multiple-choice' as const },
+  {
+    title: 'Simple Present / Present Progressive',
+    type: 'multiple-choice' as const,
+  },
+  {
+    title: 'Simple Past / Past Progressive',
+    type: 'multiple-choice' as const,
+  },
+  {
+    title: 'Simple Past / Present Perfect',
+    type: 'multiple-choice' as const,
+  },
+  { title: 'Mixed Tenses', type: 'multiple-choice' as const },
+  { title: 'Yes / No Questions', type: 'multiple-choice' as const },
+  { title: 'WH Questions', type: 'multiple-choice' as const },
+  { title: 'Tag Questions', type: 'multiple-choice' as const },
+  { title: 'Negative Sentences', type: 'multiple-choice' as const },
+  { title: 'Compound Sentences', type: 'multiple-choice' as const },
 ];
 
-/** Returns the matching LevelBand for a given total score, or null if out of range. */
+/**
+ * Returns the matching LevelBand for a given score.
+ * When `totalMaxPoints` is provided the score is normalised to a 0–100
+ * percentage before comparison, so bands can always be defined in that range.
+ */
 export function assignLevel(
   totalPoints: number,
   bands: LevelBand[],
+  totalMaxPoints?: number,
 ): LevelBand | null {
+  if (!bands || bands.length === 0) return null;
+  const score =
+    totalMaxPoints && totalMaxPoints > 0
+      ? Math.round((totalPoints / totalMaxPoints) * 100)
+      : totalPoints;
   return (
-    bands.find(
-      (band) => totalPoints >= band.minScore && totalPoints <= band.maxScore,
-    ) ?? null
+    bands.find((band) => score >= band.minScore && score <= band.maxScore) ??
+    null
   );
 }

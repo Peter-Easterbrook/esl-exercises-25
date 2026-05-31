@@ -17,6 +17,7 @@ export interface AppTheme {
     title: string;
     secondary: string;
     accent: string;
+    placeholder: string;
   };
   accent: {
     darkest: string;
@@ -87,6 +88,7 @@ export const themes: Record<ThemeId, AppTheme> = {
       title: '#000000',
       secondary: '#444444',
       accent: '#6996b3',
+      placeholder: 'rgba(68, 68, 68, 0.45)',
     },
     accent: {
       darkest: '#004c6d',
@@ -159,6 +161,7 @@ export const themes: Record<ThemeId, AppTheme> = {
       title: '#0D1E1E',
       secondary: '#4A6060',
       accent: '#6E9FAF',
+      placeholder: 'rgba(74, 96, 96, 0.45)',
     },
     accent: {
       darkest: '#3A6B7B',
@@ -231,6 +234,7 @@ export const themes: Record<ThemeId, AppTheme> = {
       title: '#1A0E08',
       secondary: '#5E3E2E',
       accent: '#C97A5A',
+      placeholder: 'rgba(94, 62, 46, 0.45)',
     },
     accent: {
       darkest: '#8A4030',
@@ -303,6 +307,7 @@ export const themes: Record<ThemeId, AppTheme> = {
       title: '#0A1414',
       secondary: '#3A5858',
       accent: '#5A8E8E',
+      placeholder: 'rgba(58, 88, 88, 0.45)',
     },
     accent: {
       darkest: '#2E5C5C',

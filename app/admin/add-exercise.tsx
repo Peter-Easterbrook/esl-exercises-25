@@ -961,20 +961,9 @@ export default function AddExerciseScreen() {
 
             {/* Questions */}
             <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <ThemedText type="subtitle" style={styles.sectionTitle}>
-                  Questions
-                </ThemedText>
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={handleAddQuestion}
-                >
-                  <IconSymbol name="plus" size={16} color="#fff" />
-                  <ThemedText style={styles.addButtonText}>
-                    Add Question
-                  </ThemedText>
-                </TouchableOpacity>
-              </View>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
+                Questions
+              </ThemedText>
 
               {questions.map((question, qIndex) => (
                 <View key={qIndex} style={styles.questionCard}>
@@ -1334,6 +1323,20 @@ export default function AddExerciseScreen() {
                   </View>
                 </View>
               ))}
+
+              <TouchableOpacity
+                style={styles.addQuestionBtn}
+                onPress={handleAddQuestion}
+              >
+                <IconSymbol
+                  name="plus.circle"
+                  size={20}
+                  color={theme.accent.mid}
+                />
+                <ThemedText style={styles.addQuestionBtnText}>
+                  Add Question
+                </ThemedText>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.footer}>
@@ -1479,6 +1482,17 @@ function createStyles(theme: AppTheme) {
     addButtonText: {
       color: '#fff',
       fontSize: 12,
+    },
+    addQuestionBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      paddingVertical: 14,
+    },
+    addQuestionBtnText: {
+      color: theme.accent.mid,
+      fontSize: 15,
     },
     questionCard: {
       backgroundColor: theme.backgrounds.subtle,

@@ -1,4 +1,6 @@
-import React from 'react';
+import { AppTheme } from '@/constants/themes';
+import { useAppTheme } from '@/contexts/ThemeContext';
+import React, { useMemo } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { ThemedText } from './themed-text';
 
@@ -15,10 +17,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   size = 64,
   photoUri,
 }) => {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   // Get initials from displayName or email
   const getInitials = (): string => {
     if (displayName && displayName.trim()) {
-      const names = displayName.trim().split(' ');
+      const names = displayName.trim().split(/\s+/);
       if (names.length >= 2) {
         // First letter of first and last name
         return (names[0][0] + names[names.length - 1][0]).toUpperCase();
@@ -27,7 +31,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       return names[0][0].toUpperCase();
     }
     // Fall back to first letter of email
-    return email[0].toUpperCase();
+    if (email && email.length > 0) {
+      return email[0].toUpperCase();
+    }
+    // Nothing available yet (e.g. profile still loading)
+    return '?';
   };
 
   const initials = getInitials();
@@ -88,18 +96,19 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  avatar: {
-    backgroundColor: '#6996b3',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  initials: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  photo: {
-    resizeMode: 'cover',
-  },
-});
+const createStyles = (theme: AppTheme) =>
+  StyleSheet.create({
+    avatar: {
+      backgroundColor: theme.accent.mid,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    initials: {
+      color: '#fff',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    photo: {
+      resizeMode: 'cover',
+    },
+  });

@@ -1,6 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { LEVEL_COLOURS, assignLevel } from '@/constants/levelTest';
+import {
+  DEFAULT_LEVEL_BANDS,
+  LEVEL_COLOURS,
+  assignLevel,
+} from '@/constants/levelTest';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -13,9 +17,10 @@ import {
   Question,
 } from '@/types';
 import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,6 +28,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Confetti } from 'react-native-fast-confetti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface LevelTestInterfaceProps {
@@ -91,6 +97,7 @@ function calculateSectionPoints(
   section: LevelTestSection,
   answers: Record<string, string>,
 ): number {
+  if (section.questions.length === 0) return 0;
   const correct = section.questions.filter((q) =>
     isAnswerCorrect(q, section.type, answers[q.id]),
   ).length;
@@ -102,7 +109,18 @@ function calculateSectionPoints(
 export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
   exercise,
 }) => {
-  const content = exercise.content as LevelTestContent;
+  const rawContent = exercise.content as LevelTestContent;
+  // Ignore any section without questions so progress/scoring never divides by
+  // zero and the player never shows an empty section.
+  const content = useMemo<LevelTestContent>(
+    () => ({
+      ...rawContent,
+      sections: (rawContent.sections ?? []).filter(
+        (s) => s.questions && s.questions.length > 0,
+      ),
+    }),
+    [rawContent],
+  );
   const { user } = useAuth();
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -115,6 +133,15 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
   const [showSectionSummary, setShowSectionSummary] = useState(false);
   const [showFinalResults, setShowFinalResults] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Stop confetti after animation completes
+  useEffect(() => {
+    if (showConfetti) {
+      const timer = setTimeout(() => setShowConfetti(false), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfetti]);
 
   const currentSection = content.sections[currentSectionIndex];
   const currentQuestion = currentSection?.questions[currentQuestionIndex];
@@ -174,7 +201,15 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
       // All sections done — save and show final results
       const allResults = [...sectionResults];
       const totalPoints = allResults.reduce((sum, r) => sum + r.points, 0);
-      const assignedBand = assignLevel(totalPoints, content.levelBands);
+      const totalMax = allResults.reduce((sum, r) => sum + r.maxPoints, 0);
+      const assignedBand =
+        assignLevel(totalPoints, content.levelBands, totalMax) ??
+        assignLevel(totalPoints, DEFAULT_LEVEL_BANDS, totalMax);
+
+      // Trigger confetti for a perfect score
+      if (totalMax > 0 && totalPoints === totalMax) {
+        setShowConfetti(true);
+      }
 
       if (user && assignedBand) {
         setIsSaving(true);
@@ -225,6 +260,7 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
     setSectionResults([]);
     setShowSectionSummary(false);
     setShowFinalResults(false);
+    setShowConfetti(false);
   };
 
   // ── Section summary screen ───────────────────────────────────────────────────
@@ -299,16 +335,31 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
   if (showFinalResults) {
     const totalPoints = sectionResults.reduce((sum, r) => sum + r.points, 0);
     const totalMax = sectionResults.reduce((sum, r) => sum + r.maxPoints, 0);
-    const assignedBand: LevelBand | null = assignLevel(
-      totalPoints,
-      content.levelBands,
-    );
+    const isPerfectScore = totalMax > 0 && totalPoints === totalMax;
+    const assignedBand: LevelBand | null =
+      assignLevel(totalPoints, content.levelBands, totalMax) ??
+      assignLevel(totalPoints, DEFAULT_LEVEL_BANDS, totalMax);
     const levelColour = assignedBand
       ? (LEVEL_COLOURS[assignedBand.level] ?? theme.accent.mid)
       : theme.accent.mid;
 
     return (
       <View style={styles.container}>
+        {showConfetti && Platform.OS !== 'web' && (
+          <View style={styles.confettiContainer}>
+            <Confetti
+              count={200}
+              colors={[
+                '#FFD700',
+                '#FFA500',
+                '#FF6347',
+                '#07b524',
+                '#6996b3',
+                '#9C27B0',
+              ]}
+            />
+          </View>
+        )}
         <ScrollView
           contentContainerStyle={[
             styles.resultsContent,
@@ -321,6 +372,15 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
             <ThemedText type="title" style={styles.resultsTitle}>
               Level Test Complete!
             </ThemedText>
+
+            {isPerfectScore && (
+              <IconSymbol
+                name="trophy.fill"
+                size={56}
+                color="#f6a800"
+                style={styles.trophyIcon}
+              />
+            )}
 
             <View style={[styles.levelBadge, { backgroundColor: levelColour }]}>
               <ThemedText style={styles.levelBadgeCode}>
@@ -814,6 +874,18 @@ function createStyles(theme: AppTheme) {
     container: {
       flex: 1,
       backgroundColor: theme.backgrounds.app,
+    },
+    confettiContainer: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 1000,
+      pointerEvents: 'none',
+    },
+    trophyIcon: {
+      marginBottom: 16,
     },
     // Section progress
     sectionProgress: {

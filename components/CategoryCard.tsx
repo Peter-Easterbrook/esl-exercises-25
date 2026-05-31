@@ -130,6 +130,27 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     router.push(`/exercise/${exercise.id}`);
   };
 
+  const handleLevelTestPress = async () => {
+    const preloaded = category.exercises ?? [];
+    const ex =
+      preloaded.find((e) => e.content?.type === 'level-test') ?? preloaded[0];
+    if (ex) {
+      router.push(`/exercise/${ex.id}`);
+      return;
+    }
+    // Fallback fetch if exercises weren't pre-loaded
+    try {
+      const { getExercisesByCategory } =
+        await import('@/services/firebaseService');
+      const exs = await getExercisesByCategory(category.id);
+      const fetched =
+        exs.find((e) => e.content?.type === 'level-test') ?? exs[0];
+      if (fetched) router.push(`/exercise/${fetched.id}`);
+    } catch (e) {
+      console.error('Error loading level test:', e);
+    }
+  };
+
   const handleDownloadFile = async (file: DownloadableFile) => {
     // Check platform - web doesn't support downloads
     if (Platform.OS === 'web') {
@@ -167,7 +188,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     <ThemedView style={[styles.card, isLevelTest && styles.levelTestCard]}>
       <TouchableOpacity
         style={[styles.header, isLevelTest && styles.levelTestHeader]}
-        onPress={() => setIsExpanded(!isExpanded)}
+        onPress={
+          isLevelTest ? handleLevelTestPress : () => setIsExpanded(!isExpanded)
+        }
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
@@ -203,13 +226,19 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           </View>
         </View>
         <IconSymbol
-          name={isExpanded ? 'chevron.up' : 'chevron.down'}
+          name={
+            isLevelTest
+              ? 'chevron.right'
+              : isExpanded
+                ? 'chevron.up'
+                : 'chevron.down'
+          }
           size={20}
           color={isLevelTest ? 'rgba(255,255,255,0.8)' : theme.icons.tertiary}
         />
       </TouchableOpacity>
 
-      {isExpanded && (
+      {!isLevelTest && isExpanded && (
         <Animated.View
           style={opacityStyle}
           entering={FadeIn.duration(300)}

@@ -859,7 +859,7 @@ function createStyles(theme: AppTheme) {
     tapToChangeText: {
       marginTop: 4,
       fontSize: 12,
-      color: theme.accent.mid,
+      color: theme.text.secondary,
     },
     section: {
       marginBottom: 24,

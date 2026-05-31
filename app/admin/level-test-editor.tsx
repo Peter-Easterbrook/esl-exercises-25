@@ -33,6 +33,32 @@ import {
 
 const genId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
+// react-native's Alert is a no-op on react-native-web, so feedback (including
+// save errors and validation messages) silently vanishes in the browser. These
+// helpers fall back to the browser's native dialogs on web.
+const notify = (title: string, message?: string) => {
+  if (Platform.OS === 'web') {
+    window.alert(message ? `${title}\n\n${message}` : title);
+  } else {
+    Alert.alert(title, message);
+  }
+};
+
+const confirmDestructive = (
+  title: string,
+  message: string,
+  onConfirm: () => void,
+) => {
+  if (Platform.OS === 'web') {
+    if (window.confirm(`${title}\n\n${message}`)) onConfirm();
+  } else {
+    Alert.alert(title, message, [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Remove', style: 'destructive', onPress: onConfirm },
+    ]);
+  }
+};
+
 function emptyQuestion(type: LevelTestSection['type']): Question {
   const id = genId();
   switch (type) {
@@ -75,7 +101,7 @@ function buildDefaultSections(): LevelTestSection[] {
     id: genId(),
     title: s.title,
     type: s.type,
-    questions: [emptyQuestion(s.type)],
+    questions: [],
     maxPoints: pointsEach,
   }));
 }
@@ -89,7 +115,7 @@ const SECTION_TYPES: LevelTestSection['type'][] = [
 ];
 
 export default function LevelTestEditorScreen() {
-  const { appUser } = useAuth();
+  const { appUser, loading: authLoading } = useAuth();
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -106,9 +132,9 @@ export default function LevelTestEditorScreen() {
   const [description, setDescription] = useState(
     'Find out your CEFR English level through grammar, vocabulary and reading exercises.',
   );
-  const [difficulty, setDifficulty] = useState<
-    'beginner' | 'intermediate' | 'advanced'
-  >('intermediate');
+  const [difficulty] = useState<'beginner' | 'intermediate' | 'advanced'>(
+    'intermediate',
+  );
   const [sections, setSections] =
     useState<LevelTestSection[]>(buildDefaultSections);
   const [levelBands, setLevelBands] =
@@ -118,12 +144,13 @@ export default function LevelTestEditorScreen() {
   const totalMaxPoints = sections.reduce((sum, s) => sum + s.maxPoints, 0);
 
   useEffect(() => {
+    if (authLoading) return;
     if (!appUser?.isAdmin) {
       router.replace('/(tabs)' as any);
       return;
     }
     loadExisting();
-  }, []);
+  }, [authLoading, appUser?.isAdmin]);
 
   const loadExisting = async () => {
     try {
@@ -139,7 +166,6 @@ export default function LevelTestEditorScreen() {
           setExistingExerciseId(ltEx.id);
           setTitle(ltEx.title);
           setDescription(ltEx.description ?? '');
-          setDifficulty(ltEx.difficulty);
           const c = ltEx.content as LevelTestContent;
           if (c.sections?.length) setSections(c.sections);
           if (c.levelBands?.length) setLevelBands(c.levelBands);
@@ -154,25 +180,28 @@ export default function LevelTestEditorScreen() {
 
   const handleSave = async () => {
     if (!title.trim()) {
-      Alert.alert('Validation', 'Please enter a title.');
+      notify('Validation', 'Please enter a title.');
       return;
     }
+
+    // Every section must be named, but empty sections are allowed — they act as
+    // placeholders the admin can fill in across multiple editing sessions.
     for (const s of sections) {
       if (!s.title.trim()) {
-        Alert.alert('Validation', 'A section is missing a title.');
-        return;
-      }
-      if (s.questions.length === 0) {
-        Alert.alert('Validation', `Section "${s.title}" has no questions.`);
+        notify('Validation', 'A section is missing a title.');
         return;
       }
       for (const q of s.questions) {
         if (!q.question.trim()) {
-          Alert.alert('Validation', `A question in "${s.title}" has no text.`);
+          notify('Validation', `A question in "${s.title}" has no text.`);
           return;
         }
-        if (!q.correctAnswer?.trim()) {
-          Alert.alert(
+        const answer = q.correctAnswer;
+        const answerIsEmpty = Array.isArray(answer)
+          ? answer.every((a) => !a.trim())
+          : !answer?.trim();
+        if (answerIsEmpty) {
+          notify(
             'Validation',
             `A question in "${s.title}" is missing a correct answer.`,
           );
@@ -180,6 +209,23 @@ export default function LevelTestEditorScreen() {
         }
       }
     }
+
+    // Only sections that actually contain questions get persisted, and the
+    // total is derived from those — this keeps the CEFR bands consistent and
+    // protects the test player (which divides by question count) from empty
+    // sections. At least one populated section is required.
+    const sectionsToSave = sections.filter((s) => s.questions.length > 0);
+    if (sectionsToSave.length === 0) {
+      notify(
+        'Nothing to save',
+        'Add at least one question to one section before saving.',
+      );
+      return;
+    }
+    const savedMaxPoints = sectionsToSave.reduce(
+      (sum, s) => sum + s.maxPoints,
+      0,
+    );
 
     setSaving(true);
     try {
@@ -204,9 +250,9 @@ export default function LevelTestEditorScreen() {
 
       const content: LevelTestContent = {
         type: 'level-test',
-        sections,
+        sections: sectionsToSave,
         levelBands,
-        totalMaxPoints,
+        totalMaxPoints: savedMaxPoints,
       };
 
       const exercisePayload = {
@@ -214,9 +260,10 @@ export default function LevelTestEditorScreen() {
         description: description.trim(),
         instructions: {
           en: 'Complete all sections carefully. Each section tests a different skill.',
-          es: '',
-          fr: '',
-          de: '',
+          es: 'Completa todas las secciones con cuidado. Cada sección evalúa una habilidad diferente.',
+          fr: 'Complétez toutes les sections avec soin. Chaque section évalue une compétence différente.',
+          de: 'Bearbeite alle Abschnitte sorgfältig. Jeder Abschnitt testet eine andere Fähigkeit.',
+          it: 'Completa tutte le sezioni con attenzione. Ogni sezione testa una competenza diversa.',
         },
         category: catId,
         difficulty,
@@ -225,14 +272,21 @@ export default function LevelTestEditorScreen() {
 
       if (existingExerciseId) {
         await updateExercise(existingExerciseId, exercisePayload);
-        Alert.alert('Saved', 'Level Test updated successfully.');
+        notify(
+          'Saved',
+          `Level Test updated — ${sectionsToSave.length} section(s), ${savedMaxPoints} pts.`,
+        );
       } else {
         const newId = await createExercise(exercisePayload as any);
         setExistingExerciseId(newId);
-        Alert.alert('Saved', 'Level Test created successfully.');
+        notify(
+          'Saved',
+          `Level Test created — ${sectionsToSave.length} section(s), ${savedMaxPoints} pts.`,
+        );
       }
     } catch (e: any) {
-      Alert.alert('Error', e?.message ?? 'Failed to save level test.');
+      console.error('[LevelTestEditor] Save failed:', e);
+      notify('Error', e?.message ?? 'Failed to save level test.');
     } finally {
       setSaving(false);
     }
@@ -242,7 +296,7 @@ export default function LevelTestEditorScreen() {
   const addSection = () => {
     const s: LevelTestSection = {
       id: genId(),
-      title: 'New Section',
+      title: '',
       type: 'multiple-choice',
       questions: [emptyQuestion('multiple-choice')],
       maxPoints: 40,
@@ -253,20 +307,17 @@ export default function LevelTestEditorScreen() {
 
   const removeSection = (idx: number) => {
     if (sections.length <= 1) {
-      Alert.alert('Error', 'At least one section is required.');
+      notify('Error', 'At least one section is required.');
       return;
     }
-    Alert.alert('Remove Section', `Remove "${sections[idx].title}"?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Remove',
-        style: 'destructive',
-        onPress: () => {
-          setSections((prev) => prev.filter((_, i) => i !== idx));
-          setActiveSection((prev) => Math.max(0, prev - 1));
-        },
+    confirmDestructive(
+      'Remove Section',
+      `Remove "${sections[idx].title}"?`,
+      () => {
+        setSections((prev) => prev.filter((_, i) => i !== idx));
+        setActiveSection((prev) => Math.max(0, prev - 1));
       },
-    ]);
+    );
   };
 
   const updateSection = (idx: number, patch: Partial<LevelTestSection>) => {
@@ -283,7 +334,7 @@ export default function LevelTestEditorScreen() {
   const removeQuestion = (sIdx: number, qIdx: number) => {
     const s = sections[sIdx];
     if (s.questions.length <= 1) {
-      Alert.alert('Error', 'At least one question is required per section.');
+      notify('Error', 'At least one question is required per section.');
       return;
     }
     updateSection(sIdx, {
@@ -395,40 +446,17 @@ export default function LevelTestEditorScreen() {
                 multiline
                 numberOfLines={3}
               />
-              <ThemedText style={styles.fieldLabel}>Difficulty</ThemedText>
-              <View style={styles.chipRow}>
-                {(['beginner', 'intermediate', 'advanced'] as const).map(
-                  (d) => (
-                    <TouchableOpacity
-                      key={d}
-                      style={[
-                        styles.chip,
-                        difficulty === d && styles.chipSelected,
-                      ]}
-                      onPress={() => setDifficulty(d)}
-                    >
-                      <Text
-                        style={[
-                          styles.chipText,
-                          difficulty === d && styles.chipTextSelected,
-                        ]}
-                      >
-                        {d}
-                      </Text>
-                    </TouchableOpacity>
-                  ),
-                )}
-              </View>
             </View>
 
             {/* Section Tabs */}
             <View style={styles.card}>
               <View style={styles.cardTitleRow}>
                 <ThemedText type="defaultSemiBold" style={styles.cardTitle}>
-                  Sections — Total: {totalMaxPoints} pts
+                  Sections ({sections.length}) — Total: {totalMaxPoints} pts
                 </ThemedText>
                 <TouchableOpacity style={styles.addBtn} onPress={addSection}>
-                  <IconSymbol name="plus" size={18} color="#fff" />
+                  <IconSymbol name="plus" size={16} color="#fff" />
+                  <Text style={styles.addBtnText}>Add Section</Text>
                 </TouchableOpacity>
               </View>
 
@@ -762,21 +790,6 @@ export default function LevelTestEditorScreen() {
                           placeholderTextColor={theme.text.placeholder}
                         />
                       )}
-
-                      <ThemedText style={styles.fieldLabel}>
-                        Explanation (optional)
-                      </ThemedText>
-                      <TextInput
-                        style={styles.input}
-                        value={q.explanation ?? ''}
-                        onChangeText={(v) =>
-                          updateQuestion(activeSection, qIdx, {
-                            explanation: v,
-                          })
-                        }
-                        placeholder="Explain the answer"
-                        placeholderTextColor={theme.text.placeholder}
-                      />
                     </View>
                   ))}
 
@@ -854,7 +867,7 @@ export default function LevelTestEditorScreen() {
                         placeholder="Max"
                         placeholderTextColor={theme.text.placeholder}
                       />
-                      <Text style={styles.bandPts}>pts</Text>
+                      <Text style={styles.bandPts}>%</Text>
                     </View>
                   </View>
                 </View>
@@ -900,16 +913,20 @@ export default function LevelTestEditorScreen() {
                         {band.label}
                       </ThemedText>
                       <ThemedText style={styles.previewRange}>
-                        {band.minScore}–{band.maxScore} pts
+                        {band.minScore}–{band.maxScore}%
                       </ThemedText>
                     </View>
                   </View>
                 ))}
               </View>
               <ThemedText style={styles.previewNote}>
-                {assignLevel(Math.floor(totalMaxPoints / 2), levelBands)
-                  ? `Scoring half the points (${Math.floor(totalMaxPoints / 2)}) → ${assignLevel(Math.floor(totalMaxPoints / 2), levelBands)?.label}`
-                  : 'Check band ranges cover 0–' + totalMaxPoints}
+                {assignLevel(
+                  Math.floor(totalMaxPoints / 2),
+                  levelBands,
+                  totalMaxPoints,
+                )
+                  ? `Scoring half the points (${Math.floor(totalMaxPoints / 2)}) → ${assignLevel(Math.floor(totalMaxPoints / 2), levelBands, totalMaxPoints)?.label}`
+                  : 'Check band ranges cover 0–100%'}
               </ThemedText>
             </View>
 
@@ -1069,12 +1086,19 @@ function createStyles(theme: AppTheme) {
       fontWeight: '600',
     },
     addBtn: {
-      width: 34,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
       height: 34,
+      paddingHorizontal: 14,
       borderRadius: 17,
       backgroundColor: theme.accent.mid,
       justifyContent: 'center',
-      alignItems: 'center',
+    },
+    addBtnText: {
+      color: '#fff',
+      fontSize: 13,
+      fontWeight: '600',
     },
     tabsScroll: {
       marginBottom: 14,

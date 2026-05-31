@@ -142,9 +142,11 @@ export default function ExerciseScreen() {
                   {exercise.description}
                 </ThemedText>
                 <View style={styles.difficultyContainer}>
-                  <Text style={[styles.difficulty, difficultyStyle]}>
-                    {exercise.difficulty}
-                  </Text>
+                  {exercise.content.type !== 'level-test' && (
+                    <Text style={[styles.difficulty, difficultyStyle]}>
+                      {exercise.difficulty}
+                    </Text>
+                  )}
                   <Text style={styles.exerciseType}>
                     {exercise.content.type === 'level-test'
                       ? 'Level Test'
@@ -212,7 +214,7 @@ export default function ExerciseScreen() {
                         key={section.id}
                         style={styles.levelTestSectionItem}
                       >
-                        {idx + 1}. {section.title} — {section.questions.length}{' '}
+                        {idx + 1}. {section.title}: {section.questions.length}{' '}
                         {section.questions.length === 1
                           ? 'question'
                           : 'questions'}{' '}

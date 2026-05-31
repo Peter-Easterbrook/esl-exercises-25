@@ -206,37 +206,37 @@
         "progressCircle": "#FEF4EE"
       },
       "text": {
-        "primary": "#2B1C14",
-        "title": "#1A0E08",
-        "secondary": "#5E3E2E",
-        "accent": "#C97A5A"
+        "primary": "#2E1107",
+        "title": "#1A0A05",
+        "secondary": "#6E2813",
+        "accent": "#FF6347"
       },
       "accent": {
-        "darkest": "#8A4030",
-        "dark": "#B05A42",
-        "mid": "#C97A5A",
-        "light": "#E8A07E",
-        "lightest": "#FADBC8"
+        "darkest": "#B32B00",
+        "dark": "#E63700",
+        "mid": "#ff3d00",
+        "light": "#FF7F50",
+        "lightest": "#FFEBE3"
       },
       "tabBar": {
-        "background": "#FFF8F4",
-        "activeTint": "#8A4030",
-        "inactiveTint": "#E8BEA8",
-        "border": "#EDD8CC"
+        "background": "#FFF9F6",
+        "activeTint": "#ff3d00",
+        "inactiveTint": "#DCA896",
+        "border": "#F5DDD3"
       },
       "icons": {
-        "primary": "#9A5040",
-        "secondary": "#B87060",
-        "tertiary": "#7A5045",
-        "placeholder": "#D8B8AC"
+        "primary": "#f6a800",
+        "secondary": "#FF7F50",
+        "tertiary": "#C44D31",
+        "placeholder": "#E6C2B5"
       },
       "borders": {
-        "subtle": "rgba(210, 130, 100, 0.08)",
-        "light": "rgba(210, 130, 100, 0.16)",
-        "medium": "rgba(210, 130, 100, 0.24)",
-        "strong": "#D4957A",
-        "divider": "#EDD8CC",
-        "dividerLight": "#F5EAE4"
+        "subtle": "rgba(255, 99, 71, 0.08)",
+        "light": "rgba(255, 99, 71, 0.16)",
+        "medium": "rgba(255, 99, 71, 0.24)",
+        "strong": "#f6a800",
+        "divider": "#F5DDD3",
+        "dividerLight": "#FAF0EC"
       },
       "status": {
         "success": "#2A9654",
@@ -250,15 +250,15 @@
         "advanced": { "background": "#F8E0DC", "text": "#7A1414" }
       },
       "destructive": {
-        "background": "#FAEAE8",
-        "border": "#E8ABAA",
-        "text": "#CC2828"
+        "background": "#FFF0EE",
+        "border": "#FFC4BA",
+        "text": "#E61F00"
       },
       "shadow": {
-        "color": "#8A4030",
-        "level1": "0px 1px 3px rgba(138, 64, 48, 0.08), 0px 4px 12px rgba(138, 64, 48, 0.06)",
-        "level2": "0px 4px 8px rgba(138, 64, 48, 0.12), 0px 8px 24px rgba(138, 64, 48, 0.08)",
-        "level3": "0px 12px 28px rgba(138, 64, 48, 0.15), 0px 24px 48px rgba(138, 64, 48, 0.10)"
+        "color": "#591707",
+        "level1": "0px 1px 3px rgba(89, 23, 7, 0.08), 0px 4px 12px rgba(89, 23, 7, 0.06)",
+        "level2": "0px 4px 8px rgba(89, 23, 7, 0.12), 0px 8px 24px rgba(89, 23, 7, 0.08)",
+        "level3": "0px 12px 28px rgba(89, 23, 7, 0.15), 0px 24px 48px rgba(89, 23, 7, 0.10)"
       }
     },
 
