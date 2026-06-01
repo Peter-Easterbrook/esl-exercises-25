@@ -175,7 +175,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       // Trigger confetti and haptic feedback for perfect score
       if (percentage === 100) {
         setShowConfetti(true);
-        if (Constants.appOwnership === 'expo') {
+        if (Constants.executionEnvironment === 'storeClient') {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         } else {
           Haptics.performAndroidHapticsAsync(

@@ -16,6 +16,8 @@ import {
   LevelTestSectionScore,
   Question,
 } from '@/types';
+import Constants from 'expo-constants';
+import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -182,6 +184,16 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
       };
 
       setSectionResults((prev) => [...prev, result]);
+
+      // Haptic feedback on section completion
+      if (Constants.executionEnvironment === 'storeClient') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } else {
+        Haptics.performAndroidHapticsAsync(
+          Haptics.AndroidHaptics.Confirm,
+        ).catch(() => {});
+      }
+
       setShowSectionSummary(true);
     } else {
       setCurrentQuestionIndex((prev) => prev + 1);

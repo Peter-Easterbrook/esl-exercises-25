@@ -8,10 +8,12 @@ export function HapticTab(props: BottomTabBarButtonProps) {
     <PlatformPressable
       {...props}
       onPressIn={(ev) => {
-        if (Constants.appOwnership === 'expo') {
+        if (Constants.executionEnvironment === 'storeClient') {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         } else {
-          Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Virtual_Key).catch(() => {});
+          Haptics.performAndroidHapticsAsync(
+            Haptics.AndroidHaptics.Virtual_Key,
+          ).catch(() => {});
         }
         props.onPressIn?.(ev);
       }}
