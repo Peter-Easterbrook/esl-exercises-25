@@ -220,7 +220,4 @@ One-time €1.99 purchase to unlock all downloadable files via Google Play Billi
 - `components/CategoryCard.tsx` - Paywall check on download
 - `components/ExerciseInterface.tsx` - Paywall check on download
 
-**Next Steps:**
-1. Create `premium_file_access` product in Google Play Console at €1.99
-2. Add test accounts in License Testing
-3. Build with `eas build` and test purchase flow
+**Status:** Fully live. `premium_file_access` product created in Google Play Console at €1.99, license testing configured, and purchase flow verified.
