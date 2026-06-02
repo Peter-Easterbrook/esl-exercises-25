@@ -101,7 +101,7 @@ export default function CategoriesScreen() {
               source={require('@/assets/images/favicon.png')}
               style={{ width: 40, height: 40 }}
             />
-            <ThemedText type="title">ESL Exercises</ThemedText>
+            <ThemedText type="title">ESL Exam Exercises</ThemedText>
           </View>
           <View style={{ height: 10 }} />
           <ThemedText type="subtitle">

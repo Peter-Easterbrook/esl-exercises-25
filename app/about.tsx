@@ -60,7 +60,7 @@ export default function AboutScreen() {
               resizeMode="contain"
             />
             <ThemedText type="subtitle" style={styles.appName}>
-              ESL Exercises
+              ESL Exam Exercises
             </ThemedText>
             <ThemedText style={styles.version}>Version {version}</ThemedText>
           </View>
