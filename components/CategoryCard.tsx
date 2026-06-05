@@ -210,7 +210,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               {isLevelTest && (
                 <View style={styles.levelTestBadge}>
                   <ThemedText style={styles.levelTestBadgeText}>
-                    FREE
+                    Free!
                   </ThemedText>
                 </View>
               )}
