@@ -96,7 +96,7 @@ export default function CategoriesScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 60 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
             <Image
               source={require('@/assets/images/favicon.png')}
               style={{ width: 40, height: 40 }}
@@ -140,7 +140,7 @@ function createStyles(theme: AppTheme) {
       flex: 1,
     },
     header: {
-      paddingHorizontal: 16,
+      paddingLeft: 30,
       paddingBottom: 20,
     },
     scrollView: {
