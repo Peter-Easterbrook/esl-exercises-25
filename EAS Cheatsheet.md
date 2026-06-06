@@ -245,7 +245,7 @@ npx expo-doctor
 
 ```powershell
 git add .
-git commit -m "..."   # e.g. "Bump version to 1.3.0" / "Add theme picker feature"
+git commit -m "CSS Tweaks"
 git push
 ```
 
