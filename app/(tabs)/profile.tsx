@@ -3,6 +3,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { UserAvatar } from '@/components/UserAvatar';
 import { LEVEL_COLOURS } from '@/constants/levelTest';
+import { blues } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -14,6 +15,7 @@ import {
   Alert,
   Image,
   Linking,
+  Pressable,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -236,7 +238,7 @@ Your UID: ${user?.uid}`,
               </View>
               <TouchableOpacity
                 style={styles.retakeButton}
-                onPress={() => router.push('/(tabs)/')}
+                onPress={() => router.push('/')}
                 activeOpacity={0.7}
               >
                 <ThemedText style={styles.retakeText}>Retake</ThemedText>
@@ -247,7 +249,7 @@ Your UID: ${user?.uid}`,
           {!appUser?.englishLevel && (
             <TouchableOpacity
               style={styles.takeLevelTestCard}
-              onPress={() => router.push('/(tabs)/')}
+              onPress={() => router.push('/')}
               activeOpacity={0.7}
             >
               <IconSymbol
@@ -274,11 +276,11 @@ Your UID: ${user?.uid}`,
           {/* Menu Items */}
           <View style={styles.menuSection}>
             {menuItems.map((item, index) => (
-              <TouchableOpacity
+              <Pressable
+                android_ripple={{ color: blues.blue9, foreground: true }}
                 key={index}
                 style={styles.menuItem}
                 onPress={item.onPress}
-                activeOpacity={0.7}
               >
                 <View style={styles.menuItemLeft}>
                   <View style={styles.menuIcon}>
@@ -302,7 +304,7 @@ Your UID: ${user?.uid}`,
                   size={16}
                   color={theme.icons.tertiary}
                 />
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
 

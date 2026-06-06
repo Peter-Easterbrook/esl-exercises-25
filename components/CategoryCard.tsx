@@ -4,6 +4,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { LEVEL_COLOURS } from '@/constants/levelTest';
+import { blues } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -15,6 +16,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -180,18 +182,15 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     height: withTiming(isExpanded ? 'auto' : 0, { duration: 300 }),
   }));
 
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(isExpanded ? 1 : 0, { duration: 300 }),
-  }));
 
   return (
     <ThemedView style={[styles.card, isLevelTest && styles.levelTestCard]}>
-      <TouchableOpacity
+      <Pressable
+        android_ripple={{ color: blues.blue9, foreground: true }}
         style={[styles.header, isLevelTest && styles.levelTestHeader]}
         onPress={
           isLevelTest ? handleLevelTestPress : () => setIsExpanded(!isExpanded)
         }
-        activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
           <IconSymbol
@@ -236,11 +235,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           size={20}
           color={isLevelTest ? 'rgba(255,255,255,0.8)' : theme.icons.tertiary}
         />
-      </TouchableOpacity>
+      </Pressable>
 
       {!isLevelTest && isExpanded && (
         <Animated.View
-          style={opacityStyle}
           entering={FadeIn.duration(300)}
           exiting={FadeOut.duration(200)}
         >
@@ -545,8 +543,9 @@ function createStyles(theme: AppTheme) {
     levelTestBadge: {
       backgroundColor: 'rgba(255,255,255,0.25)',
       paddingHorizontal: 7,
-      paddingVertical: 2,
+      paddingVertical: 0,
       borderRadius: 8,
+      marginBottom: 4,
     },
     levelTestBadgeText: {
       color: '#fff',

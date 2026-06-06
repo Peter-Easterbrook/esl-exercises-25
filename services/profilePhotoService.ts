@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert, Platform } from 'react-native';
 
@@ -101,15 +102,18 @@ export async function pickPhoto(): Promise<string | null> {
 }
 
 /**
- * Save profile photo URI to local storage
+ * Save profile photo URI to local storage.
+ * Copies the file into documentDirectory first so it survives OS cache clears.
  */
 export async function saveProfilePhoto(
   userId: string,
   photoUri: string
 ): Promise<void> {
   try {
+    const dest = `${FileSystem.documentDirectory}profile_photo_${userId}.jpg`;
+    await FileSystem.copyAsync({ from: photoUri, to: dest });
     const key = `${PROFILE_PHOTO_PREFIX}${userId}`;
-    await AsyncStorage.setItem(key, photoUri);
+    await AsyncStorage.setItem(key, dest);
   } catch (error) {
     console.error('Error saving profile photo:', error);
     throw new Error('Failed to save profile photo');
@@ -131,11 +135,18 @@ export async function loadProfilePhoto(userId: string): Promise<string | null> {
 }
 
 /**
- * Delete profile photo from local storage
+ * Delete profile photo from local storage and the filesystem.
  */
 export async function deleteProfilePhoto(userId: string): Promise<void> {
   try {
     const key = `${PROFILE_PHOTO_PREFIX}${userId}`;
+    const storedUri = await AsyncStorage.getItem(key);
+    if (storedUri) {
+      const info = await FileSystem.getInfoAsync(storedUri);
+      if (info.exists) {
+        await FileSystem.deleteAsync(storedUri, { idempotent: true });
+      }
+    }
     await AsyncStorage.removeItem(key);
   } catch (error) {
     console.error('Error deleting profile photo:', error);

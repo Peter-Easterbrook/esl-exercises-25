@@ -30,6 +30,8 @@
 
 ## EAS Update Commands
 
+> OTA updates are delivered to **standalone builds** (Play Store / sideloaded APK) only. They do not update Expo Go.
+
 | Command                                                     | Description                                  |
 | ----------------------------------------------------------- | -------------------------------------------- |
 | `eas update -p android --branch production --message "..."` | Push OTA update to production                |
@@ -116,11 +118,13 @@ Look for the `SHA1 Fingerprint` in the Android Keystore section.
 
 ## Running Your App on a Device
 
-### Expo Go (no custom native code):
+### Expo Go (development only — no custom native code):
 
 1. Start dev server: `npx expo start`
 2. Scan QR code with Expo Go app
 3. Watch for real-time updates as you code
+
+> **Note:** Expo Go is for **development only**. It cannot receive `eas update` OTA updates — those go to your standalone builds (Google Play / sideloaded APK) only. The "Updates are not compatible with this version of Expo Go" message in Expo Go is expected and harmless — your production app is being updated correctly.
 
 > **Note:** IAP (react-native-iap) is silently disabled in Expo Go — the app works normally without it.
 
