@@ -1,4 +1,4 @@
-# ESL Exercises 25 📚
+# ESL Exam Exercises 📚
 
 A comprehensive English as a Second Language (ESL) learning platform built with Expo and React Native, featuring interactive exercises, progress tracking, and a complete admin management system.
 
