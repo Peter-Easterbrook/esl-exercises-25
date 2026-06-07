@@ -95,7 +95,7 @@ export default function ProgressScreen() {
         <View style={styles.contentWrapper}>
           <View style={styles.header}>
             <View
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
             >
               <Image
                 source={require('@/assets/images/favicon.png')}
@@ -119,7 +119,7 @@ export default function ProgressScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image
               source={require('@/assets/images/favicon.png')}
               style={{ width: 40, height: 40 }}
@@ -322,7 +322,7 @@ function createStyles(theme: AppTheme) {
       color: theme.text.secondary,
     },
     header: {
-      paddingHorizontal: 16,
+      paddingLeft: 30,
       paddingBottom: 20,
     },
     subtitle: {

@@ -8,6 +8,7 @@ import {
   SUPPORTED_LANGUAGES,
   type LanguageCode,
 } from '@/constants/languages';
+import { blues } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -20,6 +21,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -241,14 +243,15 @@ export default function ExerciseScreen() {
             </ScrollView>
 
             <View style={styles.footer}>
-              <TouchableOpacity
+              <Pressable
+                android_ripple={{ color: blues.blue9, foreground: true }}
                 style={styles.primaryButton}
                 onPress={handleStartExercise}
               >
                 <ThemedText style={styles.primaryButtonText}>
                   Start Exercise
                 </ThemedText>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </ThemedView>

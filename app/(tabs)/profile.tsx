@@ -171,7 +171,7 @@ Your UID: ${user?.uid}`,
     <ThemedView style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image
               source={require('@/assets/images/LL2020.png')}
               style={{ width: 45, height: 45 }}
@@ -341,8 +341,8 @@ function createStyles(theme: AppTheme) {
       flex: 1,
     },
     header: {
-      paddingHorizontal: 16,
-      marginBottom: 10,
+      paddingLeft: 30,
+      paddingBottom: 20,
     },
     content: {
       flex: 1,

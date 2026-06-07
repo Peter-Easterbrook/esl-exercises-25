@@ -7,6 +7,7 @@ import {
   SUPPORTED_LANGUAGES,
   type LanguageCode,
 } from '@/constants/languages';
+import { blues } from '@/constants/theme';
 import { AppTheme, themeList, themeSwatches } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -29,6 +30,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -526,7 +528,8 @@ export default function AccountSettingsScreen() {
                 placeholder="Enter display name"
                 placeholderTextColor="#999"
               />
-              <TouchableOpacity
+              <Pressable
+                android_ripple={{ color: blues.blue9, foreground: true }}
                 style={styles.primaryButton}
                 onPress={handleUpdateDisplayName}
                 disabled={loading}
@@ -541,7 +544,7 @@ export default function AccountSettingsScreen() {
                     </ThemedText>
                   </>
                 )}
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
 

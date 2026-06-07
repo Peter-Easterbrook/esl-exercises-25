@@ -5,6 +5,7 @@ import {
   LEVEL_COLOURS,
   assignLevel,
 } from '@/constants/levelTest';
+import { blues } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
@@ -23,6 +24,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -323,7 +325,8 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
             questions correct
           </ThemedText>
 
-          <TouchableOpacity
+          <Pressable
+            android_ripple={{ color: blues.blue9, foreground: true }}
             style={styles.primaryButton}
             onPress={handleNextSection}
             disabled={isSaving}
@@ -336,7 +339,7 @@ export const LevelTestInterface: React.FC<LevelTestInterfaceProps> = ({
                 : `Next: ${content.sections[currentSectionIndex + 1]?.title}`}
             </ThemedText>
             <IconSymbol name="chevron.right" size={20} color="#fff" />
-          </TouchableOpacity>
+          </Pressable>
         </ScrollView>
       </View>
     );
@@ -910,6 +913,7 @@ function createStyles(theme: AppTheme) {
       gap: 8,
     },
     sectionDots: {
+      flexWrap: 'wrap',
       flexDirection: 'row',
       gap: 10,
     },
