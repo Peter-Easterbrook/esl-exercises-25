@@ -1,6 +1,5 @@
 import { db, storage } from '@/config/firebase';
 import { DownloadableFile } from '@/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as DocumentPicker from 'expo-document-picker';
 import {
   cacheDirectory,
@@ -29,9 +28,6 @@ import {
   uploadBytes,
 } from 'firebase/storage';
 import { Alert, Platform } from 'react-native';
-
-// Key for storing the user's chosen download directory URI
-const DOWNLOADS_URI_KEY = 'user_downloads_directory_uri';
 
 // Upload file to Firebase Storage
 export const uploadFile = async (
@@ -157,27 +153,6 @@ const getMimeType = (fileType: string): string => {
   }
 };
 
-// Get or request the downloads directory permission (Android SAF)
-const getOrRequestDownloadsDirectory = async (): Promise<string | null> => {
-  // Check if we already have a saved directory URI
-  const savedUri = await AsyncStorage.getItem(DOWNLOADS_URI_KEY);
-  if (savedUri) {
-    return savedUri;
-  }
-
-  // Request permission to a directory (user picks Downloads folder)
-  const permissions =
-    await StorageAccessFramework.requestDirectoryPermissionsAsync();
-
-  if (permissions.granted) {
-    // Save the URI for future use
-    await AsyncStorage.setItem(DOWNLOADS_URI_KEY, permissions.directoryUri);
-    return permissions.directoryUri;
-  }
-
-  return null;
-};
-
 // Download file directly to user's chosen folder (Android) or share (iOS)
 export const downloadFile = async (file: DownloadableFile): Promise<void> => {
   try {
@@ -206,15 +181,21 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
 
     // Platform-specific handling
     if (Platform.OS === 'android') {
-      // Use Storage Access Framework to save to user's chosen directory
-      const directoryUri = await getOrRequestDownloadsDirectory();
+      // Request user to select a directory each time (more reliable than saving permission)
+      const permissions =
+        await StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-      if (!directoryUri) {
-        Alert.alert(
-          'Permission Required',
-          'Please grant folder access permission to save files directly to your Downloads folder.'
-        );
-        throw new Error('Folder access permission not granted');
+      if (!permissions.granted) {
+        // If user denies, fall back to sharing
+        const isSharingAvailable = await Sharing.isAvailableAsync();
+        if (isSharingAvailable) {
+          await Sharing.shareAsync(downloadResult.uri, {
+            mimeType: getMimeType(file.fileType),
+            dialogTitle: `Save ${file.name}`,
+          });
+          return;
+        }
+        throw new Error('No way to save file - permission denied and sharing unavailable');
       }
 
       try {
@@ -226,7 +207,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
         // Create file in user-selected directory
         const mimeType = getMimeType(file.fileType);
         const fileUri = await StorageAccessFramework.createFileAsync(
-          directoryUri,
+          permissions.directoryUri,
           sanitizedName,
           mimeType
         );
@@ -248,10 +229,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
       } catch (safError) {
         console.error('SAF Error:', safError);
 
-        // If SAF fails (e.g., permission expired), clear saved URI and retry
-        await AsyncStorage.removeItem(DOWNLOADS_URI_KEY);
-
-        // Fall back to sharing
+        // If SAF fails, fall back to sharing
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (isSharingAvailable) {
           await Sharing.shareAsync(downloadResult.uri, {
@@ -263,7 +241,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
         }
       }
     } else {
-      // iOS: Use share sheet
+      // iOS/Web: Use share sheet
       const isSharingAvailable = await Sharing.isAvailableAsync();
 
       if (isSharingAvailable) {
@@ -287,11 +265,6 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
     }
     throw error;
   }
-};
-
-// Clear saved downloads directory (useful if user wants to change folder)
-export const clearDownloadsDirectoryPermission = async (): Promise<void> => {
-  await AsyncStorage.removeItem(DOWNLOADS_URI_KEY);
 };
 
 // Delete file (admin only)
