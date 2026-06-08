@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AppTheme } from '@/constants/themes';
 import { useAppTheme } from '@/contexts/ThemeContext';
-import { Exercise } from '@/types';
+import { Exercise, ExerciseContent } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -96,6 +96,19 @@ export default function ManageExercisesScreen() {
 
   const getCategoryName = (categoryId: string): string => {
     return categoryMap[categoryId] || categoryId;
+  };
+
+  const getQuestionCount = (exercise: Exercise): string => {
+    const content = exercise.content;
+    if (content.type === 'level-test') {
+      const totalQuestions = content.sections.reduce(
+        (sum, section) => sum + (section.questions?.length || 0),
+        0
+      );
+      return `${totalQuestions} questions`;
+    }
+    const questionCount = (content as ExerciseContent).questions?.length || 0;
+    return `${questionCount} questions`;
   };
 
   if (loading) {
@@ -213,7 +226,7 @@ export default function ManageExercisesScreen() {
                           color={theme.icons.tertiary}
                         />
                         <ThemedText style={styles.metadataText}>
-                          {exercise.content.questions.length} questions
+                          {getQuestionCount(exercise)}
                         </ThemedText>
                       </View>
 
