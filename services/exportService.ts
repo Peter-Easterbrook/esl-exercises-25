@@ -72,10 +72,18 @@ const generateResultsReport = (
   report += `Completed: ${date} at ${time}\n`;
   report += `Final Score: ${score}%\n\n`;
 
+  // Handle level test vs regular exercise
+  if (exercise.content.type === 'level-test') {
+    report += `Exercise Type: Level Test\n`;
+    report += `[Level test results are displayed in the app]\n`;
+    return report;
+  }
+
   report += `DETAILED RESULTS:\n`;
   report += `=================\n\n`;
 
-  exercise.content.questions.forEach((question, index) => {
+  const questions = (exercise.content as any).questions || [];
+  questions.forEach((question: any, index: number) => {
     const userAnswer = answers[question.id];
     const isCorrect = userAnswer === question.correctAnswer;
 
@@ -84,7 +92,7 @@ const generateResultsReport = (
 
     if (question.options) {
       report += `Options:\n`;
-      question.options.forEach((option, optIndex) => {
+      question.options.forEach((option: string, optIndex: number) => {
         const letter = String.fromCharCode(65 + optIndex);
         report += `  ${letter}) ${option}\n`;
       });
@@ -104,10 +112,10 @@ const generateResultsReport = (
 
   report += `SUMMARY:\n`;
   report += `========\n`;
-  const correctCount = exercise.content.questions.filter(
-    (q) => answers[q.id] === q.correctAnswer
+  const correctCount = questions.filter(
+    (q: any) => answers[q.id] === q.correctAnswer
   ).length;
-  const totalQuestions = exercise.content.questions.length;
+  const totalQuestions = questions.length;
 
   report += `Correct Answers: ${correctCount}/${totalQuestions}\n`;
   report += `Percentage: ${score}%\n`;
