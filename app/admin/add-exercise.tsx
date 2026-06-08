@@ -159,6 +159,26 @@ export default function AddExerciseScreen() {
       const exercise = await getExerciseById(id);
 
       if (exercise) {
+        // Level tests are edited in a separate editor
+        if (exercise.content.type === 'level-test') {
+          Alert.alert(
+            'Level Test Editor',
+            'This exercise is a level test and must be edited using the Level Test Editor.',
+            [
+              {
+                text: 'Go to Level Test Editor',
+                onPress: () => router.push(`/admin/level-test-editor?id=${id}`),
+              },
+              {
+                text: 'Cancel',
+                onPress: () => router.push('/admin/manage-exercises'),
+              },
+            ]
+          );
+          setLoading(false);
+          return;
+        }
+
         const emptyInstructions = createEmptyInstructions();
         // Convert old string format to new multi-language format if needed
         let instructions: MultiLanguageInstructions;
@@ -184,7 +204,7 @@ export default function AddExerciseScreen() {
           difficulty: exercise.difficulty,
           type: exercise.content.type,
         });
-        setQuestions(exercise.content.questions);
+        setQuestions((exercise.content as any).questions);
       } else {
         Alert.alert('Error', 'Exercise not found');
         router.push('/admin/manage-exercises');
