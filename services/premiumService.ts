@@ -7,7 +7,7 @@ const ANDROID_PRODUCT_ID = 'premium_file_access';
 const IOS_PRODUCT_ID = 'premium_file_access'; // Same ID for consistency
 
 // Default price to display before products load
-export const DEFAULT_PRICE = '€3.99';
+export const DEFAULT_PRICE = '€2.99';
 
 // Dynamically import react-native-iap only on native platforms
 // Returns null if not available (web, Expo Go, or native module not linked)

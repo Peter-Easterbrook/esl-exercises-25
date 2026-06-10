@@ -291,7 +291,7 @@ npm run reset-project # Reset project to initial state
 
 ### Premium Features
 
-- **File Paywall**: One-time €3.99 purchase to unlock all downloadable resources
+- **File Paywall**: One-time €2.99 purchase to unlock all downloadable resources
 - **Secure Billing**: Google Play Billing and App Store integration
 - **Purchase Restoration**: Restore purchases on device reinstall
 - **Admin Access**: Admins bypass paywall for free access
