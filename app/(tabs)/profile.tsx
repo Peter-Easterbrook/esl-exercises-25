@@ -21,10 +21,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { user, appUser, logout } = useAuth();
   const { theme } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
 
@@ -183,7 +185,10 @@ Your UID: ${user?.uid}`,
 
         <ScrollView
           style={styles.content}
-          contentContainerStyle={styles.contentContainer}
+          contentContainerStyle={[
+            styles.contentContainer,
+            { paddingBottom: Math.max(styles.contentContainer.paddingBottom, insets.bottom + 16) },
+          ]}
           showsVerticalScrollIndicator={false}
         >
           {/* User Info Card */}

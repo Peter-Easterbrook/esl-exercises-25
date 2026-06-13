@@ -260,7 +260,7 @@ git push
 **No → OTA update** (JS/TS changes, UI updates, Firebase logic, content):
 
 ```powershell
-eas update -p android --branch production --message "CSS tweaks"
+eas update -p android --branch production --message "Adds bottom spacing for old tabnav devices"
 eas update:list --branch production
 ```
 
