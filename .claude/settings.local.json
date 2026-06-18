@@ -68,7 +68,8 @@
       "Bash(npx eas *)",
       "mcp__context7__resolve-library-id",
       "mcp__context7__query-docs",
-      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\Peter\\\\GitHub\\\\esl-exercises-25\\\\app\" -Name)"
+      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\Peter\\\\GitHub\\\\esl-exercises-25\\\\app\" -Name)",
+      "Skill(update-config)"
     ],
     "deny": [],
     "ask": []
