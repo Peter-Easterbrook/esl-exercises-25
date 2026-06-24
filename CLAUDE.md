@@ -37,15 +37,16 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ## Key Technologies
 
-- Expo SDK 54, React Native 0.81, React 19
-- TypeScript (strict mode)
-- Firebase (Authentication, Firestore, Storage)
-- React Navigation v7, Expo Router
-- React Native Reanimated v4 (animations)
+- Expo SDK 55, React Native 0.83.6, React 19.2.0, TypeScript 5.9.2
+- Firebase 12.3.0 (Authentication, Firestore, Storage)
+- React Navigation v7, Expo Router v55
+- React Native Reanimated v4.2.1 (animations)
+- React Native Paper v5.14.5 (Material Design components)
 - react-native-chart-kit (analytics visualizations)
 - expo-auth-session (Google OAuth integration)
 - @react-native-async-storage/async-storage (Firebase auth persistence)
-- react-native-iap (In-app purchases - native only, see Native-Only Modules section)
+- react-native-iap v14.7.1 (In-app purchases - native only, see Native-Only Modules section)
+- Expo Build Properties: compileSdkVersion 36, targetSdkVersion 35 (Android 15), minSdkVersion 24
 
 ## Code Style
 
