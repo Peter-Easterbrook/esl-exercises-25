@@ -249,7 +249,7 @@ npx expo-doctor
 
 ```powershell
 git add .
-git commit -m "CSS Tweaks"
+git commit -m "chore: Push new build to production $(Get-Date -Format 'yyyy-MM-dd')"
 git push
 ```
 
@@ -267,6 +267,7 @@ eas update:list --branch production
 **Yes → New build** (native dependencies, `app.json`, Expo SDK upgrade, icons/splash):
 
 ```powershell
+eas build -p android --profile production --auto-submit
 eas build -p android --profile production
 eas submit -p android
 ```

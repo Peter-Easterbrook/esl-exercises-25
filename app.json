@@ -2,7 +2,7 @@
   "expo": {
     "name": "ESL Exercises",
     "slug": "esl-exercises-25",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",
@@ -21,7 +21,9 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.petereasterbro1.eslexercises25",
-      "permissions": ["com.android.vending.BILLING"],
+      "permissions": [
+        "com.android.vending.BILLING"
+      ],
       "blockedPermissions": [
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
