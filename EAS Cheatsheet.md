@@ -15,6 +15,7 @@
 | `npx expo-doctor`                        | Check project health before building                  |
 | `npx expo install --fix`                 | Fix incorrect dependencies for your Expo SDK version  |
 | `npx expo install --check`               | Review and list outdated/incompatible dependencies    |
+| `npx expo install`                       | Auto-checks compatible dependencies                   |
 
 ## EAS Build Commands
 
@@ -233,7 +234,7 @@ Always run this after any dependency change:
 ```powershell
 Remove-Item -Recurse -Force node_modules, package-lock.json
 npm cache clean --force
-npm install
+npx expo install
 ```
 
 ### Step 4 — Validate locally
