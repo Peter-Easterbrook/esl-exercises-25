@@ -28,7 +28,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -74,6 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const listenerSetupRef = useRef(false);
 
   const [_request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -137,6 +138,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [appUser]);
 
   useEffect(() => {
+    if (listenerSetupRef.current) {
+      console.log('⚠️ Auth listener already set up, skipping...');
+      return;
+    }
+
+    listenerSetupRef.current = true;
     console.log('Setting up auth state listener...');
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -144,13 +151,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         '🔥 Auth state changed:',
         firebaseUser ? `User: ${firebaseUser.email}` : 'No user',
       );
+      console.log('📦 Firebase user object:', firebaseUser ? { uid: firebaseUser.uid, email: firebaseUser.email } : null);
       setUser(firebaseUser);
 
       if (firebaseUser) {
-        console.log('📄 Attempting to fetch/create user document...');
+        console.log('📄 Attempting to fetch/create user document for UID:', firebaseUser.uid);
         try {
           // Get user data from Firestore
+          console.log('⏳ Fetching from Firestore...');
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          console.log('✅ Firestore fetch complete, exists:', userDoc.exists());
           if (userDoc.exists()) {
             console.log('✅ User document found in Firestore');
             setAppUser(userDoc.data() as AppUser);

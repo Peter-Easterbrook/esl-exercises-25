@@ -1,6 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
-import { getReactNativePersistence, initializeAuth } from 'firebase/auth';
+import {
+  browserLocalPersistence,
+  getReactNativePersistence,
+  initializeAuth,
+  setPersistence,
+} from 'firebase/auth';
 import {
   initializeFirestore,
   memoryLocalCache,
@@ -22,14 +27,21 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 
 // Initialize Auth with platform-specific persistence
-// On web, Firebase automatically uses localStorage when persistence option is omitted
-// On React Native, use AsyncStorage for persistence
 export const auth =
   Platform.OS === 'web'
-    ? initializeAuth(app)
+    ? initializeAuth(app, {
+        persistence: browserLocalPersistence,
+      })
     : initializeAuth(app, {
         persistence: getReactNativePersistence(AsyncStorage),
       });
+
+// Ensure persistence is set for web (handles cases where initializeAuth didn't apply it)
+if (Platform.OS === 'web') {
+  setPersistence(auth, browserLocalPersistence).catch((error) => {
+    console.warn('Failed to set persistence:', error);
+  });
+}
 
 // Web: IndexedDB-backed persistent cache (survives page refreshes)
 // Native: in-session memory cache (reduces re-fetches within a session)
