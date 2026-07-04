@@ -250,7 +250,7 @@ npx expo-doctor
 
 ```powershell
 git add .
-git commit -m "chore: Push new build to production $(Get-Date -Format 'yyyy-MM-dd')"
+git commit -m "chore: SDK 56 upgrade $(Get-Date -Format 'yyyy-MM-dd')"
 git push
 ```
 
