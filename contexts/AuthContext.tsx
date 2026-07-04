@@ -161,10 +161,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newUser: AppUser = {
               id: firebaseUser.uid,
               email: firebaseUser.email!,
-              displayName: firebaseUser.displayName || undefined,
               isAdmin: false,
               createdAt: new Date(),
               progress: [],
+              ...(firebaseUser.displayName && { displayName: firebaseUser.displayName }),
             };
 
             try {
@@ -180,9 +180,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const fallbackUser: AppUser = {
             id: firebaseUser.uid,
             email: firebaseUser.email!,
-            displayName: firebaseUser.displayName || undefined,
             isAdmin: false,
             progress: [],
+            ...(firebaseUser.displayName && { displayName: firebaseUser.displayName }),
           };
           setAppUser(fallbackUser);
         }
@@ -211,10 +211,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const newUser: AppUser = {
       id: result.user.uid,
       email: result.user.email!,
-      displayName,
       isAdmin: false,
       createdAt: new Date(),
       progress: [],
+      ...(displayName && { displayName }),
     };
 
     try {
