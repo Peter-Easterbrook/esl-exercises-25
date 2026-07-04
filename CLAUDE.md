@@ -37,10 +37,10 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ## Key Technologies
 
-- Expo SDK 55, React Native 0.83.6, React 19.2.0, TypeScript 5.9.2
+- Expo SDK 56, React Native 0.85.3, React 19.2.3, TypeScript 6.0.3
 - Firebase 12.3.0 (Authentication, Firestore, Storage)
-- React Navigation v7, Expo Router v55
-- React Native Reanimated v4.2.1 (animations)
+- Expo Router v56 (replaces @react-navigation — do NOT add @react-navigation packages, incompatible with SDK 56)
+- React Native Reanimated v4.3.1 (animations)
 - React Native Paper v5.14.5 (Material Design components)
 - react-native-chart-kit (analytics visualizations)
 - expo-auth-session (Google OAuth integration)
