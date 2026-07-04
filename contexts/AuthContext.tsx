@@ -139,33 +139,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (listenerSetupRef.current) {
-      console.log('⚠️ Auth listener already set up, skipping...');
       return;
     }
 
     listenerSetupRef.current = true;
-    console.log('Setting up auth state listener...');
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log(
         '🔥 Auth state changed:',
         firebaseUser ? `User: ${firebaseUser.email}` : 'No user',
       );
-      console.log('📦 Firebase user object:', firebaseUser ? { uid: firebaseUser.uid, email: firebaseUser.email } : null);
       setUser(firebaseUser);
 
       if (firebaseUser) {
-        console.log('📄 Attempting to fetch/create user document for UID:', firebaseUser.uid);
         try {
-          // Get user data from Firestore
-          console.log('⏳ Fetching from Firestore...');
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-          console.log('✅ Firestore fetch complete, exists:', userDoc.exists());
           if (userDoc.exists()) {
-            console.log('✅ User document found in Firestore');
             setAppUser(userDoc.data() as AppUser);
           } else {
-            console.log('📝 Creating new user document...');
             // Create new user document
             const newUser: AppUser = {
               id: firebaseUser.uid,
@@ -178,18 +169,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             try {
               await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
-              console.log('✅ User document created successfully');
               setAppUser(newUser);
             } catch (firestoreError) {
-              console.error('❌ Error creating user document:', firestoreError);
-              // Still set the user data even if Firestore fails
-              console.log('🔄 Using fallback user data');
+              console.error('Error creating user document:', firestoreError);
               setAppUser(newUser);
             }
           }
         } catch (error) {
-          console.error('❌ Error fetching user data:', error);
-          // Create a minimal user object if Firestore fails completely
+          console.error('Error fetching user data:', error);
           const fallbackUser: AppUser = {
             id: firebaseUser.uid,
             email: firebaseUser.email!,
@@ -197,17 +184,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             isAdmin: false,
             progress: [],
           };
-          console.log('🔄 Using complete fallback user data');
           setAppUser(fallbackUser);
         }
       } else {
-        console.log('🚪 User signed out');
         setAppUser(null);
-        // Explicitly log that we're clearing the user
-        console.log('🧹 Clearing user state...');
       }
 
-      console.log('⚡ Setting loading to false');
       setLoading(false);
     });
 
@@ -256,14 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
-    console.log('🔓 Logout called, signing out...');
-    try {
-      await signOut(auth);
-      console.log('✅ Sign out successful, waiting for auth state change...');
-    } catch (error) {
-      console.error('❌ Sign out error:', error);
-      throw error;
-    }
+    await signOut(auth);
   };
 
   const sendPasswordReset = async (email: string) => {

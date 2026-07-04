@@ -44,21 +44,16 @@ export default function ProfileScreen() {
   );
 
   const handleLogout = async () => {
-    console.log('🖱️ Sign out button clicked!');
     const confirmed = confirm('Are you sure you want to sign out?');
     if (confirmed) {
       try {
-        console.log('📋 User confirmed, calling logout...');
         await logout();
-        console.log('✅ Logout completed');
         // Navigation to /auth is handled automatically by TabLayout
         // when auth state changes - no need to manually navigate
       } catch (error) {
-        console.error('❌ Logout error:', error);
+        console.error('Sign out error:', error);
         alert('Failed to sign out');
       }
-    } else {
-      console.log('❌ Sign out cancelled by user');
     }
   };
 
