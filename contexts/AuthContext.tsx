@@ -203,6 +203,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } else {
         console.log('🚪 User signed out');
         setAppUser(null);
+        // Explicitly log that we're clearing the user
+        console.log('🧹 Clearing user state...');
       }
 
       console.log('⚡ Setting loading to false');
@@ -254,7 +256,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
-    await signOut(auth);
+    console.log('🔓 Logout called, signing out...');
+    try {
+      await signOut(auth);
+      console.log('✅ Sign out successful, waiting for auth state change...');
+    } catch (error) {
+      console.error('❌ Sign out error:', error);
+      throw error;
+    }
   };
 
   const sendPasswordReset = async (email: string) => {
