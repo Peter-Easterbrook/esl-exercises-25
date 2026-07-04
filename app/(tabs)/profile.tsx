@@ -15,6 +15,7 @@ import {
   Alert,
   Image,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -43,17 +44,24 @@ export default function ProfileScreen() {
     }, [user]),
   );
 
-  const handleLogout = async () => {
-    const confirmed = confirm('Are you sure you want to sign out?');
-    if (confirmed) {
+  const handleLogout = () => {
+    const doLogout = async () => {
       try {
         await logout();
-        // Navigation to /auth is handled automatically by TabLayout
-        // when auth state changes - no need to manually navigate
       } catch (error) {
         console.error('Sign out error:', error);
-        alert('Failed to sign out');
       }
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm('Are you sure you want to sign out?')) {
+        doLogout();
+      }
+    } else {
+      Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', style: 'destructive', onPress: doLogout },
+      ]);
     }
   };
 
