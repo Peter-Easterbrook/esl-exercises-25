@@ -7,11 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#fffff0"
-    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#fffff0",

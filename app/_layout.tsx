@@ -1,4 +1,3 @@
-import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -36,12 +35,11 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <AppThemeProvider>
         <AuthProvider>
-          <ThemeProvider value={DarkTheme}>
-            <Stack
-              screenOptions={{
-                animation: 'default', // Global default
-              }}
-            >
+          <Stack
+            screenOptions={{
+              animation: 'default', // Global default
+            }}
+          >
               {/* Main tabs - no animation (instant) */}
               <Stack.Screen
                 name="(tabs)"
@@ -221,9 +219,8 @@ export default function RootLayout() {
                   animation: 'slide_from_bottom',
                 }}
               />
-            </Stack>
-            <StatusBar style="dark" />
-          </ThemeProvider>
+          </Stack>
+          <StatusBar style="dark" />
         </AuthProvider>
       </AppThemeProvider>
     </SafeAreaProvider>
