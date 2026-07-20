@@ -2,7 +2,7 @@
   "expo": {
     "name": "ESL Exercises",
     "slug": "esl-exercises-25",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "eslexercises25",
@@ -61,7 +61,8 @@
         }
       ],
       "expo-font",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-splash-screen"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -23,125 +23,75 @@ import {
 } from 'react-native';
 
 export default function AddExerciseScreen() {
-  const { id: exerciseId } = useLocalSearchParams();
-  const isEditMode = !!exerciseId;
-  const { appUser, user } = useAuth();
-  const { theme } = useAppTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  type ExerciseType =
+    | 'multiple-choice'
+    | 'fill-blanks'
+    | 'true-false'
+    | 'matching'
+    | 'essay'
+    | 'short-answer';
 
-  const [exerciseData, setExerciseData] = useState<{
-    title: string;
-    description: string;
-    instructions: MultiLanguageInstructions;
-    category: string;
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
-    type:
-      | 'multiple-choice'
-      | 'fill-blanks'
-      | 'true-false'
-      | 'matching'
-      | 'essay'
-      | 'short-answer';
-  }>({
-    title: '',
-    description: '',
-    instructions: createEmptyInstructions(),
-    category: '',
-    difficulty: 'beginner',
-    type: 'multiple-choice',
-  });
-
-  const [questions, setQuestions] = useState<Partial<Question>[]>([
-    {
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: '',
-      explanation: '',
-    },
-  ]);
-
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    loadCategories();
-    if (isEditMode && typeof exerciseId === 'string') {
-      loadExercise(exerciseId);
+  function createQuestionTemplate(type: ExerciseType): Partial<Question> {
+    switch (type) {
+      case 'multiple-choice':
+        return {
+          question: '',
+          options: ['', '', '', ''],
+          correctAnswer: '',
+          explanation: '',
+        };
+      case 'true-false':
+        return {
+          question: '',
+          passageText: '',
+          options: ['True', 'False'],
+          correctAnswer: '',
+          explanation: '',
+        };
+      case 'matching':
+        return {
+          question: 'Match the items from Column A with Column B',
+          leftColumn: ['', '', '', '', '', ''],
+          options: ['', '', '', '', '', ''],
+          correctAnswer: ['', '', '', '', '', ''],
+          explanation: '',
+        };
+      case 'fill-blanks':
+        return {
+          question: '',
+          options: [],
+          correctAnswer: [''],
+          explanation: '',
+        };
+      case 'essay':
+        return {
+          question: '',
+          correctAnswer: '',
+          explanation: 'Essay questions are graded manually',
+        };
+      case 'short-answer':
+        return {
+          question: '',
+          correctAnswer: '',
+          explanation: '',
+        };
+      default:
+        return {
+          question: '',
+          options: ['', '', '', ''],
+          correctAnswer: '',
+          explanation: '',
+        };
     }
-  }, [exerciseId, isEditMode]);
+  }
 
-  // Update questions structure when exercise type changes
-  useEffect(() => {
-    if (!isEditMode) {
-      setQuestions((prevQuestions) => {
-        return prevQuestions.map(() => {
-          let newQuestion: Partial<Question>;
+  function resetQuestionsForType(type: ExerciseType) {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map(() => createQuestionTemplate(type)),
+    );
+  }
 
-          switch (exerciseData.type) {
-            case 'multiple-choice':
-              newQuestion = {
-                question: '',
-                options: ['', '', '', ''],
-                correctAnswer: '',
-                explanation: '',
-              };
-              break;
-            case 'true-false':
-              newQuestion = {
-                question: '',
-                passageText: '',
-                options: ['True', 'False'],
-                correctAnswer: '',
-                explanation: '',
-              };
-              break;
-            case 'matching':
-              newQuestion = {
-                question: 'Match the items from Column A with Column B',
-                leftColumn: ['', '', '', '', '', ''],
-                options: ['', '', '', '', '', ''],
-                correctAnswer: ['', '', '', '', '', ''],
-                explanation: '',
-              };
-              break;
-            case 'fill-blanks':
-              newQuestion = {
-                question: '',
-                options: [],
-                correctAnswer: [''],
-                explanation: '',
-              };
-              break;
-            case 'essay':
-              newQuestion = {
-                question: '',
-                correctAnswer: '',
-                explanation: 'Essay questions are graded manually',
-              };
-              break;
-            case 'short-answer':
-              newQuestion = {
-                question: '',
-                correctAnswer: '',
-                explanation: '',
-              };
-              break;
-            default:
-              newQuestion = {
-                question: '',
-                options: ['', '', '', ''],
-                correctAnswer: '',
-                explanation: '',
-              };
-          }
-
-          return newQuestion;
-        });
-      });
-    }
-  }, [exerciseData.type, isEditMode]);
-
-  const loadCategories = async () => {
+  async function loadCategories() {
     try {
       const { getCategories } = await import('@/services/firebaseService');
       const categoriesData = await getCategories();
@@ -150,9 +100,9 @@ export default function AddExerciseScreen() {
       console.error('Error loading categories:', error);
       Alert.alert('Error', 'Failed to load categories');
     }
-  };
+  }
 
-  const loadExercise = async (id: string) => {
+  async function loadExercise(id: string) {
     try {
       setLoading(true);
       const { getExerciseById } = await import('@/services/firebaseService');
@@ -173,7 +123,7 @@ export default function AddExerciseScreen() {
                 text: 'Cancel',
                 onPress: () => router.push('/admin/manage-exercises'),
               },
-            ]
+            ],
           );
           setLoading(false);
           return;
@@ -216,7 +166,43 @@ export default function AddExerciseScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  const { id: exerciseId } = useLocalSearchParams();
+  const isEditMode = !!exerciseId;
+  const { appUser, user } = useAuth();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const [exerciseData, setExerciseData] = useState<{
+    title: string;
+    description: string;
+    instructions: MultiLanguageInstructions;
+    category: string;
+    difficulty: 'beginner' | 'intermediate' | 'advanced';
+    type: ExerciseType;
+  }>({
+    title: '',
+    description: '',
+    instructions: createEmptyInstructions(),
+    category: '',
+    difficulty: 'beginner',
+    type: 'multiple-choice',
+  });
+
+  const [questions, setQuestions] = useState<Partial<Question>[]>([
+    createQuestionTemplate('multiple-choice'),
+  ]);
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadCategories();
+    if (isEditMode && typeof exerciseId === 'string') {
+      loadExercise(exerciseId);
+    }
+  }, [exerciseId, isEditMode]);
 
   const difficulties = ['beginner', 'intermediate', 'advanced'];
   const exerciseTypes = [
@@ -229,67 +215,10 @@ export default function AddExerciseScreen() {
   ];
 
   const handleAddQuestion = () => {
-    let newQuestion: Partial<Question>;
-
-    switch (exerciseData.type) {
-      case 'multiple-choice':
-        newQuestion = {
-          question: '',
-          options: ['', '', '', ''],
-          correctAnswer: '',
-          explanation: '',
-        };
-        break;
-      case 'true-false':
-        newQuestion = {
-          question: '', // This will be the statement
-          passageText: '', // Reading passage (only for first question)
-          options: ['True', 'False'],
-          correctAnswer: '',
-          explanation: '',
-        };
-        break;
-      case 'matching':
-        newQuestion = {
-          question: 'Match the items from Column A with Column B',
-          leftColumn: ['', '', '', '', '', ''], // Column A (numbered)
-          options: ['', '', '', '', '', ''], // Column B (lettered)
-          correctAnswer: ['', '', '', '', '', ''], // Array of letters matching each number
-          explanation: '',
-        };
-        break;
-      case 'fill-blanks':
-        newQuestion = {
-          question: '', // Sentence with ____ for blanks
-          options: [], // Optional word bank
-          correctAnswer: [''], // Array of correct words for each blank
-          explanation: '',
-        };
-        break;
-      case 'essay':
-        newQuestion = {
-          question: '',
-          correctAnswer: '', // Not strictly applicable for essays
-          explanation: 'Essay questions are graded manually',
-        };
-        break;
-      case 'short-answer':
-        newQuestion = {
-          question: '',
-          correctAnswer: '', // The exact answer required
-          explanation: '',
-        };
-        break;
-      default:
-        newQuestion = {
-          question: '',
-          options: ['', '', '', ''],
-          correctAnswer: '',
-          explanation: '',
-        };
-    }
-
-    setQuestions((prev) => [...prev, newQuestion]);
+    setQuestions((prev) => [
+      ...prev,
+      createQuestionTemplate(exerciseData.type),
+    ]);
   };
 
   const handleRemoveQuestion = (index: number) => {
@@ -721,14 +650,7 @@ export default function AddExerciseScreen() {
                 difficulty: 'beginner',
                 type: 'multiple-choice',
               });
-              setQuestions([
-                {
-                  question: '',
-                  options: ['', '', '', ''],
-                  correctAnswer: '',
-                  explanation: '',
-                },
-              ]);
+              setQuestions([createQuestionTemplate('multiple-choice')]);
             },
           },
           {
@@ -958,12 +880,15 @@ export default function AddExerciseScreen() {
                         styles.pickerOption,
                         exerciseData.type === type && styles.selectedOption,
                       ]}
-                      onPress={() =>
+                      onPress={() => {
                         setExerciseData((prev) => ({
                           ...prev,
-                          type: type as any,
-                        }))
-                      }
+                          type: type as ExerciseType,
+                        }));
+                        if (!isEditMode && exerciseData.type !== type) {
+                          resetQuestionsForType(type as ExerciseType);
+                        }
+                      }}
                     >
                       <ThemedText
                         style={[
