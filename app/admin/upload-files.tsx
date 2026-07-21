@@ -17,7 +17,7 @@ import { Category, DownloadableFile, Exercise } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -46,45 +46,72 @@ export default function UploadFilesScreen() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    loadCategories();
+    let isCancelled = false;
+
+    getCategories()
+      .then((categoriesData) => {
+        if (!isCancelled) {
+          setCategories(categoriesData);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading categories:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load categories');
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
-  const loadExercises = useCallback(async () => {
-    try {
-      const exercisesData = await getExercisesByCategory(selectedCategory);
-      setExercises(exercisesData);
-      setSelectedExercise('');
-    } catch (error) {
-      console.error('Error loading exercises:', error);
-    }
+  const fetchFiles = useCallback(async () => {
+    return getFilesByCategory(selectedCategory);
   }, [selectedCategory]);
 
   const loadFiles = useCallback(async () => {
     try {
-      const filesData = await getFilesByCategory(selectedCategory);
+      const filesData = await fetchFiles();
       setFiles(filesData);
     } catch (error) {
       console.error('Error loading files:', error);
       Alert.alert('Error', 'Failed to load files');
     }
-  }, [selectedCategory]);
+  }, [fetchFiles]);
 
   useEffect(() => {
-    if (selectedCategory) {
-      loadFiles();
-      loadExercises();
-    }
-  }, [selectedCategory, loadFiles, loadExercises]);
+    if (!selectedCategory) return;
+    let isCancelled = false;
 
-  const loadCategories = async () => {
-    try {
-      const categoriesData = await getCategories();
-      setCategories(categoriesData);
-    } catch (error) {
-      console.error('Error loading categories:', error);
-      Alert.alert('Error', 'Failed to load categories');
-    }
-  };
+    fetchFiles()
+      .then((filesData) => {
+        if (!isCancelled) {
+          setFiles(filesData);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading files:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load files');
+        }
+      });
+
+    getExercisesByCategory(selectedCategory)
+      .then((exercisesData) => {
+        if (!isCancelled) {
+          setExercises(exercisesData);
+          setSelectedExercise('');
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading exercises:', error);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedCategory, fetchFiles]);
 
   const handlePickDocument = async () => {
     try {
@@ -376,7 +403,7 @@ function CategoryButton({
   onPress: () => void;
   styles: Styles;
 }) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -441,7 +468,7 @@ function ExerciseChip({
   theme: AppTheme;
   styles: Styles;
 }) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -523,7 +550,7 @@ function LevelChip({
   theme: AppTheme;
   styles: Styles;
 }) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {

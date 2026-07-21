@@ -149,18 +149,22 @@ export default function LevelTestEditorScreen() {
       router.replace('/(tabs)' as any);
       return;
     }
-    loadExisting();
-  }, [authLoading, appUser?.isAdmin]);
 
-  const loadExisting = async () => {
-    try {
-      const { getCategories, getExercisesByCategory } =
-        await import('@/services/firebaseService');
-      const cats = await getCategories();
-      const ltCat = cats.find((c) => c.name === 'Level Test');
-      if (ltCat) {
-        setLevelTestCategoryId(ltCat.id);
-        const exs = await getExercisesByCategory(ltCat.id);
+    let isCancelled = false;
+
+    import('@/services/firebaseService')
+      .then(({ getCategories, getExercisesByCategory }) =>
+        getCategories().then((cats) => {
+          const ltCat = cats.find((c) => c.name === 'Level Test');
+          if (!ltCat) return null;
+          if (!isCancelled) {
+            setLevelTestCategoryId(ltCat.id);
+          }
+          return getExercisesByCategory(ltCat.id);
+        }),
+      )
+      .then((exs) => {
+        if (isCancelled || !exs) return;
         const ltEx = exs.find((e) => e.content.type === 'level-test');
         if (ltEx) {
           setExistingExerciseId(ltEx.id);
@@ -170,13 +174,20 @@ export default function LevelTestEditorScreen() {
           if (c.sections?.length) setSections(c.sections);
           if (c.levelBands?.length) setLevelBands(c.levelBands);
         }
-      }
-    } catch (e) {
-      console.error('Error loading level test:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
+      })
+      .catch((e) => {
+        console.error('Error loading level test:', e);
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [authLoading, appUser?.isAdmin]);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -780,7 +791,11 @@ export default function LevelTestEditorScreen() {
                       ) : (
                         <TextInput
                           style={styles.input}
-                          value={q.correctAnswer}
+                          value={
+                            Array.isArray(q.correctAnswer)
+                              ? q.correctAnswer.join(', ')
+                              : q.correctAnswer
+                          }
                           onChangeText={(v) =>
                             updateQuestion(activeSection, qIdx, {
                               correctAnswer: v,

@@ -234,7 +234,7 @@ Always run this after any dependency change:
 ```powershell
 Remove-Item -Recurse -Force node_modules, package-lock.json
 npm cache clean --force
-npx expo install
+npm install
 ```
 
 ### Step 4 — Validate locally
@@ -250,7 +250,7 @@ npx expo-doctor
 
 ```powershell
 git add .
-git commit -m "chore: npm updates $(Get-Date -Format 'yyyy-MM-dd')"
+git commit -m "chore: effect hook restructure updates $(Get-Date -Format 'yyyy-MM-dd')"
 git push
 ```
 

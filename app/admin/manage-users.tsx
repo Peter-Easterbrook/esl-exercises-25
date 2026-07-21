@@ -70,24 +70,26 @@ export default function ManageUsersScreen() {
   const [deleteEmailInput, setDeleteEmailInput] = useState('');
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+  const fetchUsersWithPhotos = async () => {
+    const { getAllUsers } = await import('@/services/firebaseService');
+    const allUsers = await getAllUsers();
+
+    const photos: Record<string, string | null> = {};
+    await Promise.all(
+      allUsers.map(async (user: UserData) => {
+        const photoUri = await loadProfilePhoto(user.id);
+        photos[user.id] = photoUri;
+      }),
+    );
+
+    return { allUsers, photos };
+  };
 
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const { getAllUsers } = await import('@/services/firebaseService');
-      const allUsers = await getAllUsers();
+      const { allUsers, photos } = await fetchUsersWithPhotos();
       setUsers(allUsers);
-
-      const photos: Record<string, string | null> = {};
-      await Promise.all(
-        allUsers.map(async (user: UserData) => {
-          const photoUri = await loadProfilePhoto(user.id);
-          photos[user.id] = photoUri;
-        }),
-      );
       setUserPhotos(photos);
     } catch (error) {
       console.error('Error loading users:', error);
@@ -96,6 +98,33 @@ export default function ManageUsersScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    fetchUsersWithPhotos()
+      .then(({ allUsers, photos }) => {
+        if (!isCancelled) {
+          setUsers(allUsers);
+          setUserPhotos(photos);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading users:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load users');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);

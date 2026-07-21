@@ -6,7 +6,7 @@ import { AppTheme } from '@/constants/themes';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { Category } from '@/types';
 import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,13 +17,6 @@ export default function CategoriesScreen() {
   const { theme } = useAppTheme();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme), [theme]);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadCategories();
-      setRefreshToken((t) => t + 1);
-    }, []),
-  );
 
   const loadCategories = async () => {
     try {
@@ -43,6 +36,10 @@ export default function CategoriesScreen() {
       );
       setCategories(categoriesData);
     } catch (error) {
+      console.error(
+        'Failed to load categories, falling back to mock data:',
+        error,
+      );
       const mockCategories: Category[] = [
         {
           id: '1',
@@ -85,6 +82,13 @@ export default function CategoriesScreen() {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      void loadCategories();
+      setRefreshToken((prev) => prev + 1);
+    }, []),
+  );
 
   if (loading) {
     return (

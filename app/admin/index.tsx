@@ -6,7 +6,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { getAdminStats } from '@/services/firebaseService';
 import { router } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  type ComponentProps,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -30,36 +35,37 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStats();
-  }, []);
+    let isCancelled = false;
 
-  const loadStats = async () => {
-    try {
-      setLoading(true);
-      const adminStats = await getAdminStats();
-      setStats(adminStats);
-    } catch (error) {
-      console.error('Error loading admin stats:', error);
-      Alert.alert('Error', 'Failed to load statistics');
-    } finally {
-      setLoading(false);
-    }
-  };
+    getAdminStats()
+      .then((adminStats) => {
+        if (!isCancelled) {
+          setStats(adminStats);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading admin stats:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load statistics');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   if (!appUser?.isAdmin) {
     router.replace('/(tabs)');
     return null;
   }
 
-  type AdminActionIcon =
-    | 'plus.circle'
-    | 'doc.badge.plus'
-    | 'pencil.circle'
-    | 'folder.circle'
-    | 'person.2.circle'
-    | 'chart.pie'
-    | 'gear'
-    | 'school';
+  type AdminActionIcon = ComponentProps<typeof IconSymbol>['name'];
 
   const adminActions: {
     icon: AdminActionIcon;
@@ -118,7 +124,7 @@ export default function AdminPanel() {
       animation: 'slide_from_right',
     },
     {
-      icon: 'school',
+      icon: 'graduationcap.fill',
       title: 'Level Test Editor',
       subtitle: 'Create and edit the English level test',
       color: '#004c6d',

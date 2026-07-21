@@ -43,7 +43,18 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
 
   useEffect(() => {
     if (visible && Platform.OS !== 'web') {
-      loadProducts();
+      let isCancelled = false;
+
+      getProducts()
+        .then((products) => {
+          if (isCancelled) return;
+          if (products && products.length > 0) {
+            setProductPrice((products[0] as any).displayPrice || DEFAULT_PRICE);
+          }
+        })
+        .catch((error) => {
+          console.error('Error loading products:', error);
+        });
 
       // Setup purchase listeners
       let cleanup: (() => void) | undefined;
@@ -99,21 +110,11 @@ export const PremiumPurchaseModal: React.FC<PremiumPurchaseModalProps> = ({
       initListeners();
 
       return () => {
+        isCancelled = true;
         if (cleanup) cleanup();
       };
     }
   }, [visible, user, refreshPremiumStatus, onPurchaseSuccess, onClose]);
-
-  const loadProducts = async () => {
-    try {
-      const products = await getProducts();
-      if (products && products.length > 0) {
-        setProductPrice((products[0] as any).displayPrice || DEFAULT_PRICE);
-      }
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
-  };
 
   const handlePurchase = async () => {
     if (!user) {

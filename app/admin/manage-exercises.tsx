@@ -25,29 +25,24 @@ export default function ManageExercisesScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    loadExercises();
-    loadCategories();
-  }, []);
+  const fetchExercises = async () => {
+    const { getAllExercises } = await import('@/services/firebaseService');
+    return getAllExercises();
+  };
 
-  const loadCategories = async () => {
-    try {
-      const { getCategories } = await import('@/services/firebaseService');
-      const categories = await getCategories();
-      const map: Record<string, string> = {};
-      categories.forEach((cat) => {
-        map[cat.id] = cat.name;
-      });
-      setCategoryMap(map);
-    } catch (error) {
-      console.error('Error loading categories:', error);
-    }
+  const fetchCategoryMap = async () => {
+    const { getCategories } = await import('@/services/firebaseService');
+    const categories = await getCategories();
+    const map: Record<string, string> = {};
+    categories.forEach((cat) => {
+      map[cat.id] = cat.name;
+    });
+    return map;
   };
 
   const loadExercises = async () => {
     try {
-      const { getAllExercises } = await import('@/services/firebaseService');
-      const allExercises = await getAllExercises();
+      const allExercises = await fetchExercises();
       setExercises(allExercises);
     } catch (error) {
       console.error('Error loading exercises:', error);
@@ -56,6 +51,42 @@ export default function ManageExercisesScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    fetchExercises()
+      .then((allExercises) => {
+        if (!isCancelled) {
+          setExercises(allExercises);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading exercises:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load exercises');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    fetchCategoryMap()
+      .then((map) => {
+        if (!isCancelled) {
+          setCategoryMap(map);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading categories:', error);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const handleDeleteExercise = (exercise: Exercise) => {
     Alert.alert(

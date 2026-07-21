@@ -5,7 +5,7 @@ import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { getUserProgressStats } from '@/services/firebaseService';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -42,28 +42,57 @@ export default function ProgressScreen() {
     }[],
   });
 
-  const loadProgressData = useCallback(async () => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-      const progressStats = await getUserProgressStats(user.uid);
-      setStats(progressStats);
-    } catch (error) {
-      console.error('Error loading progress data:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
   useEffect(() => {
-    loadProgressData();
-  }, [loadProgressData]);
+    let isCancelled = false;
+
+    if (!user) {
+      Promise.resolve().then(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    getUserProgressStats(user.uid)
+      .then((progressStats) => {
+        if (!isCancelled) {
+          setStats(progressStats);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading progress data:', error);
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [user]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadProgressData();
-    setRefreshing(false);
+
+    if (!user) {
+      setRefreshing(false);
+      return;
+    }
+
+    try {
+      const progressStats = await getUserProgressStats(user.uid);
+      setStats(progressStats);
+    } catch (error) {
+      console.error('Error refreshing progress data:', error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const formatTimeAgo = (date: Date): string => {

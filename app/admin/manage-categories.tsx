@@ -1,12 +1,12 @@
-import { ThemedLoader } from "@/components/themed-loader";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { AppTheme } from "@/constants/themes";
-import { useAppTheme } from "@/contexts/ThemeContext";
-import { Category } from "@/types";
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import { ThemedLoader } from '@/components/themed-loader';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { AppTheme } from '@/constants/themes';
+import { useAppTheme } from '@/contexts/ThemeContext';
+import { Category } from '@/types';
+import { router } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Modal,
@@ -16,45 +16,71 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 export default function ManageCategoriesScreen() {
   const { theme } = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    icon: "folder",
+    name: '',
+    description: '',
+    icon: 'folder',
   });
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
+  const fetchCategories = async () => {
+    const { getCategories } = await import('@/services/firebaseService');
+    return getCategories();
+  };
 
   const loadCategories = async () => {
     try {
-      const { getCategories } = await import("@/services/firebaseService");
-      const allCategories = await getCategories();
+      const allCategories = await fetchCategories();
       setCategories(allCategories);
     } catch (error) {
-      console.error("Error loading categories:", error);
-      Alert.alert("Error", "Failed to load categories");
+      console.error('Error loading categories:', error);
+      Alert.alert('Error', 'Failed to load categories');
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    let isCancelled = false;
+
+    fetchCategories()
+      .then((allCategories) => {
+        if (!isCancelled) {
+          setCategories(allCategories);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading categories:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load categories');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   const handleAddCategory = () => {
     setEditingCategory(null);
     setFormData({
-      name: "",
-      description: "",
-      icon: "folder",
+      name: '',
+      description: '',
+      icon: 'folder',
     });
     setModalVisible(true);
   };
@@ -71,59 +97,59 @@ export default function ManageCategoriesScreen() {
 
   const handleSaveCategory = async () => {
     if (!formData.name.trim()) {
-      Alert.alert("Validation Error", "Please enter a category name");
+      Alert.alert('Validation Error', 'Please enter a category name');
       return;
     }
 
     if (!formData.description.trim()) {
-      Alert.alert("Validation Error", "Please enter a category description");
+      Alert.alert('Validation Error', 'Please enter a category description');
       return;
     }
 
     try {
       if (editingCategory) {
-        const { updateDoc, doc } = await import("firebase/firestore");
-        const { db } = await import("@/config/firebase");
-        await updateDoc(doc(db, "categories", editingCategory.id), {
+        const { updateDoc, doc } = await import('firebase/firestore');
+        const { db } = await import('@/config/firebase');
+        await updateDoc(doc(db, 'categories', editingCategory.id), {
           name: formData.name,
           description: formData.description,
           icon: formData.icon,
         });
-        Alert.alert("Success", "Category updated successfully");
+        Alert.alert('Success', 'Category updated successfully');
       } else {
-        const { createCategory } = await import("@/services/firebaseService");
+        const { createCategory } = await import('@/services/firebaseService');
         await createCategory({
           name: formData.name,
           description: formData.description,
           icon: formData.icon,
         });
-        Alert.alert("Success", "Category created successfully");
+        Alert.alert('Success', 'Category created successfully');
       }
       setModalVisible(false);
       loadCategories();
     } catch (error) {
-      console.error("Error saving category:", error);
-      Alert.alert("Error", "Failed to save category");
+      console.error('Error saving category:', error);
+      Alert.alert('Error', 'Failed to save category');
     }
   };
 
   const handleDeleteCategory = (category: Category) => {
-    console.log("🗑️ Delete button clicked for category:", category.name);
+    console.log('🗑️ Delete button clicked for category:', category.name);
 
     Alert.alert(
-      "Delete Category",
+      'Delete Category',
       `Are you sure you want to delete "${category.name}"?\n\nThis will permanently remove the category. Any exercises in this category will no longer be associated with it.\n\nThis action cannot be undone.`,
       [
         {
-          text: "Cancel",
-          style: "cancel",
-          onPress: () => console.log("Delete cancelled"),
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => console.log('Delete cancelled'),
         },
         {
-          text: "Delete",
-          style: "destructive",
+          text: 'Delete',
+          style: 'destructive',
           onPress: () => {
-            console.log("🔥 Delete confirmed, executing deletion...");
+            console.log('🔥 Delete confirmed, executing deletion...');
             performDelete(category);
           },
         },
@@ -135,21 +161,21 @@ export default function ManageCategoriesScreen() {
   const performDelete = async (category: Category) => {
     try {
       console.log(`🔄 Attempting to delete category ID: ${category.id}`);
-      const { deleteDoc, doc } = await import("firebase/firestore");
-      const { db } = await import("@/config/firebase");
+      const { deleteDoc, doc } = await import('firebase/firestore');
+      const { db } = await import('@/config/firebase');
 
-      await deleteDoc(doc(db, "categories", category.id));
-      console.log("✅ Category deleted from Firebase successfully");
+      await deleteDoc(doc(db, 'categories', category.id));
+      console.log('✅ Category deleted from Firebase successfully');
 
-      Alert.alert("Success", "Category deleted successfully");
+      Alert.alert('Success', 'Category deleted successfully');
       await loadCategories();
-      console.log("✅ Category list reloaded");
+      console.log('✅ Category list reloaded');
     } catch (error) {
-      console.error("❌ Error deleting category:", error);
+      console.error('❌ Error deleting category:', error);
       Alert.alert(
-        "Error",
+        'Error',
         `Failed to delete category.\n\nError: ${
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : 'Unknown error'
         }`,
       );
     }
@@ -162,69 +188,69 @@ export default function ManageCategoriesScreen() {
   );
 
   const availableIcons = [
-    "house.fill",
-    "paperplane.fill",
-    "list.bullet",
-    "chart.bar.fill",
-    "person.fill",
-    "plus",
-    "plus.circle",
-    "plus.circle.fill",
-    "pencil",
-    "trash",
-    "gear",
-    "checkmark",
-    "checkmark.circle.fill",
-    "xmark",
-    "clock",
-    "book",
-    "text.bubble",
-    "doc.text",
-    "doc.badge.plus",
-    "ear",
-    "folder",
-    "magnifyingglass",
-    "questionmark.circle",
-    "info.circle",
-    "bell",
-    "person.circle",
-    "person.2",
-    "person.2.circle",
-    "calendar",
-    "exclamationmark.circle",
-    "eye",
-    "eye.slash",
-    "camera.fill",
-    "circle.fill",
-    "flame.fill",
-    "square.and.arrow.down",
-    "square.and.arrow.up",
-    "arrow.right.square",
-    "arrow.clockwise",
-    "chart.pie",
-    "translate",
-    "spellcheck",
-    "format.quote",
-    "text.format",
-    "abc",
-    "school",
-    "quiz",
-    "assignment",
-    "lightbulb",
-    "star",
-    "star.fill",
-    "chart.line.uptrend.xyaxis",
-    "trophy",
-    "message",
-    "chat",
-    "forum",
-    "voice",
-    "article",
-    "subject",
-    "menu.book",
-    "history",
-    "extension",
-    "link.circle",
+    'house.fill',
+    'paperplane.fill',
+    'list.bullet',
+    'chart.bar.fill',
+    'person.fill',
+    'plus',
+    'plus.circle',
+    'plus.circle.fill',
+    'pencil',
+    'trash',
+    'gear',
+    'checkmark',
+    'checkmark.circle.fill',
+    'xmark',
+    'clock',
+    'book',
+    'text.bubble',
+    'doc.text',
+    'doc.badge.plus',
+    'ear',
+    'folder',
+    'magnifyingglass',
+    'questionmark.circle',
+    'info.circle',
+    'bell',
+    'person.circle',
+    'person.2',
+    'person.2.circle',
+    'calendar',
+    'exclamationmark.circle',
+    'eye',
+    'eye.slash',
+    'camera.fill',
+    'circle.fill',
+    'flame.fill',
+    'square.and.arrow.down',
+    'square.and.arrow.up',
+    'arrow.right.square',
+    'arrow.clockwise',
+    'chart.pie',
+    'translate',
+    'textformat.abc.dottedunderline',
+    'quote.bubble',
+    'textformat',
+    'abc',
+    'graduationcap.fill',
+    'questionmark.square',
+    'list.clipboard',
+    'lightbulb',
+    'star',
+    'star.fill',
+    'chart.line.uptrend.xyaxis',
+    'trophy',
+    'message',
+    'bubble.left.and.bubble.right',
+    'bubble.left.and.bubble.right.fill',
+    'mic',
+    'newspaper',
+    'book.closed',
+    'books.vertical',
+    'clock.arrow.circlepath',
+    'puzzlepiece.extension',
+    'link.circle',
   ];
 
   if (loading) {
@@ -239,7 +265,11 @@ export default function ManageCategoriesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -251,7 +281,11 @@ export default function ManageCategoriesScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name="magnifyingglass" size={20} color={theme.icons.tertiary} />
+            <IconSymbol
+              name="magnifyingglass"
+              size={20}
+              color={theme.icons.tertiary}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search categories..."
@@ -265,7 +299,7 @@ export default function ManageCategoriesScreen() {
           <Pressable
             onPress={handleAddCategory}
             android_ripple={{
-              color: "rgba(149, 194, 151, 0.3)",
+              color: 'rgba(149, 194, 151, 0.3)',
               foreground: true,
             }}
             style={styles.addButton}
@@ -283,14 +317,18 @@ export default function ManageCategoriesScreen() {
           >
             {filteredCategories.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name="folder" size={48} color={theme.icons.placeholder} />
+                <IconSymbol
+                  name="folder"
+                  size={48}
+                  color={theme.icons.placeholder}
+                />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
-                    ? "No categories match your search"
-                    : "No categories found"}
+                    ? 'No categories match your search'
+                    : 'No categories found'}
                 </ThemedText>
                 <ThemedText style={styles.emptySubtext}>
-                  {!searchQuery && "Start by adding your first category"}
+                  {!searchQuery && 'Start by adding your first category'}
                 </ThemedText>
               </View>
             ) : (
@@ -329,14 +367,22 @@ export default function ManageCategoriesScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditCategory(category)}
                     >
-                      <IconSymbol name="pencil" size={16} color={theme.accent.mid} />
+                      <IconSymbol
+                        name="pencil"
+                        size={16}
+                        color={theme.accent.mid}
+                      />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteCategory(category)}
                     >
-                      <IconSymbol name="trash" size={16} color={theme.status.error} />
+                      <IconSymbol
+                        name="trash"
+                        size={16}
+                        color={theme.status.error}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -357,10 +403,14 @@ export default function ManageCategoriesScreen() {
           <View style={styles.modalView}>
             <View style={styles.modalHeader}>
               <ThemedText style={styles.modalTitle}>
-                {editingCategory ? "Edit Category" : "Add New Category"}
+                {editingCategory ? 'Edit Category' : 'Add New Category'}
               </ThemedText>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
+                <IconSymbol
+                  name="xmark"
+                  size={24}
+                  color={theme.icons.tertiary}
+                />
               </TouchableOpacity>
             </View>
 
@@ -414,7 +464,9 @@ export default function ManageCategoriesScreen() {
                         name={iconName as any}
                         size={28}
                         color={
-                          formData.icon === iconName ? theme.accent.mid : theme.icons.tertiary
+                          formData.icon === iconName
+                            ? theme.accent.mid
+                            : theme.icons.tertiary
                         }
                       />
                     </TouchableOpacity>
@@ -438,7 +490,7 @@ export default function ManageCategoriesScreen() {
                   onPress={handleSaveCategory}
                 >
                   <ThemedText style={styles.saveButtonText}>
-                    {editingCategory ? "Update" : "Create"} Category
+                    {editingCategory ? 'Update' : 'Create'} Category
                   </ThemedText>
                 </Pressable>
               </View>
@@ -457,9 +509,9 @@ function createStyles(theme: AppTheme) {
       backgroundColor: theme.backgrounds.card,
     },
     contentWrapper: {
-      width: "100%",
+      width: '100%',
       maxWidth: 600,
-      alignSelf: "center",
+      alignSelf: 'center',
       flex: 1,
     },
     header: {
@@ -471,8 +523,8 @@ function createStyles(theme: AppTheme) {
       borderBottomColor: theme.borders.divider,
     },
     backButton: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: 16,
     },
     backText: {
@@ -490,8 +542,8 @@ function createStyles(theme: AppTheme) {
       paddingTop: 20,
     },
     searchContainer: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       backgroundColor: theme.backgrounds.card,
       borderRadius: 12,
       paddingHorizontal: 16,
@@ -510,9 +562,9 @@ function createStyles(theme: AppTheme) {
       outlineWidth: 0,
     },
     addButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
       backgroundColor: theme.status.success,
       paddingVertical: 16,
       borderRadius: 12,
@@ -521,14 +573,14 @@ function createStyles(theme: AppTheme) {
       boxShadow: theme.shadow.level1,
     },
     addButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 16,
     },
     categoryList: {
       flex: 1,
     },
     emptyState: {
-      alignItems: "center",
+      alignItems: 'center',
       paddingVertical: 60,
     },
     emptyText: {
@@ -542,21 +594,21 @@ function createStyles(theme: AppTheme) {
       color: theme.icons.placeholder,
     },
     categoryCard: {
-      flexDirection: "row",
+      flexDirection: 'row',
       backgroundColor: theme.backgrounds.card,
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
       boxShadow: theme.shadow.level1,
-      alignItems: "center",
+      alignItems: 'center',
     },
     categoryIconContainer: {
       width: 56,
       height: 56,
       borderRadius: 28,
       backgroundColor: theme.backgrounds.tintedStrong,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       marginRight: 16,
     },
     categoryInfo: {
@@ -572,25 +624,25 @@ function createStyles(theme: AppTheme) {
       marginBottom: 8,
     },
     categoryMetadata: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       gap: 4,
     },
     metadataText: {
       fontSize: 12,
       color: theme.text.primary,
-      fontWeight: "normal",
+      fontWeight: 'normal',
     },
     categoryActions: {
-      flexDirection: "row",
+      flexDirection: 'row',
       gap: 8,
     },
     actionButton: {
       width: 40,
       height: 40,
       borderRadius: 20,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     editButton: {
       backgroundColor: theme.backgrounds.tintedStrong,
@@ -600,8 +652,8 @@ function createStyles(theme: AppTheme) {
     },
     centeredView: {
       flex: 1,
-      justifyContent: "flex-end",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
       backgroundColor: theme.backgrounds.card,
@@ -609,12 +661,12 @@ function createStyles(theme: AppTheme) {
       borderTopRightRadius: 20,
       paddingHorizontal: 20,
       paddingTop: 20,
-      maxHeight: "90%",
+      maxHeight: '90%',
     },
     modalHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginBottom: 20,
     },
     modalTitle: {
@@ -642,32 +694,32 @@ function createStyles(theme: AppTheme) {
       borderColor: theme.borders.divider,
     },
     textAreaInput: {
-      textAlignVertical: "top",
+      textAlignVertical: 'top',
       paddingVertical: 12,
     },
     iconGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
+      flexDirection: 'row',
+      flexWrap: 'wrap',
       gap: 12,
     },
     iconOption: {
-      width: "22%",
+      width: '22%',
       height: 80,
       aspectRatio: 1,
       backgroundColor: theme.backgrounds.subtle,
       borderRadius: 12,
-      justifyContent: "center",
-      alignItems: "center",
-      verticalAlign: "middle",
+      justifyContent: 'center',
+      alignItems: 'center',
+      verticalAlign: 'middle',
       borderWidth: 1,
-      borderColor: "transparent",
+      borderColor: 'transparent',
     },
     iconOptionSelected: {
       backgroundColor: theme.backgrounds.tintedStrong,
       borderColor: theme.accent.mid,
     },
     formActions: {
-      flexDirection: "row",
+      flexDirection: 'row',
       gap: 12,
       marginVertical: 20,
     },
@@ -675,22 +727,22 @@ function createStyles(theme: AppTheme) {
       flex: 1,
       paddingVertical: 12,
       borderRadius: 8,
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     cancelButton: {
       backgroundColor: theme.backgrounds.subtle,
     },
     cancelButtonText: {
       color: theme.text.primary,
-      fontWeight: "normal",
+      fontWeight: 'normal',
       fontSize: 16,
     },
     saveButton: {
       backgroundColor: theme.status.success,
     },
     saveButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 16,
     },
   });

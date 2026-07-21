@@ -38,11 +38,21 @@ export const MilestoneRatingModal: React.FC<MilestoneRatingModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (visible) {
-      setView('main');
-      setFeedbackText('');
-      setSubmitting(false);
-    }
+    if (!visible) return;
+
+    let isCancelled = false;
+
+    Promise.resolve().then(() => {
+      if (!isCancelled) {
+        setView('main');
+        setFeedbackText('');
+        setSubmitting(false);
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [visible]);
 
   const handleRate = () => {

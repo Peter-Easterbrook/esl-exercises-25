@@ -1,9 +1,9 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { AppTheme } from "@/constants/themes";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAppTheme } from "@/contexts/ThemeContext";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { AppTheme } from '@/constants/themes';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAppTheme } from '@/contexts/ThemeContext';
 import {
   AppSettings,
   auditOrphanedRecords,
@@ -11,9 +11,9 @@ import {
   getAppSettings,
   resetAppSettings,
   updateAppSettings,
-} from "@/services/firebaseService";
-import { router } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+} from '@/services/firebaseService';
+import { router } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -24,7 +24,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 export default function AppSettingsScreen() {
   const { appUser } = useAuth();
@@ -47,17 +47,13 @@ export default function AppSettingsScreen() {
     },
     notifications: {
       enablePushNotifications: true,
-      dailyReminderTime: "09:00",
+      dailyReminderTime: '09:00',
     },
     admin: {
       maintenanceMode: false,
-      announcementBanner: "",
+      announcementBanner: '',
     },
   });
-
-  useEffect(() => {
-    loadSettings();
-  }, []);
 
   const loadSettings = async () => {
     try {
@@ -65,21 +61,47 @@ export default function AppSettingsScreen() {
       const appSettings = await getAppSettings();
       setSettings(appSettings);
     } catch (error) {
-      console.error("Error loading settings:", error);
-      Alert.alert("Error", "Failed to load app settings");
+      console.error('Error loading settings:', error);
+      Alert.alert('Error', 'Failed to load app settings');
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    let isCancelled = false;
+
+    getAppSettings()
+      .then((appSettings) => {
+        if (!isCancelled) {
+          setSettings(appSettings);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading settings:', error);
+        if (!isCancelled) {
+          Alert.alert('Error', 'Failed to load app settings');
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   const handleSaveSettings = async () => {
     try {
       setSaving(true);
       await updateAppSettings(settings);
-      Alert.alert("Success", "Settings saved successfully");
+      Alert.alert('Success', 'Settings saved successfully');
     } catch (error) {
-      console.error("Error saving settings:", error);
-      Alert.alert("Error", "Failed to save settings");
+      console.error('Error saving settings:', error);
+      Alert.alert('Error', 'Failed to save settings');
     } finally {
       setSaving(false);
     }
@@ -87,22 +109,22 @@ export default function AppSettingsScreen() {
 
   const handleResetSettings = () => {
     Alert.alert(
-      "Reset Settings",
-      "Are you sure you want to reset all settings to default values?",
+      'Reset Settings',
+      'Are you sure you want to reset all settings to default values?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Reset",
-          style: "destructive",
+          text: 'Reset',
+          style: 'destructive',
           onPress: async () => {
             try {
               setSaving(true);
               await resetAppSettings();
               await loadSettings();
-              Alert.alert("Success", "Settings reset to defaults");
+              Alert.alert('Success', 'Settings reset to defaults');
             } catch (error) {
-              console.error("Error resetting settings:", error);
-              Alert.alert("Error", "Failed to reset settings");
+              console.error('Error resetting settings:', error);
+              Alert.alert('Error', 'Failed to reset settings');
             } finally {
               setSaving(false);
             }
@@ -119,8 +141,8 @@ export default function AppSettingsScreen() {
       setAuditResults(report);
       setAuditModalVisible(true);
     } catch (error) {
-      console.error("Error auditing data:", error);
-      alert("Error: Failed to audit data integrity");
+      console.error('Error auditing data:', error);
+      alert('Error: Failed to audit data integrity');
     } finally {
       setSaving(false);
     }
@@ -142,15 +164,15 @@ export default function AppSettingsScreen() {
       });
       setAuditModalVisible(true);
     } catch (error) {
-      console.error("Error cleaning up data:", error);
-      alert("Error: Failed to cleanup orphaned records");
+      console.error('Error cleaning up data:', error);
+      alert('Error: Failed to cleanup orphaned records');
     } finally {
       setSaving(false);
     }
   };
 
   if (!appUser?.isAdmin) {
-    router.replace("/(tabs)");
+    router.replace('/(tabs)');
     return null;
   }
 
@@ -177,7 +199,11 @@ export default function AppSettingsScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back</ThemedText>
           </TouchableOpacity>
 
@@ -190,7 +216,11 @@ export default function AppSettingsScreen() {
           {/* Exercise Settings */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <IconSymbol name="doc.text" size={20} color={theme.status.success} />
+              <IconSymbol
+                name="doc.text"
+                size={20}
+                color={theme.status.success}
+              />
               <ThemedText type="subtitle" style={styles.sectionTitle}>
                 Exercise Settings
               </ThemedText>
@@ -612,18 +642,20 @@ export default function AppSettingsScreen() {
               <IconSymbol
                 name={
                   auditResults?.isCleanupResult
-                    ? "checkmark.circle.fill"
-                    : "doc.text.magnifyingglass"
+                    ? 'checkmark.circle.fill'
+                    : 'doc.text.magnifyingglass'
                 }
                 size={24}
                 color={
-                  auditResults?.isCleanupResult ? theme.status.success : theme.accent.mid
+                  auditResults?.isCleanupResult
+                    ? theme.status.success
+                    : theme.accent.mid
                 }
               />
               <ThemedText style={styles.modalTitle}>
                 {auditResults?.isCleanupResult
-                  ? "Cleanup Complete"
-                  : "Data Integrity Audit"}
+                  ? 'Cleanup Complete'
+                  : 'Data Integrity Audit'}
               </ThemedText>
             </View>
 
@@ -744,7 +776,7 @@ export default function AppSettingsScreen() {
                 deleted users or exercises.
               </ThemedText>
               <ThemedText
-                style={[styles.modalText, { marginTop: 12, fontWeight: "600" }]}
+                style={[styles.modalText, { marginTop: 12, fontWeight: '600' }]}
               >
                 This action cannot be undone.
               </ThemedText>
@@ -780,9 +812,9 @@ function createStyles(theme: AppTheme) {
       backgroundColor: theme.backgrounds.subtle,
     },
     contentWrapper: {
-      width: "100%",
+      width: '100%',
       maxWidth: 600,
-      alignSelf: "center",
+      alignSelf: 'center',
       flex: 1,
     },
     header: {
@@ -794,8 +826,8 @@ function createStyles(theme: AppTheme) {
       borderBottomColor: theme.borders.divider,
     },
     backButton: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: 16,
     },
     backText: {
@@ -809,8 +841,8 @@ function createStyles(theme: AppTheme) {
     },
     loadingContainer: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     loadingText: {
       marginTop: 12,
@@ -825,8 +857,8 @@ function createStyles(theme: AppTheme) {
       marginTop: 24,
     },
     sectionHeader: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: 12,
       gap: 8,
     },
@@ -840,9 +872,9 @@ function createStyles(theme: AppTheme) {
       boxShadow: theme.shadow.level1,
     },
     settingRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       paddingVertical: 12,
     },
     settingRowColumn: {
@@ -854,13 +886,13 @@ function createStyles(theme: AppTheme) {
     },
     settingLabel: {
       fontSize: 16,
-      fontWeight: "500",
+      fontWeight: '500',
       marginBottom: 4,
     },
     settingDescription: {
       fontSize: 13,
       color: theme.text.primary,
-      fontWeight: "normal",
+      fontWeight: 'normal',
       lineHeight: 18,
     },
     divider: {
@@ -876,7 +908,7 @@ function createStyles(theme: AppTheme) {
       borderRadius: 8,
       paddingHorizontal: 12,
       fontSize: 16,
-      textAlign: "center",
+      textAlign: 'center',
       backgroundColor: theme.backgrounds.card,
       color: theme.text.primary,
     },
@@ -888,7 +920,7 @@ function createStyles(theme: AppTheme) {
       borderRadius: 8,
       paddingHorizontal: 12,
       fontSize: 16,
-      textAlign: "center",
+      textAlign: 'center',
       backgroundColor: theme.backgrounds.card,
       color: theme.text.primary,
     },
@@ -908,9 +940,9 @@ function createStyles(theme: AppTheme) {
       gap: 12,
     },
     button: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
       paddingVertical: 16,
       borderRadius: 12,
       gap: 8,
@@ -925,17 +957,17 @@ function createStyles(theme: AppTheme) {
       borderColor: theme.status.danger,
     },
     buttonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 16,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     resetButtonText: {
       color: theme.status.danger,
     },
     dataButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
       paddingVertical: 12,
       paddingHorizontal: 20,
       borderRadius: 8,
@@ -950,33 +982,33 @@ function createStyles(theme: AppTheme) {
     auditButtonText: {
       color: theme.accent.mid,
       fontSize: 14,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     cleanupButton: {
       backgroundColor: theme.status.danger,
     },
     cleanupButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 14,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     modalOverlay: {
       flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      justifyContent: "center",
-      alignItems: "center",
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: 20,
     },
     modalContent: {
       backgroundColor: theme.backgrounds.card,
       borderRadius: 16,
-      width: "100%",
+      width: '100%',
       maxWidth: 500,
       boxShadow: theme.shadow.level3,
     },
     modalHeader: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       gap: 12,
       padding: 20,
       paddingBottom: 16,
@@ -985,7 +1017,7 @@ function createStyles(theme: AppTheme) {
     },
     modalTitle: {
       fontSize: 20,
-      fontWeight: "500",
+      fontWeight: '500',
       color: theme.text.primary,
     },
     modalBody: {
@@ -997,9 +1029,9 @@ function createStyles(theme: AppTheme) {
       lineHeight: 22,
     },
     statRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       paddingVertical: 8,
     },
     statLabel: {
@@ -1009,20 +1041,20 @@ function createStyles(theme: AppTheme) {
     statValue: {
       fontSize: 15,
       color: theme.text.primary,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     statLabelBold: {
       fontSize: 16,
       color: theme.text.primary,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     statValueBold: {
       fontSize: 18,
-      fontWeight: "700",
+      fontWeight: '700',
     },
     warningBox: {
-      flexDirection: "row",
-      alignItems: "flex-start",
+      flexDirection: 'row',
+      alignItems: 'flex-start',
       gap: 10,
       marginTop: 16,
       padding: 12,
@@ -1038,8 +1070,8 @@ function createStyles(theme: AppTheme) {
       lineHeight: 20,
     },
     successBox: {
-      flexDirection: "row",
-      alignItems: "flex-start",
+      flexDirection: 'row',
+      alignItems: 'flex-start',
       gap: 10,
       marginTop: 16,
       padding: 12,
@@ -1060,15 +1092,15 @@ function createStyles(theme: AppTheme) {
       marginTop: 0,
       paddingVertical: 14,
       borderRadius: 10,
-      alignItems: "center",
+      alignItems: 'center',
     },
     modalButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 16,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     modalActions: {
-      flexDirection: "row",
+      flexDirection: 'row',
       gap: 12,
       padding: 20,
       paddingTop: 0,
@@ -1077,7 +1109,7 @@ function createStyles(theme: AppTheme) {
       flex: 1,
       paddingVertical: 14,
       borderRadius: 10,
-      alignItems: "center",
+      alignItems: 'center',
     },
     cancelButton: {
       backgroundColor: theme.backgrounds.card,
@@ -1087,15 +1119,15 @@ function createStyles(theme: AppTheme) {
     cancelButtonText: {
       color: theme.text.secondary,
       fontSize: 16,
-      fontWeight: "500",
+      fontWeight: '500',
     },
     confirmButton: {
       backgroundColor: theme.status.danger,
     },
     confirmButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: 16,
-      fontWeight: "500",
+      fontWeight: '500',
     },
   });
 }

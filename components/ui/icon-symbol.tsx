@@ -1,14 +1,13 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
+import { SFSymbol, SymbolWeight } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
 type IconMapping = Partial<
-  Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>
+  Record<SFSymbol, ComponentProps<typeof MaterialIcons>['name']>
 >;
-type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -48,14 +47,21 @@ const MAPPING = {
   xmark: 'close',
   'xmark.circle.fill': 'cancel',
   'exclamationmark.circle': 'error-outline',
+  'exclamationmark.triangle': 'warning-amber',
+  'exclamationmark.triangle.fill': 'warning',
 
   // Content icons
   photo: 'photo',
   link: 'link',
+  'link.circle': 'link',
   clock: 'schedule',
   book: 'menu-book',
+  'book.circle.fill': 'menu-book',
+  'books.vertical': 'menu-book',
   'text.bubble': 'chat-bubble-outline',
   'doc.text': 'description',
+  'doc.text.fill': 'description',
+  'doc.text.magnifyingglass': 'manage-search',
   'doc.badge.plus': 'note-add',
   ear: 'hearing',
   folder: 'folder',
@@ -63,11 +69,13 @@ const MAPPING = {
   'folder.circle.fill': 'folder',
   magnifyingglass: 'search',
   'questionmark.circle': 'help-outline',
+  'questionmark.circle.fill': 'help',
   'info.circle': 'info-outline',
   bell: 'notifications',
   'person.circle': 'account-circle',
   'person.circle.fill': 'account-circle',
   'person.2': 'group',
+  'person.2.fill': 'group',
   'person.2.circle': 'supervisor-account',
   calendar: 'event',
   'circle.fill': 'circle',
@@ -76,44 +84,54 @@ const MAPPING = {
   'square.and.arrow.up': 'share',
   'arrow.right.square': 'exit-to-app',
   'arrow.clockwise': 'refresh',
+  'arrow.counterclockwise': 'undo',
+  'arrow.down.circle': 'arrow-circle-down',
   'chart.pie': 'pie-chart',
   eye: 'visibility',
   'eye.slash': 'visibility-off',
   'camera.fill': 'camera',
+  globe: 'public',
+  'lock.fill': 'lock',
+  'lock.shield': 'security',
+  'envelope.fill': 'email',
+  'externaldrive.badge.xmark': 'sync-problem',
 
   // Language & Grammar icons
   translate: 'translate',
-  spellcheck: 'spellcheck',
-  'format.quote': 'format-quote',
-  'text.format': 'text-fields',
+  'textformat.abc.dottedunderline': 'spellcheck',
+  'quote.bubble': 'format-quote',
+  textformat: 'text-fields',
   abc: 'abc',
-  quotemarks: 'format-quote', // Add this if using 'quotemarks'
-  'quote.opening': 'format-quote', // Or add these alternatives
+  'quote.opening': 'format-quote',
   'quote.closing': 'format-quote',
 
   // Learning & Education icons
-  school: 'school',
-  quiz: 'quiz',
-  assignment: 'assignment',
+  graduationcap: 'school',
+  'graduationcap.fill': 'school',
+  'questionmark.square': 'quiz',
+  'list.clipboard': 'assignment',
   lightbulb: 'lightbulb-outline',
+  'lightbulb.fill': 'lightbulb',
   star: 'star-outline',
   'star.fill': 'star',
   'chart.line.uptrend.xyaxis': 'trending-up',
 
   // Communication icons
   message: 'message',
-  chat: 'chat',
-  forum: 'forum',
-  voice: 'record-voice-over',
+  'bubble.left.and.bubble.right': 'chat',
+  'bubble.left.and.bubble.right.fill': 'forum',
+  mic: 'record-voice-over',
 
   // Miscellaneous icons
-  article: 'article',
-  subject: 'subject',
-  history: 'history',
-  extension: 'extension',
+  newspaper: 'article',
+  'book.closed': 'subject',
+  'clock.arrow.circlepath': 'history',
+  'puzzlepiece.extension': 'extension',
   trophy: 'emoji-events',
   'trophy.fill': 'emoji-events',
-} as IconMapping;
+} satisfies IconMapping;
+
+type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.

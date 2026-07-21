@@ -32,11 +32,22 @@ export default function AuthScreen() {
 
   // Auto-navigate when user becomes authenticated
   useEffect(() => {
-    if (user) {
-      console.log("🚀 User authenticated, navigating to app...");
-      setLoading(false);
-      router.replace("/(tabs)");
-    }
+    if (!user) return;
+
+    let isCancelled = false;
+
+    console.log("🚀 User authenticated, navigating to app...");
+    router.replace("/(tabs)");
+
+    Promise.resolve().then(() => {
+      if (!isCancelled) {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [user]);
 
   const handleSubmit = async () => {

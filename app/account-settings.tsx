@@ -69,47 +69,68 @@ export default function AccountSettingsScreen() {
     memberSince: '',
   });
 
-  const loadUserPhoto = useCallback(async () => {
-    if (!user) return;
-    const photoUri = await loadProfilePhoto(user.uid);
-    setProfilePhotoUri(photoUri);
+  const fetchUserStats = useCallback(async () => {
+    if (!user) return null;
+
+    const progress = await getUserProgress(user.uid);
+    const completedCount = progress.filter((p) => p.completed).length;
+    const scores = progress
+      .filter((p) => p.score !== undefined)
+      .map((p) => p.score!);
+    const avgScore =
+      scores.length > 0
+        ? Math.round(
+            scores.reduce((sum, score) => sum + score, 0) / scores.length,
+          )
+        : 0;
+
+    const memberSince = user.metadata.creationTime
+      ? new Date(user.metadata.creationTime).toLocaleDateString()
+      : 'Unknown';
+
+    return {
+      totalExercises: progress.length,
+      completedExercises: completedCount,
+      averageScore: avgScore,
+      memberSince,
+    };
   }, [user]);
 
   const loadUserStats = useCallback(async () => {
-    if (!user) return;
-
     try {
-      const progress = await getUserProgress(user.uid);
-      const completedCount = progress.filter((p) => p.completed).length;
-      const scores = progress
-        .filter((p) => p.score !== undefined)
-        .map((p) => p.score!);
-      const avgScore =
-        scores.length > 0
-          ? Math.round(
-              scores.reduce((sum, score) => sum + score, 0) / scores.length,
-            )
-          : 0;
-
-      const memberSince = user.metadata.creationTime
-        ? new Date(user.metadata.creationTime).toLocaleDateString()
-        : 'Unknown';
-
-      setStats({
-        totalExercises: progress.length,
-        completedExercises: completedCount,
-        averageScore: avgScore,
-        memberSince,
-      });
+      const newStats = await fetchUserStats();
+      if (newStats) {
+        setStats(newStats);
+      }
     } catch (error) {
       console.error('Error loading user stats:', error);
     }
-  }, [user]);
+  }, [fetchUserStats]);
 
   useEffect(() => {
-    loadUserStats();
-    loadUserPhoto();
-  }, [loadUserStats, loadUserPhoto]);
+    if (!user) return;
+    let isCancelled = false;
+
+    fetchUserStats()
+      .then((newStats) => {
+        if (!isCancelled && newStats) {
+          setStats(newStats);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading user stats:', error);
+      });
+
+    loadProfilePhoto(user.uid).then((photoUri) => {
+      if (!isCancelled) {
+        setProfilePhotoUri(photoUri);
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [user, fetchUserStats]);
 
   const handleUpdateDisplayName = async () => {
     if (!displayName.trim()) {
