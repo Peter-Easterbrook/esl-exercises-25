@@ -1367,7 +1367,7 @@ function createStyles(theme: AppTheme) {
       marginBottom: 16,
     },
     inputGroup: {
-      marginBottom: 16,
+      marginVertical: 16,
     },
     label: {
       fontSize: 14,

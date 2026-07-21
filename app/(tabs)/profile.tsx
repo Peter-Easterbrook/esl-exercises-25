@@ -190,7 +190,12 @@ Your UID: ${user?.uid}`,
           style={styles.content}
           contentContainerStyle={[
             styles.contentContainer,
-            { paddingBottom: Math.max(styles.contentContainer.paddingBottom, insets.bottom + 16) },
+            {
+              paddingBottom: Math.max(
+                styles.contentContainer.paddingBottom,
+                insets.bottom + 16,
+              ),
+            },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -244,13 +249,16 @@ Your UID: ${user?.uid}`,
                   </ThemedText>
                 </View>
               </View>
-              <TouchableOpacity
-                style={styles.retakeButton}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.retakeButton,
+                  pressed && styles.retakeButtonPressed,
+                ]}
                 onPress={() => router.push('/')}
-                activeOpacity={0.7}
+                android_ripple={{ color: blues.blue1, foreground: true }}
               >
                 <ThemedText style={styles.retakeText}>Retake</ThemedText>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           )}
 
@@ -507,6 +515,10 @@ function createStyles(theme: AppTheme) {
       borderRadius: 20,
       borderWidth: 1,
       borderColor: theme.borders.medium,
+    },
+    retakeButtonPressed: {
+      opacity: 0.85,
+      transform: [{ scale: 0.98 }],
     },
     retakeText: {
       fontSize: 13,

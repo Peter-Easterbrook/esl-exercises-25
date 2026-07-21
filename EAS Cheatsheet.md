@@ -261,7 +261,7 @@ git push
 **No → OTA update** (JS/TS changes, UI updates, Firebase logic, content):
 
 ```powershell
-eas update -p android --branch production --message "SDK 56 upgrade"
+eas update -p android --branch production --message "npm updates"
 eas update:list --branch production
 ```
 
