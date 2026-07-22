@@ -46,7 +46,7 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 - expo-auth-session (Google OAuth integration)
 - @react-native-async-storage/async-storage (Firebase auth persistence)
 - react-native-iap v14.7.1 (In-app purchases - native only, see Native-Only Modules section)
-- Expo Build Properties: compileSdkVersion 36, targetSdkVersion 35 (Android 15), minSdkVersion 24
+- Expo Build Properties: compileSdkVersion 36, targetSdkVersion 36 (Android 16), minSdkVersion 24
 
 ## Code Style
 
