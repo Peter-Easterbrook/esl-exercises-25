@@ -81,7 +81,11 @@
       "Read(//tmp/**)",
       "Bash(grep -E \"^C:\\\\\\\\\\\\\\\\|error\")",
       "Bash(grep -E \"^C:\\\\\\\\\\\\\\\\.*\\\\.tsx$|set-state-in-effect\")",
-      "Bash(rm eslint-report2.json)"
+      "Bash(rm eslint-report2.json)",
+      "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 status --short)",
+      "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 diff app.json)",
+      "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 diff package.json)",
+      "Bash(eas build *)"
     ],
     "deny": [],
     "ask": []
