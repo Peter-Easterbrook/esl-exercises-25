@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "generate-image": {
+      "source": "maxedapps/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/generate-image/SKILL.md",
+      "computedHash": "046235a401dc1eafb08143d327e17f013b015448922d218c179fefed19283a01"
+    }
+  }
+}
