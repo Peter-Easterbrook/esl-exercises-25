@@ -85,7 +85,13 @@
       "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 status --short)",
       "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 diff app.json)",
       "Bash(git -C /c/Users/Peter/GitHub/esl-exercises-25 diff package.json)",
-      "Bash(eas build *)"
+      "Bash(eas build *)",
+      "Read(//c/Users/Peter/.local/bin/**)",
+      "Read(//c/Users/Peter/.claude/**)",
+      "Bash(claude --version)",
+      "Read(//c/Users/Peter/**)",
+      "Bash(node -e \"const j=require\\('./package.json'\\);console.log\\(JSON.stringify\\(j.scripts,null,1\\)\\)\")",
+      "Bash(node *)"
     ],
     "deny": [],
     "ask": []
