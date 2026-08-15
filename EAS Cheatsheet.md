@@ -267,8 +267,9 @@ eas update:list --branch production
 
 **Yes → New build** (native dependencies, `app.json`, Expo SDK upgrade, icons/splash):
 
-```powershell
+```powershell either:
 eas build -p android --profile production --auto-submit
+or
 eas build -p android --profile production
 eas submit -p android
 ```

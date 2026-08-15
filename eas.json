@@ -33,6 +33,12 @@
         "serviceAccountKeyPath": "./google-play-key.json",
         "track": "production"
       }
+    },
+    "internal": {
+      "android": {
+        "serviceAccountKeyPath": "./google-play-key.json",
+        "track": "internal"
+      }
     }
   }
 }
