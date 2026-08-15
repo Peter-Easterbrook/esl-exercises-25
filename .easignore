@@ -1,0 +1,62 @@
+# .easignore controls what gets uploaded to EAS Build.
+# IMPORTANT: when this file exists it REPLACES .gitignore for EAS, so it must
+# repeat everything .gitignore excludes — otherwise those files start shipping.
+
+# --- Agent / editor tooling (not part of the app) ---
+# .claude/skills/generate-image was a Windows symlink into .agents/, which made
+# EAS fail with "EPERM: operation not permitted, symlink". None of this belongs
+# in a build tarball regardless.
+.agents/
+.claude/
+
+# --- dependencies ---
+node_modules/
+
+# --- secrets / credentials ---
+google-play-key.json
+credentials.json
+credentials.txt
+admin.txt
+Google.json
+*.env
+.env
+.env.local
+.env.production
+.env.*.local
+*.jks
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision
+
+# --- Expo ---
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# --- generated native folders (managed workflow: EAS prebuilds these) ---
+/ios
+/android
+
+# --- Native ---
+.kotlin/
+*.orig.*
+
+# --- Metro ---
+.metro-health-check*
+
+# --- debug ---
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# --- typescript ---
+*.tsbuildinfo
+
+# --- misc ---
+.DS_Store
+app-example
+*.pdf
+OAUTH_TROUBLESHOOTING.md
