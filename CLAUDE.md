@@ -105,16 +105,18 @@ const getRNIap = async () => {
 ## Feature Gotchas
 
 ### Multi-Language Instructions
-Exercise instructions are available in English, Spanish, French, and German.
+Exercise instructions are available in English, Spanish, French, German, and Italian.
 
-- Instructions are stored as a `{ en, es, fr, de }` object **or** as a legacy plain string. Both formats are live in the database — helper functions in `utils/languageHelpers.ts` must handle both, and there is deliberately **no migration**.
-- English is required; the other three are optional.
+- Instructions are stored as a `{ en, es, fr, de, it }` object **or** as a legacy plain string. Both formats are live in the database — helper functions in `utils/languageHelpers.ts` must handle both, and there is deliberately **no migration**.
+- English is required; the other four are optional.
+- The canonical list lives in `constants/languages.ts` (`SUPPORTED_LANGUAGES`, `LANGUAGE_ORDER`) — check there rather than trusting this list if adding a language.
 - User preference lives in the `preferredLanguage` field on the `User` type, and can be temporarily overridden per-exercise.
 
 ### Download Paywall
-One-time €1.99 purchase unlocks all downloadable files via Google Play Billing.
+One-time €2.99 purchase unlocks all downloadable files via Google Play Billing.
 
-- **Status:** Fully live. `premium_file_access` product created in Google Play Console at €1.99, license testing configured, purchase flow verified.
+- **Status:** Fully live. `premium_file_access` product created in Google Play Console at €2.99, license testing configured, purchase flow verified.
+- The displayed price comes from Google Play at runtime; `DEFAULT_PRICE` in `services/premiumService.ts` is only the pre-load fallback. Update it if the Play Console price changes.
 - Admins bypass the paywall entirely (free access).
 - Premium status is stored on the Firestore user document; `AuthContext` exposes `hasPremiumAccess` and `refreshPremiumStatus`.
 - Web shows a "not available" message — purchases are mobile-only.

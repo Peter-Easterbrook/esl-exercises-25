@@ -12,8 +12,8 @@ A comprehensive English as a Second Language (ESL) learning platform built with 
 - 🎯 **Difficulty Levels**: Beginner, intermediate, and advanced exercises
 - 🧪 **Level Test**: CEFR-aligned placement test (A1-B2) to assess English proficiency across 16 grammar topics
 - 🎉 **Gamification**: Confetti celebrations for perfect scores and achievement tracking
-- 📥 **Downloadable Resources**: Access PDFs and DOCs with premium file unlocking (€1.99 one-time purchase)
-- 🌍 **Multi-Language Support**: Exercise instructions in English, Spanish, French, and German
+- 📥 **Downloadable Resources**: Access PDFs and DOCs with premium file unlocking (€2.99 one-time purchase)
+- 🌍 **Multi-Language Support**: Exercise instructions in English, Spanish, French, German, and Italian
 - 🔄 **Exercise Review**: Review answers with explanations and correct solutions
 
 ### For Administrators
@@ -30,9 +30,9 @@ A comprehensive English as a Second Language (ESL) learning platform built with 
 
 - 🔐 **Secure Authentication**: Firebase Auth with Google OAuth, email/password, and account management
 - ☁️ **Cloud Storage**: Firebase Firestore for data and Firebase Storage for files
-- 📱 **Cross-Platform**: Native iOS, Android, and web support
+- 📱 **Platforms**: Android (shipping target) and web
 - 🎨 **Modern UI**: Custom themed components with consistent design system
-- 💳 **In-App Purchases**: Secure Google Play Billing and App Store integration for premium features
+- 💳 **In-App Purchases**: Secure Google Play Billing for premium features (mobile only — web shows a "not available" message)
 - ♿ **Accessibility**: Proper accessibility labels and navigation
 - 🔄 **Real-time Sync**: Live data synchronization across devices
 
@@ -40,7 +40,7 @@ A comprehensive English as a Second Language (ESL) learning platform built with 
 
 ### Prerequisites
 
-- **Node.js** (v16 or higher)
+- **Node.js** (v20 or higher — required by React Native 0.86)
 - **npm** or **yarn**
 - **Expo CLI** (`npm install -g @expo/cli`)
 - **Firebase project** with Authentication, Firestore, and Storage enabled
@@ -62,59 +62,23 @@ A comprehensive English as a Second Language (ESL) learning platform built with 
 
 3. **Configure Firebase**
    - Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
-   - Enable **Authentication** (Email/Password provider)
+   - Enable **Authentication** (Email/Password and Google Sign-In providers)
    - Enable **Firestore Database**
    - Enable **Firebase Storage**
    - Download your Firebase configuration
-   - Update `config/firebase.ts` with your Firebase configuration
+   - Add the values to a local `.env` file (gitignored) — `config/firebase.ts` reads them from
+     the environment. **Never commit credentials to `config/firebase.ts`.**
 
 4. **Set up Firestore Security Rules**
 
-   ```javascript
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       // Verify admin status
-       function isAdmin() {
-         return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-       }
+   The complete, current Firestore and Storage rules live in the `firebase-release-setup`
+   skill (`.claude/skills/firebase-release-setup/SKILL.md`), which is the single source of
+   truth — they are deliberately not duplicated here, to stop the two copies drifting apart.
 
-       // Users can read/write their own data
-       match /users/{userId} {
-         allow read, write: if request.auth != null && request.auth.uid == userId;
-       }
-
-       // User progress is private to the user
-       match /userProgress/{document=**} {
-         allow read, write: if request.auth != null &&
-           get(/databases/$(database)/documents/userProgress/$(document)).data.userId == request.auth.uid;
-       }
-
-       // Categories and exercises readable by all, writable by admins
-       match /categories/{document=**} {
-         allow read: if request.auth != null;
-         allow write: if request.auth != null && isAdmin();
-       }
-
-       match /exercises/{document=**} {
-         allow read: if request.auth != null;
-         allow write: if request.auth != null && isAdmin();
-       }
-
-       // Downloadable files readable by all, writable by admins
-       match /downloadableFiles/{document=**} {
-         allow read: if request.auth != null;
-         allow write: if request.auth != null && isAdmin();
-       }
-
-       // App settings readable by all, writable by admins
-       match /appSettings/{document=**} {
-         allow read: if request.auth != null;
-         allow write: if request.auth != null && isAdmin();
-       }
-     }
-   }
-   ```
+   In summary: admin privileges are enforced **server-side by these rules, never
+   client-side**. Users may read and write only their own profile and progress; categories,
+   exercises, downloadable files, and app settings are readable by any signed-in user and
+   writable only by admins.
 
 5. **Initialize default data (optional)**
    - Run the app and sign up as an admin user
@@ -127,10 +91,12 @@ A comprehensive English as a Second Language (ESL) learning platform built with 
 
 ### 📱 Running on Devices
 
-- **iOS Simulator**: Press `i` in the terminal
 - **Android Emulator**: Press `a` in the terminal
 - **Physical Device**: Scan the QR code with Expo Go app
 - **Web Browser**: Press `w` in the terminal
+
+> **Note:** In-app purchases are unavailable in Expo Go and on web — `react-native-iap`
+> needs a development build. The app degrades gracefully in both cases.
 
 ## 📁 Project Structure
 
@@ -219,7 +185,7 @@ esl-exercises-25/
 
 ### Frontend
 
-- **Framework**: Expo SDK 55 with Expo Router
+- **Framework**: Expo SDK 57 (React Native 0.86) with Expo Router v56
 - **Language**: TypeScript (strict mode)
 - **UI Components**: Custom themed components with consistent design system
 - **Navigation**: Expo Router (file-based routing with dynamic segments)
@@ -234,7 +200,7 @@ esl-exercises-25/
 - **Database**: Firebase Firestore (NoSQL)
 - **File Storage**: Firebase Storage (PDFs, DOCs)
 - **Real-time**: Firestore real-time listeners
-- **In-App Purchases**: Google Play Billing, App Store IAP
+- **In-App Purchases**: Google Play Billing
 
 ### Development Tools
 
@@ -260,14 +226,19 @@ esl-exercises-25/
 # Development
 npm start              # Start Expo development server
 npm run android        # Run on Android device/emulator
-npm run ios           # Run on iOS device/simulator
-npm run web           # Run in web browser
+npm run web            # Run in web browser
 
 # Code Quality
-npm run lint          # Run ESLint
+npm run lint           # Run ESLint
+npm run lint-secrets   # Scan staged changes for credentials
+
+# Release
+npm run bump-version         # patch: 2.0.4 → 2.0.5 (bug fixes)
+npm run bump-version minor   # minor: 2.0.4 → 2.1.0 (new features)
+npm run bump-version major   # major: 2.0.4 → 3.0.0 (breaking changes)
 
 # Utilities
-npm run reset-project # Reset project to initial state
+npm run reset-project  # Reset project to initial state
 ```
 
 ## 🎯 Key Features Deep Dive
@@ -279,7 +250,7 @@ npm run reset-project # Reset project to initial state
 - **Progress Persistence**: Saves user progress across sessions
 - **Retry Mechanism**: Allow users to retake exercises
 - **Premium File Downloads**: Attach supplementary materials with paywall
-- **Multi-Language Instructions**: Exercises available in 4 languages (EN, ES, FR, DE)
+- **Multi-Language Instructions**: Exercises available in 5 languages (EN, ES, FR, DE, IT)
 
 ### Level Test & Assessment
 
@@ -292,7 +263,7 @@ npm run reset-project # Reset project to initial state
 ### Premium Features
 
 - **File Paywall**: One-time €2.99 purchase to unlock all downloadable resources
-- **Secure Billing**: Google Play Billing and App Store integration
+- **Secure Billing**: Google Play Billing
 - **Purchase Restoration**: Restore purchases on device reinstall
 - **Admin Access**: Admins bypass paywall for free access
 
@@ -310,7 +281,7 @@ npm run reset-project # Reset project to initial state
 - **Responsive Design**: Works seamlessly across different screen sizes
 - **Accessibility**: Screen reader support and keyboard navigation
 - **Performance**: Optimized for smooth animations and fast loading
-- **Cross-Platform**: Single light theme across iOS, Android, and web
+- **Consistent Theming**: Single light theme across Android and web (no theme switching)
 
 ## 🔧 Configuration
 
@@ -326,17 +297,20 @@ npm run reset-project # Reset project to initial state
 ### Google OAuth Setup
 
 1. Create OAuth 2.0 Client IDs in Google Cloud Console
-2. Configure Web Client ID for authentication
-3. Add platform-specific Client IDs for Android (with SHA-1) and iOS
+2. Configure Web Client ID for authentication (required)
+3. Add an Android Client ID with the correct SHA-1 fingerprint (required for production)
 4. Enable Google Sign-In in Firebase Authentication
 5. Add Client IDs to `.env` file
 
-### In-App Purchases Setup (Mobile)
+See the `firebase-release-setup` skill for the full walkthrough.
 
-1. Create a product in Google Play Console (`premium_file_access` at €1.99)
-2. Configure license testing in Google Play Console
-3. Create an In-App Purchase product in App Store Connect (iOS)
-4. The app uses `react-native-iap` with dynamic imports for web compatibility
+### In-App Purchases Setup (Android)
+
+1. Create a product in Google Play Console (`premium_file_access` at €2.99)
+2. Configure license testing in Google Play Console (Setup → License testing) so test
+   accounts get free test purchases
+3. The app uses `react-native-iap` with dynamic imports for web compatibility — see
+   `services/premiumService.ts` for the native-only import pattern
 
 ### Admin User Setup
 
@@ -359,25 +333,29 @@ eas login
 # Configure the project
 eas build:configure
 
-# Build for production
-eas build --platform all
+# Build for production (Android App Bundle)
+eas build -p android --profile production
+
+# Submit to Google Play
+eas submit -p android --profile internal    # internal testing track
+eas submit -p android --profile production  # production track
 ```
+
+`eas submit` uploads directly from EAS to Google Play using the service account key
+referenced in `eas.json` — there is no need to download the AAB and upload it by hand.
+
+See `EAS Cheatsheet.md` for the full release workflow, including when a change needs a new
+build versus an OTA `eas update`.
 
 ### Environment Variables
 
-Create an `app.config.js` file for environment-specific configuration:
+Configuration is read from a local `.env` file, which is gitignored. Required keys:
 
-```javascript
-export default {
-  expo: {
-    // ... your expo config
-    extra: {
-      firebaseApiKey: process.env.FIREBASE_API_KEY,
-      // ... other environment variables
-    },
-  },
-};
-```
+- Firebase config: API key, auth domain, project ID, storage bucket, messaging sender ID, app ID
+- Google OAuth Client IDs: Web (required), Android (required for production)
+
+`.env` is never committed. For EAS builds, set the same values as EAS environment variables
+or secrets.
 
 ## 🤝 Contributing
 
@@ -388,8 +366,10 @@ This is an educational project designed to demonstrate modern React Native devel
 1. Follow TypeScript strict mode
 2. Use consistent code formatting (ESLint)
 3. Write descriptive commit messages
-4. Test on both iOS and Android
+4. Test on Android and web
 5. Ensure accessibility compliance
+6. Do **not** add `@react-navigation` packages — Expo Router replaces them and they are
+   incompatible with SDK 56+
 
 ### Reporting Issues
 
