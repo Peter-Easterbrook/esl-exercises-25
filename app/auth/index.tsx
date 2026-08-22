@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import {
+  GOOGLE_LINK_REQUIRED,
   GOOGLE_SIGN_IN_CANCELLED,
   describeGoogleSignInError,
   useAuth,
@@ -30,9 +31,19 @@ export default function AuthScreen() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [linkPassword, setLinkPassword] = useState("");
+  const [linkLoading, setLinkLoading] = useState(false);
 
-  const { signIn, signUp, signInWithGoogle, sendPasswordReset, user } =
-    useAuth();
+  const {
+    signIn,
+    signUp,
+    signInWithGoogle,
+    sendPasswordReset,
+    user,
+    pendingGoogleLinkEmail,
+    completeGoogleLink,
+    cancelGoogleLink,
+  } = useAuth();
 
   // Auto-navigate when user becomes authenticated
   useEffect(() => {
@@ -112,10 +123,49 @@ export default function AuthScreen() {
         return;
       }
 
+      // Not a failure: the account already exists under a password login, and
+      // the link form below takes over from here.
+      if (error?.message === GOOGLE_LINK_REQUIRED) {
+        setLoading(false);
+        return;
+      }
+
       console.error("❌ Google sign-in error:", error);
       Alert.alert("Error", describeGoogleSignInError(error));
       setLoading(false);
     }
+  };
+
+  const handleCompleteGoogleLink = async () => {
+    if (!linkPassword) {
+      Alert.alert("Error", "Please enter your password");
+      return;
+    }
+
+    try {
+      setLinkLoading(true);
+      await completeGoogleLink(linkPassword);
+      setLinkPassword("");
+    } catch (error: any) {
+      console.error("❌ Google account link error:", error);
+
+      const message =
+        error?.code === "auth/wrong-password" ||
+        error?.code === "auth/invalid-credential"
+          ? "That password doesn't match this account. Try again, or use Forgot Password."
+          : error?.code === "auth/too-many-requests"
+            ? "Too many attempts. Please wait a moment and try again."
+            : "Could not link your Google account. Please try again.";
+
+      Alert.alert("Error", message);
+    } finally {
+      setLinkLoading(false);
+    }
+  };
+
+  const handleCancelGoogleLink = () => {
+    setLinkPassword("");
+    cancelGoogleLink();
   };
 
   const handleForgotPassword = async () => {
@@ -266,6 +316,45 @@ export default function AuthScreen() {
                       setResetEmail("");
                     }}
                     disabled={resetLoading}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
+            {pendingGoogleLinkEmail && (
+              <View style={styles.forgotPasswordForm}>
+                <Text style={styles.forgotPasswordInfo}>
+                  You already have an account for {pendingGoogleLinkEmail}.
+                  Enter its password once and we&apos;ll connect Google to it,
+                  so you keep all your progress.
+                </Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your existing password"
+                  placeholderTextColor="rgba(102, 102, 102, 0.5)"
+                  value={linkPassword}
+                  onChangeText={setLinkPassword}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoComplete="current-password"
+                  textContentType="password"
+                />
+                <View style={styles.forgotPasswordButtons}>
+                  <TouchableOpacity
+                    style={styles.resetButton}
+                    onPress={handleCompleteGoogleLink}
+                    disabled={linkLoading}
+                  >
+                    <Text style={styles.resetButtonText}>
+                      {linkLoading ? "Linking..." : "Link Google Account"}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={handleCancelGoogleLink}
+                    disabled={linkLoading}
                   >
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                   </TouchableOpacity>
