@@ -227,52 +227,92 @@ npx expo install <package>   # Expo-specific packages (ensures SDK compatibility
 npm install <package>        # Everything else — never edit package.json manually
 ```
 
-### Step 3 — Clean reinstall to sync package-lock.json
+### Step 3 — Reinstall from the lockfile
 
-Always run this after any dependency change:
+Run after any dependency change:
 
 ```powershell
-For Bash: rm -rf node_modules
-Remove-Item -Recurse -Force node_modules, package-lock.json
-npm cache clean --force
-npm install
+Remove-Item -Recurse -Force node_modules     # Bash: rm -rf node_modules
+npm ci
 ```
+
+> **Do not delete `package-lock.json`.** `npm ci` installs strictly from the
+> lockfile and **fails loudly** if it has drifted out of sync with
+> `package.json` — which is exactly the check this step exists for.
+> Deleting the lockfile instead re-resolves every `^` range to its newest
+> match, so you ship a dependency tree you never tested. Only regenerate it
+> (`npm install`) if `npm ci` reports a genuine sync error.
 
 ### Step 4 — Validate locally
 
-Catches `npm ci` sync issues before EAS sees them:
-
 ```powershell
-npm ci
 npx expo-doctor
+npx tsc --noEmit
+npm run lint
 ```
+
+`expo-doctor`'s "React Native Directory" check is informational — it flags
+`react-native-nitro-google-signin` as "untested on New Architecture" (a stale
+catalogue entry; Nitro modules are New-Arch-only) and `react-native-vector-icons`
+as having no metadata. Neither fails an EAS build.
 
 ### Step 5 — Commit
 
 ```powershell
 git add .
-git commit -m "chore: effect hook restructure updates $(Get-Date -Format 'yyyy-MM-dd')"
+git commit -m "fix: short description of what actually changed"
 git push
 ```
 
+Write a real message. A build traced back six months later is only as good as
+the commit that produced it.
+
 ### Step 6 — Deploy
 
-**Did you change native code or `app.json`?**
+`runtimeVersion` uses the **`fingerprint`** policy, which hashes everything
+affecting the native layer. This decides OTA compatibility for you: if a change
+touched native code, the fingerprint changes and old builds simply stop matching
+the update. It fails safe instead of crashing users.
 
-**No → OTA update** (JS/TS changes, UI updates, Firebase logic, content):
+> This replaced the `sdkVersion` policy, which only changed on SDK upgrades.
+> Under that policy 2.0.4 and 2.0.5 shared `exposdk:57.0.0` despite 2.0.5 adding
+> a native module — an OTA would have been delivered to 2.0.4 users whose binary
+> lacked it, white-screening them at startup.
+
+**JS/TS only** (UI, Firebase logic, content) → OTA:
 
 ```powershell
-eas update -p android --branch production --message "effect hook restructure"
+eas update -p android --branch production --message "describe the change"
 eas update:list --branch production
 ```
 
-**Yes → New build** (native dependencies, `app.json`, Expo SDK upgrade, icons/splash):
+Only reaches builds whose fingerprint matches. Installs on an older fingerprint
+keep running their bundled JS until users update from the Play Store.
 
-```powershell either:
-eas build -p android --profile production --auto-submit
-or
-eas build -p android --profile production
-eas submit -p android
+**Native deps, `app.json`, SDK upgrade, icons/splash** → new build:
+
+```powershell
+eas build -p android --profile production --auto-submit-with-profile internal
 ```
 
-> If a build fails with a dependency sync error, add `--clear-cache` to the `eas build` command.
+**Never `--auto-submit` straight to production.** That submits to the production
+track, making the worldwide rollout the first real test of the build. Some bugs
+only appear in a Play-signed binary — Google re-signs every distributed install
+with the App Signing key, so anything depending on that certificate (Google
+Sign-In, for one) cannot be exercised by a local or `preview` build. The internal
+track produces the *same* AAB with the *same* signing, testable in minutes.
+
+If a build fails with a dependency sync error, add `--clear-cache`.
+
+### Step 7 — Verify, then promote
+
+1. Play Console → **Release → Testing → Internal testing**
+2. Confirm the new bundle is listed under **App bundles**, *not* **Deactivated
+   app bundles**. If it is deactivated, the track silently serves the previous
+   version and you will test the wrong binary.
+3. Install and confirm **Settings → Apps** reports the version you just built
+4. Smoke-test the areas the release touched — at minimum Google sign-in and an
+   in-app purchase, since both depend on signing and native modules
+5. **Release → Testing → Internal testing → Promote release → Production**
+
+Promotion ships the identical artifact. No rebuild, no second review.

@@ -112,7 +112,38 @@ const getRNIap = async () => {
 
 `.env` is gitignored, so its contents are not discoverable from the repo. Required keys:
 - Firebase config: API key, auth domain, project ID, storage bucket, messaging sender ID, app ID
-- Google OAuth Client IDs: Web (required), Android/iOS (optional for testing, required for production)
+- `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` — the **Web** OAuth client ID. This is the only
+  Google client ID the app reads. Do not add an Android client ID: native sign-in
+  matches the app by package name + SHA-1, not by client ID.
+
+`google-services.json` **is committed on purpose.** It holds no secret — only
+project identifiers, OAuth client IDs, public certificate hashes, and an Android
+API key that ships inside every APK anyway. It is also required at build time:
+the `react-native-nitro-google-signin` config plugin throws without it, so
+gitignoring it breaks builds on any fresh clone or CI runner. GitHub secret
+scanning flags the API key; that is a known false positive for Firebase client
+keys. API keys are secured by restricting them in Google Cloud Console, not by
+hiding them.
+
+⚠️ The `.env` Firebase API key is used by the **Firebase JS SDK**, so it must keep
+Application restrictions set to **None** in Cloud Console. An "Android apps"
+restriction requires `X-Android-Package`/`X-Android-Cert` headers that only the
+*native* SDK sends — applying it would break Firestore, Auth and Storage for
+every user. Restrict that key by **API** only.
+
+## Releases and OTA Updates
+
+`runtimeVersion` uses the **`fingerprint`** policy. It hashes everything affecting
+the native layer, so an `eas update` can never reach a build lacking a native
+module the new JS imports. Do not switch this back to `sdkVersion` or `appVersion`
+— both leave that gap open, and this project has already been bitten by it.
+
+Ship production builds to the **internal testing track first**
+(`--auto-submit-with-profile internal`), then promote the same artifact in Play
+Console. Never `--auto-submit` straight to production: Google re-signs every
+distributed install with the App Signing key, so anything depending on that
+certificate — Google Sign-In especially — cannot be tested by a local, dev, or
+`preview` build. See `EAS Cheatsheet.md` for the full workflow.
 
 ## Platform Notes
 
