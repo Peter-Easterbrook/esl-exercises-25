@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "950312531501",
+    "project_id": "esl-exercises",
+    "storage_bucket": "esl-exercises.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950312531501:android:161845928c89c227012aa4",
+        "android_client_info": {
+          "package_name": "com.petereasterbro1.eslexercises25"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950312531501-8t4s1326e1l310b9amjd28pnt8sbh6d2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petereasterbro1.eslexercises25",
+            "certificate_hash": "a260c15ed89a8aa1c4cd7ed8783108095d334f5c"
+          }
+        },
+        {
+          "client_id": "950312531501-gvuc2m7jfk7t47spq77pj3fn8ci7dlmu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petereasterbro1.eslexercises25",
+            "certificate_hash": "d7d8261c6bb3976d77062a237d723c568f27f91f"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBup11b3hzF6IRVkeZv7I16oGRn6H-wdZc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "950312531501-7ljniotg218iei3a1rbnnkk9te4jkut6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

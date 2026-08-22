@@ -232,6 +232,7 @@ npm install <package>        # Everything else — never edit package.json manua
 Always run this after any dependency change:
 
 ```powershell
+For Bash: rm -rf node_modules
 Remove-Item -Recurse -Force node_modules, package-lock.json
 npm cache clean --force
 npm install

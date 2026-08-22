@@ -10,8 +10,6 @@ import {
   initializeIAP,
 } from '@/services/premiumService';
 import { User as AppUser } from '@/types';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
 import {
   EmailAuthProvider,
   GoogleAuthProvider,
@@ -23,14 +21,49 @@ import {
   sendPasswordResetEmail,
   signInWithCredential,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updatePassword,
   updateProfile,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
+import {
+  GoogleOneTapSignIn,
+  isCancelledResponse,
+  isErrorWithCode,
+  isNoSavedCredentialFoundResponse,
+  isSuccessResponse,
+  statusCodes,
+} from 'react-native-nitro-google-signin';
 
-WebBrowser.maybeCompleteAuthSession();
+// Raised when the user backs out of the Google account sheet. Callers swallow it
+// so that dismissing the picker is not reported as a failure.
+export const GOOGLE_SIGN_IN_CANCELLED = 'google-sign-in/cancelled';
+
+/**
+ * Turns a Google sign-in failure into something worth showing the user.
+ * DEVELOPER_ERROR is the one that matters most: it means the app's package name
+ * and signing certificate do not match an Android OAuth client in the Google
+ * project, which is a build/console misconfiguration rather than a user problem.
+ */
+export const describeGoogleSignInError = (error: unknown): string => {
+  if (isErrorWithCode(error)) {
+    switch (error.code) {
+      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+        return 'Google Play Services is unavailable or out of date on this device.';
+      case statusCodes.DEVELOPER_ERROR:
+        return 'Google Sign-In is not configured correctly for this build. Please report this to support.';
+      case statusCodes.IN_PROGRESS:
+        return 'A sign-in attempt is already in progress.';
+    }
+  }
+
+  return error instanceof Error && error.message
+    ? error.message
+    : 'Failed to sign in with Google. Please try again.';
+};
 
 interface AuthContextType {
   user: User | null;
@@ -76,48 +109,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
   const listenerSetupRef = useRef(false);
 
-  const [_request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    androidClientId:
-      process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ||
-      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    iosClientId:
-      process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ||
-      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    scopes: ['openid', 'profile', 'email'],
-    responseType: 'id_token',
-  });
-
-  // Handle Google sign-in response
+  // Google Sign-In must be configured once before any other call. The Web client
+  // ID is correct here on every platform — the Android client ID is never passed
+  // to configure(); Google matches the app by package name + SHA-1 instead.
   useEffect(() => {
-    if (response?.type === 'success') {
-      console.log('📱 Google auth response:', response);
+    if (Platform.OS === 'web') return;
 
-      const { id_token, idToken } = response.params;
-      const tokenToUse = id_token || idToken;
-
-      if (!tokenToUse) {
-        console.error(
-          '❌ No id_token found in response. Available params:',
-          Object.keys(response.params),
-        );
-        return;
-      }
-
-      console.log('🔑 Using id_token to create credential');
-      const credential = GoogleAuthProvider.credential(tokenToUse);
-
-      signInWithCredential(auth, credential)
-        .then(() => {
-          console.log('✅ Google sign-in successful');
-        })
-        .catch((error) => {
-          console.error('❌ Google sign-in error:', error);
-        });
-    } else if (response?.type === 'error') {
-      console.error('❌ Google auth error:', response.error);
-    }
-  }, [response]);
+    GoogleOneTapSignIn.configure({
+      webClientId:
+        process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? 'autoDetect',
+    });
+  }, []);
 
   // Initialize IAP connection on mount
   useEffect(() => {
@@ -229,15 +231,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signInWithGoogle = async () => {
-    try {
-      await promptAsync();
-    } catch (error) {
-      console.error('❌ Error initiating Google sign-in:', error);
-      throw error;
+    if (Platform.OS === 'web') {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+      return;
     }
+
+    await GoogleOneTapSignIn.checkPlayServices();
+
+    // Try the low-friction path first, then fall back to the full account
+    // picker when the device has no previously authorized account.
+    let response = await GoogleOneTapSignIn.signIn();
+
+    if (isNoSavedCredentialFoundResponse(response)) {
+      response = await GoogleOneTapSignIn.createAccount();
+    }
+
+    if (isNoSavedCredentialFoundResponse(response)) {
+      response = await GoogleOneTapSignIn.presentExplicitSignIn();
+    }
+
+    if (isCancelledResponse(response)) {
+      throw new Error(GOOGLE_SIGN_IN_CANCELLED);
+    }
+
+    if (!isSuccessResponse(response)) {
+      throw new Error('Google sign-in did not return an account.');
+    }
+
+    const { idToken } = response.data;
+
+    if (!idToken) {
+      throw new Error('Google sign-in returned no ID token.');
+    }
+
+    await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
   };
 
   const logout = async () => {
+    // Clear the native Google session too, otherwise the next sign-in silently
+    // reuses the previous account instead of offering the picker.
+    if (Platform.OS !== 'web') {
+      try {
+        await GoogleOneTapSignIn.signOut();
+      } catch (error) {
+        console.warn('Could not clear Google session on logout:', error);
+      }
+    }
+
     await signOut(auth);
   };
 

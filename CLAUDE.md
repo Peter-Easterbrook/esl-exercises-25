@@ -44,11 +44,20 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ### Authentication Methods
 - **Email/Password** - Firebase email authentication with password reset
-- **Google Sign-In** - OAuth 2.0 via expo-auth-session and Firebase
-  - Uses `expo-auth-session/providers/google` for OAuth flow
-  - Configured with `responseType: 'id_token'` and `scopes: ['openid', 'profile', 'email']`
+- **Google Sign-In** - native Credential Manager via `react-native-nitro-google-signin`
+  - **Do NOT reintroduce `expo-auth-session` for Google.** Google no longer supports
+    browser/implicit sign-in for Android client types, so `responseType: 'id_token'`
+    against an Android OAuth client always fails. That was the long-standing
+    production login bug; `expo-auth-session` has been removed from the project.
+  - `GoogleOneTapSignIn.configure()` takes the **Web** client ID, never the Android
+    one. Google identifies the app by package name + signing SHA-1 instead.
+  - Sign-in cascades `signIn()` → `createAccount()` → `presentExplicitSignIn()`,
+    then exchanges the returned `idToken` via Firebase `signInWithCredential`.
+  - Web falls back to Firebase `signInWithPopup` — the native module is Android/iOS only.
+  - Requires a **development build**; will not work in Expo Go.
   - Automatically creates user documents in Firestore on first sign-in
-  - Requires platform-specific OAuth Client IDs for native apps
+  - A `DEVELOPER_ERROR` at runtime means package name + SHA-1 do not match an
+    Android OAuth client in the Google project — check the fingerprints first.
 
 ### Security
 - Firebase Auth required for all features
@@ -69,6 +78,15 @@ Some modules only work on native platforms (iOS/Android) and will break web buil
 - **Requires development build** - won't work in Expo Go
 - See `services/premiumService.ts` for implementation pattern
 - Web and Expo Go gracefully degrade (IAP silently unavailable)
+
+**Nitro module version lock (react-native-iap + Google Sign-In):**
+Both `react-native-iap` and `react-native-nitro-google-signin` are Nitro modules and
+must share one `react-native-nitro-modules` runtime. `react-native-iap@14.7.x` peers on
+`^0.35.0`, so the tree is pinned to exact `react-native-nitro-modules@0.35.10` with
+`react-native-nitro-google-signin@1.3.0` (the last release built against 0.35.x).
+Do not bump either loosely — `nitro-google-signin@2.x` is built against 0.36.5 and
+pulling it in breaks the IAP paywall's peer range. Moving to 2.x requires upgrading
+`react-native-iap` to 16.x (peers `^0.36.5`) at the same time.
 
 **Pattern for native-only code:**
 ```typescript

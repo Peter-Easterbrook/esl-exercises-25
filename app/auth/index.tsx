@@ -1,6 +1,10 @@
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useAuth } from "@/contexts/AuthContext";
+import {
+  GOOGLE_SIGN_IN_CANCELLED,
+  describeGoogleSignInError,
+  useAuth,
+} from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -103,8 +107,13 @@ export default function AuthScreen() {
       setLoading(true);
       await signInWithGoogle();
     } catch (error: any) {
+      if (error?.message === GOOGLE_SIGN_IN_CANCELLED) {
+        setLoading(false);
+        return;
+      }
+
       console.error("❌ Google sign-in error:", error);
-      Alert.alert("Error", "Failed to sign in with Google. Please try again.");
+      Alert.alert("Error", describeGoogleSignInError(error));
       setLoading(false);
     }
   };
