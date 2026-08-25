@@ -30,40 +30,16 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import {
-  GoogleOneTapSignIn,
-  isCancelledResponse,
-  isErrorWithCode,
-  isNoSavedCredentialFoundResponse,
-  isSuccessResponse,
-  statusCodes,
-} from 'react-native-nitro-google-signin';
+  GOOGLE_SIGN_IN_CANCELLED,
+  configureGoogleSignIn,
+  describeGoogleSignInError,
+  getGoogleIdToken,
+  signOutGoogle,
+} from '@/services/googleSignIn';
 
-// Raised when the user backs out of the Google account sheet. Callers swallow it
-// so that dismissing the picker is not reported as a failure.
-export const GOOGLE_SIGN_IN_CANCELLED = 'google-sign-in/cancelled';
-
-/**
- * Turns a Google sign-in failure into something worth showing the user.
- * DEVELOPER_ERROR is the one that matters most: it means the app's package name
- * and signing certificate do not match an Android OAuth client in the Google
- * project, which is a build/console misconfiguration rather than a user problem.
- */
-export const describeGoogleSignInError = (error: unknown): string => {
-  if (isErrorWithCode(error)) {
-    switch (error.code) {
-      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-        return 'Google Play Services is unavailable or out of date on this device.';
-      case statusCodes.DEVELOPER_ERROR:
-        return 'Google Sign-In is not configured correctly for this build. Please report this to support.';
-      case statusCodes.IN_PROGRESS:
-        return 'A sign-in attempt is already in progress.';
-    }
-  }
-
-  return error instanceof Error && error.message
-    ? error.message
-    : 'Failed to sign in with Google. Please try again.';
-};
+// Re-exported so screens keep importing these from the auth context, while the
+// native-only implementation stays behind the platform-split module.
+export { GOOGLE_SIGN_IN_CANCELLED, describeGoogleSignInError };
 
 interface AuthContextType {
   user: User | null;
@@ -115,10 +91,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (Platform.OS === 'web') return;
 
-    GoogleOneTapSignIn.configure({
-      webClientId:
-        process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? 'autoDetect',
-    });
+    configureGoogleSignIn(
+      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? 'autoDetect',
+    );
   }, []);
 
   // Initialize IAP connection on mount
@@ -236,33 +211,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
-    await GoogleOneTapSignIn.checkPlayServices();
-
-    // Try the low-friction path first, then fall back to the full account
-    // picker when the device has no previously authorized account.
-    let response = await GoogleOneTapSignIn.signIn();
-
-    if (isNoSavedCredentialFoundResponse(response)) {
-      response = await GoogleOneTapSignIn.createAccount();
-    }
-
-    if (isNoSavedCredentialFoundResponse(response)) {
-      response = await GoogleOneTapSignIn.presentExplicitSignIn();
-    }
-
-    if (isCancelledResponse(response)) {
-      throw new Error(GOOGLE_SIGN_IN_CANCELLED);
-    }
-
-    if (!isSuccessResponse(response)) {
-      throw new Error('Google sign-in did not return an account.');
-    }
-
-    const { idToken } = response.data;
-
-    if (!idToken) {
-      throw new Error('Google sign-in returned no ID token.');
-    }
+    const idToken = await getGoogleIdToken();
 
     await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
   };
@@ -272,7 +221,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     // reuses the previous account instead of offering the picker.
     if (Platform.OS !== 'web') {
       try {
-        await GoogleOneTapSignIn.signOut();
+        await signOutGoogle();
       } catch (error) {
         console.warn('Could not clear Google session on logout:', error);
       }

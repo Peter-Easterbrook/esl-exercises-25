@@ -79,6 +79,20 @@ Some modules only work on native platforms (iOS/Android) and will break web buil
 - See `services/premiumService.ts` for implementation pattern
 - Web and Expo Go gracefully degrade (IAP silently unavailable)
 
+**react-native-nitro-google-signin:**
+- The package builds its Nitro hybrid object at **module scope**
+  (`NitroModules.createHybridObject('NitroGoogleSignin')`), so merely importing it
+  from anything the web bundle reaches throws
+  `__fbBatchedBridgeConfig is not set, cannot invoke native modules` during
+  `expo export --platform web` static rendering.
+- Never import it directly from a shared file. All access goes through
+  `services/googleSignIn.ts` (native) with `services/googleSignIn.web.ts` as the
+  web stub; `services/googleSignIn.constants.ts` holds the platform-neutral bits.
+  `AuthContext` imports only the wrapper and re-exports
+  `GOOGLE_SIGN_IN_CANCELLED` / `describeGoogleSignInError` for screens.
+- A `Platform.OS === 'web'` guard at the *call site* is not enough — the crash
+  happens at import time, before any guard runs.
+
 **Nitro module version lock (react-native-iap + Google Sign-In):**
 Both `react-native-iap` and `react-native-nitro-google-signin` are Nitro modules and
 must share one `react-native-nitro-modules` runtime. `react-native-iap@14.7.x` peers on
