@@ -6,6 +6,70 @@ This file provides guidance to Claude Code when working with this repository.
 
 ESL (English as Second Language) Exercises mobile application built with Expo React Native, TypeScript, and Firebase. The app helps non-native English speakers learn and practice English through categorized exercises, progress tracking, and administrative tools.
 
+## Where we are (last updated 2026-08-27)
+
+Live on Google Play. iOS is being brought up. **Nothing is merged** — master is
+untouched and four branches sit on `origin`, each independently deployable:
+
+| Branch | Contains | Status |
+| --- | --- | --- |
+| `master` | Play production | Untouched today |
+| `ios-adjustment` | iOS build/submit config; downloads+paywall hidden on iOS until app version 2.1.0 | Pushed. **No iOS build has ever run** |
+| `repo-hardening` | `firestore.rules`, `firebase.json`, `.firebaserc`; `production.json` untracked | Pushed and **deployed**, verified in the Rules Playground |
+| `premium-server-enforcement` | `functions/` — `verifyPurchase`, `getFileDownloadUrl` | Pushed, compiles, **not deployed**, nothing calls it |
+
+`ios-adjustment` and `repo-hardening` both edit CLAUDE.md in different sections
+and merge cleanly. Merge `ios-adjustment` into master once the first iOS build
+succeeds — nothing on it can affect Android (verified: the Android prebuild is
+unchanged, and the iOS config is inert without an iOS build).
+
+**Security fixed today:** the deployed rules let any signed-in user write
+`isAdmin: true` to their own user document and become an admin. Closed. Client
+SDK access is what rules govern — console access is irrelevant to them.
+
+**Still open, not blocking either store:** `hasPremiumAccess` is still written by
+the client, and `downloadableFiles.fileUrl` is still a tokenized Storage URL that
+bypasses Storage rules. `functions/README.md` has the fix and the rollout order —
+that order matters, locking the field before the client calls `verifyPurchase`
+breaks every legitimate purchase.
+
+## Next steps to reach the App Store
+
+Nothing here needs a Mac. It also no longer needs an iPhone: iOS 1.0 ships with
+the paywall hidden, so there is no in-app purchase to sandbox-test. Full detail
+is in `iOS Release Checklist.md` **on the `ios-adjustment` branch**.
+
+Blocking, in dependency order — the first two are Peter's alone and have
+multi-day latency, so start them before any code work:
+
+1. **Enrol in the Apple Developer Program** ($99/yr, Individual not
+   Organization). 24–48h identity check. Record the Team ID.
+2. **Create the App Store Connect app record** with bundle ID
+   `com.petereasterbro1.eslexercises25`, then fill the three placeholders
+   (`appleId`, `ascAppId`, `appleTeamId`) in `eas.json` on `ios-adjustment`.
+3. **Firebase iOS app + iOS OAuth client.** Commit `GoogleService-Info.plist`
+   to the repo root — `app.json` already points at it and the build fails
+   without it. Google Sign-In on iOS reads `CLIENT_ID` from that plist.
+   Independent of Apple; can be done while enrolment is pending.
+4. **First iOS build**: `eas build --platform ios --profile development`
+   (simulator). This is the unknown — Skia, Reanimated and two Nitro modules
+   have never been compiled for iOS. Do it before promising a date.
+5. **TestFlight**: `eas build --platform ios --profile production
+   --auto-submit-with-profile internal`. Verify Google Sign-In on the real
+   artifact, then submit for review from App Store Connect.
+
+Deferred until iOS 2.1.0 turns the paywall on: the Paid Applications agreement
+and banking/tax forms, the `premium_file_access` product in App Store Connect,
+sandbox testing on a borrowed or bought iPhone, and iOS support in
+`verifyPurchase` (needs an App Store Connect `.p8` key).
+
+Also needed before submission: iPhone screenshots (6.9", simulator captures are
+accepted), the App Privacy questionnaire, a public privacy policy URL, and
+email/password demo credentials in the review notes — reviewers cannot use
+Google Sign-In. Decide deliberately whether to add Sign in with Apple:
+email/password should exempt us from guideline 4.8, but Google-login apps do get
+flagged, and a rejection round costs more than the day it takes to add.
+
 ## Code Style
 
 - **Do NOT add `@react-navigation` packages.** Expo Router v56 replaces them and they are incompatible with SDK 56.
