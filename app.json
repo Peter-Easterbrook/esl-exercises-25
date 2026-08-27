@@ -29,6 +29,16 @@
       ],
       "googleServicesFile": "./google-services.json"
     },
+    "ios": {
+      "bundleIdentifier": "com.petereasterbro1.eslexercises25",
+      "supportsTablet": false,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "ESL Exercises uses the camera so you can take a photo for your profile picture.",
+        "NSPhotoLibraryUsageDescription": "ESL Exercises accesses your photo library so you can choose a profile picture."
+      }
+    },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
@@ -44,6 +54,13 @@
         }
       ],
       "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ESL Exercises accesses your photo library so you can choose a profile picture.",
+          "cameraPermission": "ESL Exercises uses the camera so you can take a photo for your profile picture."
+        }
+      ],
       [
         "expo-updates",
         {

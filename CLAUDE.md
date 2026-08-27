@@ -130,6 +130,12 @@ const getRNIap = async () => {
   Google client ID the app reads. Do not add an Android client ID: native sign-in
   matches the app by package name + SHA-1, not by client ID.
 
+`GoogleService-Info.plist` (iOS) is referenced by `app.json` and required by the
+`react-native-nitro-google-signin` config plugin once iOS builds start. Commit it for
+the same reasons as `google-services.json`. On iOS the native module reads `CLIENT_ID`
+from that plist at `configure()` time — a missing plist surfaces as an `IN_PROGRESS`
+error rather than a clear configuration failure.
+
 `google-services.json` **is committed on purpose.** It holds no secret — only
 project identifiers, OAuth client IDs, public certificate hashes, and an Android
 API key that ships inside every APK anyway. It is also required at build time:
@@ -162,6 +168,14 @@ certificate — Google Sign-In especially — cannot be tested by a local, dev, 
 ## Platform Notes
 
 - Supports iOS, Android, Web with a single light theme
+- **Android is the shipping platform; iOS is being brought up.** See
+  `iOS Release Checklist.md` for the App Store path. The blockers are external, not
+  code: Apple Developer enrolment, the Paid Applications agreement (gates IAP), an
+  iOS Firebase app + `GoogleService-Info.plist` + iOS OAuth client (gates Google
+  Sign-In), and the `submit.*.ios` placeholders in `eas.json`.
+- No Mac is required: EAS Build produces the iOS artifact and manages certificates,
+  EAS Submit uploads to App Store Connect. A physical iPhone or an EAS cloud
+  simulator build is still needed for screenshots and for testing the purchase flow.
 - Expo File System uses the **legacy API** (SDK 54 compatibility) — do not migrate to the new API
 - React Native Reanimated animations run on the UI thread (60fps)
 

@@ -10,6 +10,9 @@
       "channel": "development",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {
@@ -24,6 +27,9 @@
       "channel": "production",
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "distribution": "store"
       }
     }
   },
@@ -32,12 +38,22 @@
       "android": {
         "serviceAccountKeyPath": "./google-play-key.json",
         "track": "production"
+      },
+      "ios": {
+        "appleId": "APPLE_ID_EMAIL_HERE",
+        "ascAppId": "APP_STORE_CONNECT_APP_ID_HERE",
+        "appleTeamId": "APPLE_TEAM_ID_HERE"
       }
     },
     "internal": {
       "android": {
         "serviceAccountKeyPath": "./google-play-key.json",
         "track": "internal"
+      },
+      "ios": {
+        "appleId": "APPLE_ID_EMAIL_HERE",
+        "ascAppId": "APP_STORE_CONNECT_APP_ID_HERE",
+        "appleTeamId": "APPLE_TEAM_ID_HERE"
       }
     }
   }

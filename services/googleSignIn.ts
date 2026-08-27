@@ -6,6 +6,7 @@ import {
   isSuccessResponse,
   statusCodes,
 } from 'react-native-nitro-google-signin';
+import { Platform } from 'react-native';
 import { GOOGLE_SIGN_IN_CANCELLED } from './googleSignIn.constants';
 
 // react-native-nitro-google-signin builds its Nitro hybrid object at module
@@ -24,6 +25,8 @@ export const configureGoogleSignIn = (webClientId: string) => {
  * Throws GOOGLE_SIGN_IN_CANCELLED if the user dismisses the sheet.
  */
 export const getGoogleIdToken = async (): Promise<string> => {
+  // No-op on iOS: Play Services are an Android concept and the native module
+  // resolves immediately there.
   await GoogleOneTapSignIn.checkPlayServices();
 
   // Try the low-friction path first, then fall back to the full account
@@ -61,9 +64,12 @@ export const signOutGoogle = async () => {
 
 /**
  * Turns a Google sign-in failure into something worth showing the user.
- * DEVELOPER_ERROR is the one that matters most: it means the app's package name
- * and signing certificate do not match an Android OAuth client in the Google
- * project, which is a build/console misconfiguration rather than a user problem.
+ * DEVELOPER_ERROR is the one that matters most on Android: it means the app's
+ * package name and signing certificate do not match an Android OAuth client in
+ * the Google project, which is a build/console misconfiguration rather than a
+ * user problem. iOS has no equivalent code — a missing iOS client ID surfaces
+ * as IN_PROGRESS with a "not configured" message, which is handled below so it
+ * does not masquerade as a concurrent sign-in attempt.
  */
 export const describeGoogleSignInError = (error: unknown): string => {
   if (isErrorWithCode(error)) {
@@ -73,6 +79,11 @@ export const describeGoogleSignInError = (error: unknown): string => {
       case statusCodes.DEVELOPER_ERROR:
         return 'Google Sign-In is not configured correctly for this build. Please report this to support.';
       case statusCodes.IN_PROGRESS:
+        // iOS reuses this code for "configure() was never completed", which
+        // means GoogleService-Info.plist is missing or has no CLIENT_ID.
+        if (Platform.OS === 'ios' && /not configured/i.test(error.message)) {
+          return 'Google Sign-In is not configured correctly for this build. Please report this to support.';
+        }
         return 'A sign-in attempt is already in progress.';
     }
   }
