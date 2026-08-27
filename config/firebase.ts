@@ -49,7 +49,9 @@ export const db =
   Platform.OS === 'web'
     ? initializeFirestore(app, {
         localCache: persistentLocalCache({
-          tabManager: persistentSingleTabManager(),
+          // The settings argument is required by the signature but accepts
+          // undefined; passing it explicitly is the documented default.
+          tabManager: persistentSingleTabManager(undefined),
         }),
       })
     : initializeFirestore(app, {
