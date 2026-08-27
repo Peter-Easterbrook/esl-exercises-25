@@ -1,5 +1,6 @@
 import { MilestoneRatingModal } from '@/components/MilestoneRatingModal';
 import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
+import { areDownloadsAvailable } from '@/utils/downloadsAvailability';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AppTheme } from '@/constants/themes';
@@ -54,6 +55,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const scoreTextSize = getResponsiveFontSize(width);
 
   // Admins have free access to downloads
+  // Hidden on iOS until the paywall has been tested against Apple's sandbox
+  const downloadsAvailable = areDownloadsAvailable();
   const canDownload = hasPremiumAccess || appUser?.isAdmin;
 
   // Stop confetti after animation completes
@@ -249,6 +252,11 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   };
 
   const handleDownloadFile = async () => {
+    // Feature is hidden on iOS builds below IOS_DOWNLOADS_MIN_VERSION
+    if (!downloadsAvailable) {
+      return;
+    }
+
     // Check platform - web doesn't support downloads
     if (Platform.OS === 'web') {
       Alert.alert(
@@ -475,19 +483,21 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               { paddingBottom: Math.max(insets.bottom, 12) },
             ]}
           >
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={handleDownloadFile}
-            >
-              <IconSymbol
-                name="square.and.arrow.down"
-                size={20}
-                color="#6996b3"
-              />
-              <ThemedText style={styles.secondaryButtonText}>
-                Download Exercise
-              </ThemedText>
-            </TouchableOpacity>
+            {downloadsAvailable && (
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={handleDownloadFile}
+              >
+                <IconSymbol
+                  name="square.and.arrow.down"
+                  size={20}
+                  color="#6996b3"
+                />
+                <ThemedText style={styles.secondaryButtonText}>
+                  Download Exercise
+                </ThemedText>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={styles.secondaryButton}

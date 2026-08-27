@@ -9,6 +9,7 @@ import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { downloadFile, getFilesByCategory } from '@/services/fileService';
+import { areDownloadsAvailable } from '@/utils/downloadsAvailability';
 import { getUserProgress } from '@/services/firebaseService';
 import { Category, DownloadableFile, Exercise } from '@/types';
 import { router } from 'expo-router';
@@ -53,6 +54,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   );
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
+  // Hidden on iOS until the paywall has been tested against Apple's sandbox
+  const downloadsAvailable = areDownloadsAvailable();
   // Admins have free access to downloads
   const canDownload = hasPremiumAccess || appUser?.isAdmin;
 
@@ -96,7 +99,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
   useEffect(() => {
     const loadFiles = async () => {
-      if (isExpanded) {
+      if (isExpanded && downloadsAvailable) {
         try {
           const files = await getFilesByCategory(category.id);
           // sort alphabetically by file name
@@ -109,7 +112,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       }
     };
     loadFiles();
-  }, [isExpanded, category.id]);
+  }, [isExpanded, category.id, downloadsAvailable]);
 
   useEffect(() => {
     const loadUserProgress = async () => {
@@ -304,7 +307,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                 )}
               </View>
 
-              {downloadableFiles.length > 0 && (
+              {downloadsAvailable && downloadableFiles.length > 0 && (
                 <View style={styles.filesSection}>
                   <TouchableOpacity
                     style={styles.filesSectionHeader}
