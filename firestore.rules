@@ -36,10 +36,16 @@ service cloud.firestore {
       return ['isAdmin'];
     }
 
-    function touchesProtectedFields() {
-      return request.resource.data.diff(resource.data)
-        .affectedKeys()
-        .hasAny(protectedUserFields());
+    // A write is fine as long as it does not carry a DIFFERENT value for a
+    // protected field. Deliberately phrased on the incoming data rather than on
+    // diff().affectedKeys(): a partial update carries only the fields being
+    // changed, and treating an absent field as if it were being deleted rejects
+    // ordinary profile edits. A write that genuinely drops `isAdmin` is not an
+    // escalation either — isAdmin() reads a missing field as false.
+    // resource.data.get() covers older user documents created without the field.
+    function preservesProtectedFields() {
+      return !request.resource.data.keys().hasAny(protectedUserFields())
+        || request.resource.data.isAdmin == resource.data.get('isAdmin', false);
     }
 
     // Users can read/write their own user document, except the protected fields
@@ -47,15 +53,17 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
 
-      // Sign-up creates the document; it must start non-admin.
+      // Sign-up creates the document; it must start non-admin. get() with a
+      // default so a create that omits the field is treated as non-admin
+      // rather than erroring out.
       allow create: if isSignedIn()
         && request.auth.uid == userId
-        && request.resource.data.isAdmin == false;
+        && request.resource.data.get('isAdmin', false) == false;
 
       // Neither users nor admins may change isAdmin from a client.
       allow update: if isSignedIn()
         && (request.auth.uid == userId || isAdmin())
-        && !touchesProtectedFields();
+        && preservesProtectedFields();
 
       // In-app account deletion is a client-side deleteDoc on the user's own
       // document (services/firebaseService.ts deleteUserAccount), and Apple
