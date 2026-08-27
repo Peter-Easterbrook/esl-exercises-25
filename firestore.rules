@@ -1,0 +1,118 @@
+rules_version = '2';
+
+// Deploy with:  firebase deploy --only firestore:rules
+//
+// This file is the source of truth for what is live. Edit it here, commit, and
+// deploy — do not edit rules in the Firebase console, or the two will drift and
+// nobody will be able to tell what is actually deployed.
+//
+// STILL OUTSTANDING (needs code changes first, see the users/ block below):
+//   1. `hasPremiumAccess` is written by the client after a purchase, so it
+//      cannot be locked down until a Cloud Function validates the receipt and
+//      does that write. Locking it now would break the paywall on Android.
+//   2. `downloadableFiles.fileUrl` holds a tokenized Storage download URL.
+//      Those bypass Storage rules entirely, so anyone who can read the document
+//      can fetch the file regardless of premium status. Fixing that means
+//      storing the storage path instead and minting short-lived signed URLs.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Fields a client must never be able to write to its own user document.
+    // `isAdmin` is set from the Firebase console (the Admin SDK bypasses rules);
+    // the app itself never writes it. Without this, any signed-in user could
+    // grant themselves admin and then write every collection below.
+    function protectedUserFields() {
+      return ['isAdmin'];
+    }
+
+    function touchesProtectedFields() {
+      return request.resource.data.diff(resource.data)
+        .affectedKeys()
+        .hasAny(protectedUserFields());
+    }
+
+    // Users can read/write their own user document, except the protected fields
+    // Admins can read all user documents and delete them
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+
+      // Sign-up creates the document; it must start non-admin.
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.isAdmin == false;
+
+      // Neither users nor admins may change isAdmin from a client.
+      allow update: if isSignedIn()
+        && (request.auth.uid == userId || isAdmin())
+        && !touchesProtectedFields();
+
+      // In-app account deletion is a client-side deleteDoc on the user's own
+      // document (services/firebaseService.ts deleteUserAccount), and Apple
+      // requires that path to exist. Do not narrow this to admins.
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // App Settings - only admins can read/write
+    match /appSettings/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // Categories are readable by all authenticated users
+    // Only admins can write
+    match /categories/{categoryId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Exercises are readable by all authenticated users
+    // Only admins can write
+    match /exercises/{exerciseId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Downloadable files metadata
+    // Readable by all authenticated users, writable only by admins.
+    // NOTE: this is not the premium gate. See item 2 in the header.
+    match /downloadableFiles/{fileId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // User progress can be read/written by the user who owns it
+    // Admins can read all progress (for statistics)
+    match /userProgress/{progressId} {
+      // Was `isSignedIn()`, which let any user read every other user's records.
+      // All non-admin queries filter on userId, so this does not break them.
+      allow read: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Users can read and write their own feedback; admins can read all of it
+    match /feedback/{docId} {
+      allow read: if isSignedIn()
+        && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.userId;
+    }
+
+    // The former /test/{testId} collection was readable and writable by any
+    // signed-in user. It was debug scaffolding and is deliberately not carried
+    // over; utils/debugFirestore.ts is the only thing that referenced it.
+  }
+}

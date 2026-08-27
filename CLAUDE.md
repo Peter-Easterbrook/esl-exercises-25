@@ -62,6 +62,15 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 ### Security
 - Firebase Auth required for all features
 - **Admin privileges are enforced via Firestore Security Rules, NOT client-side.**
+  The rules live in `firestore.rules` in this repo — that file is the source of
+  truth. Edit and deploy it (`firebase deploy --only firestore:rules`); never edit
+  rules in the console, or the two drift with no way to tell what is live.
+- `isAdmin` is set from the Firebase console only. No client path may write it —
+  the rules block the field even for admins, because a self-write to `isAdmin`
+  is a straight privilege escalation into every admin-only collection.
+- **Premium is not yet enforced server-side.** `hasPremiumAccess` is written by
+  the client after purchase, and `downloadableFiles.fileUrl` is a tokenized
+  Storage URL that bypasses Storage rules. See the header of `firestore.rules`.
 - User can only access own progress/profile data
 - All destructive operations require confirmation
 - Auth persistence via AsyncStorage (React Native) and localStorage (Web)
@@ -124,7 +133,9 @@ const getRNIap = async () => {
 
 ## Environment Variables
 
-`.env` is gitignored, so its contents are not discoverable from the repo. Required keys:
+`.env` is gitignored, so its contents are not discoverable from the repo. So is
+`production.json` — it held only `EXPO_PUBLIC_*` values, but it is an env dump in a
+**public** repo and `.env` also carries a `GOOGLE_CLIENT_SECRET`. Required keys:
 - Firebase config: API key, auth domain, project ID, storage bucket, messaging sender ID, app ID
 - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` — the **Web** OAuth client ID. This is the only
   Google client ID the app reads. Do not add an Android client ID: native sign-in

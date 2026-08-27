@@ -56,3 +56,9 @@ Google.json
 
 OAUTH_TROUBLESHOOTING.md
 null
+
+# EAS environment dumps. Everything in here today is EXPO_PUBLIC_ and therefore
+# public anyway, but this is the kind of file that quietly acquires a real
+# secret (the .env also holds GOOGLE_CLIENT_SECRET). Keep it out of a public repo.
+production.json
+*.env.json
