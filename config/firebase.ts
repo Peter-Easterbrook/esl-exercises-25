@@ -2,6 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
 import {
   browserLocalPersistence,
+  // `getReactNativePersistence` is only declared in the package's react-native
+  // build; the default `firebase/auth` types are the web ones and omit it.
+  // Metro resolves the react-native condition at runtime, so this is types-only.
+  // @ts-expect-error -- see above
   getReactNativePersistence,
   initializeAuth,
   setPersistence,
@@ -49,7 +53,7 @@ export const db =
   Platform.OS === 'web'
     ? initializeFirestore(app, {
         localCache: persistentLocalCache({
-          tabManager: persistentSingleTabManager(),
+          tabManager: persistentSingleTabManager(undefined),
         }),
       })
     : initializeFirestore(app, {

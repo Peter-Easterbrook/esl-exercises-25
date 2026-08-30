@@ -5,7 +5,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
-import { Exercise } from '@/types';
+import { Exercise, ExerciseContent } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
@@ -41,6 +41,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 }) => {
   const { user, hasPremiumAccess, appUser } = useAuth();
   const { theme } = useAppTheme();
+  // Level tests are rendered by LevelTestInterface, so content is always ExerciseContent here.
+  const content = exercise.content as ExerciseContent;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -66,9 +68,9 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     }
   }, [showConfetti]);
 
-  const currentQuestion = exercise.content.questions[currentQuestionIndex];
+  const currentQuestion = content.questions[currentQuestionIndex];
   const isLastQuestion =
-    currentQuestionIndex === exercise.content.questions.length - 1;
+    currentQuestionIndex === content.questions.length - 1;
   const hasAnswered = answers[currentQuestion.id] !== undefined;
 
   const handleAnswerSelect = (answer: string) => {
@@ -105,13 +107,13 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     let percentage = 0;
 
     try {
-      exercise.content.questions.forEach((question) => {
+      content.questions.forEach((question) => {
         const userAnswer = answers[question.id];
         const correctAnswer = question.correctAnswer;
         let isCorrect = false;
 
         // Handle different question types
-        if (exercise.content.type === 'matching') {
+        if (content.type === 'matching') {
           // For matching: userAnswer is "ABCDEF", correctAnswer is ["A","B","C","D","E","F"]
           if (Array.isArray(correctAnswer)) {
             const userAnswerArray =
@@ -129,7 +131,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           } else {
             isCorrect = userAnswer === correctAnswer;
           }
-        } else if (exercise.content.type === 'fill-blanks') {
+        } else if (content.type === 'fill-blanks') {
           // For fill-blanks: userAnswer is "word1, word2", correctAnswer is ["word1","word2"]
           if (Array.isArray(correctAnswer)) {
             const userAnswerArray =
@@ -147,7 +149,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           } else {
             isCorrect = userAnswer === correctAnswer;
           }
-        } else if (exercise.content.type === 'short-answer') {
+        } else if (content.type === 'short-answer') {
           // For short-answer: case-insensitive comparison with trimmed whitespace
           if (
             typeof correctAnswer === 'string' &&
@@ -168,7 +170,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       });
 
       percentage = Math.round(
-        (correctAnswers / exercise.content.questions.length) * 100,
+        (correctAnswers / content.questions.length) * 100,
       );
       setScore(percentage);
 
@@ -373,13 +375,13 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               Review Your Answers
             </ThemedText>
 
-            {exercise.content.questions.map((question, index) => {
+            {content.questions.map((question, index) => {
               const userAnswer = answers[question.id];
               const correctAnswer = question.correctAnswer;
 
               // Use same logic as calculateScore
               let isCorrect = false;
-              if (exercise.content.type === 'matching') {
+              if (content.type === 'matching') {
                 if (Array.isArray(correctAnswer)) {
                   const userAnswerArray =
                     typeof userAnswer === 'string'
@@ -394,7 +396,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                 } else {
                   isCorrect = userAnswer === correctAnswer;
                 }
-              } else if (exercise.content.type === 'fill-blanks') {
+              } else if (content.type === 'fill-blanks') {
                 if (Array.isArray(correctAnswer)) {
                   const userAnswerArray =
                     typeof userAnswer === 'string'
@@ -409,7 +411,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                 } else {
                   isCorrect = userAnswer === correctAnswer;
                 }
-              } else if (exercise.content.type === 'short-answer') {
+              } else if (content.type === 'short-answer') {
                 if (
                   typeof correctAnswer === 'string' &&
                   typeof userAnswer === 'string'
@@ -530,7 +532,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
       <View style={styles.progressSection}>
         <ThemedText style={styles.progressText}>
           Question {currentQuestionIndex + 1} of{' '}
-          {exercise.content.questions.length}
+          {content.questions.length}
         </ThemedText>
         <View style={styles.progressBar}>
           <View
@@ -539,7 +541,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               {
                 width: `${
                   ((currentQuestionIndex + 1) /
-                    exercise.content.questions.length) *
+                    content.questions.length) *
                   100
                 }%`,
               },
@@ -550,33 +552,33 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
 
       <ScrollView style={styles.questionSection}>
         {/* True/False: Show passage on all questions if available */}
-        {exercise.content.type === 'true-false' &&
-          exercise.content.questions[0]?.passageText && (
+        {content.type === 'true-false' &&
+          content.questions[0]?.passageText && (
             <View style={styles.passageContainer}>
               <ThemedText style={styles.passageLabel}>
                 Read the passage below:
               </ThemedText>
               <ThemedText style={styles.passageTextContent}>
-                {exercise.content.questions[0].passageText}
+                {content.questions[0].passageText}
               </ThemedText>
             </View>
           )}
 
         <ThemedText type="subtitle" style={styles.question}>
-          {exercise.content.type === 'true-false'
+          {content.type === 'true-false'
             ? `Statement ${currentQuestionIndex + 1}`
             : currentQuestion.question}
         </ThemedText>
 
         {/* Show the statement for true/false */}
-        {exercise.content.type === 'true-false' && (
+        {content.type === 'true-false' && (
           <ThemedText style={styles.statementText}>
             {currentQuestion.question}
           </ThemedText>
         )}
 
         {/* Multiple Choice */}
-        {exercise.content.type === 'multiple-choice' &&
+        {content.type === 'multiple-choice' &&
           currentQuestion.options && (
             <View style={styles.optionsContainer}>
               {currentQuestion.options.map((option, index) => (
@@ -613,7 +615,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           )}
 
         {/* True/False Options */}
-        {exercise.content.type === 'true-false' && (
+        {content.type === 'true-false' && (
           <View style={styles.optionsContainer}>
             {['True', 'False'].map((option) => (
               <TouchableOpacity
@@ -649,7 +651,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
 
         {/* Matching */}
-        {exercise.content.type === 'matching' &&
+        {content.type === 'matching' &&
           currentQuestion.leftColumn &&
           currentQuestion.options && (
             <View style={styles.matchingContainer}>
@@ -716,7 +718,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           )}
 
         {/* Fill Blanks */}
-        {exercise.content.type === 'fill-blanks' && (
+        {content.type === 'fill-blanks' && (
           <View style={styles.fillBlanksContainer}>
             <ThemedText style={styles.fillBlanksInstruction}>
               Fill in the blank(s) with a comma separating each answer:
@@ -734,7 +736,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
 
         {/* Essay */}
-        {exercise.content.type === 'essay' && (
+        {content.type === 'essay' && (
           <View style={styles.essayContainer}>
             <ThemedText style={styles.essayInstruction}>
               Write your essay answer below:
@@ -752,7 +754,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
 
         {/* Short Answer */}
-        {exercise.content.type === 'short-answer' && (
+        {content.type === 'short-answer' && (
           <View style={styles.shortAnswerContainer}>
             <ThemedText style={styles.shortAnswerInstruction}>
               Write your answer below:

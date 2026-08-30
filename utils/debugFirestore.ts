@@ -1,19 +1,11 @@
-import { getDoc } from 'firebase/firestore';
+import { db } from '@/config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const testFirestoreConnection = async () => {
   try {
     console.log('Testing Firestore connection...');
 
-    // Test writing a simple document
-    const testData = {
-      message: 'Hello from ESL Exercises',
-      timestamp: new Date(),
-      test: true,
-    };
-    console.log('✅ Firestore write test passed');
-
-    // Test reading the document
-    const docSnap = await getDoc(testDoc);
+    const docSnap = await getDoc(doc(db, 'appSettings', 'config'));
     if (docSnap.exists()) {
       console.log('✅ Firestore read test passed:', docSnap.data());
     } else {
