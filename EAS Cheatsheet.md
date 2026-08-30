@@ -232,7 +232,8 @@ npm install <package>        # Everything else — never edit package.json manua
 Run after any dependency change:
 
 ```powershell
-Remove-Item -Recurse -Force node_modules     # Bash: rm -rf node_modules
+# Bash: rm -rf node_modules
+Remove-Item -Recurse -Force node_modules
 npm ci
 ```
 
@@ -300,14 +301,14 @@ track, making the worldwide rollout the first real test of the build. Some bugs
 only appear in a Play-signed binary — Google re-signs every distributed install
 with the App Signing key, so anything depending on that certificate (Google
 Sign-In, for one) cannot be exercised by a local or `preview` build. The internal
-track produces the *same* AAB with the *same* signing, testable in minutes.
+track produces the _same_ AAB with the _same_ signing, testable in minutes.
 
 If a build fails with a dependency sync error, add `--clear-cache`.
 
 ### Step 7 — Verify, then promote
 
 1. Play Console → **Release → Testing → Internal testing**
-2. Confirm the new bundle is listed under **App bundles**, *not* **Deactivated
+2. Confirm the new bundle is listed under **App bundles**, _not_ **Deactivated
    app bundles**. If it is deactivated, the track silently serves the previous
    version and you will test the wrong binary.
 3. Install and confirm **Settings → Apps** reports the version you just built
