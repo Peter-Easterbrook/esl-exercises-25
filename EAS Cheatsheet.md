@@ -280,7 +280,7 @@ the update. It fails safe instead of crashing users.
 > a native module — an OTA would have been delivered to 2.0.4 users whose binary
 > lacked it, white-screening them at startup.
 
-**JS/TS only** (UI, Firebase logic, content) → OTA:
+**JS/TS only** (UI, Firebase logic, content not npm updates) → OTA:
 
 ```powershell
 eas update -p android --branch production --message "describe the change"
@@ -290,7 +290,7 @@ eas update:list --branch production
 Only reaches builds whose fingerprint matches. Installs on an older fingerprint
 keep running their bundled JS until users update from the Play Store.
 
-**Native deps, `app.json`, SDK upgrade, icons/splash** → new build:
+**Native dep updates, `app.json`, SDK upgrade, icons/splash** → new build:
 
 ```powershell
 eas build -p android --profile production --auto-submit-with-profile internal
