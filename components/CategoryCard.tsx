@@ -2,7 +2,7 @@ import { PremiumPurchaseModal } from '@/components/PremiumPurchaseModal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { IconSymbol, resolveIconName } from '@/components/ui/icon-symbol';
 import { LEVEL_COLOURS } from '@/constants/levelTest';
 import { blues } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
@@ -194,7 +194,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       >
         <View style={styles.headerLeft}>
           <IconSymbol
-            name={isLevelTest ? 'school' : (category.icon as any)}
+            name={
+              isLevelTest ? 'graduationcap.fill' : resolveIconName(category.icon)
+            }
             size={24}
             color={isLevelTest ? '#fff' : theme.accent.mid}
           />

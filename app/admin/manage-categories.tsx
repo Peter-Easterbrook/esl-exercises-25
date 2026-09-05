@@ -1,7 +1,13 @@
 import { ThemedLoader } from '@/components/themed-loader';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import {
+  IconSymbol,
+  isValidIconName,
+  resolveIconName,
+  type IconSymbolName,
+} from '@/components/ui/icon-symbol';
+import { colors } from '@/constants/theme';
 import { AppTheme } from '@/constants/themes';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { Category } from '@/types';
@@ -187,7 +193,7 @@ export default function ManageCategoriesScreen() {
       category.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const availableIcons = [
+  const availableIcons: IconSymbolName[] = [
     'house.fill',
     'paperplane.fill',
     'list.bullet',
@@ -336,9 +342,13 @@ export default function ManageCategoriesScreen() {
                 <View key={category.id} style={styles.categoryCard}>
                   <View style={styles.categoryIconContainer}>
                     <IconSymbol
-                      name={category.icon as any}
+                      name={resolveIconName(category.icon)}
                       size={32}
-                      color={theme.accent.mid}
+                      color={
+                        isValidIconName(category.icon)
+                          ? theme.accent.mid
+                          : colors.warning
+                      }
                     />
                   </View>
 
@@ -349,6 +359,12 @@ export default function ManageCategoriesScreen() {
                     <ThemedText style={styles.categoryDescription}>
                       {category.description}
                     </ThemedText>
+                    {!isValidIconName(category.icon) && (
+                      <ThemedText style={styles.iconWarning}>
+                        Unrecognised icon &ldquo;{category.icon}&rdquo; — pick a
+                        new one below
+                      </ThemedText>
+                    )}
 
                     <View style={styles.categoryMetadata}>
                       <IconSymbol
@@ -461,7 +477,7 @@ export default function ManageCategoriesScreen() {
                       }
                     >
                       <IconSymbol
-                        name={iconName as any}
+                        name={iconName}
                         size={28}
                         color={
                           formData.icon === iconName
@@ -713,6 +729,11 @@ function createStyles(theme: AppTheme) {
       verticalAlign: 'middle',
       borderWidth: 1,
       borderColor: 'transparent',
+    },
+    iconWarning: {
+      color: colors.warning,
+      fontSize: 12,
+      marginTop: 4,
     },
     iconOptionSelected: {
       backgroundColor: theme.backgrounds.tintedStrong,

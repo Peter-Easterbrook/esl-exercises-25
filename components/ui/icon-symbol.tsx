@@ -131,7 +131,36 @@ const MAPPING = {
   'trophy.fill': 'emoji-events',
 } satisfies IconMapping;
 
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
+
+/** Fallback glyph rendered when a name has no mapping (e.g. a stored icon
+ * whose key was renamed in code but never migrated in Firestore). */
+const FALLBACK_ICON = 'help-outline' as const;
+
+/** Every icon name IconSymbol can render. */
+export const ICON_SYMBOL_NAMES = Object.keys(MAPPING) as IconSymbolName[];
+
+/**
+ * Whether `name` resolves to a real glyph. Use for values that come from the
+ * database rather than from source, which the type system cannot check.
+ */
+export function isValidIconName(
+  name: string | undefined | null,
+): name is IconSymbolName {
+  return !!name && name in MAPPING;
+}
+
+/** Icon shown in place of an unrecognised stored value. */
+export const UNKNOWN_ICON: IconSymbolName = 'questionmark.circle';
+
+/**
+ * Coerce a database-sourced icon string to a renderable name. Keys renamed in
+ * code are not migrated in Firestore, so a stored value may no longer map to
+ * anything; this renders a visible marker instead of silently nothing.
+ */
+export function resolveIconName(name: string | undefined | null): IconSymbolName {
+  return isValidIconName(name) ? name : UNKNOWN_ICON;
+}
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
@@ -154,7 +183,7 @@ export function IconSymbol({
     <MaterialIcons
       color={color}
       size={size}
-      name={MAPPING[name]}
+      name={MAPPING[name] ?? FALLBACK_ICON}
       style={style}
     />
   );
