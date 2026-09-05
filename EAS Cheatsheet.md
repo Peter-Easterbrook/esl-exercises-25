@@ -252,10 +252,20 @@ npx tsc --noEmit
 npm run lint
 ```
 
-`expo-doctor`'s "React Native Directory" check is informational — it flags
-`react-native-nitro-google-signin` as "untested on New Architecture" (a stale
-catalogue entry; Nitro modules are New-Arch-only) and `react-native-vector-icons`
-as having no metadata. Neither fails an EAS build.
+A clean run is **21/21**. `react-native-nitro-google-signin` is excluded from
+the "React Native Directory" check in `package.json`
+(`expo.doctor.reactNativeDirectoryCheck.exclude`) — the catalogue lists it as
+"untested on New Architecture", which is a stale entry rather than a defect,
+since Nitro modules are New-Arch-only. If that check starts failing again,
+read what it names before adding to the exclude list.
+
+Add a fourth command before a **new build** (not needed for OTA). It bundles the
+whole app exactly as the build will, so an unresolved import fails here in two
+minutes instead of ten minutes into an EAS build:
+
+```powershell
+npx expo export --platform android
+```
 
 ### Step 5 — Commit
 
@@ -317,3 +327,74 @@ If a build fails with a dependency sync error, add `--clear-cache`.
 5. **Release → Testing → Internal testing → Promote release → Production**
 
 Promotion ships the identical artifact. No rebuild, no second review.
+
+---
+
+## Release Checklist
+
+The steps above explain _why_; this is the tickable version. Copy it into the
+release commit or an issue and work down it.
+
+### Before building
+
+- [ ] `npm run bump-version` — only for a new Play Store build, not an OTA
+- [ ] `npm ci` runs clean (proves `package.json` and the lockfile agree; EAS runs it too)
+- [ ] `npx expo-doctor` → 21/21
+- [ ] `npx tsc --noEmit` → silent
+- [ ] `npm run lint` → silent
+- [ ] `npx expo export --platform android` → bundles without error
+- [ ] `eas env:list production` matches the keys the app actually reads
+- [ ] Everything committed with a message that will still mean something later
+
+### Choosing OTA or build
+
+- [ ] Touched **only** JS/TS? → `eas update`, and skip the rest of this list
+- [ ] Touched `app.json`, a native dependency, icons, or the SDK? → new build
+
+> Don't guess. The `fingerprint` runtime version decides for you: if the native
+> layer changed, old builds stop matching the update.
+
+### Building
+
+- [ ] `eas build -p android --profile production --auto-submit-with-profile internal`
+- [ ] Never `--auto-submit` straight to production
+
+### On the internal build, before promoting
+
+Test on a real device, installed from the internal track — not a local or
+`preview` build. Google re-signs distributed installs with the App Signing key,
+so anything depending on that certificate behaves differently anywhere else.
+
+- [ ] Play Console lists the bundle under **App bundles**, not **Deactivated app bundles**
+- [ ] **Settings → Apps** reports the version you just built
+- [ ] **Google Sign-In** completes end to end
+- [ ] **In-app purchase** completes (license tester account)
+- [ ] Downloads unlock after purchase; admin account bypasses the paywall
+- [ ] Category icons render — a **?** means a stored icon name no longer maps
+- [ ] Charts and confetti animate
+- [ ] Whatever this release actually changed
+
+### After promoting
+
+- [ ] Play Console → **App optimization**: obfuscation above 25%
+- [ ] Crash-free rate holds over the first day
+
+---
+
+### One-time, for the next release only
+
+The next production build is the **first with R8 minification enabled**
+(`enableMinifyInReleaseBuilds` in `app.json`). R8 rewrites bytecode and can
+break reflection-heavy native code in ways no local check catches.
+
+No custom keep rules were added, deliberately: the native modules here ship
+their own consumer ProGuard rules, Firebase is the JS SDK (so there are no
+native Firebase classes to strip), and blanket `-keep` rules would suppress the
+very obfuscation percentage Play is measuring.
+
+So on that build, treat the four native-backed surfaces as the real test:
+**Google Sign-In, the IAP paywall, Skia confetti, and charts**. If one breaks,
+add a targeted keep for that library via `extraProguardRules` — do not disable
+minification, or the Play warning returns.
+
+Delete this section once a minified build has shipped cleanly.
