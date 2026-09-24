@@ -8,13 +8,15 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ## Code Style
 
-- **Do NOT add `@react-navigation` packages.** Expo Router v56 replaces them and they are incompatible with SDK 56.
+- **Do NOT add `@react-navigation` packages.** Expo Router v57 replaces them and they are incompatible with SDK 57.
 - All components use named exports with types
 - Styled with `StyleSheet.create()`
 - Themed components use `useThemeColor` hook
-- Single light theme (`Colors.dark` contains light appearance colors)
 - Animations configured in navigation options
-- **IMPORTANT:** Always use color schemes from `constants/theme.ts`:
+- **IMPORTANT:** Colors come from **two** places — see [Theme Configuration](#theme-configuration).
+  The live, user-selectable palette is `constants/themes.ts` via `useAppTheme()`.
+  `constants/theme.ts` below is the older static module, still used by
+  unmigrated screens:
   - `Colors` (uppercase) - Theme object with `dark`/`light` properties for text, background, tint, icons
   - `colors` (lowercase) - Semantic colors: `primary`, `secondary`, `tertiary`, `success`, `warning`, `danger`
   - `blues` - Blue palette scale (blue1-blue9)
@@ -26,10 +28,33 @@ ESL (English as Second Language) Exercises mobile application built with Expo Re
 
 ## Theme Configuration
 
-**Important:** App uses single light theme only. Do NOT add theme switching logic.
-- `hooks/use-color-scheme.ts` - Always returns 'dark' to select light appearance
-- `hooks/use-theme-color.ts` - Directly uses Colors.dark without scheme detection
-- `app/_layout.tsx` - Always uses DarkTheme from React Navigation
+The app ships **four user-selectable light themes** — `default`, `sky`, `sunset`,
+`winter` — defined in `constants/themes.ts` (`ThemeId`, `AppTheme`, `themes`,
+`themeList`). The user picks one under Appearance in `app/account-settings.tsx`
+and the choice is persisted by `contexts/ThemeContext.tsx`.
+
+**There is still no light/dark mode.** All four themes are light appearances, and
+the OS colour scheme is deliberately ignored. Do NOT add `prefers-color-scheme`
+handling or a dark variant — "theme" here means palette, not mode.
+
+- **Read colours with `useAppTheme()`** from `contexts/ThemeContext`, which
+  returns `{ theme, themeId, setTheme }`. `theme` is a full `AppTheme`:
+  `backgrounds`, `text`, `accent`, `tabBar`, `icons`, `borders`, `status`,
+  `difficulty`, `destructive`, `shadow`. This is the correct API for new code.
+- `hooks/use-theme-color.ts` - now resolves through the active `AppTheme`, and
+  falls back to static `Colors.dark` outside a provider (SSR, unmigrated admin
+  screens). Only handles the seven legacy keys in its `themeColorMap`.
+- `hooks/use-color-scheme.ts` - still always returns `'dark'`, which selects the
+  light-appearance `Colors.dark` block. Naming is historical; leave it alone.
+- `app/_layout.tsx` - wraps the tree in `AppThemeProvider` and still hands
+  `DarkTheme` to React Navigation.
+- `constants/theme.ts` (`Colors`, `colors`, `blues`, `backgrounds`, `borders`,
+  `elevation`) is the **older static palette**, superseded by `constants/themes.ts`
+  but not yet removed. Some admin screens still read it. Prefer `useAppTheme()`
+  for anything new; don't hardcode values from either file.
+- ⚠️ Three similarly-named things now exist: `Colors` (static, uppercase),
+  `colors` (static semantic, lowercase), and `theme` from `useAppTheme()` (live).
+  Check which one you're in before editing.
 
 ## Data Structure (Firebase)
 
@@ -161,8 +186,14 @@ certificate — Google Sign-In especially — cannot be tested by a local, dev, 
 
 ## Platform Notes
 
-- Supports iOS, Android, Web with a single light theme
-- Expo File System uses the **legacy API** (SDK 54 compatibility) — do not migrate to the new API
+- Currently on **Expo SDK 57 / React Native 0.86 / React 19.2**. Keep version
+  claims in this file tied to that, not to the SDK a rule was first written for.
+- Supports iOS, Android, Web. Four light themes, no dark mode — see
+  [Theme Configuration](#theme-configuration).
+- Expo File System uses the **legacy API** — import from `expo-file-system/legacy`
+  (see `services/fileService.ts`). Do not migrate to the new API. This predates
+  SDK 57 and still holds; the constraint is the legacy import path, not any
+  particular SDK version.
 - React Native Reanimated animations run on the UI thread (60fps)
 
 ## Feature Gotchas
