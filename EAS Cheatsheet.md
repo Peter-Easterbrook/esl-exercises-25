@@ -208,11 +208,15 @@ eas submit -p android
 
 > EAS Build runs `npm ci`, which requires `package.json` and `package-lock.json` to be in exact sync. This workflow ensures they always are, and catches issues locally before the build fails remotely.
 
+Blocks marked `sh` run unchanged in both PowerShell and Bash — `npm`, `npx`,
+`eas` and `git` behave the same in either shell. Step 3 is the only step with
+separate commands.
+
 ### Step 1 — Bump the version _(new Play Store builds only)_
 
 Skip for OTA updates. Bump when submitting a new build to the Play Store:
 
-```powershell
+```sh
 npm run bump-version          # patch: 1.2.3 → 1.2.4  (bug fixes, minor improvements)
 npm run bump-version minor    # minor: 1.2.3 → 1.3.0  (new features)
 npm run bump-version major    # major: 1.2.3 → 2.0.0  (breaking changes, major redesigns)
@@ -222,18 +226,24 @@ The bump script keeps `app.json` (`expo.version`) and `package.json` (`version`)
 
 ### Step 2 — Install or update dependencies
 
-```powershell
+```sh
 npx expo install <package>   # Expo-specific packages (ensures SDK compatibility)
 npm install <package>        # Everything else — never edit package.json manually
 ```
 
 ### Step 3 — Reinstall from the lockfile
 
-Run after any dependency change:
+Run after any dependency change. This is the one step that differs by shell:
 
 ```powershell
-# Bash: rm -rf node_modules
+# PowerShell
 Remove-Item -Recurse -Force node_modules
+npm ci
+```
+
+```bash
+# Bash (Git Bash, macOS, Linux)
+rm -rf node_modules
 npm ci
 ```
 
@@ -246,7 +256,7 @@ npm ci
 
 ### Step 4 — Validate locally
 
-```powershell
+```sh
 npx expo-doctor
 npx tsc --noEmit
 npm run lint
@@ -263,13 +273,13 @@ Add a fourth command before a **new build** (not needed for OTA). It bundles the
 whole app exactly as the build will, so an unresolved import fails here in two
 minutes instead of ten minutes into an EAS build:
 
-```powershell
+```sh
 npx expo export --platform android
 ```
 
 ### Step 5 — Commit
 
-```powershell
+```sh
 git add .
 git commit -m "fix: short description of what actually changed"
 git push
@@ -292,7 +302,7 @@ the update. It fails safe instead of crashing users.
 
 **JS/TS only** (UI, Firebase logic, content not npm updates) → OTA:
 
-```powershell
+```sh
 eas update -p android --branch production --message "describe the change"
 eas update:list --branch production
 ```
@@ -302,7 +312,7 @@ keep running their bundled JS until users update from the Play Store.
 
 **Native dep updates, `app.json`, SDK upgrade, icons/splash** → new build:
 
-```powershell
+```sh
 eas build -p android --profile production --auto-submit-with-profile internal
 ```
 
