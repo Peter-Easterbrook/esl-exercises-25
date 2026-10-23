@@ -1,3 +1,18 @@
+📱 Version 2.0.8
+
+Released: October 2026
+
+📝 What's new (For Google Play Console)
+
+What's new in 2.0.8
+
+• Matching exercises: the keyboard no longer covers your answer boxes, so you can scroll to every item on long question sets
+• Typing a letter now jumps straight to the next answer box
+• Fixed answers moving to the wrong box when filled in out of order
+• Performance and stability improvements
+
+---
+
 📱 Release Information
 
 Version: 1.0.0

@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
             PRIVACY POLICY
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            Last updated October 27, 2025
+            Last updated October 23, 2026
           </ThemedText>
 
           <Spacer height={20} />
@@ -284,6 +284,21 @@ export default function PrivacyPolicy() {
             <ThemedText style={styles.listItem}>• email addresses</ThemedText>
             <ThemedText style={styles.listItem}>• usernames</ThemedText>
             <ThemedText style={styles.listItem}>• passwords</ThemedText>
+            <ThemedText style={styles.listItem}>
+              • your name and email address from your Google account, if you
+              sign in with Google
+            </ThemedText>
+            <ThemedText style={styles.listItem}>
+              • exercise completion history, progress data and quiz scores
+            </ThemedText>
+            <ThemedText style={styles.listItem}>
+              • purchase records for the one-time download unlock (order ID,
+              purchase token, purchase date and receipt). Payments are processed
+              by Google Play; we never receive your card or bank details.
+            </ThemedText>
+            <ThemedText style={styles.listItem}>
+              • feedback messages you choose to send us from within the app
+            </ThemedText>
           </View>
 
           <ThemedText style={styles.paragraph}>
