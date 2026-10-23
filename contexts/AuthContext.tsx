@@ -11,11 +11,13 @@ import {
 } from '@/services/premiumService';
 import { User as AppUser } from '@/types';
 import {
+  AuthCredential,
   EmailAuthProvider,
   GoogleAuthProvider,
   User,
   createUserWithEmailAndPassword,
   deleteUser,
+  linkWithCredential,
   onAuthStateChanged,
   reauthenticateWithCredential,
   sendPasswordResetEmail,
@@ -39,13 +41,18 @@ import {
   GOOGLE_SIGN_IN_CANCELLED,
   configureGoogleSignIn,
   describeGoogleSignInError,
-  getGoogleIdToken,
+  getGoogleAccount,
   signOutGoogle,
 } from '@/services/googleSignIn';
+import { GOOGLE_LINK_REQUIRED } from '@/services/googleSignIn.constants';
 
 // Re-exported so screens keep importing these from the auth context, while the
 // native-only implementation stays behind the platform-split module.
-export { GOOGLE_SIGN_IN_CANCELLED, describeGoogleSignInError };
+export {
+  GOOGLE_LINK_REQUIRED,
+  GOOGLE_SIGN_IN_CANCELLED,
+  describeGoogleSignInError,
+};
 
 interface AuthContextType {
   user: User | null;
@@ -59,6 +66,11 @@ interface AuthContextType {
     displayName?: string,
   ) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  /** Email awaiting a Google link, or null when no link is pending. */
+  pendingGoogleLinkEmail: string | null;
+  /** Verifies the existing password, then attaches Google to that account. */
+  completeGoogleLink: (password: string) => Promise<void>;
+  cancelGoogleLink: () => void;
   logout: () => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
   updateUserPassword: (
@@ -89,7 +101,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const [pendingGoogleLinkEmail, setPendingGoogleLinkEmail] = useState<
+    string | null
+  >(null);
   const listenerSetupRef = useRef(false);
+  // Held in a ref rather than state: the credential is single-use and must not
+  // survive a re-render cycle or be read by anything except the link call.
+  const pendingGoogleCredentialRef = useRef<AuthCredential | null>(null);
 
   // Google Sign-In must be configured once before any other call. The Web client
   // ID is correct here on every platform — the Android client ID is never passed
@@ -216,14 +234,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signInWithGoogle = async () => {
-    if (Platform.OS === 'web') {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      return;
+    let credential: AuthCredential | null = null;
+    let googleEmail: string | null = null;
+
+    try {
+      if (Platform.OS === 'web') {
+        await signInWithPopup(auth, new GoogleAuthProvider());
+        return;
+      }
+
+      const account = await getGoogleAccount();
+      googleEmail = account.email;
+      credential = GoogleAuthProvider.credential(account.idToken);
+
+      await signInWithCredential(auth, credential);
+    } catch (error: any) {
+      if (error?.code !== 'auth/account-exists-with-different-credential') {
+        throw error;
+      }
+
+      // This email already has an email/password account. Hold the credential
+      // so the user can prove ownership and link, instead of silently landing
+      // on a second account with none of their progress.
+      credential ??= GoogleAuthProvider.credentialFromError(error);
+      const email = error?.customData?.email ?? googleEmail;
+
+      if (!credential || !email) {
+        throw error;
+      }
+
+      pendingGoogleCredentialRef.current = credential;
+      setPendingGoogleLinkEmail(email);
+      throw new Error(GOOGLE_LINK_REQUIRED);
+    }
+  };
+
+  const completeGoogleLink = async (password: string) => {
+    const credential = pendingGoogleCredentialRef.current;
+
+    if (!credential || !pendingGoogleLinkEmail) {
+      throw new Error('No Google sign-in is waiting to be linked.');
     }
 
-    const idToken = await getGoogleIdToken();
+    // Signing in proves the user owns the existing account; only then may we
+    // attach the Google provider to it.
+    const result = await signInWithEmailAndPassword(
+      auth,
+      pendingGoogleLinkEmail,
+      password,
+    );
 
-    await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
+    try {
+      await linkWithCredential(result.user, credential);
+    } finally {
+      // The credential is spent either way. The user stays signed in to their
+      // real account even if linking itself failed, which is the outcome that
+      // matters most to them.
+      cancelGoogleLink();
+    }
+  };
+
+  const cancelGoogleLink = () => {
+    pendingGoogleCredentialRef.current = null;
+    setPendingGoogleLinkEmail(null);
   };
 
   const logout = async () => {
@@ -346,6 +419,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signIn,
     signUp,
     signInWithGoogle,
+    pendingGoogleLinkEmail,
+    completeGoogleLink,
+    cancelGoogleLink,
     logout,
     sendPasswordReset,
     updateUserPassword,

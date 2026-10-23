@@ -20,10 +20,14 @@ export const configureGoogleSignIn = (webClientId: string) => {
 };
 
 /**
- * Runs the native sign-in cascade and returns the Google ID token.
+ * Runs the native sign-in cascade and returns the Google ID token, plus the
+ * account email so a password account with the same address can be linked.
  * Throws GOOGLE_SIGN_IN_CANCELLED if the user dismisses the sheet.
  */
-export const getGoogleIdToken = async (): Promise<string> => {
+export const getGoogleAccount = async (): Promise<{
+  idToken: string;
+  email: string | null;
+}> => {
   await GoogleOneTapSignIn.checkPlayServices();
 
   // Try the low-friction path first, then fall back to the full account
@@ -46,13 +50,13 @@ export const getGoogleIdToken = async (): Promise<string> => {
     throw new Error('Google sign-in did not return an account.');
   }
 
-  const { idToken } = response.data;
+  const { idToken, user } = response.data;
 
   if (!idToken) {
     throw new Error('Google sign-in returned no ID token.');
   }
 
-  return idToken;
+  return { idToken, email: user?.email ?? null };
 };
 
 export const signOutGoogle = async () => {

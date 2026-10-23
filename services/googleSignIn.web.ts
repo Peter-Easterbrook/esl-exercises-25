@@ -10,7 +10,10 @@ export const configureGoogleSignIn = (_webClientId: string) => {
   // No native session to configure on web.
 };
 
-export const getGoogleIdToken = async (): Promise<string> => {
+export const getGoogleAccount = async (): Promise<{
+  idToken: string;
+  email: string | null;
+}> => {
   throw new Error('Native Google Sign-In is not available on web.');
 };
 
