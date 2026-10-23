@@ -6,6 +6,7 @@ import { AppTheme } from '@/constants/themes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppTheme } from '@/contexts/ThemeContext';
 import { Exercise, ExerciseContent } from '@/types';
+import { shuffleMatchingQuestions } from '@/utils/shuffleMatching';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
@@ -47,6 +48,11 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  // Matching columns are shuffled per attempt so answers don't follow the
+  // stored A, B, C... order
+  const [questions, setQuestions] = useState(() =>
+    shuffleMatchingQuestions(content),
+  );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [questionId: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
@@ -69,8 +75,8 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     }
   }, [showConfetti]);
 
-  const currentQuestion = content.questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === content.questions.length - 1;
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const hasAnswered = answers[currentQuestion.id] !== undefined;
   const matchingInputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -128,7 +134,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     let percentage = 0;
 
     try {
-      content.questions.forEach((question) => {
+      questions.forEach((question) => {
         const userAnswer = answers[question.id];
         const correctAnswer = question.correctAnswer;
         let isCorrect = false;
@@ -190,9 +196,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         }
       });
 
-      percentage = Math.round(
-        (correctAnswers / content.questions.length) * 100,
-      );
+      percentage = Math.round((correctAnswers / questions.length) * 100);
       setScore(percentage);
 
       // Trigger confetti and haptic feedback for perfect score
@@ -249,6 +253,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   };
 
   const handleRestart = () => {
+    setQuestions(shuffleMatchingQuestions(content));
     setCurrentQuestionIndex(0);
     setAnswers({});
     setShowResults(false);
@@ -396,7 +401,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               Review Your Answers
             </ThemedText>
 
-            {content.questions.map((question, index) => {
+            {questions.map((question, index) => {
               const userAnswer = answers[question.id];
               const correctAnswer = question.correctAnswer;
 
@@ -557,7 +562,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     >
       <View style={styles.progressSection}>
         <ThemedText style={styles.progressText}>
-          Question {currentQuestionIndex + 1} of {content.questions.length}
+          Question {currentQuestionIndex + 1} of {questions.length}
         </ThemedText>
         <View style={styles.progressBar}>
           <View
@@ -565,7 +570,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               styles.progressFill,
               {
                 width: `${
-                  ((currentQuestionIndex + 1) / content.questions.length) * 100
+                  ((currentQuestionIndex + 1) / questions.length) * 100
                 }%`,
               },
             ]}
@@ -578,13 +583,13 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         keyboardShouldPersistTaps="handled"
       >
         {/* True/False: Show passage on all questions if available */}
-        {content.type === 'true-false' && content.questions[0]?.passageText && (
+        {content.type === 'true-false' && questions[0]?.passageText && (
           <View style={styles.passageContainer}>
             <ThemedText style={styles.passageLabel}>
               Read the passage below:
             </ThemedText>
             <ThemedText style={styles.passageTextContent}>
-              {content.questions[0].passageText}
+              {questions[0].passageText}
             </ThemedText>
           </View>
         )}
