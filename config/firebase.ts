@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
 import {
   browserLocalPersistence,
+  browserPopupRedirectResolver,
   // `getReactNativePersistence` is only declared in the package's react-native
   // build; the default `firebase/auth` types are the web ones and omit it.
   // Metro resolves the react-native condition at runtime, so this is types-only.
@@ -35,6 +36,14 @@ export const auth =
   Platform.OS === 'web'
     ? initializeAuth(app, {
         persistence: browserLocalPersistence,
+        // initializeAuth (unlike getAuth) leaves this out, and without it
+        // signInWithPopup fails with auth/argument-error. Browser only: static
+        // rendering runs this file in Node, where Firebase's node build exports
+        // a placeholder here and initializeAuth asserts on it.
+        popupRedirectResolver:
+          typeof window !== 'undefined'
+            ? browserPopupRedirectResolver
+            : undefined,
       })
     : initializeAuth(app, {
         persistence: getReactNativePersistence(AsyncStorage),
