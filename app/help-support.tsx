@@ -33,12 +33,12 @@ export default function HelpSupportScreen() {
             style={styles.backButton}
           >
             <Ionicons
-              name='arrow-back-circle-outline'
+              name="arrow-back-circle-outline"
               size={24}
               color={colorScheme === 'dark' ? '#687076' : '#9BA1A6'}
             />
           </TouchableOpacity>
-          <ThemedText type='title'>Help & Support</ThemedText>
+          <ThemedText type="title">Help & Support</ThemedText>
           <View style={{ width: 24 }} />
         </View>
 
@@ -50,9 +50,9 @@ export default function HelpSupportScreen() {
           {/* Introduction */}
           <View style={styles.introSection}>
             <IconSymbol
-              name='questionmark.circle.fill'
+              name="questionmark.circle.fill"
               size={48}
-              color='#6996b3'
+              color="#6996b3"
             />
             <ThemedText style={styles.introText}>
               Welcome to the ESL Exercises Help Center. Find answers to common
@@ -63,7 +63,7 @@ export default function HelpSupportScreen() {
 
           {/* Quick Start Guide */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Quick Start Guide
             </ThemedText>
             <View style={styles.card}>
@@ -72,7 +72,7 @@ export default function HelpSupportScreen() {
                   <ThemedText style={styles.guideNumberText}>1</ThemedText>
                 </View>
                 <View style={styles.guideContent}>
-                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                  <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
                     Browse Exercises
                   </ThemedText>
                   <ThemedText style={styles.guideText}>
@@ -90,7 +90,7 @@ export default function HelpSupportScreen() {
                   <ThemedText style={styles.guideNumberText}>2</ThemedText>
                 </View>
                 <View style={styles.guideContent}>
-                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                  <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
                     Complete Exercises
                   </ThemedText>
                   <ThemedText style={styles.guideText}>
@@ -107,7 +107,7 @@ export default function HelpSupportScreen() {
                   <ThemedText style={styles.guideNumberText}>3</ThemedText>
                 </View>
                 <View style={styles.guideContent}>
-                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                  <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
                     Track Progress
                   </ThemedText>
                   <ThemedText style={styles.guideText}>
@@ -124,7 +124,7 @@ export default function HelpSupportScreen() {
                   <ThemedText style={styles.guideNumberText}>4</ThemedText>
                 </View>
                 <View style={styles.guideContent}>
-                  <ThemedText type='defaultSemiBold' style={styles.guideTitle}>
+                  <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
                     Download Materials
                   </ThemedText>
                   <ThemedText style={styles.guideText}>
@@ -138,11 +138,11 @@ export default function HelpSupportScreen() {
 
           {/* FAQ Section */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Frequently Asked Questions
             </ThemedText>
             <View style={styles.card}>
-              <Collapsible title='How do I change my password?'>
+              <Collapsible title="How do I change my password?">
                 <ThemedText style={styles.faqAnswer}>
                   Go to Profile → Account Settings → Change Password. You will
                   need to enter your current password, then your new password
@@ -152,7 +152,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='How is my score calculated?'>
+              <Collapsible title="How is my score calculated?">
                 <ThemedText style={styles.faqAnswer}>
                   Your score is the percentage of correct answers. For example,
                   if you answer 8 out of 10 questions correctly, your score is
@@ -162,7 +162,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='Can I retake exercises?'>
+              <Collapsible title="Can I retake exercises?">
                 <ThemedText style={styles.faqAnswer}>
                   Yes! You can retake any exercise as many times as you would
                   like. Your highest score and most recent completion will be
@@ -172,7 +172,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='How do I download exercise materials?'>
+              <Collapsible title="How do I download exercise materials?">
                 <ThemedText style={styles.faqAnswer}>
                   Expand a category card by tapping on it. If downloadable files
                   are available, you will see them listed with a download icon.
@@ -183,7 +183,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='What do the difficulty levels mean?'>
+              <Collapsible title="What do the difficulty levels mean?">
                 <ThemedText style={styles.faqAnswer}>
                   • Beginner: Basic concepts, simple vocabulary, fundamental
                   grammar{'\n'}• Intermediate: More complex structures, expanded
@@ -194,7 +194,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='How do I delete my progress?'>
+              <Collapsible title="How do I delete my progress?">
                 <ThemedText style={styles.faqAnswer}>
                   Go to Profile → Account Settings → scroll to the Danger Zone
                   section. You can delete just your progress data (keeping your
@@ -204,7 +204,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='Is my data private and secure?'>
+              <Collapsible title="Is my data private and secure?">
                 <ThemedText style={styles.faqAnswer}>
                   Yes! All your data is securely stored in Firebase with
                   industry-standard encryption. We comply with GDPR and CCPA
@@ -215,7 +215,7 @@ export default function HelpSupportScreen() {
 
               <View style={styles.faqDivider} />
 
-              <Collapsible title='Can I use the app offline?'>
+              <Collapsible title="Can I use the app offline?">
                 <ThemedText style={styles.faqAnswer}>
                   Currently, the app requires an internet connection to load
                   exercises and save your progress. Offline mode is planned for
@@ -227,19 +227,19 @@ export default function HelpSupportScreen() {
 
           {/* Troubleshooting Section */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Troubleshooting
             </ThemedText>
             <View style={styles.card}>
               <View style={styles.troubleshootItem}>
                 <IconSymbol
-                  name='exclamationmark.triangle'
+                  name="exclamationmark.triangle"
                   size={24}
-                  color='#ff9500'
+                  color="#ff9500"
                 />
                 <View style={styles.troubleshootContent}>
                   <ThemedText
-                    type='defaultSemiBold'
+                    type="defaultSemiBold"
                     style={styles.troubleshootTitle}
                   >
                     Exercises won&apos;t load
@@ -255,10 +255,10 @@ export default function HelpSupportScreen() {
               <View style={styles.guideDivider} />
 
               <View style={styles.troubleshootItem}>
-                <IconSymbol name='lock.fill' size={24} color='#ff9500' />
+                <IconSymbol name="lock.fill" size={24} color="#ff9500" />
                 <View style={styles.troubleshootContent}>
                   <ThemedText
-                    type='defaultSemiBold'
+                    type="defaultSemiBold"
                     style={styles.troubleshootTitle}
                   >
                     Can&apos;t log in
@@ -275,13 +275,13 @@ export default function HelpSupportScreen() {
 
               <View style={styles.troubleshootItem}>
                 <IconSymbol
-                  name='arrow.down.circle'
+                  name="arrow.down.circle"
                   size={24}
-                  color='#ff9500'
+                  color="#ff9500"
                 />
                 <View style={styles.troubleshootContent}>
                   <ThemedText
-                    type='defaultSemiBold'
+                    type="defaultSemiBold"
                     style={styles.troubleshootTitle}
                   >
                     Files won&apos;t download
@@ -298,22 +298,22 @@ export default function HelpSupportScreen() {
 
               <View style={styles.troubleshootItem}>
                 <IconSymbol
-                  name='externaldrive.badge.xmark'
+                  name="externaldrive.badge.xmark"
                   size={24}
-                  color='#ff9500'
+                  color="#ff9500"
                 />
                 <View style={styles.troubleshootContent}>
                   <ThemedText
-                    type='defaultSemiBold'
+                    type="defaultSemiBold"
                     style={styles.troubleshootTitle}
                   >
                     Progress not saving
                   </ThemedText>
                   <ThemedText style={styles.troubleshootText}>
-                    • Ensure you&apos;re connected to the internet{'\n'}• Complete
-                    the entire exercise before closing{'\n'}• Check the Progress
-                    tab to verify{'\n'}• Try completing a different exercise to
-                    test
+                    • Ensure you&apos;re connected to the internet{'\n'}•
+                    Complete the entire exercise before closing{'\n'}• Check the
+                    Progress tab to verify{'\n'}• Try completing a different
+                    exercise to test
                   </ThemedText>
                 </View>
               </View>
@@ -322,11 +322,11 @@ export default function HelpSupportScreen() {
 
           {/* Contact Support Section */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Still Need Help?
             </ThemedText>
             <View style={styles.contactCard}>
-              <IconSymbol name='envelope.fill' size={32} color='#6996b3' />
+              <IconSymbol name="envelope.fill" size={32} color="#6996b3" />
               <ThemedText style={styles.contactText}>
                 If you are experiencing technical issues with the app that are
                 not resolved by the information above, please contact our
@@ -336,7 +336,7 @@ export default function HelpSupportScreen() {
                 style={styles.emailButton}
                 onPress={handleEmailSupport}
               >
-                <IconSymbol name='paperplane.fill' size={18} color='#fff' />
+                <IconSymbol name="paperplane.fill" size={18} color="#fff" />
                 <ThemedText style={styles.emailButtonText}>
                   Email Support
                 </ThemedText>
@@ -352,7 +352,7 @@ export default function HelpSupportScreen() {
 
           {/* Additional Resources */}
           <View style={styles.section}>
-            <ThemedText type='subtitle' style={styles.sectionTitle}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
               Additional Resources
             </ThemedText>
             <View style={styles.card}>
@@ -360,14 +360,14 @@ export default function HelpSupportScreen() {
                 style={styles.resourceItem}
                 onPress={() => router.push('/about')}
               >
-                <IconSymbol name='info.circle' size={24} color='#6996b3' />
+                <IconSymbol name="info.circle" size={24} color="#6996b3" />
                 <View style={styles.resourceContent}>
-                  <ThemedText type='defaultSemiBold'>About Us</ThemedText>
+                  <ThemedText type="defaultSemiBold">About Us</ThemedText>
                   <ThemedText style={styles.resourceSubtext}>
                     Learn about Easterbrook Language Services
                   </ThemedText>
                 </View>
-                <IconSymbol name='chevron.right' size={16} color='#999' />
+                <IconSymbol name="chevron.right" size={16} color="#999" />
               </TouchableOpacity>
 
               <View style={styles.guideDivider} />
@@ -376,14 +376,14 @@ export default function HelpSupportScreen() {
                 style={styles.resourceItem}
                 onPress={() => router.push('/privacy-policy' as any)}
               >
-                <IconSymbol name='doc.text' size={24} color='#6996b3' />
+                <IconSymbol name="doc.text" size={24} color="#6996b3" />
                 <View style={styles.resourceContent}>
-                  <ThemedText type='defaultSemiBold'>Privacy Policy</ThemedText>
+                  <ThemedText type="defaultSemiBold">Privacy Policy</ThemedText>
                   <ThemedText style={styles.resourceSubtext}>
                     How we protect your data
                   </ThemedText>
                 </View>
-                <IconSymbol name='chevron.right' size={16} color='#999' />
+                <IconSymbol name="chevron.right" size={16} color="#999" />
               </TouchableOpacity>
 
               <View style={styles.guideDivider} />
@@ -392,16 +392,16 @@ export default function HelpSupportScreen() {
                 style={styles.resourceItem}
                 onPress={() => router.push('/account-settings')}
               >
-                <IconSymbol name='gear' size={24} color='#6996b3' />
+                <IconSymbol name="gear" size={24} color="#6996b3" />
                 <View style={styles.resourceContent}>
-                  <ThemedText type='defaultSemiBold'>
+                  <ThemedText type="defaultSemiBold">
                     Account Settings
                   </ThemedText>
                   <ThemedText style={styles.resourceSubtext}>
                     Manage your profile and data
                   </ThemedText>
                 </View>
-                <IconSymbol name='chevron.right' size={16} color='#999' />
+                <IconSymbol name="chevron.right" size={16} color="#999" />
               </TouchableOpacity>
             </View>
           </View>

@@ -23,12 +23,11 @@ export const makeUserAdmin = async (userEmail: string): Promise<boolean> => {
 
     // Update to admin
     await updateDoc(userRef, {
-      isAdmin: true
+      isAdmin: true,
     });
 
     console.log('✅ User is now an admin');
     return true;
-
   } catch (error) {
     console.error('❌ Error making user admin:', error);
     return false;
@@ -59,11 +58,19 @@ export const checkUserDocument = async (userId: string) => {
     if (userDoc.exists()) {
       const data = userDoc.data();
       console.log('📄 User document found:', data);
-      console.log('🔑 isAdmin value:', data.isAdmin, '(type:', typeof data.isAdmin, ')');
+      console.log(
+        '🔑 isAdmin value:',
+        data.isAdmin,
+        '(type:',
+        typeof data.isAdmin,
+        ')',
+      );
       return data;
     } else {
       console.log('❌ User document does NOT exist in Firestore');
-      console.log('💡 Make sure you created the document with the exact UID as the document ID');
+      console.log(
+        '💡 Make sure you created the document with the exact UID as the document ID',
+      );
       return null;
     }
   } catch (error) {

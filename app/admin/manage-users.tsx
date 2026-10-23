@@ -281,7 +281,11 @@ export default function ManageUsersScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -293,7 +297,11 @@ export default function ManageUsersScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name="magnifyingglass" size={20} color={theme.icons.tertiary} />
+            <IconSymbol
+              name="magnifyingglass"
+              size={20}
+              color={theme.icons.tertiary}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search by name or email..."
@@ -310,7 +318,11 @@ export default function ManageUsersScreen() {
           >
             {users.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name="person.2" size={48} color={theme.icons.placeholder} />
+                <IconSymbol
+                  name="person.2"
+                  size={48}
+                  color={theme.icons.placeholder}
+                />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
                     ? 'No users match your search'
@@ -369,7 +381,11 @@ export default function ManageUsersScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditUser(user)}
                     >
-                      <IconSymbol name="pencil" size={20} color={theme.accent.mid} />
+                      <IconSymbol
+                        name="pencil"
+                        size={20}
+                        color={theme.accent.mid}
+                      />
                       <ThemedText style={styles.actionButtonText}>
                         Edit
                       </ThemedText>
@@ -395,7 +411,11 @@ export default function ManageUsersScreen() {
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteAccount(user)}
                     >
-                      <IconSymbol name="trash" size={20} color={theme.status.error} />
+                      <IconSymbol
+                        name="trash"
+                        size={20}
+                        color={theme.status.error}
+                      />
                       <ThemedText
                         style={[styles.actionButtonText, styles.deleteText]}
                       >
@@ -427,7 +447,11 @@ export default function ManageUsersScreen() {
                 onPress={() => setDetailsModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
+                <IconSymbol
+                  name="xmark"
+                  size={24}
+                  color={theme.icons.tertiary}
+                />
               </TouchableOpacity>
             </View>
 
@@ -592,7 +616,11 @@ export default function ManageUsersScreen() {
                 onPress={() => setDeleteModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
+                <IconSymbol
+                  name="xmark"
+                  size={24}
+                  color={theme.icons.tertiary}
+                />
               </TouchableOpacity>
             </View>
 
@@ -672,7 +700,11 @@ export default function ManageUsersScreen() {
                 onPress={() => setEditModalVisible(false)}
                 style={styles.closeButton}
               >
-                <IconSymbol name="xmark" size={24} color={theme.icons.tertiary} />
+                <IconSymbol
+                  name="xmark"
+                  size={24}
+                  color={theme.icons.tertiary}
+                />
               </TouchableOpacity>
             </View>
 

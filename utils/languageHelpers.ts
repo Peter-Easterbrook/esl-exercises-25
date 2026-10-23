@@ -1,5 +1,9 @@
 import { getLocales } from 'expo-localization';
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type LanguageCode } from '@/constants/languages';
+import {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
+  type LanguageCode,
+} from '@/constants/languages';
 import type { MultiLanguageInstructions } from '@/types';
 
 /**
@@ -28,7 +32,7 @@ export function getDeviceDefaultLanguage(): LanguageCode {
  */
 export function getInstructionsForLanguage(
   instructions: MultiLanguageInstructions | string,
-  languageCode: LanguageCode
+  languageCode: LanguageCode,
 ): string {
   // Handle legacy string format
   if (typeof instructions === 'string') {
@@ -43,7 +47,7 @@ export function getInstructionsForLanguage(
  * Type guard to check if instructions are in multi-language format
  */
 export function isMultiLanguageInstructions(
-  instructions: MultiLanguageInstructions | string
+  instructions: MultiLanguageInstructions | string,
 ): instructions is MultiLanguageInstructions {
   return typeof instructions === 'object' && instructions !== null;
 }

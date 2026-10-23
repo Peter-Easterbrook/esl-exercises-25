@@ -8,8 +8,7 @@ import { useAppTheme } from '@/contexts/ThemeContext';
 
 type CollapsibleProps = PropsWithChildren &
   (
-    | { title: string; collapsed?: never }
-    | { collapsed: boolean; title?: never }
+    { title: string; collapsed?: never } | { collapsed: boolean; title?: never }
   );
 
 export function Collapsible({ children, title, collapsed }: CollapsibleProps) {

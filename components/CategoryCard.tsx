@@ -182,7 +182,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     height: withTiming(isExpanded ? 'auto' : 0, { duration: 300 }),
   }));
 
-
   return (
     <ThemedView style={[styles.card, isLevelTest && styles.levelTestCard]}>
       <Pressable
@@ -195,7 +194,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
         <View style={styles.headerLeft}>
           <IconSymbol
             name={
-              isLevelTest ? 'graduationcap.fill' : resolveIconName(category.icon)
+              isLevelTest
+                ? 'graduationcap.fill'
+                : resolveIconName(category.icon)
             }
             size={24}
             color={isLevelTest ? '#fff' : theme.accent.mid}

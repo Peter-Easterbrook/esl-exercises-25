@@ -8,13 +8,13 @@ import { Exercise, ExerciseContent } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function ManageExercisesScreen() {
@@ -99,9 +99,8 @@ export default function ManageExercisesScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const { deleteExercise } = await import(
-                '@/services/firebaseService'
-              );
+              const { deleteExercise } =
+                await import('@/services/firebaseService');
               await deleteExercise(exercise.id);
               Alert.alert('Success', 'Exercise deleted successfully');
               loadExercises();
@@ -111,7 +110,7 @@ export default function ManageExercisesScreen() {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -122,7 +121,7 @@ export default function ManageExercisesScreen() {
   const filteredExercises = exercises.filter(
     (exercise) =>
       exercise.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exercise.description.toLowerCase().includes(searchQuery.toLowerCase())
+      exercise.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const getCategoryName = (categoryId: string): string => {
@@ -134,7 +133,7 @@ export default function ManageExercisesScreen() {
     if (content.type === 'level-test') {
       const totalQuestions = content.sections.reduce(
         (sum, section) => sum + (section.questions?.length || 0),
-        0
+        0,
       );
       return `${totalQuestions} questions`;
     }
@@ -161,11 +160,15 @@ export default function ManageExercisesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name='chevron.left' size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
-          <ThemedText type='title' style={styles.title}>
+          <ThemedText type="title" style={styles.title}>
             Manage Exercises
           </ThemedText>
         </View>
@@ -173,10 +176,14 @@ export default function ManageExercisesScreen() {
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
-            <IconSymbol name='magnifyingglass' size={20} color={theme.icons.tertiary} />
+            <IconSymbol
+              name="magnifyingglass"
+              size={20}
+              color={theme.icons.tertiary}
+            />
             <TextInput
               style={styles.searchInput}
-              placeholder='Search exercises...'
+              placeholder="Search exercises..."
               placeholderTextColor={theme.icons.placeholder}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -192,7 +199,7 @@ export default function ManageExercisesScreen() {
             }}
             style={styles.addButton}
           >
-            <IconSymbol name='plus.circle.fill' size={24} color='#fff' />
+            <IconSymbol name="plus.circle.fill" size={24} color="#fff" />
             <ThemedText style={styles.addButtonText}>
               Add New Exercise
             </ThemedText>
@@ -205,7 +212,11 @@ export default function ManageExercisesScreen() {
           >
             {filteredExercises.length === 0 ? (
               <View style={styles.emptyState}>
-                <IconSymbol name='doc.text' size={48} color={theme.icons.placeholder} />
+                <IconSymbol
+                  name="doc.text"
+                  size={48}
+                  color={theme.icons.placeholder}
+                />
                 <ThemedText style={styles.emptyText}>
                   {searchQuery
                     ? 'No exercises match your search'
@@ -228,7 +239,11 @@ export default function ManageExercisesScreen() {
 
                     <View style={styles.exerciseMetadata}>
                       <View style={styles.metadataItem}>
-                        <IconSymbol name='folder' size={14} color={theme.icons.tertiary} />
+                        <IconSymbol
+                          name="folder"
+                          size={14}
+                          color={theme.icons.tertiary}
+                        />
                         <ThemedText style={styles.metadataText}>
                           {getCategoryName(exercise.category)}
                         </ThemedText>
@@ -236,7 +251,7 @@ export default function ManageExercisesScreen() {
 
                       <View style={styles.metadataItem}>
                         <IconSymbol
-                          name='chart.bar'
+                          name="chart.bar"
                           size={14}
                           color={theme.icons.tertiary}
                         />
@@ -252,7 +267,7 @@ export default function ManageExercisesScreen() {
 
                       <View style={styles.metadataItem}>
                         <IconSymbol
-                          name='questionmark.circle'
+                          name="questionmark.circle"
                           size={14}
                           color={theme.icons.tertiary}
                         />
@@ -262,7 +277,11 @@ export default function ManageExercisesScreen() {
                       </View>
 
                       <View style={styles.metadataItem}>
-                        <IconSymbol name='doc.text' size={14} color={theme.icons.tertiary} />
+                        <IconSymbol
+                          name="doc.text"
+                          size={14}
+                          color={theme.icons.tertiary}
+                        />
                         <ThemedText style={styles.metadataText}>
                           {exercise.id}
                         </ThemedText>
@@ -275,14 +294,22 @@ export default function ManageExercisesScreen() {
                       style={[styles.actionButton, styles.editButton]}
                       onPress={() => handleEditExercise(exercise)}
                     >
-                      <IconSymbol name='pencil' size={16} color={theme.accent.mid} />
+                      <IconSymbol
+                        name="pencil"
+                        size={16}
+                        color={theme.accent.mid}
+                      />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={[styles.actionButton, styles.deleteButton]}
                       onPress={() => handleDeleteExercise(exercise)}
                     >
-                      <IconSymbol name='trash' size={16} color={theme.status.danger} />
+                      <IconSymbol
+                        name="trash"
+                        size={16}
+                        color={theme.status.danger}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>

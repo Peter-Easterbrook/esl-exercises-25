@@ -40,185 +40,185 @@ export default function RootLayout() {
               animation: 'default', // Global default
             }}
           >
-              {/* Main tabs - no animation (instant) */}
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                  animation: 'none',
-                }}
-              />
+            {/* Main tabs - no animation (instant) */}
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+                animation: 'none',
+              }}
+            />
 
-              {/* Auth screen - fade in for welcoming feel */}
-              <Stack.Screen
-                name="auth/index"
-                options={{
-                  headerShown: false,
-                  animation: 'fade',
-                }}
-              />
+            {/* Auth screen - fade in for welcoming feel */}
+            <Stack.Screen
+              name="auth/index"
+              options={{
+                headerShown: false,
+                animation: 'fade',
+              }}
+            />
 
-              {/* Exercise screen - slide from right (natural forward flow) */}
-              <Stack.Screen
-                name="exercise/[id]"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Exercise screen - slide from right (natural forward flow) */}
+            <Stack.Screen
+              name="exercise/[id]"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Admin panel - slide from right (consistent with admin sub-screens) */}
-              <Stack.Screen
-                name="admin/index"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Admin panel - slide from right (consistent with admin sub-screens) */}
+            <Stack.Screen
+              name="admin/index"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Add exercise - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/add-exercise"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Add exercise - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/add-exercise"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Manage exercises - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/manage-exercises"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
-              {/* Manage categories - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/manage-categories"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Manage exercises - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/manage-exercises"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
+            {/* Manage categories - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/manage-categories"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Manage users - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/manage-users"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Manage users - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/manage-users"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Upload files - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/upload-files"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Upload files - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/upload-files"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Analytics - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/analytics"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Analytics - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/analytics"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* App Settings - slide from right (sequential flow) */}
-              <Stack.Screen
-                name="admin/app-settings"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* App Settings - slide from right (sequential flow) */}
+            <Stack.Screen
+              name="admin/app-settings"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* About screen - slide from right (informational flow) */}
-              <Stack.Screen
-                name="about"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* About screen - slide from right (informational flow) */}
+            <Stack.Screen
+              name="about"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Privacy Policy - slide from right (informational flow) */}
-              <Stack.Screen
-                name="privacy-policy"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Privacy Policy - slide from right (informational flow) */}
+            <Stack.Screen
+              name="privacy-policy"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Account Settings - slide from right (settings flow) */}
-              <Stack.Screen
-                name="account-settings"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Account Settings - slide from right (settings flow) */}
+            <Stack.Screen
+              name="account-settings"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Help & Support - slide from right (informational flow) */}
-              <Stack.Screen
-                name="help-support"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Help & Support - slide from right (informational flow) */}
+            <Stack.Screen
+              name="help-support"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Level Test Editor - slide from right */}
-              <Stack.Screen
-                name="admin/level-test-editor"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  gestureEnabled: true,
-                  gestureDirection: 'horizontal',
-                }}
-              />
+            {/* Level Test Editor - slide from right */}
+            <Stack.Screen
+              name="admin/level-test-editor"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+              }}
+            />
 
-              {/* Modal - slide from bottom (traditional modal) */}
-              <Stack.Screen
-                name="modal"
-                options={{
-                  presentation: 'modal',
-                  animation: 'slide_from_bottom',
-                }}
-              />
+            {/* Modal - slide from bottom (traditional modal) */}
+            <Stack.Screen
+              name="modal"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
           </Stack>
           <StatusBar style="dark" />
         </AuthProvider>

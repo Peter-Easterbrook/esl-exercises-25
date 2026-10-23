@@ -17,7 +17,7 @@ export async function requestCameraPermissions(): Promise<boolean> {
   if (status !== 'granted') {
     Alert.alert(
       'Permission Required',
-      'Camera permission is required to take photos. Please enable it in your device settings.'
+      'Camera permission is required to take photos. Please enable it in your device settings.',
     );
     return false;
   }
@@ -36,7 +36,7 @@ export async function requestMediaLibraryPermissions(): Promise<boolean> {
   if (status !== 'granted') {
     Alert.alert(
       'Permission Required',
-      'Photo library permission is required to select photos. Please enable it in your device settings.'
+      'Photo library permission is required to select photos. Please enable it in your device settings.',
     );
     return false;
   }
@@ -107,7 +107,7 @@ export async function pickPhoto(): Promise<string | null> {
  */
 export async function saveProfilePhoto(
   userId: string,
-  photoUri: string
+  photoUri: string,
 ): Promise<void> {
   try {
     const dest = `${FileSystem.documentDirectory}profile_photo_${userId}.jpg`;

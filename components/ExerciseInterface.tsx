@@ -70,8 +70,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   }, [showConfetti]);
 
   const currentQuestion = content.questions[currentQuestionIndex];
-  const isLastQuestion =
-    currentQuestionIndex === content.questions.length - 1;
+  const isLastQuestion = currentQuestionIndex === content.questions.length - 1;
   const hasAnswered = answers[currentQuestion.id] !== undefined;
   const matchingInputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -558,8 +557,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
     >
       <View style={styles.progressSection}>
         <ThemedText style={styles.progressText}>
-          Question {currentQuestionIndex + 1} of{' '}
-          {content.questions.length}
+          Question {currentQuestionIndex + 1} of {content.questions.length}
         </ThemedText>
         <View style={styles.progressBar}>
           <View
@@ -567,9 +565,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
               styles.progressFill,
               {
                 width: `${
-                  ((currentQuestionIndex + 1) /
-                    content.questions.length) *
-                  100
+                  ((currentQuestionIndex + 1) / content.questions.length) * 100
                 }%`,
               },
             ]}
@@ -582,17 +578,16 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         keyboardShouldPersistTaps="handled"
       >
         {/* True/False: Show passage on all questions if available */}
-        {content.type === 'true-false' &&
-          content.questions[0]?.passageText && (
-            <View style={styles.passageContainer}>
-              <ThemedText style={styles.passageLabel}>
-                Read the passage below:
-              </ThemedText>
-              <ThemedText style={styles.passageTextContent}>
-                {content.questions[0].passageText}
-              </ThemedText>
-            </View>
-          )}
+        {content.type === 'true-false' && content.questions[0]?.passageText && (
+          <View style={styles.passageContainer}>
+            <ThemedText style={styles.passageLabel}>
+              Read the passage below:
+            </ThemedText>
+            <ThemedText style={styles.passageTextContent}>
+              {content.questions[0].passageText}
+            </ThemedText>
+          </View>
+        )}
 
         <ThemedText type="subtitle" style={styles.question}>
           {content.type === 'true-false'
@@ -608,41 +603,40 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         )}
 
         {/* Multiple Choice */}
-        {content.type === 'multiple-choice' &&
-          currentQuestion.options && (
-            <View style={styles.optionsContainer}>
-              {currentQuestion.options.map((option, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.optionButton,
-                    answers[currentQuestion.id] === option &&
-                      styles.selectedOption,
-                  ]}
-                  onPress={() => handleAnswerSelect(option)}
-                >
-                  <View style={styles.optionContent}>
-                    <View
-                      style={[
-                        styles.optionIndicator,
-                        answers[currentQuestion.id] === option &&
-                          styles.selectedIndicator,
-                      ]}
-                    />
-                    <ThemedText
-                      style={[
-                        styles.optionText,
-                        answers[currentQuestion.id] === option &&
-                          styles.selectedOptionText,
-                      ]}
-                    >
-                      {option}
-                    </ThemedText>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+        {content.type === 'multiple-choice' && currentQuestion.options && (
+          <View style={styles.optionsContainer}>
+            {currentQuestion.options.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.optionButton,
+                  answers[currentQuestion.id] === option &&
+                    styles.selectedOption,
+                ]}
+                onPress={() => handleAnswerSelect(option)}
+              >
+                <View style={styles.optionContent}>
+                  <View
+                    style={[
+                      styles.optionIndicator,
+                      answers[currentQuestion.id] === option &&
+                        styles.selectedIndicator,
+                    ]}
+                  />
+                  <ThemedText
+                    style={[
+                      styles.optionText,
+                      answers[currentQuestion.id] === option &&
+                        styles.selectedOptionText,
+                    ]}
+                  >
+                    {option}
+                  </ThemedText>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         {/* True/False Options */}
         {content.type === 'true-false' && (
@@ -730,8 +724,9 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                       }}
                       style={styles.matchingInput}
                       value={
-                        (answers[currentQuestion.id] as string)?.[index]?.trim() ||
-                        ''
+                        (answers[currentQuestion.id] as string)?.[
+                          index
+                        ]?.trim() || ''
                       }
                       onChangeText={(text) => handleMatchingInput(index, text)}
                       placeholder={`A-${String.fromCharCode(

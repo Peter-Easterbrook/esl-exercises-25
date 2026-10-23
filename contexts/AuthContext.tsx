@@ -27,7 +27,13 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Platform } from 'react-native';
 import {
   GOOGLE_SIGN_IN_CANCELLED,
@@ -141,7 +147,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               isAdmin: false,
               createdAt: new Date(),
               progress: [],
-              ...(firebaseUser.displayName && { displayName: firebaseUser.displayName }),
+              ...(firebaseUser.displayName && {
+                displayName: firebaseUser.displayName,
+              }),
             };
 
             try {
@@ -159,7 +167,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             email: firebaseUser.email!,
             isAdmin: false,
             progress: [],
-            ...(firebaseUser.displayName && { displayName: firebaseUser.displayName }),
+            ...(firebaseUser.displayName && {
+              displayName: firebaseUser.displayName,
+            }),
           };
           setAppUser(fallbackUser);
         }

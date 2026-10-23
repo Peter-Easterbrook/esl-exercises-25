@@ -64,7 +64,10 @@ try {
 
   // Update package.json
   packageJson.version = newVersion;
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
+  fs.writeFileSync(
+    packageJsonPath,
+    JSON.stringify(packageJson, null, 2) + '\n',
+  );
   console.log('✅ Updated package.json');
 
   // Read and update app.json
@@ -78,8 +81,9 @@ try {
   console.log('🎉 Version bump complete!');
   console.log(`   New version: ${newVersion}`);
   console.log('');
-  console.log('💡 Note: EAS will auto-increment versionCode/buildNumber for Android/iOS builds');
-
+  console.log(
+    '💡 Note: EAS will auto-increment versionCode/buildNumber for Android/iOS builds',
+  );
 } catch (error) {
   console.error('❌ Error bumping version:', error.message);
   process.exit(1);

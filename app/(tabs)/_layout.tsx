@@ -12,7 +12,14 @@ export default function TabLayout() {
   const { user, loading, appUser } = useAuth();
   const { theme } = useAppTheme();
 
-  console.log('TabLayout render - user:', !!user, 'appUser:', !!appUser, 'loading:', loading);
+  console.log(
+    'TabLayout render - user:',
+    !!user,
+    'appUser:',
+    !!appUser,
+    'loading:',
+    loading,
+  );
 
   if (loading) {
     return <ThemedLoader />;

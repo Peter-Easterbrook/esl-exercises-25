@@ -5,7 +5,7 @@ import * as Sharing from 'expo-sharing';
 export const exportExerciseResults = async (
   exercise: Exercise,
   answers: { [questionId: string]: string },
-  score: number
+  score: number,
 ): Promise<void> => {
   try {
     // Generate a detailed results report
@@ -14,7 +14,7 @@ export const exportExerciseResults = async (
     // Create a file
     const fileName = `${exercise.title.replace(
       /[^a-zA-Z0-9]/g,
-      '_'
+      '_',
     )}_results.txt`;
     const fileUri = FileSystem.documentDirectory + fileName;
 
@@ -34,7 +34,7 @@ export const exportExerciseResults = async (
 
 export const exportUserProgress = async (
   userProgress: UserProgress[],
-  userName: string
+  userName: string,
 ): Promise<void> => {
   try {
     const report = generateProgressReport(userProgress, userName);
@@ -58,7 +58,7 @@ export const exportUserProgress = async (
 const generateResultsReport = (
   exercise: Exercise,
   answers: { [questionId: string]: string },
-  score: number
+  score: number,
 ): string => {
   const date = new Date().toLocaleDateString();
   const time = new Date().toLocaleTimeString();
@@ -113,7 +113,7 @@ const generateResultsReport = (
   report += `SUMMARY:\n`;
   report += `========\n`;
   const correctCount = questions.filter(
-    (q: any) => answers[q.id] === q.correctAnswer
+    (q: any) => answers[q.id] === q.correctAnswer,
   ).length;
   const totalQuestions = questions.length;
 
@@ -133,7 +133,7 @@ const generateResultsReport = (
 
 const generateProgressReport = (
   userProgress: UserProgress[],
-  userName: string
+  userName: string,
 ): string => {
   const date = new Date().toLocaleDateString();
 
@@ -148,7 +148,7 @@ const generateProgressReport = (
     completedExercises.length > 0
       ? Math.round(
           completedExercises.reduce((sum, p) => sum + (p.score || 0), 0) /
-            completedExercises.length
+            completedExercises.length,
         )
       : 0;
 
@@ -176,7 +176,7 @@ const generateProgressReport = (
 // Export all user data for GDPR/CCPA compliance
 export const exportAllUserData = async (
   user: User,
-  userProgress: UserProgress[]
+  userProgress: UserProgress[],
 ): Promise<void> => {
   try {
     // Generate comprehensive user data export
@@ -202,7 +202,7 @@ export const exportAllUserData = async (
           userProgress.length > 0
             ? Math.round(
                 userProgress.reduce((sum, p) => sum + (p.score || 0), 0) /
-                  userProgress.length
+                  userProgress.length,
               )
             : 0,
       },

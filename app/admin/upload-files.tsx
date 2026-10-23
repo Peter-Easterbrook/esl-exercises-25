@@ -199,7 +199,11 @@ export default function UploadFilesScreen() {
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <IconSymbol name="chevron.left" size={24} color={theme.accent.mid} />
+            <IconSymbol
+              name="chevron.left"
+              size={24}
+              color={theme.accent.mid}
+            />
             <ThemedText style={styles.backText}>Back to Admin</ThemedText>
           </TouchableOpacity>
 
@@ -347,7 +351,11 @@ export default function UploadFilesScreen() {
               {files.map((file) => (
                 <View key={file.id} style={styles.fileCard}>
                   <View style={styles.fileIcon}>
-                    <Ionicons name="document-text" size={28} color={theme.accent.mid} />
+                    <Ionicons
+                      name="document-text"
+                      size={28}
+                      color={theme.accent.mid}
+                    />
                   </View>
                   <View style={styles.fileInfo}>
                     <ThemedText type="defaultSemiBold" style={styles.fileName}>
@@ -380,7 +388,11 @@ export default function UploadFilesScreen() {
                     onPress={() => handleDeleteFile(file)}
                     activeOpacity={0.7}
                   >
-                    <IconSymbol name="trash" size={20} color={theme.status.error} />
+                    <IconSymbol
+                      name="trash"
+                      size={20}
+                      color={theme.status.error}
+                    />
                   </TouchableOpacity>
                 </View>
               ))}

@@ -158,7 +158,9 @@ export const UNKNOWN_ICON: IconSymbolName = 'questionmark.circle';
  * code are not migrated in Firestore, so a stored value may no longer map to
  * anything; this renders a visible marker instead of silently nothing.
  */
-export function resolveIconName(name: string | undefined | null): IconSymbolName {
+export function resolveIconName(
+  name: string | undefined | null,
+): IconSymbolName {
   return isValidIconName(name) ? name : UNKNOWN_ICON;
 }
 

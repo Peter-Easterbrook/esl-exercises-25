@@ -23,14 +23,14 @@ export const logFirebaseConfig = () => {
   console.log('Firebase Configuration:');
   console.log(
     '- Project ID:',
-    process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'Not set'
+    process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'Not set',
   );
   console.log(
     '- Auth Domain:',
-    process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set'
+    process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set',
   );
   console.log(
     '- API Key:',
-    process.env.EXPO_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Not set'
+    process.env.EXPO_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Not set',
   );
 };

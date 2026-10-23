@@ -111,8 +111,8 @@ export const MilestoneRatingModal: React.FC<MilestoneRatingModalProps> = ({
                   Enjoying the App?
                 </ThemedText>
                 <ThemedText style={styles.subtitle}>
-                  You&apos;ve completed 5 exercises — great work! Help other learners
-                  find the app by leaving a quick review.
+                  You&apos;ve completed 5 exercises — great work! Help other
+                  learners find the app by leaving a quick review.
                 </ThemedText>
               </View>
 

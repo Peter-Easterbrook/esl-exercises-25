@@ -35,7 +35,7 @@ export const uploadFile = async (
   categoryId: string,
   exerciseId: string | null,
   userId: string,
-  level?: 'beginner' | 'intermediate' | 'advanced'
+  level?: 'beginner' | 'intermediate' | 'advanced',
 ): Promise<string> => {
   try {
     // Create a unique file name
@@ -57,8 +57,8 @@ export const uploadFile = async (
     const fileType = file.name.toLowerCase().endsWith('.pdf')
       ? 'pdf'
       : file.name.toLowerCase().endsWith('.docx')
-      ? 'docx'
-      : 'doc';
+        ? 'docx'
+        : 'doc';
 
     // Save metadata to Firestore
     const fileMetadata: Omit<DownloadableFile, 'id'> = {
@@ -75,7 +75,7 @@ export const uploadFile = async (
 
     const docRef = await addDoc(
       collection(db, 'downloadableFiles'),
-      fileMetadata
+      fileMetadata,
     );
 
     return docRef.id;
@@ -87,7 +87,7 @@ export const uploadFile = async (
 
 // Get files by category
 export const getFilesByCategory = async (
-  categoryId: string
+  categoryId: string,
 ): Promise<DownloadableFile[]> => {
   try {
     const filesRef = collection(db, 'downloadableFiles');
@@ -107,7 +107,7 @@ export const getFilesByCategory = async (
 
 // Get files by exercise
 export const getFilesByExercise = async (
-  exerciseId: string
+  exerciseId: string,
 ): Promise<DownloadableFile[]> => {
   try {
     console.log('getFilesByExercise called with exerciseId:', exerciseId);
@@ -119,7 +119,7 @@ export const getFilesByExercise = async (
       'Found',
       snapshot.docs.length,
       'files for exercise',
-      exerciseId
+      exerciseId,
     );
 
     const files = snapshot.docs.map((doc) => {
@@ -175,7 +175,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
 
     if (downloadResult.status !== 200) {
       throw new Error(
-        `Failed to download file. Status: ${downloadResult.status}`
+        `Failed to download file. Status: ${downloadResult.status}`,
       );
     }
 
@@ -195,7 +195,9 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
           });
           return;
         }
-        throw new Error('No way to save file - permission denied and sharing unavailable');
+        throw new Error(
+          'No way to save file - permission denied and sharing unavailable',
+        );
       }
 
       try {
@@ -209,7 +211,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
         const fileUri = await StorageAccessFramework.createFileAsync(
           permissions.directoryUri,
           sanitizedName,
-          mimeType
+          mimeType,
         );
 
         // Write the content to the new file
@@ -224,7 +226,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
 
         Alert.alert(
           'Success',
-          `${file.name} has been saved to your Downloads folder.`
+          `${file.name} has been saved to your Downloads folder.`,
         );
       } catch (safError) {
         console.error('SAF Error:', safError);
@@ -253,7 +255,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
       } else {
         Alert.alert(
           'Download Complete',
-          `${file.name} has been downloaded. The file is available in the app's cache.`
+          `${file.name} has been downloaded. The file is available in the app's cache.`,
         );
       }
     }
@@ -270,7 +272,7 @@ export const downloadFile = async (file: DownloadableFile): Promise<void> => {
 // Delete file (admin only)
 export const deleteFile = async (
   fileId: string,
-  fileUrl: string
+  fileUrl: string,
 ): Promise<void> => {
   try {
     // Delete from Storage
@@ -288,7 +290,7 @@ export const deleteFile = async (
 // Link file to exercise
 export const linkFileToExercise = async (
   fileId: string,
-  exerciseId: string
+  exerciseId: string,
 ): Promise<void> => {
   try {
     const fileRef = doc(db, 'downloadableFiles', fileId);

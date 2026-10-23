@@ -1,5 +1,3 @@
-
-
 import { Platform } from 'react-native';
 
 const tintColorLight = '#0a7ea4';
@@ -65,8 +63,8 @@ export const colors = {
   signoutText: '#f54707',
   beginner: '#07b524',
   intermediate: '#FF9800',
-  advanced: '#6f0202'
-  };
+  advanced: '#6f0202',
+};
 
 export const blues = {
   blue1: '#004c6d',
@@ -89,7 +87,8 @@ export const elevation = {
     shadowRadius: 8,
     elevation: 2,
     // Web fallback
-    boxShadow: '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
+    boxShadow:
+      '0px 1px 3px rgba(0, 76, 109, 0.08), 0px 4px 12px rgba(0, 76, 109, 0.06)',
   },
   level2: {
     shadowColor: '#004c6d',
@@ -97,7 +96,8 @@ export const elevation = {
     shadowOpacity: 0.12,
     shadowRadius: 16,
     elevation: 4,
-    boxShadow: '0px 4px 8px rgba(0, 76, 109, 0.12), 0px 8px 24px rgba(0, 76, 109, 0.08)',
+    boxShadow:
+      '0px 4px 8px rgba(0, 76, 109, 0.12), 0px 8px 24px rgba(0, 76, 109, 0.08)',
   },
   level3: {
     shadowColor: '#004c6d',
@@ -105,7 +105,8 @@ export const elevation = {
     shadowOpacity: 0.15,
     shadowRadius: 24,
     elevation: 8,
-    boxShadow: '0px 12px 28px rgba(0, 76, 109, 0.15), 0px 24px 48px rgba(0, 76, 109, 0.1)',
+    boxShadow:
+      '0px 12px 28px rgba(0, 76, 109, 0.15), 0px 24px 48px rgba(0, 76, 109, 0.1)',
   },
 };
 

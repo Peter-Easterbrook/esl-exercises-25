@@ -21,11 +21,11 @@ export function ThemedLoader({
 }: ThemedLoaderProps) {
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'background'
+    'background',
   );
   const indicatorColor = useThemeColor(
     { light: '#6996b3', dark: '#64B5F6' },
-    'tint'
+    'tint',
   );
 
   return (
