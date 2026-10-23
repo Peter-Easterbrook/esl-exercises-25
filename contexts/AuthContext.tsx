@@ -20,6 +20,7 @@ import {
   linkWithCredential,
   onAuthStateChanged,
   reauthenticateWithCredential,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithCredential,
   signInWithEmailAndPassword,
@@ -230,6 +231,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         firestoreError,
       );
       // Don't throw the error - the auth state change listener will handle creating the user document
+    }
+
+    // A verified address keeps its password if the user later signs in with
+    // Google. Unverified, Firebase lets Google (trusted for Gmail) take the
+    // account over and silently drops the password. Access is not gated on it.
+    try {
+      await sendEmailVerification(result.user);
+    } catch (verificationError) {
+      console.error(
+        'Error sending verification email during signup:',
+        verificationError,
+      );
     }
   };
 

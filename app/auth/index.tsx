@@ -81,6 +81,10 @@ export default function AuthScreen() {
       } else {
         await signUp(email, password, displayName);
         console.log('✅ Sign up successful');
+        Alert.alert(
+          'Verify your email',
+          `We've sent a link to ${email}. Please open it to verify your address — check your spam folder if you can't find it.`,
+        );
       }
 
       // Don't manually navigate - let the auth state change handle it
@@ -100,6 +104,14 @@ export default function AuthScreen() {
         errorMessage = 'No account found with this email address.';
       } else if (error.code === 'auth/wrong-password') {
         errorMessage = 'Incorrect password.';
+      } else if (error.code === 'auth/invalid-credential') {
+        // Current Firebase returns this for both a wrong password and an
+        // unknown email. It also covers a Gmail account whose password Firebase
+        // dropped when Google sign-in took over the unverified address.
+        errorMessage =
+          'Incorrect email or password. If you have signed in with Google before, use "Sign in with Google", or reset your password with Forgot Password.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many attempts. Please wait a moment and try again.';
       } else if (error.code === 'auth/email-already-in-use') {
         errorMessage = 'An account with this email already exists.';
       } else if (error.code === 'auth/weak-password') {
