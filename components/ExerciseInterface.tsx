@@ -10,9 +10,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -72,12 +73,33 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   const isLastQuestion =
     currentQuestionIndex === content.questions.length - 1;
   const hasAnswered = answers[currentQuestion.id] !== undefined;
+  const matchingInputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAnswerSelect = (answer: string) => {
     setAnswers((prev) => ({
       ...prev,
       [currentQuestion.id]: answer,
     }));
+  };
+
+  // Matching answers are stored as one string, one character per item.
+  // Unanswered slots are padded with a space so a later slot can be filled
+  // first without shifting the letters into the wrong positions.
+  const handleMatchingInput = (index: number, text: string) => {
+    const itemCount = currentQuestion.leftColumn?.length ?? 0;
+    const currentAnswers = (answers[currentQuestion.id] as string) || '';
+    const answersArray = Array.from(
+      { length: itemCount },
+      (_, i) => currentAnswers[i] ?? ' ',
+    );
+    const letter = text.trim().toUpperCase();
+    answersArray[index] = letter || ' ';
+    handleAnswerSelect(answersArray.join(''));
+
+    // Move straight to the next box once a letter is typed
+    if (letter && index < itemCount - 1) {
+      matchingInputRefs.current[index + 1]?.focus();
+    }
   };
 
   const handleNext = () => {
@@ -528,7 +550,12 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      // Android is edge-to-edge, so the window no longer resizes for the
+      // keyboard; padding shrinks the scroll area on both platforms instead.
+      behavior={Platform.OS === 'web' ? undefined : 'padding'}
+    >
       <View style={styles.progressSection}>
         <ThemedText style={styles.progressText}>
           Question {currentQuestionIndex + 1} of{' '}
@@ -550,7 +577,10 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
         </View>
       </View>
 
-      <ScrollView style={styles.questionSection}>
+      <ScrollView
+        style={styles.questionSection}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* True/False: Show passage on all questions if available */}
         {content.type === 'true-false' &&
           content.questions[0]?.passageText && (
@@ -695,20 +725,34 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
                       {index + 1} →
                     </ThemedText>
                     <TextInput
+                      ref={(el) => {
+                        matchingInputRefs.current[index] = el;
+                      }}
                       style={styles.matchingInput}
                       value={
-                        (answers[currentQuestion.id] as string)?.[index] || ''
+                        (answers[currentQuestion.id] as string)?.[index]?.trim() ||
+                        ''
                       }
-                      onChangeText={(text) => {
-                        const currentAnswers =
-                          (answers[currentQuestion.id] as string) || '';
-                        const answersArray = currentAnswers.split('');
-                        answersArray[index] = text.toUpperCase();
-                        handleAnswerSelect(answersArray.join(''));
-                      }}
-                      placeholder="A-F"
+                      onChangeText={(text) => handleMatchingInput(index, text)}
+                      placeholder={`A-${String.fromCharCode(
+                        64 + currentQuestion.options!.length,
+                      )}`}
                       maxLength={1}
                       autoCapitalize="characters"
+                      autoCorrect={false}
+                      returnKeyType={
+                        index < currentQuestion.leftColumn!.length - 1
+                          ? 'next'
+                          : 'done'
+                      }
+                      submitBehavior={
+                        index < currentQuestion.leftColumn!.length - 1
+                          ? 'submit'
+                          : 'blurAndSubmit'
+                      }
+                      onSubmitEditing={() =>
+                        matchingInputRefs.current[index + 1]?.focus()
+                      }
                       placeholderTextColor="rgba(102, 102, 102, 0.5)"
                     />
                   </View>
@@ -827,7 +871,7 @@ export const ExerciseInterface: React.FC<ExerciseInterfaceProps> = ({
           )}
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
