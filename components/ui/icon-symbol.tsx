@@ -34,6 +34,7 @@ const MAPPING = {
   plus: 'add',
   'plus.circle': 'add-circle-outline',
   'plus.circle.fill': 'add-circle',
+  'minus.circle': 'remove-circle-outline',
   pencil: 'edit',
   'pencil.circle': 'edit',
   trash: 'delete',

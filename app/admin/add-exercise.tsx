@@ -22,6 +22,13 @@ import {
   View,
 } from 'react-native';
 
+// A matching page shows between 3 and 6 pairs. The player renders whatever
+// length it is given; the cap keeps Column B short enough to scan.
+const MIN_MATCHING_PAIRS = 3;
+const MAX_MATCHING_PAIRS = 6;
+
+const letterFor = (index: number) => String.fromCharCode(65 + index);
+
 export default function AddExerciseScreen() {
   type ExerciseType =
     | 'multiple-choice'
@@ -280,6 +287,41 @@ export default function AddExerciseScreen() {
     );
   };
 
+  // Grow or shrink all three matching arrays together so they stay aligned.
+  // Shrinking drops the last pair and clears any answer that pointed at a
+  // letter which no longer exists.
+  const handleMatchingPairCountChange = (
+    questionIndex: number,
+    delta: number,
+  ) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => {
+        if (i !== questionIndex || !q.leftColumn) return q;
+        const count = Math.min(
+          MAX_MATCHING_PAIRS,
+          Math.max(MIN_MATCHING_PAIRS, q.leftColumn.length + delta),
+        );
+        if (count === q.leftColumn.length) return q;
+
+        const resize = (items: string[] | undefined) =>
+          Array.from({ length: count }, (_, idx) => items?.[idx] ?? '');
+        const validLetters = new Set(
+          Array.from({ length: count }, (_, idx) => letterFor(idx)),
+        );
+        const answers = Array.isArray(q.correctAnswer) ? q.correctAnswer : [];
+
+        return {
+          ...q,
+          leftColumn: resize(q.leftColumn),
+          options: resize(q.options),
+          correctAnswer: resize(answers).map((a) =>
+            validLetters.has(a.trim().toUpperCase()) ? a : '',
+          ),
+        };
+      }),
+    );
+  };
+
   const handleCorrectAnswerArrayChange = (
     questionIndex: number,
     itemIndex: number,
@@ -486,6 +528,28 @@ export default function AddExerciseScreen() {
               }.`,
             );
             return false;
+          }
+
+          {
+            const lastLetter = letterFor(q.options.length - 1);
+            const letters = q.correctAnswer.map((a) => a.trim().toUpperCase());
+            const outOfRange = letters.find(
+              (l) => !/^[A-Z]$/.test(l) || l > lastLetter,
+            );
+            if (outOfRange) {
+              Alert.alert(
+                'Validation Error',
+                `Question ${i + 1}: "${outOfRange}" is not a valid match. Use letters A–${lastLetter}.`,
+              );
+              return false;
+            }
+            if (new Set(letters).size !== letters.length) {
+              Alert.alert(
+                'Validation Error',
+                `Question ${i + 1}: each letter in Column B can only be used once.`,
+              );
+              return false;
+            }
           }
           break;
 
@@ -1083,6 +1147,57 @@ export default function AddExerciseScreen() {
                   {/* Matching: Left and Right Columns */}
                   {exerciseData.type === 'matching' && question.leftColumn && (
                     <>
+                      <View style={styles.pairCountRow}>
+                        <ThemedText style={styles.label}>
+                          Pairs on this page
+                        </ThemedText>
+                        <View style={styles.pairCountControls}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleMatchingPairCountChange(qIndex, -1)
+                            }
+                            disabled={
+                              question.leftColumn.length <= MIN_MATCHING_PAIRS
+                            }
+                            accessibilityLabel="Remove a pair"
+                            style={styles.pairCountButton}
+                          >
+                            <IconSymbol
+                              name="minus.circle"
+                              size={24}
+                              color={
+                                question.leftColumn.length <= MIN_MATCHING_PAIRS
+                                  ? theme.text.secondary
+                                  : theme.accent.mid
+                              }
+                            />
+                          </TouchableOpacity>
+                          <ThemedText style={styles.pairCountValue}>
+                            {question.leftColumn.length}
+                          </ThemedText>
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleMatchingPairCountChange(qIndex, 1)
+                            }
+                            disabled={
+                              question.leftColumn.length >= MAX_MATCHING_PAIRS
+                            }
+                            accessibilityLabel="Add a pair"
+                            style={styles.pairCountButton}
+                          >
+                            <IconSymbol
+                              name="plus.circle"
+                              size={24}
+                              color={
+                                question.leftColumn.length >= MAX_MATCHING_PAIRS
+                                  ? theme.text.secondary
+                                  : theme.accent.mid
+                              }
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
                       <View style={styles.inputGroup}>
                         <ThemedText style={styles.label}>
                           Column A (Numbered)
@@ -1149,7 +1264,9 @@ export default function AddExerciseScreen() {
                                     text.toUpperCase(),
                                   )
                                 }
-                                placeholder="A, B, C, or D"
+                                placeholder={`A–${letterFor(
+                                  (question.options?.length ?? 1) - 1,
+                                )}`}
                                 maxLength={1}
                                 placeholderTextColor="rgba(102, 102, 102, 0.5)"
                               />
@@ -1457,6 +1574,26 @@ function createStyles(theme: AppTheme) {
     },
     removeButton: {
       padding: 4,
+    },
+    pairCountRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 12,
+    },
+    pairCountControls: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    pairCountButton: {
+      padding: 4,
+    },
+    pairCountValue: {
+      fontSize: 16,
+      minWidth: 20,
+      textAlign: 'center',
+      color: theme.text.primary,
     },
     optionRow: {
       flexDirection: 'row',
