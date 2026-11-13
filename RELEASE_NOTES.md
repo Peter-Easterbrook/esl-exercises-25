@@ -1,3 +1,20 @@
+📱 Version 2.0.9
+
+Released: November 2026
+
+📝 What's new (For Google Play Console)
+
+What's new in 2.0.9
+
+• Irregular verbs are now short, letter-based exercises instead of two very long lists
+• Matching exercises shuffle the answers each time, so there's no pattern to guess
+• Sign in with Google on an account you created with email and password
+• New accounts confirm their email address at sign-up
+• Clearer message when an email or password is wrong
+• Performance and stability improvements
+
+---
+
 📱 Version 2.0.8
 
 Released: October 2026
